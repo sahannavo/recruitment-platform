@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecruitAI · Candidate Dashboard</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    /* ----- CSS Variables (custom properties) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --background: #F9FAFB;
+      --surface: #FFFFFF;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --border: #E5E7EB;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --radius: 8px;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --transition: 0.25s ease;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--background);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* container */
+    .dashboard {
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ----- header / nav ----- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-icon {
+      font-size: 1.6rem;
+      color: var(--primary);
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-actions .greeting {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .nav-actions .greeting span {
+      font-weight: 400;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-left: 0.25rem;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: default;
+    }
+
+    .hamburger {
+      display: none;
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+    }
+
+    /* mobile menu (hidden by default) */
+    .mobile-menu {
+      display: none;
+      flex-basis: 100%;
+      flex-direction: column;
+      background: var(--surface);
+      padding: 1rem 0 0.5rem 0;
+      margin-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu a {
+      padding: 0.6rem 0;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    /* ----- grid layout (desktop) ----- */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.5rem;
+      transition: box-shadow var(--transition);
+    }
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .card-header i {
+      color: var(--primary);
+    }
+
+    /* recommendation cards */
+    .rec-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem 1rem;
+      margin-bottom: 1rem;
+      transition: background var(--transition);
+    }
+    .rec-item:last-child {
+      margin-bottom: 0;
+    }
+    .rec-item:hover {
+      background: #f8faff;
+    }
+
+    .rec-match {
+      display: inline-block;
+      background: #E0F2FE;
+      color: #0369a1;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.1rem 0.6rem;
+      border-radius: 20px;
+      margin-bottom: 0.3rem;
+    }
+    .rec-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .rec-company {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .rec-meta {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem 0.8rem;
+      margin-top: 0.2rem;
+    }
+    .rec-salary {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .btn-quick {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.25rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background var(--transition);
+      margin-top: 0.4rem;
+    }
+    .btn-quick:hover {
+      background: var(--primary-hover);
+    }
+
+    /* upcoming interviews */
+    .interview-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 0;
+    }
+    .interview-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .interview-date {
+      min-width: 60px;
+      font-weight: 700;
+      background: #EFF6FF;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+    .interview-info {
+      flex: 1;
+    }
+    .interview-info .role {
+      font-weight: 600;
+    }
+    .interview-info .company {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .interview-info .time {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .interview-info .interviewer {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .sync-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 0.25rem;
+    }
+    .sync-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      color: var(--text-secondary);
+      font-weight: 500;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .status-badge {
+      display: inline-block;
+      background: #DBEAFE;
+      color: #1E40AF;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.7rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .status-badge.offer {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    .status-badge.applied {
+      background: #F3F4F6;
+      color: #4B5563;
+    }
+
+    /* profile activities */
+    .activity-stats {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .stat-change {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .spinner-placeholder {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+    }
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top: 2px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      text-align: center;
+      padding: 1.5rem 0;
+      color: var(--text-secondary);
+    }
+
+    hr {
+      margin: 1rem 0;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* footer */
+    .footer-note {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* ----- Responsive ----- */
+    /* Tablet: 768px - 1024px */
+    @media screen and (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+    }
+
+    /* Mobile: < 768px */
+    @media screen and (max-width: 767px) {
+      body { padding: 0.6rem; }
+      .navbar { padding: 0.6rem 1rem; }
+      .hamburger { display: block; }
+      .nav-actions .greeting { display: none; }
+      .nav-actions .greeting-mobile { display: inline; }
+      .main-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .card { padding: 1rem; }
+      .rec-meta { flex-direction: column; gap: 0.1rem; }
+      .interview-item { flex-wrap: wrap; }
+      .interview-date { min-width: 50px; }
+      .activity-stats { gap: 1rem; }
+      .stat-number { font-size: 1.6rem; }
+      table { font-size: 0.8rem; }
+      .btn-quick { width: 100%; text-align: center; }
+    }
+
+    /* small mobile fine-tuning */
+    @media screen and (max-width: 480px) {
+      .logo-text { font-size: 1rem; }
+      .avatar { width: 34px; height: 34px; font-size: 0.9rem; }
+    }
+
+    /* utilities */
+    .flex { display: flex; align-items: center; gap: 0.5rem; }
+    .mt-1 { margin-top: 0.5rem; }
+    .mb-1 { margin-bottom: 0.5rem; }
+    .w-full { width: 100%; }
+
+    /* hover/focus */
+    button, .btn-quick, .sync-btn {
+      cursor: pointer;
+      transition: background var(--transition), transform 0.1s;
+    }
+    button:focus-visible, .btn-quick:focus-visible, .sync-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard" role="main" aria-label="Candidate Dashboard">
+
+  <!-- Navigation -->
+  <header class="navbar" role="banner" aria-label="Main navigation">
+    <div class="logo-area">
+      <i class="fas fa-robot logo-icon" aria-hidden="true"></i>
+      <span class="logo-text">RecruitAI</span>
+    </div>
+    <div class="nav-actions">
+      <span class="greeting"><i class="far fa-sun" aria-hidden="true"></i> Good morning, Alex!</span>
+      <div class="avatar" aria-label="User avatar">A</div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <!-- mobile menu -->
+    <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+      <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="#"><i class="fas fa-briefcase"></i> Jobs</a>
+      <a href="#"><i class="fas fa-calendar"></i> Interviews</a>
+      <a href="#"><i class="fas fa-user"></i> Profile</a>
+    </div>
+  </header>
+
+  <!-- main grid -->
+  <div class="main-grid">
+
+    <!-- Left column: Recommended + Upcoming -->
+    <section class="card" aria-label="Job recommendations">
+      <div class="card-header">
+        <span><i class="fas fa-star" aria-hidden="true"></i> Recommended for You</span>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </div>
+
+      <!-- rec 1 -->
+      <div class="rec-item">
+        <div class="rec-match"><i class="fas fa-check-circle" aria-hidden="true"></i> 98% Match</div>
+        <div class="rec-title">Senior Frontend Engineer</div>
+        <div class="rec-company">TechFlow Inc. · San Francisco (Hybrid)</div>
+        <div class="rec-meta">
+          <span class="rec-salary"><i class="fas fa-dollar-sign" aria-hidden="true"></i> $140k – $170k</span>
+        </div>
+        <button class="btn-quick" data-action="quick-apply" aria-label="Quick apply for Senior Frontend Engineer">Quick Apply</button>
+      </div>
+
+      <!-- rec 2 -->
+      <div class="rec-item">
+        <div class="rec-match"><i class="fas fa-check-circle" aria-hidden="true"></i> 92% Match</div>
+        <div class="rec-title">UX/UI Designer</div>
+        <div class="rec-company">CreativeEdge Agency · Remote</div>
+        <div class="rec-meta">
+          <span class="rec-salary"><i class="fas fa-dollar-sign" aria-hidden="true"></i> $110k – $130k</span>
+        </div>
+        <button class="btn-quick" data-action="quick-apply" aria-label="Quick apply for UX/UI Designer">Quick Apply</button>
+      </div>
+
+      <!-- rec 3 -->
+      <div class="rec-item">
+        <div class="rec-match"><i class="fas fa-check-circle" aria-hidden="true"></i> 87% Match</div>
+        <div class="rec-title">Product Manager</div>
+        <div class="rec-company">Nexus Systems · Austin, TX</div>
+        <div class="rec-meta"></div>
+        <button class="btn-quick" data-action="quick-apply" aria-label="Quick apply for Product Manager">Quick Apply</button>
+      </div>
+
+      <!-- Loading spinner placeholder (demo) -->
+      <div class="spinner-placeholder" aria-live="polite">
+        <div class="spinner" role="status" aria-label="Loading more recommendations"></div>
+        <span>loading more…</span>
+      </div>
+    </section>
+
+    <!-- Right column: Upcoming Interviews + Recent Applications -->
+    <div>
+      <section class="card" aria-label="Upcoming interviews">
+        <div class="card-header">
+          <span><i class="fas fa-calendar-check" aria-hidden="true"></i> Upcoming Interviews</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </div>
+
+        <div class="interview-item">
+          <div class="interview-date">OCT 24</div>
+          <div class="interview-info">
+            <div class="role">Technical Round · Global Tech Co.</div>
+            <div class="time"><i class="far fa-clock" aria-hidden="true"></i> 10:00 AM – 11:00 AM</div>
+            <div class="interviewer"><i class="fas fa-user-tie" aria-hidden="true"></i> Sarah Jenkins</div>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-date">OCT 26</div>
+          <div class="interview-info">
+            <div class="role">Culture Fit · InnovateApp</div>
+            <div class="time"><i class="far fa-clock" aria-hidden="true"></i> 2:30 PM – 3:00 PM</div>
+            <div class="interviewer"><i class="fas fa-user-tie" aria-hidden="true"></i> Michael Chen</div>
+          </div>
+        </div>
+        <button class="sync-btn" data-action="sync-calendar"><i class="fas fa-sync-alt" aria-hidden="true"></i> Sync to Calendar</button>
+        <hr>
+        <!-- empty state demo (optional) -->
+        <div class="empty-state" style="display: none;">No more interviews</div>
+      </section>
+
+      <section class="card" aria-label="Recent applications" style="margin-top: 1.5rem;">
+        <div class="card-header">
+          <span><i class="fas fa-file-alt" aria-hidden="true"></i> Recent Applications</span>
+        </div>
+        <div class="table-wrap">
+          <table aria-label="Recent job applications">
+            <thead>
+              <tr><th>ROLE</th><th>COMPANY</th><th>STATUS</th><th>ACTION</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Full Stack Developer</td><td>Global Tech Co.</td><td><span class="status-badge">Interview</span></td><td>—</td></tr>
+              <tr><td>Frontend Engineer</td><td>InnovateApp</td><td><span class="status-badge offer">Offer</span></td><td>—</td></tr>
+              <tr><td>React Developer</td><td>StartupHub</td><td><span class="status-badge applied">Applied</span></td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Profile Activities (full width card) -->
+  <section class="card" aria-label="Profile activities" style="margin-top: 1.5rem;">
+    <div class="card-header">
+      <span><i class="fas fa-chart-simple" aria-hidden="true"></i> Profile Activities</span>
+    </div>
+    <div class="activity-stats">
+      <div><span class="stat-number">12</span> <span class="stat-label">Profile views this week</span></div>
+      <div><span class="stat-change"><i class="fas fa-arrow-up" aria-hidden="true"></i> +15%</span></div>
+    </div>
+    <!-- mini spinner / empty state placeholder -->
+    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+      <i class="fas fa-chart-line" aria-hidden="true"></i> Activity updated 2h ago
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer class="footer-note" role="contentinfo">
+    <i class="far fa-copyright" aria-hidden="true"></i> RecruitAI · Candidate Dashboard
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // ----- Hamburger menu toggle -----
+    const hamburger = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (hamburger && mobileMenu) {
+      hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const expanded = this.getAttribute('aria-expanded') === 'true' ? false : true;
+        this.setAttribute('aria-expanded', expanded);
+        mobileMenu.classList.toggle('open');
+        // change icon
+        const icon = this.querySelector('i');
+        if (icon) {
+          if (expanded) {
+            icon.className = 'fas fa-times';
+          } else {
+            icon.className = 'fas fa-bars';
+          }
+        }
+      });
+
+      // close menu on outside click (optional)
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.navbar')) {
+          if (mobileMenu.classList.contains('open')) {
+            mobileMenu.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            const icon = hamburger.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+          }
+        }
+      });
+    }
+
+    // ----- Quick Apply & Sync buttons (console.log placeholders) -----
+    document.querySelectorAll('[data-action="quick-apply"]').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const parent = this.closest('.rec-item');
+        let role = 'position';
+        if (parent) {
+          const titleEl = parent.querySelector('.rec-title');
+          if (titleEl) role = titleEl.innerText.trim();
+        }
+        console.log(`[Quick Apply] clicked for: ${role}`);
+        // simulate feedback
+        this.textContent = 'Applied ✓';
+        this.style.background = '#10B981';
+        setTimeout(() => {
+          this.textContent = 'Quick Apply';
+          this.style.background = '';
+        }, 2000);
+      });
+    });
+
+    document.querySelector('[data-action="sync-calendar"]')?.addEventListener('click', function() {
+      console.log('[Sync to Calendar] clicked');
+      this.innerHTML = '<i class="fas fa-check"></i> Synced';
+      this.style.background = '#10B981';
+      this.style.color = 'white';
+      this.style.borderColor = '#10B981';
+      setTimeout(() => {
+        this.innerHTML = '<i class="fas fa-sync-alt"></i> Sync to Calendar';
+        this.style.background = '';
+        this.style.color = '';
+        this.style.borderColor = '';
+      }, 2500);
+    });
+
+    // Any additional click handlers for demo: avatar, logo, etc.
+    document.querySelector('.avatar')?.addEventListener('click', () => console.log('[Avatar] profile clicked'));
+    document.querySelector('.logo-area')?.addEventListener('click', () => console.log('[Logo] home clicked'));
+
+    // Simulate loading spinner removal (just for demo – it stays as placeholder)
+    console.log('Candidate Dashboard ready.');
+  })();
+</script>
+</body>
+</html>
