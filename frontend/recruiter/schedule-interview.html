@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule Interview | RecruitAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+  :root {
+    --primary: #4F46E5;
+    --primary-hover: #4338CA;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --background: #F9FAFB;
+    --surface: #FFFFFF;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --border: #E5E7EB;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --radius: 8px;
+    --primary-tint: #EEF2FF;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .skip-link {
+    position: absolute; top: -50px; left: 8px;
+    background: var(--primary); color: #fff;
+    padding: 10px 16px; border-radius: var(--radius);
+    z-index: 1000; transition: top 0.2s ease;
+  }
+  .skip-link:focus { top: 8px; }
+
+  /* -------------------- Header -------------------- */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .header-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .primary-nav { display: flex; gap: 26px; }
+  .primary-nav a {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+  }
+  .primary-nav a:hover, .primary-nav a:focus-visible { color: var(--primary); }
+  .primary-nav a[aria-current="page"] { color: var(--primary); border-color: var(--primary); font-weight: 600; }
+
+  .header-search {
+    flex: 1;
+    max-width: 320px;
+    margin-left: auto;
+    position: relative;
+  }
+  .header-search i {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+  .header-search input {
+    width: 100%;
+    padding: 9px 14px 9px 36px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+  }
+  .header-search input:focus {
+    outline: none; border-color: var(--primary); background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+  }
+
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-post-job {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 0.86rem;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+  }
+  .btn-post-job:hover, .btn-post-job:focus-visible { background: var(--primary-hover); }
+  .icon-btn {
+    background: none; border: none;
+    font-size: 1rem; color: var(--text-secondary);
+    width: 38px; height: 38px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover, .icon-btn:focus-visible { background: var(--background); color: var(--primary); }
+  .avatar-img {
+    width: 38px; height: 38px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), #818CF8);
+  }
+  .hamburger {
+    display: none;
+    background: none; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 8px 10px;
+    font-size: 1.05rem; color: var(--text-primary);
+  }
+
+  .mobile-nav {
+    display: none; flex-direction: column;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 8px 16px 16px;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    padding: 12px 8px; font-weight: 500; color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a[aria-current="page"] { color: var(--primary); font-weight: 600; }
+
+  /* -------------------- Main -------------------- */
+  main {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 16px 28px 24px;
+  }
+
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--text-secondary);
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .breadcrumb a { color: var(--text-secondary); transition: color 0.2s ease; }
+  .breadcrumb a:hover, .breadcrumb a:focus-visible { color: var(--primary); }
+  .breadcrumb .current { color: var(--primary); font-weight: 600; }
+  .breadcrumb i { font-size: 0.65rem; color: var(--border); }
+
+  main > h1 { margin: 0 0 12px; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .left-col { display: flex; flex-direction: column; gap: 14px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 18px 18px;
+  }
+
+  /* -------------------- Candidate card -------------------- */
+  .candidate-card { text-align: center; }
+  .candidate-photo-wrap {
+    width: 80px; height: 80px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    padding: 3px;
+  }
+  .candidate-photo {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+  .candidate-name { font-size: 1.05rem; font-weight: 800; margin: 0 0 2px; }
+  .candidate-role { color: var(--text-secondary); font-size: 0.85rem; margin: 0 0 12px; }
+  .match-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--primary-tint);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .candidate-meta {
+    text-align: left;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .meta-row { display: flex; align-items: flex-start; gap: 12px; font-size: 0.84rem; color: var(--text-primary); }
+  .meta-row i { color: var(--text-secondary); width: 16px; text-align: center; margin-top: 2px; }
+
+  .skills-block { text-align: left; margin-top: 14px; }
+  .skills-label {
+    font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-secondary); font-weight: 700; margin-bottom: 8px;
+  }
+  .skills-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* -------------------- Interview panel card -------------------- */
+  .panel-card h2 { margin: 0 0 18px; font-size: 1.05rem; font-weight: 800; }
+  .interviewer-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+  }
+  .interviewer-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), #818CF8);
+  }
+  .interviewer-name { font-weight: 700; font-size: 0.9rem; }
+  .interviewer-role { color: var(--text-secondary); font-size: 0.8rem; }
+
+  .add-interviewer-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--border);
+    background: none;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.88rem;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .add-interviewer-btn:hover, .add-interviewer-btn:focus-visible {
+    background: var(--primary-tint); border-color: var(--primary);
+  }
+
+  /* -------------------- Right column -------------------- */
+  .right-col .card { padding: 18px 20px; }
+
+  .calendar-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 12px;
+  }
+  .calendar-head h2 { margin: 0; font-size: 1.05rem; font-weight: 800; }
+  .month-nav { display: flex; align-items: center; gap: 16px; }
+  .month-nav-btn {
+    width: 24px; height: 24px;
+    border: none; background: none;
+    color: var(--text-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+    border-radius: 4px;
+  }
+  .month-nav-btn:hover, .month-nav-btn:focus-visible { color: var(--primary); background: var(--primary-tint); }
+  .month-label { font-weight: 700; font-size: 0.95rem; min-width: 130px; text-align: center; }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 12px;
+  }
+  .cal-weekday {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    padding-bottom: 8px;
+  }
+  .cal-day {
+    height: 34px;
+    border: none;
+    background: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .cal-day:not(:disabled):hover, .cal-day:not(:disabled):focus-visible { background: var(--primary-tint); }
+  .cal-day.other-month { color: var(--border); }
+  .cal-day:disabled { cursor: not-allowed; }
+  .cal-day .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--primary); }
+  .cal-day.other-month .dot { background: var(--border); }
+  .cal-day.selected { background: var(--primary); color: #fff; }
+  .cal-day.selected .dot { background: #fff; }
+
+  .slots-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .slots-head h2 { margin: 0; font-size: 1.05rem; font-weight: 800; }
+  .slots-head .selected-date { color: var(--text-secondary); font-weight: 500; font-size: 0.92rem; margin-left: 6px; }
+  .timezone { color: var(--primary); font-size: 0.85rem; font-weight: 600; }
+
+  .slots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .slot-btn {
+    padding: 10px 8px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.86rem;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .slot-btn:not(:disabled):hover, .slot-btn:not(:disabled):focus-visible {
+    border-color: var(--primary);
+  }
+  .slot-btn.selected {
+    border-color: var(--primary);
+    background: var(--primary-tint);
+    color: var(--primary);
+  }
+  .slot-btn:disabled {
+    color: var(--text-secondary);
+    background: var(--background);
+    border-color: var(--border);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .slots-empty {
+    text-align: center;
+    padding: 20px 20px;
+    color: var(--text-secondary);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    font-size: 0.86rem;
+  }
+  .slots-empty i { font-size: 1.4rem; color: var(--border); display: block; margin-bottom: 8px; }
+
+  .slots-loading {
+    text-align: center;
+    padding: 20px 20px;
+    margin-bottom: 16px;
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .slots-loading p { color: var(--text-secondary); font-size: 0.88rem; margin: 0; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .field-label { font-weight: 700; font-size: 0.88rem; margin-bottom: 8px; display: block; }
+  .type-options { display: flex; gap: 10px; }
+  .type-btn {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.86rem;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .type-btn:hover, .type-btn:focus-visible { border-color: var(--primary); }
+  .type-btn.selected {
+    border-color: var(--primary);
+    background: var(--primary-tint);
+    color: var(--primary);
+  }
+
+  .duration-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-family: inherit;
+    font-size: 0.86rem;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .duration-select:focus { outline: none; border-color: var(--primary); }
+
+  .notes-block { margin-bottom: 6px; }
+  .notes-block textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--background);
+    font-family: inherit;
+    font-size: 0.86rem;
+    color: var(--text-primary);
+    resize: vertical;
+  }
+  .notes-block textarea:focus {
+    outline: none; border-color: var(--primary); background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+  }
+
+  .form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    margin-top: 4px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .form-footer .hint { color: var(--text-secondary); font-size: 0.8rem; max-width: 380px; line-height: 1.4; }
+  .footer-actions { display: flex; align-items: center; gap: 16px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: none; border-radius: var(--radius);
+    font-weight: 700; font-size: 0.88rem;
+    padding: 10px 18px;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: var(--shadow); }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--primary-hover); }
+  .btn-primary:disabled { background: var(--border); color: var(--text-secondary); cursor: not-allowed; box-shadow: none; }
+  .link-btn {
+    background: none; border: none; color: var(--text-primary);
+    font-weight: 600; font-size: 0.92rem;
+  }
+  .link-btn:hover, .link-btn:focus-visible { color: var(--danger); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-primary); color: #fff;
+    padding: 12px 20px; border-radius: var(--radius);
+    font-size: 0.86rem; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 1100;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast i { color: var(--success); }
+
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
+  }
+
+  /* -------------------- Responsive -------------------- */
+  @media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; }
+    .left-col { order: 1; }
+    .right-col { order: 2; }
+    .primary-nav { display: none; }
+    .header-search { display: none; }
+    .hamburger { display: inline-flex; }
+    .slots-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 767px) {
+    main { padding: 18px 16px 50px; }
+    .card { padding: 20px 18px; }
+    .right-col .card { padding: 20px 18px; }
+    .field-row { grid-template-columns: 1fr; gap: 18px; }
+    .slots-grid { grid-template-columns: repeat(2, 1fr); }
+    .calendar-grid { gap: 2px; }
+    .cal-day { height: 30px; font-size: 0.72rem; }
+    .cal-weekday { font-size: 0.65rem; }
+    .form-footer { flex-direction: column; align-items: stretch; }
+    .footer-actions { justify-content: space-between; }
+    .btn-primary { flex: 1; justify-content: center; }
+    .header-actions .btn-post-job span { display: none; }
+    main > h1 { font-size: 1.35rem; }
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .layout { grid-template-columns: 320px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="logo" aria-label="RecruitAI Home">RecruitAI</a>
+
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="#">Dashboard</a>
+      <a href="#" aria-current="page">Interviews</a>
+      <a href="#">Candidates</a>
+    </nav>
+
+    <div class="header-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <label for="headerSearch" class="visually-hidden">Search candidates</label>
+      <input type="search" id="headerSearch" placeholder="Search candidates…" autocomplete="off">
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-post-job" type="button"><span>Post Job</span></button>
+      <button class="icon-btn" aria-label="Notifications" type="button"><i class="fa-regular fa-bell" aria-hidden="true"></i></button>
+      <button class="icon-btn" aria-label="Settings" type="button"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>
+      <img class="avatar-img" src="https://i.pravatar.cc/80?img=68" alt="Recruiter avatar" width="38" height="38">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNav" type="button">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+    <a href="#">Dashboard</a>
+    <a href="#" aria-current="page">Interviews</a>
+    <a href="#">Candidates</a>
+  </nav>
+</header>
+
+<main id="main-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="#">Candidates</a>
+    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    <a href="#">Alex Rivera</a>
+    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    <span class="current">Schedule Interview</span>
+  </nav>
+  <h1>Schedule Interview</h1>
+
+  <div class="layout">
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+      <section class="card candidate-card" aria-labelledby="candidateHeading">
+        <h2 id="candidateHeading" class="visually-hidden">Candidate information</h2>
+        <div class="candidate-photo-wrap">
+          <img class="candidate-photo" src="https://i.pravatar.cc/200?img=12" alt="Alex Rivera">
+        </div>
+        <p class="candidate-name">Alex Rivera</p>
+        <p class="candidate-role">Senior Product Designer</p>
+        <span class="match-badge"><i class="fa-solid fa-sparkles" aria-hidden="true"></i> 98% Match</span>
+
+        <div class="candidate-meta">
+          <div class="meta-row"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> San Francisco, CA (Remote)</div>
+          <div class="meta-row"><i class="fa-regular fa-envelope" aria-hidden="true"></i> alex.rivera@example.com</div>
+          <div class="meta-row"><i class="fa-solid fa-clock" aria-hidden="true"></i> 8 years experience</div>
+        </div>
+
+        <div class="skills-block">
+          <div class="skills-label">Top Skills</div>
+          <div class="skills-tags">
+            <span class="skill-tag">Design Systems</span>
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">Prototyping</span>
+            <span class="skill-tag">React</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card panel-card" aria-labelledby="panelHeading">
+        <h2 id="panelHeading">Interview Panel</h2>
+        <div class="interviewer-row">
+          <img class="interviewer-avatar" src="https://i.pravatar.cc/80?img=32" alt="" width="42" height="42">
+          <div>
+            <div class="interviewer-name">Sarah Jenkins</div>
+            <div class="interviewer-role">Design Lead</div>
+          </div>
+        </div>
+        <div class="interviewer-row">
+          <img class="interviewer-avatar" src="https://i.pravatar.cc/80?img=51" alt="" width="42" height="42">
+          <div>
+            <div class="interviewer-name">Marcus Chen</div>
+            <div class="interviewer-role">CTO</div>
+          </div>
+        </div>
+        <button class="add-interviewer-btn" id="addInterviewerBtn" type="button">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Interviewer
+        </button>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+      <section class="card" aria-labelledby="scheduleHeading">
+        <div class="calendar-head">
+          <h2 id="scheduleHeading">Select Date &amp; Time</h2>
+          <div class="month-nav">
+            <button class="month-nav-btn" id="prevMonth" aria-label="Previous month" type="button"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+            <span class="month-label" id="monthLabel" aria-live="polite"></span>
+            <button class="month-nav-btn" id="nextMonth" aria-label="Next month" type="button"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+
+        <div class="calendar-grid" id="calendarWeekdays">
+          <span class="cal-weekday">MON</span>
+          <span class="cal-weekday">TUE</span>
+          <span class="cal-weekday">WED</span>
+          <span class="cal-weekday">THU</span>
+          <span class="cal-weekday">FRI</span>
+          <span class="cal-weekday">SAT</span>
+          <span class="cal-weekday">SUN</span>
+        </div>
+        <div class="calendar-grid" id="calendarDays" role="grid" aria-label="Calendar"></div>
+
+        <div class="slots-head">
+          <div>
+            <h2 style="display:inline;">Available Time Slots</h2>
+            <span class="selected-date" id="selectedDateLabel"></span>
+          </div>
+          <span class="timezone"><i class="fa-regular fa-clock" aria-hidden="true"></i> Timezone: UTC-8 (PST)</span>
+        </div>
+
+        <div id="slotsContainer"></div>
+
+        <div class="field-row">
+          <div>
+            <span class="field-label">Interview Type</span>
+            <div class="type-options" id="interviewType">
+              <button class="type-btn selected" data-type="Online" type="button"><i class="fa-solid fa-video" aria-hidden="true"></i> Online</button>
+              <button class="type-btn" data-type="In-Person" type="button"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> In-Person</button>
+            </div>
+          </div>
+          <div>
+            <label class="field-label" for="durationSelect">Duration</label>
+            <select class="duration-select" id="durationSelect">
+              <option>30 Minutes</option>
+              <option selected>45 Minutes</option>
+              <option>60 Minutes</option>
+              <option>90 Minutes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="notes-block">
+          <label class="field-label" for="interviewNotes">Interview Notes (Internal)</label>
+          <textarea id="interviewNotes" placeholder="Add specific focus areas for the interviewers or logistics for the candidate…"></textarea>
+        </div>
+
+        <div class="form-footer">
+          <p class="hint">An email invitation with calendar links will be sent to the candidate and all interviewers.</p>
+          <div class="footer-actions">
+            <button class="link-btn" id="cancelBtn" type="button">Cancel</button>
+            <button class="btn btn-primary" id="sendInviteBtn" type="button" disabled>
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Invite
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+  <span id="toastMessage">Done</span>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------------- State ----------------
+  const today = new Date();
+  let viewYear = 2024, viewMonth = 10; // November 2024 (0-indexed) to mirror reference design
+  let selectedDate = new Date(2024, 10, 6);
+  let selectedSlot = '10:30 AM';
+  let selectedType = 'Online';
+  let isLoadingSlots = false;
+
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  // Sample availability keyed by "YYYY-M-D"
+  const availability = {
+    '2024-10-1': ['09:00 AM', '01:00 PM'],
+    '2024-10-5': ['09:00 AM', '10:30 AM', '02:30 PM'],
+    '2024-10-6': ['09:00 AM', '10:30 AM', '01:00 PM', '02:30 PM', '04:00 PM'],
+    '2024-10-7': ['10:30 AM', '04:00 PM'],
+    '2024-10-12': ['09:00 AM'],
+    '2024-10-13': [],
+    '2024-10-14': ['01:00 PM', '02:30 PM', '04:00 PM']
+  };
+  const bookedSlots = { '2024-10-6': ['05:30 PM'] };
+  const allPossibleSlots = ['09:00 AM','10:30 AM','01:00 PM','02:30 PM','04:00 PM','05:30 PM'];
+
+  function dateKey(y, m, d) { return `${y}-${m}-${d}`; }
+
+  // ---------------- Elements ----------------
+  const monthLabel = document.getElementById('monthLabel');
+  const calendarDays = document.getElementById('calendarDays');
+  const selectedDateLabel = document.getElementById('selectedDateLabel');
+  const slotsContainer = document.getElementById('slotsContainer');
+  const sendInviteBtn = document.getElementById('sendInviteBtn');
+
+  // ---------------- Calendar rendering ----------------
+  function buildCalendar() {
+    monthLabel.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+    calendarDays.innerHTML = '';
+
+    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    // Convert Sunday(0)-Saturday(6) to Monday-first index
+    const firstWeekdayIndex = (firstOfMonth.getDay() + 6) % 7;
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+
+    const cells = [];
+
+    // Leading days from previous month
+    for (let i = firstWeekdayIndex - 1; i >= 0; i--) {
+      const d = daysInPrevMonth - i;
+      const m = viewMonth === 0 ? 11 : viewMonth - 1;
+      const y = viewMonth === 0 ? viewYear - 1 : viewYear;
+      cells.push({ day: d, month: m, year: y, otherMonth: true });
+    }
+    // Current month days
+    for (let d = 1; d <= daysInMonth; d++) {
+      cells.push({ day: d, month: viewMonth, year: viewYear, otherMonth: false });
+    }
+    // Trailing days to complete final week
+    let trailing = 1;
+    while (cells.length % 7 !== 0) {
+      const m = viewMonth === 11 ? 0 : viewMonth + 1;
+      const y = viewMonth === 11 ? viewYear + 1 : viewYear;
+      cells.push({ day: trailing++, month: m, year: y, otherMonth: true });
+    }
+
+    cells.forEach(cell => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day' + (cell.otherMonth ? ' other-month' : '');
+      btn.setAttribute('role', 'gridcell');
+
+      const key = dateKey(cell.year, cell.month, cell.day);
+      const hasSlots = availability.hasOwnProperty(key) && availability[key].length > 0;
+      const isPast = new Date(cell.year, cell.month, cell.day) < new Date(today.getFullYear(), today.getMonth(), today.getDate()) && !cell.otherMonth;
+
+      const isSelected = selectedDate.getFullYear() === cell.year && selectedDate.getMonth() === cell.month && selectedDate.getDate() === cell.day && !cell.otherMonth;
+
+      if (isSelected) btn.classList.add('selected');
+      if (isPast) btn.disabled = true;
+
+      const dayNum = document.createElement('span');
+      dayNum.textContent = cell.day;
+      btn.appendChild(dayNum);
+
+      if (hasSlots) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        btn.appendChild(dot);
+      }
+
+      btn.setAttribute('aria-label', `${monthNames[cell.month]} ${cell.day}, ${cell.year}${hasSlots ? ' — slots available' : ''}`);
+
+      btn.addEventListener('click', function () {
+        if (cell.otherMonth) {
+          viewYear = cell.year;
+          viewMonth = cell.month;
+        }
+        selectedDate = new Date(cell.year, cell.month, cell.day);
+        selectedSlot = null;
+        buildCalendar();
+        renderSlots();
+        updateSendButton();
+      });
+
+      calendarDays.appendChild(btn);
+    });
+  }
+
+  // ---------------- Slots rendering ----------------
+  function renderSlots() {
+    const y = selectedDate.getFullYear(), m = selectedDate.getMonth(), d = selectedDate.getDate();
+    const key = dateKey(y, m, d);
+
+    selectedDateLabel.textContent = `(${monthNames[m].slice(0,3)} ${d}, ${y})`;
+
+    slotsContainer.innerHTML = '';
+
+    if (isLoadingSlots) {
+      slotsContainer.innerHTML = `
+        <div class="slots-loading">
+          <div class="spinner" role="status" aria-label="Loading time slots"></div>
+          <p>Loading available time slots…</p>
+        </div>`;
+      return;
+    }
+
+    const daySlots = availability[key];
+
+    if (!daySlots || daySlots.length === 0) {
+      slotsContainer.innerHTML = `
+        <div class="slots-empty">
+          <i class="fa-regular fa-calendar-xmark" aria-hidden="true"></i>
+          No available time slots for this date. Please choose another day.
+        </div>`;
+      return;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'slots-grid';
+    grid.setAttribute('role', 'group');
+    grid.setAttribute('aria-label', 'Available time slots');
+
+    const booked = bookedSlots[key] || [];
+
+    allPossibleSlots.forEach(slot => {
+      const available = daySlots.includes(slot);
+      const isBooked = booked.includes(slot);
+      if (!available && !isBooked) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot-btn';
+      btn.textContent = slot;
+
+      if (isBooked || !available) {
+        btn.disabled = true;
+      } else {
+        if (slot === selectedSlot) btn.classList.add('selected');
+        btn.addEventListener('click', function () {
+          selectedSlot = slot;
+          renderSlots();
+          updateSendButton();
+        });
+      }
+      grid.appendChild(btn);
+    });
+
+    slotsContainer.appendChild(grid);
+  }
+
+  function updateSendButton() {
+    sendInviteBtn.disabled = !selectedSlot;
+  }
+
+  // ---------------- Month navigation ----------------
+  document.getElementById('prevMonth').addEventListener('click', function () {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    buildCalendar();
+  });
+  document.getElementById('nextMonth').addEventListener('click', function () {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    buildCalendar();
+  });
+
+  // ---------------- Interview type toggle ----------------
+  document.getElementById('interviewType').addEventListener('click', function (e) {
+    const btn = e.target.closest('.type-btn');
+    if (!btn) return;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedType = btn.dataset.type;
+  });
+
+  // ---------------- Send invite ----------------
+  const toast = document.getElementById('toast');
+  const toastMessage = document.getElementById('toastMessage');
+  let toastTimer = null;
+  function showToast(message, icon) {
+    toastMessage.textContent = message;
+    toast.querySelector('i').className = `fa-solid ${icon || 'fa-circle-check'}`;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  sendInviteBtn.addEventListener('click', function () {
+    if (!selectedSlot) return;
+    const duration = document.getElementById('durationSelect').value;
+    const notes = document.getElementById('interviewNotes').value;
+    const payload = {
+      candidate: 'Alex Rivera',
+      date: selectedDate.toDateString(),
+      time: selectedSlot,
+      type: selectedType,
+      duration: duration,
+      notes: notes
+    };
+    console.log('Send Invite:', payload);
+    showToast(`Invite sent for ${selectedSlot} on ${monthNames[selectedDate.getMonth()].slice(0,3)} ${selectedDate.getDate()}`, 'fa-paper-plane');
+  });
+
+  document.getElementById('cancelBtn').addEventListener('click', function () {
+    console.log('Schedule interview cancelled');
+    showToast('Scheduling cancelled', 'fa-xmark');
+  });
+
+  document.getElementById('addInterviewerBtn').addEventListener('click', function () {
+    console.log('Add Interviewer clicked');
+    showToast('Opening interviewer picker…', 'fa-user-plus');
+  });
+
+  // ---------------- Mobile hamburger ----------------
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  hamburgerBtn.addEventListener('click', function () {
+    const isOpen = mobileNav.classList.toggle('open');
+    hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+    hamburgerBtn.innerHTML = isOpen
+      ? '<i class="fa-solid fa-xmark" aria-hidden="true"></i>'
+      : '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  });
+
+  // ---------------- Init ----------------
+  buildCalendar();
+
+  isLoadingSlots = true;
+  renderSlots();
+  setTimeout(function () {
+    isLoadingSlots = false;
+    renderSlots();
+    updateSendButton();
+  }, 600);
+
+})();
+</script>
+
+</body>
+</html>
