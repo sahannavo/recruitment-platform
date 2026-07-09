@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* --- CSS Variables --- */
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 8px;
+      }
+
+      /* --- Base Styles --- */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      a:hover {
+        color: var(--primary-hover);
+      }
+
+      /* --- Layout & Typography --- */
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      h1,
+      h2 {
+        font-weight: 700;
+      }
+
+      /* --- Header --- */
+      .header {
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .header .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        background-color: var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      .mobile-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      /* --- Main Content (Login Card) --- */
+      .main-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      .auth-card {
+        background-color: var(--surface);
+        width: 100%;
+        max-width: 440px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 2.5rem;
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .auth-header .logo {
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .auth-header p {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      /* --- Form Elements --- */
+      .form-group {
+        margin-bottom: 1.25rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-wrapper i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-family: inherit;
+        color: var(--text-primary);
+        background-color: var(--surface);
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      }
+
+      .form-control.is-invalid {
+        border-color: var(--danger);
+      }
+
+      .error-message {
+        display: none;
+        color: var(--danger);
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+      }
+
+      /* --- Flex Row for Utilities --- */
+      .form-utilities {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+
+      .checkbox-group input {
+        cursor: pointer;
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--primary);
+      }
+
+      /* --- Buttons --- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        font-family: inherit;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+      }
+
+      .btn-primary:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.4);
+      }
+
+      .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      /* --- Loading Spinner --- */
+      .spinner {
+        display: none;
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        position: absolute;
+      }
+
+      .btn.is-loading {
+        color: transparent;
+      }
+
+      .btn.is-loading .spinner {
+        display: block;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* --- Footer --- */
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* --- Responsive Breakpoints --- */
+
+      /* Mobile: < 768px */
+      @media (max-width: 767px) {
+        .mobile-toggle {
+          display: block;
+        }
+        .nav-actions {
+          display: none; /* Hidden on mobile by default */
+        }
+        .nav-actions.active {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 64px;
+          left: 0;
+          right: 0;
+          background: var(--surface);
+          padding: 1rem;
+          border-bottom: 1px solid var(--border);
+          box-shadow: var(--shadow);
+        }
+        .auth-card {
+          padding: 1.5rem;
+          box-shadow: none; /* Flatter appearance on mobile */
+          border: 1px solid var(--border);
+        }
+        .main-content {
+          padding: 1rem;
+          align-items: flex-start;
+        }
+      }
+
+      /* Tablet: 768px - 1024px (Already handled gracefully by max-widths and flexbox defaults) */
+    </style>
+  </head>
+  <body>
+    <header class="header" role="banner">
+      <div class="container">
+        <a href="#" class="logo" aria-label="Home">
+          <i class="fa-solid fa-cube"></i> NexusApp
+        </a>
+
+        <button
+          class="mobile-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="nav-actions" id="navActions" role="navigation">
+          <a href="#">Help</a>
+          <a href="register.html">Register</a>
+          <div class="avatar" aria-label="User menu" role="button" tabindex="0">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content" role="main">
+      <section class="auth-card" aria-labelledby="login-title">
+        <div class="auth-header">
+          <div class="logo">
+            <i class="fa-solid fa-cube"></i>
+          </div>
+          <h1 id="login-title">Welcome back</h1>
+          <p>Please enter your details to sign in.</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope"></i>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                placeholder="Enter your email"
+                required
+                aria-required="true"
+              />
+            </div>
+            <div class="error-message" id="emailError">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock"></i>
+              <input
+                type="password"
+                id="password"
+                class="form-control"
+                placeholder="Enter your password"
+                required
+                aria-required="true"
+              />
+            </div>
+            <div class="error-message" id="passwordError">
+              Password must be at least 6 characters.
+            </div>
+          </div>
+
+          <div class="form-utilities">
+            <label class="checkbox-group">
+              <input type="checkbox" id="rememberMe" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="forgot-link">Forgot Password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span class="btn-text">Sign In</span>
+            <div class="spinner" aria-hidden="true"></div>
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+      <p>&copy; 2026 NexusApp Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- Mobile Menu Toggle ---
+        const mobileBtn = document.getElementById("mobileMenuBtn");
+        const navActions = document.getElementById("navActions");
+        const menuIcon = mobileBtn.querySelector("i");
+
+        mobileBtn.addEventListener("click", () => {
+          navActions.classList.toggle("active");
+          if (navActions.classList.contains("active")) {
+            menuIcon.classList.remove("fa-bars");
+            menuIcon.classList.add("fa-xmark");
+          } else {
+            menuIcon.classList.remove("fa-xmark");
+            menuIcon.classList.add("fa-bars");
+          }
+        });
+
+        // --- Form Validation & Submission ---
+        const form = document.getElementById("loginForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const submitBtn = document.getElementById("submitBtn");
+
+        const emailError = document.getElementById("emailError");
+        const passwordError = document.getElementById("passwordError");
+
+        // Regex for basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          let isValid = true;
+
+          // Reset Error States
+          emailInput.classList.remove("is-invalid");
+          emailError.style.display = "none";
+          passwordInput.classList.remove("is-invalid");
+          passwordError.style.display = "none";
+
+          // Validate Email
+          if (!emailRegex.test(emailInput.value.trim())) {
+            emailInput.classList.add("is-invalid");
+            emailError.style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Password (min 6 chars as example)
+          if (passwordInput.value.trim().length < 6) {
+            passwordInput.classList.add("is-invalid");
+            passwordError.style.display = "block";
+            isValid = false;
+          }
+
+          // If valid, simulate API call / loading state
+          if (isValid) {
+            console.log("Form is valid. Submitting payload:", {
+              email: emailInput.value.trim(),
+              password: passwordInput.value.trim(),
+              rememberMe: document.getElementById("rememberMe").checked,
+            });
+
+            // UI Loading State
+            submitBtn.classList.add("is-loading");
+            submitBtn.setAttribute("disabled", "true");
+
+            // Simulate network request (2 seconds)
+            setTimeout(() => {
+              submitBtn.classList.remove("is-loading");
+              submitBtn.removeAttribute("disabled");
+
+              // Placeholder for post-login logic
+              console.log("Login successful! Redirecting...");
+              submitBtn.querySelector(".btn-text").textContent = "Success!";
+              submitBtn.style.backgroundColor = "var(--success)";
+            }, 2000);
+          }
+        });
+
+        // Clear errors on input
+        emailInput.addEventListener("input", () => {
+          emailInput.classList.remove("is-invalid");
+          emailError.style.display = "none";
+        });
+
+        passwordInput.addEventListener("input", () => {
+          passwordInput.classList.remove("is-invalid");
+          passwordError.style.display = "none";
+        });
+      });
+    </script>
+  </body>
+</html>
