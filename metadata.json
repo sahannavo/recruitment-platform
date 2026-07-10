@@ -1,6 +1,0 @@
-{
-  "name": "RecruitAI Profile Management and Analytics Dashboard",
-  "description": "A complete full-stack AI-powered recruitment management system with resume parsing, analytical metrics dashboards, and recruiter priority weights control settings.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
