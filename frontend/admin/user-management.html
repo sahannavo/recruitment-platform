@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management · RecruitAI Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #4F46E5;
+    --primary-hover: #4338CA;
+    --primary-light: #EEF2FF;
+    --success: #10B981;
+    --success-light: #D1FAE5;
+    --warning: #F59E0B;
+    --warning-light: #FEF3C7;
+    --danger: #EF4444;
+    --danger-light: #FEE2E2;
+    --background: #F9FAFB;
+    --surface: #FFFFFF;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --border: #E5E7EB;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 16px rgba(17,24,39,0.10);
+    --radius: 8px;
+    --radius-lg: 14px;
+    --sidebar-w: 264px;
+    --header-h: 64px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Outline-style icons (inline SVG, Feather/Lucide style) */
+  .icon {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.15em;
+    flex-shrink: 0;
+  }
+
+  a { color: inherit; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--primary);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    z-index: 200;
+  }
+  .skip-link:focus { left: 12px; top: 12px; }
+
+  /* ---------- Header ---------- */
+  .app-header {
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 12px; }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: var(--radius);
+    transition: background .15s ease;
+  }
+  .hamburger:hover { background: var(--background); }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 19px;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+  }
+  .brand i { font-size: 18px; }
+
+  .header-right { display: flex; align-items: center; gap: 16px; }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,var(--primary),#818CF8);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid var(--primary-light);
+  }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    min-height: calc(100vh - var(--header-h));
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .admin-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--primary-light);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+  }
+  .admin-card .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .admin-card .role-title { font-weight: 700; font-size: 14px; }
+  .admin-card .role-sub { font-size: 12px; color: var(--text-secondary); }
+
+  .nav-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: background .15s ease, color .15s ease;
+  }
+  .nav-item i { width: 18px; text-align: center; font-size: 15px; }
+  .nav-item:hover { background: var(--background); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ---------- Main ---------- */
+  .main-content {
+    padding: 28px 32px 60px;
+    min-width: 0;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .page-header h1 { margin: 0 0 4px; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .page-header p { margin: 0; color: var(--text-secondary); font-size: 14px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: var(--radius);
+    padding: 11px 18px;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: background .15s ease, transform .1s ease, box-shadow .15s ease;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--primary); color: #fff; text-transform: uppercase; }
+  .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+
+  .btn-outline {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { background: var(--background); border-color: #d1d5db; }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1 1 260px;
+  }
+  .search-wrap i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-primary);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+    outline: none;
+  }
+
+  .toolbar-actions { display: flex; gap: 10px; }
+
+  /* ---------- User list card ---------- */
+  .user-list {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .user-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--border);
+    transition: background .15s ease;
+  }
+  .user-row:last-child { border-bottom: none; }
+  .user-row:hover { background: #fafafe; }
+
+  .user-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .user-identity .avatar { flex-shrink: 0; }
+  .user-name { font-weight: 700; font-size: 14px; margin: 0 0 2px; }
+  .user-email { font-size: 13px; color: var(--text-secondary); margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .badge-role-admin { background: var(--primary-light); color: var(--primary); }
+  .badge-role-recruiter { background: #F3F4F6; color: #374151; }
+  .badge-role-manager { background: #ECFDF5; color: #047857; }
+  .badge-status-active { background: var(--success-light); color: #047857; }
+  .badge-status-disabled { background: var(--warning-light); color: #92400E; }
+
+  .row-actions { display: flex; align-items: center; gap: 10px; }
+  .edit-role-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 9px 14px;
+    border-radius: var(--radius);
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .edit-role-btn:hover { background: var(--primary-light); border-color: var(--primary); }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+    flex-shrink: 0;
+  }
+  .icon-btn.disable { color: var(--danger); }
+  .icon-btn.disable:hover { background: var(--danger-light); border-color: var(--danger); }
+  .icon-btn.enable { color: var(--success); }
+  .icon-btn.enable:hover { background: var(--success-light); border-color: var(--success); }
+
+  .action-label { display: none; }
+
+  /* ---------- Pagination ---------- */
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pagination-count { font-size: 13.5px; color: var(--text-secondary); }
+  .pagination { display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; }
+  .page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 6px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, color .15s ease;
+  }
+  .page-btn:hover { background: var(--background); }
+  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .page-btn[disabled] { opacity: .4; cursor: not-allowed; }
+
+  /* ---------- Loading / Empty ---------- */
+  .state-panel {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+  .state-panel.visible { display: flex; }
+  .spinner {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    animation: spin .8s linear infinite;
+    margin-bottom: 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .state-panel .empty-icon {
+    font-size: 30px;
+    color: var(--border);
+    margin-bottom: 12px;
+  }
+  .state-panel h3 { margin: 0 0 6px; color: var(--text-primary); font-size: 16px; }
+  .state-panel p { margin: 0; font-size: 13.5px; max-width: 320px; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17,24,39,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 300;
+    animation: fadeIn .15s ease;
+  }
+  .modal-overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 420px;
+    padding: 26px;
+    box-shadow: var(--shadow-md);
+    animation: slideUp .18s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .modal-header h2 { margin: 0; font-size: 20px; font-weight: 700; }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-close:hover { background: var(--background); }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .form-control {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--surface);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.12); outline: none; }
+  .form-error {
+    color: var(--danger);
+    font-size: 12.5px;
+    margin-top: 5px;
+    display: none;
+  }
+  .form-error.visible { display: block; }
+  .form-control.invalid { border-color: var(--danger); }
+
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+  .modal.confirm .modal-body { display: flex; gap: 14px; align-items: flex-start; }
+  .modal.confirm .warn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--danger-light);
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .modal.confirm p { margin: 0; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+  .modal.confirm strong { color: var(--text-primary); }
+
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #DC2626; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #059669; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--text-primary);
+    color: #fff;
+    padding: 13px 22px;
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 400;
+    box-shadow: var(--shadow-md);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .toast i { color: var(--success); }
+
+  /* ---------- Mobile overlay for sidebar ---------- */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(17,24,39,0.4);
+    z-index: 90;
+  }
+  .sidebar-backdrop.open { display: block; }
+
+  /* ================= Responsive ================= */
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    :root { --sidebar-w: 220px; }
+    .main-content { padding: 24px; }
+    .user-row { grid-template-columns: 1fr; row-gap: 14px; }
+    .badges { justify-content: flex-start; }
+    .row-actions { justify-content: flex-start; }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .hamburger { display: inline-flex; }
+    .brand span { display: inline; }
+
+    .layout { grid-template-columns: 1fr; }
+
+    .sidebar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      bottom: 0;
+      width: 82%;
+      max-width: 300px;
+      transform: translateX(-100%);
+      transition: transform .22s ease;
+      z-index: 95;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .main-content { padding: 18px 16px 50px; }
+
+    .btn-primary { width: 100%; justify-content: center; }
+    .page-header { flex-direction: column; align-items: stretch; }
+
+    .toolbar { flex-direction: column; }
+    .toolbar-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .toolbar-actions .btn { justify-content: center; width: 100%; }
+
+    .user-list { border-radius: var(--radius); }
+    .user-row { padding: 16px; gap: 12px; }
+    .user-identity { gap: 12px; }
+    .user-name { font-size: 14.5px; }
+    .user-email { font-size: 12.5px; }
+
+    .row-actions { width: 100%; }
+    .edit-role-btn { flex: 1; justify-content: center; }
+    .edit-role-btn .btn-text { display: inline; }
+
+    .pagination-bar { flex-direction: column; align-items: flex-start; }
+    .pagination { flex-wrap: wrap; }
+
+    .modal { max-width: 100%; }
+  }
+
+  @media (min-width: 768px) {
+    .sidebar-backdrop { display: none !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="app-header">
+  <div class="header-left">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <div class="brand">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>RecruitAI Admin</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="avatar" aria-hidden="true">SR</div>
+  </div>
+</header>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+    <div class="admin-card">
+      <div class="icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg></div>
+      <div>
+        <div class="role-title">Administrator</div>
+        <div class="role-sub">System Root Access</div>
+      </div>
+    </div>
+    <ul class="nav-list">
+      <li><button class="nav-item"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> System Health</button></li>
+      <li><button class="nav-item active" aria-current="page"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> User Management</button></li>
+      <li><button class="nav-item"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Job Analytics</button></li>
+      <li><button class="nav-item"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> API Monitor</button></li>
+      <li><button class="nav-item"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> System Logs</button></li>
+    </ul>
+  </nav>
+
+  <main class="main-content" id="main-content">
+    <div class="page-header">
+      <div>
+        <h1>User Management</h1>
+        <p>Manage team access and role permissions.</p>
+      </div>
+      <button class="btn btn-primary" id="inviteUserBtn">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> Invite User
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" class="search-input" id="searchInput" placeholder="Search users by name or email..." aria-label="Search users by name or email">
+      </div>
+      <div class="toolbar-actions">
+        <button class="btn btn-outline" id="filterBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filter</button>
+        <button class="btn btn-outline" id="sortBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h10"></path><path d="M11 9h7"></path><path d="M11 13h4"></path><path d="m3 17 3 3 3-3"></path><path d="M6 18V4"></path></svg> Sort</button>
+      </div>
+    </div>
+
+    <section class="user-list" id="userList" aria-label="User list">
+      <!-- rows injected by JS -->
+    </section>
+
+    <div class="state-panel" id="loadingState" aria-live="polite">
+      <div class="spinner" role="status"></div>
+      <p>Loading users…</p>
+    </div>
+
+    <div class="state-panel" id="emptyState">
+      <div class="empty-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></div>
+      <h3>No users found</h3>
+      <p>Try a different search term, or invite a new teammate to get started.</p>
+    </div>
+
+    <div class="pagination-bar" id="paginationBar">
+      <span class="pagination-count" id="paginationCount">Showing 1-4 of 24 users</span>
+      <ul class="pagination" id="paginationList" aria-label="Pagination"></ul>
+    </div>
+  </main>
+</div>
+
+<!-- Edit Role Modal -->
+<div class="modal-overlay" id="editRoleOverlay" role="dialog" aria-modal="true" aria-labelledby="editRoleTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="editRoleTitle">Edit Role</h2>
+      <button class="modal-close" id="editRoleClose" aria-label="Close dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="form-group">
+      <label for="editRoleUser">User</label>
+      <input type="text" class="form-control" id="editRoleUser" disabled>
+    </div>
+    <div class="form-group">
+      <label for="editRoleSelect">Role</label>
+      <select class="form-control" id="editRoleSelect">
+        <option value="Admin">Admin</option>
+        <option value="Recruiter">Recruiter</option>
+        <option value="Hiring Manager">Hiring Manager</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="editRoleCancel">Cancel</button>
+      <button class="btn btn-primary" id="editRoleSave" style="text-transform:none;">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invite User Modal -->
+<div class="modal-overlay" id="inviteOverlay" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="inviteTitle">Invite User</h2>
+      <button class="modal-close" id="inviteClose" aria-label="Close dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <form id="inviteForm" novalidate>
+      <div class="form-group">
+        <label for="inviteName">Full name</label>
+        <input type="text" class="form-control" id="inviteName" placeholder="e.g. Sam Carter" required>
+        <div class="form-error" id="inviteNameError">Please enter a name.</div>
+      </div>
+      <div class="form-group">
+        <label for="inviteEmail">Email address</label>
+        <input type="email" class="form-control" id="inviteEmail" placeholder="name@recruitai.com" required>
+        <div class="form-error" id="inviteEmailError">Please enter a valid email address.</div>
+      </div>
+      <div class="form-group">
+        <label for="inviteRole">Role</label>
+        <select class="form-control" id="inviteRole">
+          <option value="Recruiter">Recruiter</option>
+          <option value="Admin">Admin</option>
+          <option value="Hiring Manager">Hiring Manager</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="inviteCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="text-transform:none;">Send Invite</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Confirm Disable/Enable Modal -->
+<div class="modal-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal confirm">
+    <div class="modal-header">
+      <h2 id="confirmTitle">Disable user access?</h2>
+      <button class="modal-close" id="confirmClose" aria-label="Close dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="warn-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+      <p id="confirmMessage">Are you sure you want to disable access for <strong>this user</strong>? They will immediately lose access to RecruitAI Admin.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="confirmCancel">Cancel</button>
+      <button class="btn btn-danger" id="confirmProceed">Disable User</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+  <span id="toastText">Done</span>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Data ---------- */
+  const USERS = [
+    { id: 1, name: "Alex Rivera", email: "alex.rivera@recruitai.com", role: "Admin", status: "Active", initials: "AR" },
+    { id: 2, name: "Jordan Smith", email: "jordan.s@recruitai.com", role: "Recruiter", status: "Disabled", initials: "JS" },
+    { id: 3, name: "Elena Rodriguez", email: "e.rodriguez@recruitai.com", role: "Hiring Manager", status: "Active", initials: "ER" },
+    { id: 4, name: "Chen Wei", email: "c.wei@recruitai.com", role: "Recruiter", status: "Active", initials: "CW" },
+  ];
+  const TOTAL_USERS = 24;
+  const PAGE_SIZE = 4;
+  const TOTAL_PAGES = 3;
+  let currentPage = 1;
+  let workingUsers = USERS.map(u => ({ ...u }));
+
+  const roleBadgeClass = {
+    "Admin": "badge-role-admin",
+    "Recruiter": "badge-role-recruiter",
+    "Hiring Manager": "badge-role-manager",
+  };
+
+  /* ---------- DOM refs ---------- */
+  const userList = document.getElementById("userList");
+  const loadingState = document.getElementById("loadingState");
+  const emptyState = document.getElementById("emptyState");
+  const paginationBar = document.getElementById("paginationBar");
+  const paginationCount = document.getElementById("paginationCount");
+  const paginationList = document.getElementById("paginationList");
+  const searchInput = document.getElementById("searchInput");
+
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const sidebar = document.getElementById("sidebar");
+  const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+  const editRoleOverlay = document.getElementById("editRoleOverlay");
+  const editRoleUser = document.getElementById("editRoleUser");
+  const editRoleSelect = document.getElementById("editRoleSelect");
+
+  const inviteOverlay = document.getElementById("inviteOverlay");
+  const inviteForm = document.getElementById("inviteForm");
+  const inviteName = document.getElementById("inviteName");
+  const inviteEmail = document.getElementById("inviteEmail");
+
+  const confirmOverlay = document.getElementById("confirmOverlay");
+  const confirmTitle = document.getElementById("confirmTitle");
+  const confirmMessage = document.getElementById("confirmMessage");
+  const confirmProceed = document.getElementById("confirmProceed");
+
+  const toast = document.getElementById("toast");
+  const toastText = document.getElementById("toastText");
+
+  let activeUserId = null;
+  let lastFocusedEl = null;
+
+  // Inline SVG snippets for icons injected dynamically (no external icon library needed)
+  const ICON_SVG = {
+    ban: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>',
+    checkCircle: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+  };
+
+  /* ---------- Render rows ---------- */
+  function renderRows(users) {
+    userList.innerHTML = "";
+
+    if (!users.length) {
+      userList.style.display = "none";
+      paginationBar.style.display = "none";
+      emptyState.classList.add("visible");
+      return;
+    }
+
+    emptyState.classList.remove("visible");
+    userList.style.display = "block";
+    paginationBar.style.display = "flex";
+
+    users.forEach(u => {
+      const row = document.createElement("article");
+      row.className = "user-row";
+      row.dataset.userId = u.id;
+
+      const statusBadgeClass = u.status === "Active" ? "badge-status-active" : "badge-status-disabled";
+      const isActive = u.status === "Active";
+
+      row.innerHTML = `
+        <div class="user-identity">
+          <div class="avatar" aria-hidden="true">${u.initials}</div>
+          <div>
+            <p class="user-name">${u.name}</p>
+            <p class="user-email">${u.email}</p>
+          </div>
+        </div>
+        <div class="badges">
+          <span class="badge ${roleBadgeClass[u.role] || "badge-role-recruiter"}">${u.role}</span>
+          <span class="badge ${statusBadgeClass}">${u.status}</span>
+        </div>
+        <div class="row-actions">
+          <button class="edit-role-btn" data-action="edit-role" data-id="${u.id}">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg> <span class="btn-text">Edit Role</span>
+          </button>
+          <button class="icon-btn ${isActive ? "disable" : "enable"}" data-action="toggle-status" data-id="${u.id}"
+            aria-label="${isActive ? `Disable ${u.name}` : `Enable ${u.name}`}">
+            ${isActive ? ICON_SVG.ban : ICON_SVG.checkCircle}
+          </button>
+        </div>
+      `;
+      userList.appendChild(row);
+    });
+  }
+
+  function renderPagination() {
+    paginationCount.textContent = `Showing ${(currentPage - 1) * PAGE_SIZE + 1}-${Math.min(currentPage * PAGE_SIZE, TOTAL_USERS)} of ${TOTAL_USERS} users`;
+
+    paginationList.innerHTML = "";
+
+    const prevLi = document.createElement("li");
+    prevLi.innerHTML = `<button class="page-btn" id="prevPageBtn" aria-label="Previous page" ${currentPage === 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>`;
+    paginationList.appendChild(prevLi);
+
+    for (let p = 1; p <= TOTAL_PAGES; p++) {
+      const li = document.createElement("li");
+      li.innerHTML = `<button class="page-btn ${p === currentPage ? "active" : ""}" data-page="${p}" aria-current="${p === currentPage ? "page" : "false"}">${p}</button>`;
+      paginationList.appendChild(li);
+    }
+
+    const nextLi = document.createElement("li");
+    nextLi.innerHTML = `<button class="page-btn" id="nextPageBtn" aria-label="Next page" ${currentPage === TOTAL_PAGES ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>`;
+    paginationList.appendChild(nextLi);
+
+    paginationList.querySelectorAll("[data-page]").forEach(btn => {
+      btn.addEventListener("click", () => goToPage(Number(btn.dataset.page)));
+    });
+    document.getElementById("prevPageBtn").addEventListener("click", () => goToPage(currentPage - 1));
+    document.getElementById("nextPageBtn").addEventListener("click", () => goToPage(currentPage + 1));
+  }
+
+  function goToPage(p) {
+    if (p < 1 || p > TOTAL_PAGES || p === currentPage) return;
+    currentPage = p;
+    console.log(`Navigating to page ${p}`);
+    simulateLoad(() => {
+      renderRows(workingUsers);
+      renderPagination();
+    });
+  }
+
+  function simulateLoad(callback) {
+    userList.style.display = "none";
+    paginationBar.style.display = "none";
+    emptyState.classList.remove("visible");
+    loadingState.classList.add("visible");
+    window.setTimeout(() => {
+      loadingState.classList.remove("visible");
+      callback();
+    }, 450);
+  }
+
+  /* ---------- Search / filter ---------- */
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    console.log("Searching users for:", q);
+    const filtered = q
+      ? USERS.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+      : workingUsers;
+    renderRows(filtered);
+    if (q) paginationBar.style.display = "none";
+    else renderPagination();
+  });
+
+  document.getElementById("filterBtn").addEventListener("click", () => {
+    console.log("Filter clicked — open filter panel (placeholder)");
+    showToast("Filter options coming soon", "info");
+  });
+
+  document.getElementById("sortBtn").addEventListener("click", () => {
+    console.log("Sort clicked — open sort options (placeholder)");
+    showToast("Sort options coming soon", "info");
+  });
+
+  /* ---------- Mobile nav ---------- */
+  function openSidebar() {
+    sidebar.classList.add("open");
+    sidebarBackdrop.classList.add("open");
+    hamburgerBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    sidebarBackdrop.classList.remove("open");
+    hamburgerBtn.setAttribute("aria-expanded", "false");
+  }
+  hamburgerBtn.addEventListener("click", () => {
+    sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+  });
+  sidebarBackdrop.addEventListener("click", closeSidebar);
+
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+      console.log("Navigated to:", item.textContent.trim());
+      closeSidebar();
+    });
+  });
+
+  /* ---------- Modal helpers ---------- */
+  function openModal(overlay, triggerEl) {
+    lastFocusedEl = triggerEl || document.activeElement;
+    overlay.classList.add("open");
+    const focusable = overlay.querySelector("input, select, button");
+    if (focusable) focusable.focus();
+    document.addEventListener("keydown", trapEscape);
+  }
+  function closeModal(overlay) {
+    overlay.classList.remove("open");
+    document.removeEventListener("keydown", trapEscape);
+    if (lastFocusedEl) lastFocusedEl.focus();
+  }
+  function trapEscape(e) {
+    if (e.key === "Escape") {
+      [editRoleOverlay, inviteOverlay, confirmOverlay].forEach(o => {
+        if (o.classList.contains("open")) closeModal(o);
+      });
+    }
+  }
+  [editRoleOverlay, inviteOverlay, confirmOverlay].forEach(overlay => {
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeModal(overlay);
+    });
+  });
+
+  /* ---------- Edit Role flow ---------- */
+  document.getElementById("editRoleClose").addEventListener("click", () => closeModal(editRoleOverlay));
+  document.getElementById("editRoleCancel").addEventListener("click", () => closeModal(editRoleOverlay));
+
+  document.getElementById("editRoleSave").addEventListener("click", () => {
+    const user = workingUsers.find(u => u.id === activeUserId);
+    if (!user) return;
+    const newRole = editRoleSelect.value;
+    console.log(`Saving role change for user ${activeUserId}: ${user.role} -> ${newRole}`);
+    user.role = newRole;
+    renderRows(workingUsers);
+    closeModal(editRoleOverlay);
+    showToast(`${user.name}'s role updated to ${newRole}`);
+  });
+
+  /* ---------- Invite flow ---------- */
+  document.getElementById("inviteUserBtn").addEventListener("click", (e) => {
+    inviteForm.reset();
+    clearInviteErrors();
+    console.log("Opening invite user modal");
+    openModal(inviteOverlay, e.currentTarget);
+  });
+  document.getElementById("inviteClose").addEventListener("click", () => closeModal(inviteOverlay));
+  document.getElementById("inviteCancel").addEventListener("click", () => closeModal(inviteOverlay));
+
+  function clearInviteErrors() {
+    document.getElementById("inviteNameError").classList.remove("visible");
+    document.getElementById("inviteEmailError").classList.remove("visible");
+    inviteName.classList.remove("invalid");
+    inviteEmail.classList.remove("invalid");
+  }
+
+  inviteForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    clearInviteErrors();
+    let valid = true;
+
+    if (!inviteName.value.trim()) {
+      document.getElementById("inviteNameError").classList.add("visible");
+      inviteName.classList.add("invalid");
+      valid = false;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(inviteEmail.value.trim())) {
+      document.getElementById("inviteEmailError").classList.add("visible");
+      inviteEmail.classList.add("invalid");
+      valid = false;
+    }
+
+    if (!valid) {
+      console.log("Invite form validation failed");
+      return;
+    }
+
+    const role = document.getElementById("inviteRole").value;
+    console.log("Sending invite:", { name: inviteName.value.trim(), email: inviteEmail.value.trim(), role });
+    closeModal(inviteOverlay);
+    showToast(`Invite sent to ${inviteEmail.value.trim()}`);
+  });
+
+  /* ---------- Row action delegation ---------- */
+  userList.addEventListener("click", (e) => {
+    const editBtn = e.target.closest('[data-action="edit-role"]');
+    const toggleBtn = e.target.closest('[data-action="toggle-status"]');
+
+    if (editBtn) {
+      const id = Number(editBtn.dataset.id);
+      const user = workingUsers.find(u => u.id === id);
+      if (!user) return;
+      activeUserId = id;
+      editRoleUser.value = user.name;
+      editRoleSelect.value = user.role;
+      console.log("Opening edit role modal for:", user.name);
+      openModal(editRoleOverlay, editBtn);
+      return;
+    }
+
+    if (toggleBtn) {
+      const id = Number(toggleBtn.dataset.id);
+      const user = workingUsers.find(u => u.id === id);
+      if (!user) return;
+      activeUserId = id;
+      const willDisable = user.status === "Active";
+      confirmTitle.textContent = willDisable ? "Disable user access?" : "Enable user access?";
+      confirmMessage.innerHTML = willDisable
+        ? `Are you sure you want to disable access for <strong>${user.name}</strong>? They will immediately lose access to RecruitAI Admin.`
+        : `Are you sure you want to re-enable access for <strong>${user.name}</strong>? They will regain access to RecruitAI Admin.`;
+      confirmProceed.textContent = willDisable ? "Disable User" : "Enable User";
+      confirmProceed.className = willDisable ? "btn btn-danger" : "btn btn-success";
+      console.log(`Requesting confirmation to ${willDisable ? "disable" : "enable"} user:`, user.name);
+      openModal(confirmOverlay, toggleBtn);
+      return;
+    }
+  });
+
+  document.getElementById("confirmClose").addEventListener("click", () => closeModal(confirmOverlay));
+  document.getElementById("confirmCancel").addEventListener("click", () => closeModal(confirmOverlay));
+
+  confirmProceed.addEventListener("click", () => {
+    const user = workingUsers.find(u => u.id === activeUserId);
+    if (!user) return;
+    const willDisable = user.status === "Active";
+    user.status = willDisable ? "Disabled" : "Active";
+    console.log(`User ${user.name} status changed to ${user.status}`);
+    renderRows(workingUsers);
+    closeModal(confirmOverlay);
+    showToast(`${user.name} has been ${willDisable ? "disabled" : "enabled"}`);
+  });
+
+  /* ---------- Toast ---------- */
+  let toastTimer = null;
+  function showToast(message) {
+    toastText.textContent = message;
+    toast.classList.add("show");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  /* ---------- Init ---------- */
+  function init() {
+    simulateLoad(() => {
+      renderRows(workingUsers);
+      renderPagination();
+    });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
