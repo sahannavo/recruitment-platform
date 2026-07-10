@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recruiter Dashboard - NexusApp</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome (Free CDN) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* --- CSS Variables --- */
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #eef2ff;
+        --success: #10b981;
+        --success-light: #d1fae5;
+        --warning: #f59e0b;
+        --warning-light: #fef3c7;
+        --danger: #ef4444;
+        --danger-light: #fee2e2;
+        --info: #3b82f6;
+        --info-light: #dbeafe;
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --radius: 8px;
+        --radius-lg: 12px;
+      }
+
+      /* --- Base Styles --- */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      /* --- Typography --- */
+      h1,
+      h2,
+      h3 {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .text-secondary {
+        color: var(--text-secondary);
+      }
+      .font-medium {
+        font-weight: 500;
+      }
+      .text-sm {
+        font-size: 0.875rem;
+      }
+
+      /* --- Layout --- */
+      .container {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      /* --- Header --- */
+      .header {
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .header .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .desktop-nav {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .desktop-nav a {
+        color: var(--text-secondary);
+        font-weight: 500;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+      }
+
+      .desktop-nav a:hover,
+      .desktop-nav a.active {
+        color: var(--text-primary);
+        border-bottom-color: var(--primary);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+
+      .icon-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .icon-btn:hover {
+        color: var(--text-primary);
+      }
+
+      .notification-dot {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--danger);
+        border-radius: 50%;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .mobile-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      /* --- Dashboard Main Area --- */
+      .dashboard-main {
+        padding: 2rem 0;
+        flex: 1;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .page-title {
+        font-size: 1.5rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+      }
+
+      /* --- KPI Grid --- */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .kpi-card {
+        background-color: var(--surface);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .kpi-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+      }
+
+      .kpi-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+      }
+
+      .icon-blue {
+        background: var(--info-light);
+        color: var(--info);
+      }
+      .icon-green {
+        background: var(--success-light);
+        color: var(--success);
+      }
+      .icon-yellow {
+        background: var(--warning-light);
+        color: var(--warning);
+      }
+      .icon-purple {
+        background: #f3e8ff;
+        color: #9333ea;
+      }
+
+      .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .kpi-trend {
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .trend-up {
+        color: var(--success);
+      }
+      .trend-down {
+        color: var(--danger);
+      }
+
+      /* --- Dashboard Content Grid --- */
+      .dashboard-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .card {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-title {
+        font-size: 1.125rem;
+      }
+
+      /* --- Table Styles --- */
+      .table-responsive {
+        overflow-x: auto;
+        width: 100%;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+
+      th {
+        background-color: var(--background);
+        padding: 0.75rem 1.5rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        font-weight: 600;
+      }
+
+      td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.875rem;
+        white-space: nowrap;
+      }
+
+      tbody tr {
+        transition: background-color 0.15s ease;
+        cursor: pointer;
+      }
+
+      tbody tr:hover {
+        background-color: var(--background);
+      }
+
+      .candidate-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .candidate-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: var(--border);
+        background-size: cover;
+        background-position: center;
+      }
+
+      /* --- Status Badges --- */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.625rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      /* These will be assigned dynamically via JS */
+      .badge-review {
+        background-color: var(--warning-light);
+        color: #b45309;
+      }
+      .badge-interview {
+        background-color: var(--info-light);
+        color: #1d4ed8;
+      }
+      .badge-hired {
+        background-color: var(--success-light);
+        color: #047857;
+      }
+      .badge-rejected {
+        background-color: var(--danger-light);
+        color: #b91c1c;
+      }
+
+      /* --- Jobs List --- */
+      .job-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .job-item {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        transition: background-color 0.15s;
+        cursor: pointer;
+      }
+
+      .job-item:last-child {
+        border-bottom: none;
+      }
+
+      .job-item:hover {
+        background-color: var(--background);
+      }
+
+      .job-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .job-meta {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .job-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .job-stats {
+        text-align: right;
+      }
+
+      .job-count {
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.875rem;
+      }
+
+      .job-count-label {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+      }
+
+      /* Mobile Menu Container */
+      .mobile-nav-menu {
+        display: none;
+        flex-direction: column;
+        background: var(--surface);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        box-shadow: var(--shadow-md);
+      }
+      .mobile-nav-menu.active {
+        display: flex;
+      }
+      .mobile-nav-menu a {
+        padding: 0.75rem 0;
+        color: var(--text-secondary);
+        font-weight: 500;
+        border-bottom: 1px solid var(--border);
+      }
+      .mobile-nav-menu a:last-child {
+        border-bottom: none;
+      }
+
+      /* --- Responsive Breakpoints --- */
+
+      /* Tablet: 768px - 1024px */
+      @media (max-width: 1024px) {
+        .dashboard-content {
+          grid-template-columns: 1fr; /* Stack table and jobs */
+        }
+        .kpi-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Mobile: < 768px */
+      @media (max-width: 767px) {
+        .desktop-nav {
+          display: none;
+        }
+        .nav-actions {
+          display: none;
+        }
+        .mobile-toggle {
+          display: block;
+        }
+
+        .kpi-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
+        .kpi-card {
+          padding: 1rem;
+        }
+        .kpi-value {
+          font-size: 1.5rem;
+        }
+        .kpi-icon {
+          width: 32px;
+          height: 32px;
+          font-size: 1rem;
+        }
+
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .table-responsive {
+          /* Ensures horizontal scroll on small devices */
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .job-item {
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+        .job-stats {
+          text-align: left;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+
+      /* Small Mobile: < 480px */
+      @media (max-width: 480px) {
+        .kpi-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Navigation -->
+    <header class="header" role="banner">
+      <div class="container">
+        <div class="header-left">
+          <a href="#" class="logo" aria-label="NexusApp Dashboard">
+            <i class="fa-solid fa-cube"></i> NexusApp
+          </a>
+          <nav class="desktop-nav" role="navigation">
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Jobs</a>
+            <a href="#">Candidates</a>
+            <a href="#">Reports</a>
+          </nav>
+        </div>
+
+        <button
+          class="mobile-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="nav-actions">
+          <button class="icon-btn" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notification-dot"></span>
+          </button>
+          <div
+            class="avatar"
+            aria-label="User profile"
+            role="button"
+            tabindex="0"
+          >
+            JD
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav class="mobile-nav-menu" id="mobileNavMenu" role="navigation">
+        <a href="#" class="active">Dashboard</a>
+        <a href="#">Jobs</a>
+        <a href="#">Candidates</a>
+        <a href="#">Reports</a>
+        <a href="#">Notifications</a>
+        <a href="#">Profile Settings</a>
+      </nav>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main container" role="main">
+      <div class="page-header">
+        <h1 class="page-title">Recruitment Overview</h1>
+        <button class="btn btn-primary" id="postJobBtn">
+          <i class="fa-solid fa-plus"></i> Post New Job
+        </button>
+      </div>
+
+      <!-- Top KPI Cards -->
+      <section class="kpi-grid" aria-label="Key Performance Indicators">
+        <!-- Card 1 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="font-medium text-sm">Open Jobs</span>
+            <div class="kpi-icon icon-blue">
+              <i class="fa-solid fa-briefcase"></i>
+            </div>
+          </div>
+          <div class="kpi-value">12</div>
+          <div class="kpi-trend trend-up">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>+2 this week</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="font-medium text-sm">Total Applicants</span>
+            <div class="kpi-icon icon-purple">
+              <i class="fa-solid fa-users"></i>
+            </div>
+          </div>
+          <div class="kpi-value">248</div>
+          <div class="kpi-trend trend-up">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>+18% vs last month</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="font-medium text-sm">Interviews Scheduled</span>
+            <div class="kpi-icon icon-yellow">
+              <i class="fa-regular fa-calendar-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">34</div>
+          <div class="kpi-trend trend-down">
+            <i class="fa-solid fa-arrow-trend-down"></i>
+            <span>-5% vs last month</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="font-medium text-sm">Hired Candidates</span>
+            <div class="kpi-icon icon-green">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">8</div>
+          <div class="kpi-trend trend-up">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>+2 this month</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Grid: Table & Jobs List -->
+      <section class="dashboard-content">
+        <!-- Recent Applications Table -->
+        <div class="card applications-card">
+          <div class="card-header">
+            <h2 class="card-title">Recent Applications</h2>
+            <a href="#" class="text-sm font-medium">View All</a>
+          </div>
+          <div class="table-responsive">
+            <table id="applicationsTable" aria-label="Recent Applications">
+              <thead>
+                <tr>
+                  <th>Candidate</th>
+                  <th>Role Applied</th>
+                  <th>Date Applied</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-id="CAN-001">
+                  <td>
+                    <div class="candidate-info">
+                      <div
+                        class="candidate-avatar"
+                        style="
+                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4&quot;);
+                        "
+                      ></div>
+                      <div>
+                        <div class="font-medium">Sarah Jenkins</div>
+                        <div class="text-sm text-secondary">
+                          sarah.j@example.com
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Senior Frontend Developer</td>
+                  <td class="text-secondary">Oct 24, 2023</td>
+                  <td>
+                    <span class="badge" data-status="Review">In Review</span>
+                  </td>
+                </tr>
+                <tr data-id="CAN-002">
+                  <td>
+                    <div class="candidate-info">
+                      <div
+                        class="candidate-avatar"
+                        style="
+                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus&backgroundColor=c0aede&quot;);
+                        "
+                      ></div>
+                      <div>
+                        <div class="font-medium">Marcus Rodriguez</div>
+                        <div class="text-sm text-secondary">
+                          m.rodriguez@example.com
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Product Designer</td>
+                  <td class="text-secondary">Oct 23, 2023</td>
+                  <td>
+                    <span class="badge" data-status="Interview">Interview</span>
+                  </td>
+                </tr>
+                <tr data-id="CAN-003">
+                  <td>
+                    <div class="candidate-info">
+                      <div
+                        class="candidate-avatar"
+                        style="
+                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Emily&backgroundColor=ffd5dc&quot;);
+                        "
+                      ></div>
+                      <div>
+                        <div class="font-medium">Emily Chen</div>
+                        <div class="text-sm text-secondary">
+                          emily.chen@example.com
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Marketing Manager</td>
+                  <td class="text-secondary">Oct 21, 2023</td>
+                  <td><span class="badge" data-status="Hired">Hired</span></td>
+                </tr>
+                <tr data-id="CAN-004">
+                  <td>
+                    <div class="candidate-info">
+                      <div
+                        class="candidate-avatar"
+                        style="
+                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=ffdfbf&quot;);
+                        "
+                      ></div>
+                      <div>
+                        <div class="font-medium">David Kim</div>
+                        <div class="text-sm text-secondary">
+                          dkim88@example.com
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Backend Engineer</td>
+                  <td class="text-secondary">Oct 20, 2023</td>
+                  <td>
+                    <span class="badge" data-status="Rejected">Rejected</span>
+                  </td>
+                </tr>
+                <tr data-id="CAN-005">
+                  <td>
+                    <div class="candidate-info">
+                      <div
+                        class="candidate-avatar"
+                        style="
+                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica&backgroundColor=b6e3f4&quot;);
+                        "
+                      ></div>
+                      <div>
+                        <div class="font-medium">Jessica Taylor</div>
+                        <div class="text-sm text-secondary">
+                          jtaylor@example.com
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>UX Researcher</td>
+                  <td class="text-secondary">Oct 19, 2023</td>
+                  <td>
+                    <span class="badge" data-status="Review">In Review</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Active Jobs List -->
+        <div class="card jobs-card">
+          <div class="card-header">
+            <h2 class="card-title">Active Jobs</h2>
+            <a href="#" class="text-sm font-medium">Manage</a>
+          </div>
+          <ul class="job-list" id="activeJobsList">
+            <li class="job-item" tabindex="0">
+              <div>
+                <div class="job-title">Senior Frontend Developer</div>
+                <div class="job-meta">
+                  <span><i class="fa-solid fa-location-dot"></i> Remote</span>
+                  <span
+                    ><i class="fa-regular fa-clock"></i> 14 days active</span
+                  >
+                </div>
+              </div>
+              <div class="job-stats">
+                <div class="job-count">45</div>
+                <div class="job-count-label">Applicants</div>
+              </div>
+            </li>
+            <li class="job-item" tabindex="0">
+              <div>
+                <div class="job-title">Product Designer</div>
+                <div class="job-meta">
+                  <span
+                    ><i class="fa-solid fa-location-dot"></i> New York, NY</span
+                  >
+                  <span><i class="fa-regular fa-clock"></i> 5 days active</span>
+                </div>
+              </div>
+              <div class="job-stats">
+                <div class="job-count">28</div>
+                <div class="job-count-label">Applicants</div>
+              </div>
+            </li>
+            <li class="job-item" tabindex="0">
+              <div>
+                <div class="job-title">Marketing Manager</div>
+                <div class="job-meta">
+                  <span
+                    ><i class="fa-solid fa-location-dot"></i> London, UK</span
+                  >
+                  <span
+                    ><i class="fa-regular fa-clock"></i> 21 days active</span
+                  >
+                </div>
+              </div>
+              <div class="job-stats">
+                <div class="job-count">112</div>
+                <div class="job-count-label">Applicants</div>
+              </div>
+            </li>
+            <li class="job-item" tabindex="0">
+              <div>
+                <div class="job-title">DevOps Engineer</div>
+                <div class="job-meta">
+                  <span><i class="fa-solid fa-location-dot"></i> Remote</span>
+                  <span><i class="fa-regular fa-clock"></i> 2 days active</span>
+                </div>
+              </div>
+              <div class="job-stats">
+                <div class="job-count">14</div>
+                <div class="job-count-label">Applicants</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- Interactive Logic (Vanilla JS) -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- 1. Mobile Menu Toggle Logic ---
+        const mobileBtn = document.getElementById("mobileMenuBtn");
+        const mobileNavMenu = document.getElementById("mobileNavMenu");
+        const menuIcon = mobileBtn.querySelector("i");
+
+        mobileBtn.addEventListener("click", () => {
+          const isActive = mobileNavMenu.classList.toggle("active");
+          mobileBtn.setAttribute("aria-expanded", isActive);
+
+          if (isActive) {
+            menuIcon.classList.remove("fa-bars");
+            menuIcon.classList.add("fa-xmark");
+          } else {
+            menuIcon.classList.remove("fa-xmark");
+            menuIcon.classList.add("fa-bars");
+          }
+        });
+
+        // --- 2. Status Badge Color Coding (Dynamic CSS classes based on data attribute) ---
+        const badges = document.querySelectorAll(".badge");
+
+        badges.forEach((badge) => {
+          const status = badge.getAttribute("data-status");
+          // Remove existing status classes just in case
+          badge.className = "badge";
+
+          switch (status) {
+            case "Review":
+              badge.classList.add("badge-review");
+              break;
+            case "Interview":
+              badge.classList.add("badge-interview");
+              break;
+            case "Hired":
+              badge.classList.add("badge-hired");
+              break;
+            case "Rejected":
+              badge.classList.add("badge-rejected");
+              break;
+            default:
+              // Fallback generic style
+              badge.style.backgroundColor = "var(--border)";
+              badge.style.color = "var(--text-secondary)";
+          }
+        });
+
+        // --- 3. Click Handlers for Interactive Elements (Rows & Jobs) ---
+
+        // Table Rows
+        const tableRows = document.querySelectorAll(
+          "#applicationsTable tbody tr",
+        );
+        tableRows.forEach((row) => {
+          row.addEventListener("click", () => {
+            const candidateId = row.getAttribute("data-id");
+            const candidateName = row.querySelector(".font-medium").textContent;
+            console.log(
+              `Opening candidate profile: ${candidateName} (ID: ${candidateId})`,
+            );
+
+            // Visual feedback (optional ripple/flash could go here)
+            row.style.backgroundColor = "var(--primary-light)";
+            setTimeout(() => {
+              row.style.backgroundColor = "";
+            }, 200);
+          });
+        });
+
+        // Job List Items
+        const jobItems = document.querySelectorAll(".job-item");
+        jobItems.forEach((item) => {
+          // Handle Click
+          item.addEventListener("click", () => {
+            const jobTitle = item.querySelector(".job-title").textContent;
+            console.log(`Opening job details for: ${jobTitle}`);
+          });
+
+          // Handle Keyboard Accessibility (Enter key on focused list item)
+          item.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              const jobTitle = item.querySelector(".job-title").textContent;
+              console.log(`(Keyboard) Opening job details for: ${jobTitle}`);
+            }
+          });
+        });
+
+        // --- 4. General Action Buttons ---
+        const postJobBtn = document.getElementById("postJobBtn");
+        postJobBtn.addEventListener("click", () => {
+          console.log('Action: Initiating "Post New Job" workflow...');
+        });
+      });
+    </script>
+  </body>
+</html>
