@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - RecruitAI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .nav {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .nav-links a.active:after {
+            content: '';
+            position: absolute;
+            bottom: -22px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: var(--shadow);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            max-width: 1280px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .applications-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            text-align: left;
+            padding: 20px 24px;
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .job-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .location {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .status {
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .status-submitted {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .status-review {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .status-interview {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-offer {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .actions {
+            text-align: right;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+            color: var(--primary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+            background: #f8fafc;
+        }
+
+        .empty-state {
+            padding: 80px 40px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+
+            .main-container {
+                padding: 0 16px;
+                margin: 24px auto;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            th, td {
+                padding: 16px 12px;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-link {
+            padding: 16px 0;
+            display: block;
+            font-size: 18px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <span style="font-size: 28px;">🔵</span>
+                    RecruitAI
+                </div>
+                
+                <div class="nav-links">
+                    <a href="#">Dashboard</a>
+                    <a href="#">Jobs</a>
+                    <a href="#" class="active">My Applications</a>
+                    <a href="#">Profile</a>
+                </div>
+            </div>
+
+            <div class="nav-right">
+                <div class="icon-btn" onclick="showSearch()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="icon-btn" onclick="showNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <div class="icon-btn">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <div onclick="viewProfile()" style="cursor: pointer;">
+                    <img src="https://picsum.photos/id/64/128/128" alt="Alex Rivera" class="avatar">
+                </div>
+                <div class="hamburger" onclick="toggleMobileMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu">
+            <a href="#" class="mobile-link">Dashboard</a>
+            <a href="#" class="mobile-link">Jobs</a>
+            <a href="#" class="mobile-link active">My Applications</a>
+            <a href="#" class="mobile-link">Profile</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header fade-in">
+            <h1 class="page-title">My Applications</h1>
+            <p class="page-subtitle">Track the status of your recent job submissions.</p>
+        </div>
+
+        <div class="applications-card fade-in">
+            <div class="table-container">
+                <table aria-label="Job Applications">
+                    <thead>
+                        <tr>
+                            <th>JOB TITLE</th>
+                            <th>COMPANY</th>
+                            <th>APPLIED DATE</th>
+                            <th>STATUS</th>
+                            <th style="text-align: right;">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr>
+                            <td>
+                                <div class="job-title">Senior Frontend Engineer</div>
+                                <div class="location">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    San Francisco, CA
+                                </div>
+                            </td>
+                            <td><strong>TechCorp Solutions</strong></td>
+                            <td>Oct 24, 2023</td>
+                            <td>
+                                <span class="status status-submitted">Submitted</span>
+                            </td>
+                            <td class="actions">
+                                <button onclick="viewApplication(1)" class="action-btn" aria-label="View details">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Row 2 -->
+                        <tr>
+                            <td>
+                                <div class="job-title">Product Designer</div>
+                                <div class="location">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    Remote
+                                </div>
+                            </td>
+                            <td><strong>Innovate AI</strong></td>
+                            <td>Oct 20, 2023</td>
+                            <td>
+                                <span class="status status-review">Under Review</span>
+                            </td>
+                            <td class="actions">
+                                <button onclick="viewApplication(2)" class="action-btn" aria-label="View details">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Row 3 -->
+                        <tr>
+                            <td>
+                                <div class="job-title">Staff Data Scientist</div>
+                                <div class="location">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    New York, NY
+                                </div>
+                            </td>
+                            <td><strong>FinTech Dynamics</strong></td>
+                            <td>Oct 15, 2023</td>
+                            <td>
+                                <span class="status status-interview">Interview</span>
+                            </td>
+                            <td class="actions">
+                                <button onclick="viewApplication(3)" class="action-btn" aria-label="View details">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Row 4 -->
+                        <tr>
+                            <td>
+                                <div class="job-title">UX Researcher</div>
+                                <div class="location">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    Austin, TX
+                                </div>
+                            </td>
+                            <td><strong>Global Health Systems</strong></td>
+                            <td>Sep 28, 2023</td>
+                            <td>
+                                <span class="status status-offer">Offer</span>
+                            </td>
+                            <td class="actions">
+                                <button onclick="viewApplication(4)" class="action-btn" aria-label="View details">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Row 5 -->
+                        <tr>
+                            <td>
+                                <div class="job-title">Backend Developer</div>
+                                <div class="location">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    Seattle, WA
+                                </div>
+                            </td>
+                            <td><strong>CloudStream Networks</strong></td>
+                            <td>Sep 10, 2023</td>
+                            <td>
+                                <span class="status status-rejected">Rejected</span>
+                            </td>
+                            <td class="actions">
+                                <button onclick="viewApplication(5)" class="action-btn" aria-label="View details">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination">
+                <div>Showing 1 to 5 of 12 entries</div>
+                <div class="pagination-controls">
+                    <div onclick="prevPage()" class="page-btn" aria-label="Previous page">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </div>
+                    <div onclick="nextPage()" class="page-btn" aria-label="Next page">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background: white; border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; color: var(--text-secondary); font-size: 14px; margin-top: 80px;">
+        <p>&copy; 2026 RecruitAI. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Mobile menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('active');
+        }
+
+        // View application details
+        function viewApplication(id) {
+            const titles = [
+                "", 
+                "Senior Frontend Engineer at TechCorp Solutions",
+                "Product Designer at Innovate AI",
+                "Staff Data Scientist at FinTech Dynamics",
+                "UX Researcher at Global Health Systems",
+                "Backend Developer at CloudStream Networks"
+            ];
+            
+            alert(`📄 Application Details #${id}\n\n${titles[id]}\n\nStatus: ${getStatusText(id)}\n\nClick "View in Job Board" to see full posting.`);
+        }
+
+        function getStatusText(id) {
+            if (id === 1) return "Submitted";
+            if (id === 2) return "Under Review";
+            if (id === 3) return "Interview Scheduled";
+            if (id === 4) return "Offer Received";
+            if (id === 5) return "Rejected";
+            return "Submitted";
+        }
+
+        // Pagination placeholders
+        function prevPage() {
+            alert("← Previous page (Demo: Page 1 of 3)");
+        }
+
+        function nextPage() {
+            alert("→ Next page (Demo: Page 2 of 3)");
+        }
+
+        function showSearch() {
+            const query = prompt("🔍 Search your applications:", "");
+            if (query) {
+                alert(`Found 2 matches for "${query}"`);
+            }
+        }
+
+        function showNotifications() {
+            alert("🛎️ Notifications:\n\n• Interview scheduled with FinTech Dynamics\n• Offer from Global Health Systems");
+        }
+
+        function viewProfile() {
+            alert("👋 Alex Rivera\nProfile completion: 95%");
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                const menu = document.getElementById('mobile-menu');
+                if (menu.classList.contains('active')) {
+                    menu.classList.remove('active');
+                }
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('mobile-menu');
+            const hamburger = document.querySelector('.hamburger');
+            if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
+        // Initialize
+        console.log('%c✅ My Applications page loaded successfully!', 'color: #4F46E5; font-weight: 600;');
+        
+        // Demo: random row highlight
+        setTimeout(() => {
+            const rows = document.querySelectorAll('tbody tr');
+            if (rows.length > 2) {
+                rows[2].style.transition = 'background 1s';
+            }
+        }, 1200);
+    </script>
+</body>
+</html>
