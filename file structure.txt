@@ -1,0 +1,106 @@
+recruitment-platform/
+├── README.md
+├── .gitignore.io
+├── backend/
+│   ├── RecruitmentAPI.sln
+│   ├── RecruitmentAPI/
+│   │   ├── Program.cs
+│   │   ├── Startup.cs
+│   │   ├── RecruitmentAPI.csproj
+│   │   ├── appsettings.json
+│   │   ├── appsettings.Development.json
+│   │   ├── Controllers/
+│   │   │   ├── AdminController.cs
+│   │   │   ├── AnalyticsController.cs
+│   │   │   ├── ApplicationsController.cs
+│   │   │   ├── AuthController.cs
+│   │   │   ├── CandidatesController.cs
+│   │   │   ├── FeedbackController.cs
+│   │   │   ├── InterviewsController.cs
+│   │   │   └── JobsController.cs
+│   │   ├── Data/
+│   │   │   ├── ApplicationDbContext.cs
+│   │   │   └── Migrations/
+│   │   ├── DTOs/
+│   │   │   ├── Application/
+│   │   │   ├── Auth/
+│   │   │   ├── Candidate/
+│   │   │   ├── Interview/
+│   │   │   └── Job/
+│   │   ├── Extensions/
+│   │   │   ├── DatabaseExtensions.cs
+│   │   │   └── ServiceExtensions.cs
+│   │   ├── Helpers/
+│   │   │   ├── AIScoreCalculator.cs
+│   │   │   ├── JwtHelper.cs
+│   │   │   └── PasswordHasher.cs
+│   │   ├── Middleware/
+│   │   │   ├── AuditLoggingMiddleware.cs
+│   │   │   ├── ExceptionHandlingMiddleware.cs
+│   │   │   └── JwtMiddleware.cs
+│   │   ├── Models/
+│   │   │   ├── Admin.cs
+│   │   │   ├── Application.cs
+│   │   │   ├── Candidate.cs
+│   │   │   ├── Document.cs
+│   │   │   ├── HiringManager.cs
+│   │   │   ├── Interview.cs
+│   │   │   ├── InterviewFeedback.cs
+│   │   │   ├── JobPosting.cs
+│   │   │   ├── Notification.cs
+│   │   │   ├── Recruiter.cs
+│   │   │   ├── RecruitmentAnalytic.cs
+│   │   │   └── User.cs
+│   │   ├── Repository/
+│   │   │   ├── Implementations/
+│   │   │   └── Interfaces/
+│   │   └── Services/
+│   │       ├── Implementations/
+│   │       └── Interfaces/
+│   └── RecruitmentAPI.Tests/
+│       ├── Controllers/
+│       ├── Integration/
+│       └── Services/
+├── frontend/
+│   ├── index.html
+│   ├── assets/
+│   │   ├── fonts/
+│   │   └── images/
+│   ├── auth/
+│   │   ├── login.html
+│   │   └── register.html
+│   ├── candidate/
+│   │   ├── dashboard.html
+│   │   ├── job-detail.html
+│   │   ├── job-search.html
+│   │   ├── my-applications.html
+│   │   └── profile-management.html
+│   ├── recruiter/
+│   │   ├── dashboard.html
+│   │   ├── manage-jobs.html
+│   │   ├── post-job.html
+│   │   ├── review-applications.html
+│   │   └── schedule-interview.html
+│   ├── hiring-manager/
+│   │   ├── dashboard.html
+│   │   └── candidate-evaluation.html
+│   ├── admin/
+│   │   ├── dashboard.html
+│   │   ├── analytics-reports.html
+│   │   ├── settings.html
+│   │   └── user-management.html
+│   ├── css/
+│   │   ├── auth.css
+│   │   ├── components.css
+│   │   ├── dashboard.css
+│   │   └── styles.css
+│   └── js/
+│       ├── api.js
+│       ├── auth.js
+│       ├── dashboard.js
+│       └── main.js
+├── database/
+│   ├── schema.sql
+│   ├── seed-data.sql
+│   └── stored-procedures/
+│       └── analytics-procedures.sql

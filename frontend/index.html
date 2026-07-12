@@ -1,0 +1,1554 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecruitAI - AI-Powered Recruitment Platform</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome 6 (Free) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* ========================================
+                   CSS CUSTOM PROPERTIES (THEME)
+                   ======================================== */
+      :root {
+        /* Primary Colors */
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #eef2ff;
+        --primary-dark: #3730a3;
+
+        /* Semantic Colors */
+        --success: #10b981;
+        --success-light: #ecfdf5;
+        --warning: #f59e0b;
+        --warning-light: #fffbeb;
+        --danger: #ef4444;
+        --danger-light: #fef2f2;
+
+        /* Neutral Colors */
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --surface-alt: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --border: #e5e7eb;
+        --border-light: #f3f4f6;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+        /* Border Radius */
+        --radius-sm: 4px;
+        --radius: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+
+        /* Spacing */
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 20px;
+        --space-6: 24px;
+        --space-8: 32px;
+        --space-10: 40px;
+        --space-12: 48px;
+        --space-16: 64px;
+        --space-20: 80px;
+        --space-24: 96px;
+
+        /* Font */
+        --font-family:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        --font-size-xs: 12px;
+        --font-size-sm: 14px;
+        --font-size-base: 16px;
+        --font-size-lg: 18px;
+        --font-size-xl: 20px;
+        --font-size-2xl: 24px;
+        --font-size-3xl: 30px;
+        --font-size-4xl: 36px;
+        --font-size-5xl: 48px;
+
+        /* Layout */
+        --max-width: 1280px;
+        --header-height: 70px;
+        --container-padding: 20px;
+      }
+
+      /* ========================================
+                   RESET & BASE
+                   ======================================== */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* ========================================
+                   CONTAINER
+                   ======================================== */
+      .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      /* ========================================
+                   BUTTONS
+                   ======================================== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: 12px 24px;
+        font-family: var(--font-family);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-primary:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--text-primary);
+        border: 2px solid var(--border);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--surface-alt);
+        border-color: var(--text-secondary);
+      }
+
+      .btn-outline-primary {
+        background-color: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .btn-lg {
+        padding: 16px 32px;
+        font-size: var(--font-size-base);
+      }
+
+      .btn-sm {
+        padding: 8px 16px;
+        font-size: var(--font-size-xs);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+        color: #ffffff;
+      }
+
+      .btn-success:hover {
+        background-color: #059669;
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+        color: #ffffff;
+      }
+
+      .btn-danger:hover {
+        background-color: #dc2626;
+      }
+
+      /* ========================================
+                   HEADER / NAVIGATION
+                   ======================================== */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        z-index: 1000;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-size: var(--font-size-xl);
+        font-weight: 800;
+        color: var(--primary);
+        flex-shrink: 0;
+      }
+
+      .logo-icon {
+        font-size: var(--font-size-2xl);
+      }
+
+      .logo span {
+        color: var(--text-primary);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-8);
+      }
+
+      .nav-links a {
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: var(--text-primary);
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary);
+        transition: width 0.2s ease;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      /* Hamburger Menu */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: var(--space-2);
+        border-radius: var(--radius);
+        transition: background 0.2s ease;
+      }
+
+      .hamburger:hover {
+        background-color: var(--surface-alt);
+      }
+
+      .hamburger span {
+        display: block;
+        width: 28px;
+        height: 3px;
+        background-color: var(--text-primary);
+        border-radius: var(--radius-full);
+        transition: all 0.3s ease;
+        transform-origin: center;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+      }
+
+      /* Mobile Menu Overlay */
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--surface);
+        padding: var(--space-6);
+        z-index: 999;
+        flex-direction: column;
+        gap: var(--space-4);
+        animation: slideDown 0.3s ease;
+      }
+
+      .mobile-menu.open {
+        display: flex;
+      }
+
+      .mobile-menu a {
+        font-size: var(--font-size-lg);
+        font-weight: 500;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius);
+        transition: background 0.2s ease;
+      }
+
+      .mobile-menu a:hover {
+        background-color: var(--surface-alt);
+      }
+
+      .mobile-menu .btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: var(--space-2);
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ========================================
+                   HERO SECTION
+                   ======================================== */
+      .hero {
+        padding-top: calc(var(--header-height) + var(--space-16));
+        padding-bottom: var(--space-16);
+        background: linear-gradient(
+          135deg,
+          var(--primary-light) 0%,
+          #ffffff 70%
+        );
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-12);
+        align-items: center;
+      }
+
+      .hero-content h1 {
+        font-size: var(--font-size-5xl);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: var(--space-4);
+        letter-spacing: -0.02em;
+      }
+
+      .hero-content h1 .highlight {
+        color: var(--primary);
+        position: relative;
+      }
+
+      .hero-content h1 .highlight::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background-color: var(--primary-light);
+        border-radius: var(--radius-full);
+        z-index: -1;
+      }
+
+      .hero-content p {
+        font-size: var(--font-size-lg);
+        color: var(--text-secondary);
+        max-width: 500px;
+        margin-bottom: var(--space-8);
+        line-height: 1.8;
+      }
+
+      .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+
+      .hero-stats {
+        display: flex;
+        gap: var(--space-8);
+        margin-top: var(--space-8);
+        padding-top: var(--space-8);
+        border-top: 1px solid var(--border);
+      }
+
+      .hero-stats .stat {
+        text-align: center;
+      }
+
+      .hero-stats .stat-number {
+        font-size: var(--font-size-3xl);
+        font-weight: 800;
+        color: var(--text-primary);
+      }
+
+      .hero-stats .stat-label {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+      }
+
+      .hero-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .hero-image-placeholder {
+        width: 100%;
+        max-width: 500px;
+        aspect-ratio: 4/3;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-hover) 100%
+        );
+        border-radius: var(--radius-xl);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        padding: var(--space-8);
+        text-align: center;
+        box-shadow: var(--shadow-xl);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-image-placeholder::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+      }
+
+      .hero-image-placeholder i {
+        font-size: 80px;
+        margin-bottom: var(--space-4);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-image-placeholder h3 {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-image-placeholder p {
+        font-size: var(--font-size-sm);
+        opacity: 0.8;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ========================================
+                   FEATURES SECTION
+                   ======================================== */
+      .features {
+        padding: var(--space-16) 0;
+        background-color: var(--surface);
+      }
+
+      .section-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto var(--space-12);
+      }
+
+      .section-header h2 {
+        font-size: var(--font-size-4xl);
+        font-weight: 800;
+        margin-bottom: var(--space-3);
+        letter-spacing: -0.02em;
+      }
+
+      .section-header p {
+        font-size: var(--font-size-lg);
+        color: var(--text-secondary);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-6);
+      }
+
+      .feature-card {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+      }
+
+      .feature-card .icon {
+        width: 64px;
+        height: 64px;
+        background-color: var(--primary-light);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--space-4);
+        font-size: 28px;
+        color: var(--primary);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover .icon {
+        background-color: var(--primary);
+        color: #ffffff;
+        transform: scale(1.05);
+      }
+
+      .feature-card h3 {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-2);
+      }
+
+      .feature-card p {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        line-height: 1.7;
+      }
+
+      /* ========================================
+                   TESTIMONIALS / TRUST SECTION
+                   ======================================== */
+      .testimonials {
+        padding: var(--space-16) 0;
+        background-color: var(--background);
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-6);
+      }
+
+      .testimonial-card {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+
+      .testimonial-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .testimonial-card .stars {
+        color: var(--warning);
+        font-size: var(--font-size-base);
+        margin-bottom: var(--space-3);
+      }
+
+      .testimonial-card blockquote {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: var(--space-4);
+        font-style: italic;
+      }
+
+      .testimonial-card .author {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .testimonial-card .author-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--primary)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: var(--font-size-sm);
+        flex-shrink: 0;
+      }
+
+      .testimonial-card .author-info h4 {
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+      }
+
+      .testimonial-card .author-info p {
+        font-size: var(--font-size-xs);
+        color: var(--text-secondary);
+      }
+
+      /* ========================================
+                   CTA SECTION
+                   ======================================== */
+      .cta {
+        padding: var(--space-16) 0;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: #ffffff;
+        text-align: center;
+      }
+
+      .cta h2 {
+        font-size: var(--font-size-4xl);
+        font-weight: 800;
+        margin-bottom: var(--space-4);
+        letter-spacing: -0.02em;
+      }
+
+      .cta p {
+        font-size: var(--font-size-lg);
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto var(--space-8);
+      }
+
+      .cta .btn {
+        background-color: #ffffff;
+        color: var(--primary);
+      }
+
+      .cta .btn:hover {
+        background-color: var(--surface-alt);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      /* ========================================
+                   FOOTER
+                   ======================================== */
+      .footer {
+        background-color: var(--text-primary);
+        color: var(--text-muted);
+        padding: var(--space-12) 0 var(--space-6);
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: var(--space-8);
+        margin-bottom: var(--space-8);
+      }
+
+      .footer-brand .logo {
+        color: #ffffff;
+        margin-bottom: var(--space-4);
+      }
+
+      .footer-brand .logo span {
+        color: #ffffff;
+      }
+
+      .footer-brand p {
+        font-size: var(--font-size-sm);
+        line-height: 1.7;
+        max-width: 300px;
+      }
+
+      .footer-col h4 {
+        color: #ffffff;
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        margin-bottom: var(--space-4);
+      }
+
+      .footer-col a {
+        display: block;
+        font-size: var(--font-size-sm);
+        color: var(--text-muted);
+        padding: var(--space-1) 0;
+        transition: color 0.2s ease;
+      }
+
+      .footer-col a:hover {
+        color: #ffffff;
+      }
+
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: var(--space-6);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+
+      .footer-bottom p {
+        font-size: var(--font-size-sm);
+      }
+
+      .footer-social {
+        display: flex;
+        gap: var(--space-4);
+      }
+
+      .footer-social a {
+        color: var(--text-muted);
+        font-size: var(--font-size-lg);
+        transition: color 0.2s ease;
+      }
+
+      .footer-social a:hover {
+        color: #ffffff;
+      }
+
+      /* ========================================
+                   LOADING SPINNER
+                   ======================================== */
+      .spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 3px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ========================================
+                   RESPONSIVE - TABLET
+                   ======================================== */
+      @media (max-width: 1024px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-8);
+          text-align: center;
+        }
+
+        .hero-content p {
+          margin: 0 auto var(--space-8);
+        }
+
+        .hero-buttons {
+          justify-content: center;
+        }
+
+        .hero-stats {
+          justify-content: center;
+        }
+
+        .hero-image {
+          order: -1;
+        }
+
+        .features-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .testimonials-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .footer-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* ========================================
+                   RESPONSIVE - MOBILE
+                   ======================================== */
+      @media (max-width: 768px) {
+        :root {
+          --font-size-5xl: 32px;
+          --font-size-4xl: 28px;
+          --font-size-3xl: 24px;
+          --header-height: 60px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .nav-actions .btn {
+          display: none;
+        }
+
+        .hamburger {
+          display: flex;
+        }
+
+        .hero {
+          padding-top: calc(var(--header-height) + var(--space-8));
+          padding-bottom: var(--space-8);
+          min-height: auto;
+        }
+
+        .hero-stats {
+          flex-direction: column;
+          gap: var(--space-4);
+          align-items: center;
+        }
+
+        .hero-image-placeholder {
+          max-width: 100%;
+          aspect-ratio: 16/10;
+        }
+
+        .hero-image-placeholder i {
+          font-size: 48px;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .testimonials-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .section-header h2 {
+          font-size: var(--font-size-3xl);
+        }
+
+        .cta h2 {
+          font-size: var(--font-size-3xl);
+        }
+
+        .cta .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+
+      /* ========================================
+                   RESPONSIVE - SMALL MOBILE
+                   ======================================== */
+      @media (max-width: 480px) {
+        :root {
+          --container-padding: 16px;
+        }
+
+        .hero-content h1 {
+          font-size: 28px;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .hero-buttons .btn {
+          width: 100%;
+          max-width: 280px;
+        }
+
+        .feature-card {
+          padding: var(--space-6);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================
+    HEADER / NAVIGATION
+    ============================================ -->
+    <header class="header" role="banner" aria-label="Main navigation">
+      <div class="header-inner">
+        <!-- Logo -->
+        <a href="index.html" class="logo" aria-label="Recruiter Home">
+          <img
+            src="/recruitment-platform/frontend/assets/images/logo.png"
+            alt="Recruiter Logo"
+            style="height: 50px"
+            width="50"
+          />
+        </a>
+
+        <!-- Navigation Links (Desktop) -->
+        <nav
+          class="nav-links"
+          role="navigation"
+          aria-label="Primary navigation"
+        >
+          <a href="#features">Features</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <a href="auth/login.html" class="btn btn-outline-primary btn-sm"
+            >Sign In</a
+          >
+          <a href="auth/register.html" class="btn btn-primary btn-sm"
+            >Get Started</a
+          >
+
+          <!-- Hamburger Menu Button -->
+          <button
+            class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================
+    MOBILE MENU OVERLAY
+    ============================================ -->
+    <nav
+      class="mobile-menu"
+      id="mobileMenu"
+      role="navigation"
+      aria-label="Mobile navigation"
+    >
+      <a href="#features" class="mobile-link">Features</a>
+      <a href="#testimonials" class="mobile-link">Testimonials</a>
+      <a href="#about" class="mobile-link">About</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+      <hr style="border-color: var(--border); margin: var(--space-2) 0" />
+      <a href="auth/login.html" class="btn btn-outline-primary">Sign In</a>
+      <a href="auth/register.html" class="btn btn-primary">Get Started</a>
+    </nav>
+
+    <!-- ============================================
+    HERO SECTION
+    ============================================ -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-grid">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <h1 id="hero-title">
+              AI-Powered <br />
+              <span class="highlight">Recruitment</span> <br />
+              Talent Platform
+            </h1>
+            <p>
+              Modernize your recruitment lifecycle with AI-driven candidate
+              screening, job matching, interview scheduling, and talent
+              analytics.
+            </p>
+            <div class="hero-buttons">
+              <a href="auth/register.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket"></i> Get Started Free
+              </a>
+              <a href="#features" class="btn btn-outline btn-lg">
+                <i class="fas fa-play-circle"></i> See Features
+              </a>
+            </div>
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Active Candidates</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Companies</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Match Accuracy</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Image / Placeholder -->
+          <div class="hero-image">
+            <div class="hero-image-placeholder">
+              <i class="fas fa-robot"></i>
+              <h3>AI-Powered Recruitment</h3>
+              <p>Smart matching • Automated screening • Real-time analytics</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+    FEATURES SECTION
+    ============================================ -->
+    <section class="features" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="features-title">
+            Powerful Features for <br />Modern Recruitment
+          </h2>
+          <p>
+            Everything you need to streamline your hiring process from end to
+            end.
+          </p>
+        </div>
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-file-alt"></i></div>
+            <h3>AI Resume Parsing</h3>
+            <p>
+              Automatically extract skills, experience, and education from
+              resumes using advanced AI technology.
+            </p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Smart Candidate Ranking</h3>
+            <p>
+              AI-powered ranking system that scores candidates based on job
+              requirements and skill matching.
+            </p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-calendar-check"></i></div>
+            <h3>Automated Scheduling</h3>
+            <p>
+              Seamless interview scheduling with calendar integration for Google
+              and Outlook.
+            </p>
+          </div>
+          <!-- Feature 4 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-users"></i></div>
+            <h3>Role-Based Portals</h3>
+            <p>
+              Dedicated portals for Candidates, Recruiters, Hiring Managers, and
+              Administrators.
+            </p>
+          </div>
+          <!-- Feature 5 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-bell"></i></div>
+            <h3>Smart Notifications</h3>
+            <p>
+              Automated email and SMS notifications for application status
+              updates and interview reminders.
+            </p>
+          </div>
+          <!-- Feature 6 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-chart-pie"></i></div>
+            <h3>Analytics Dashboard</h3>
+            <p>
+              Real-time recruitment KPIs, time-to-hire metrics, and
+              department-wise performance tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+    TESTIMONIALS SECTION
+    ============================================ -->
+    <section
+      class="testimonials"
+      id="testimonials"
+      aria-labelledby="testimonials-title"
+    >
+      <div class="container">
+        <div class="section-header">
+          <h2 id="testimonials-title">What Our Users Say</h2>
+          <p>Trusted by HR professionals and candidates worldwide.</p>
+        </div>
+        <div class="testimonials-grid">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+              "RecruitAI has transformed our hiring process. We've reduced
+              time-to-hire by 60% and improved candidate quality significantly."
+            </blockquote>
+            <div class="author">
+              <div class="author-avatar">JD</div>
+              <div class="author-info">
+                <h4>John Doe</h4>
+                <p>Head of Talent, TechCorp</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+              "As a recruiter, the AI ranking feature saves me hours of manual
+              screening. The match scores are incredibly accurate."
+            </blockquote>
+            <div class="author">
+              <div class="author-avatar">SM</div>
+              <div class="author-info">
+                <h4>Sarah Miller</h4>
+                <p>Senior Recruiter, GlobalHR</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+              "The candidate experience is seamless. I found my dream job
+              through AI-powered recommendations that matched my skills
+              perfectly."
+            </blockquote>
+            <div class="author">
+              <div class="author-avatar">AK</div>
+              <div class="author-info">
+                <h4>Alex Kumar</h4>
+                <p>Software Engineer, InnoTech</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+    CTA SECTION
+    ============================================ -->
+    <section class="cta" id="about" aria-labelledby="cta-title">
+      <div class="container">
+        <h2 id="cta-title">Ready to Transform Your Recruitment?</h2>
+        <p>
+          Join thousands of companies using AI to find and hire the best talent
+          faster.
+        </p>
+        <a href="auth/register.html" class="btn btn-lg">
+          <i class="fas fa-arrow-right"></i> Start Your Free Trial
+        </a>
+      </div>
+    </section>
+
+    <!-- ============================================
+    FOOTER
+    ============================================ -->
+    <footer class="footer" id="contact" role="contentinfo">
+      <div class="container">
+        <div class="footer-grid">
+          <!-- Brand -->
+          <div class="footer-brand">
+            <a href="index.html" class="logo">
+              <span class="logo-icon"><i class="fas fa-brain"></i></span>
+              Recruit<span>AI</span>
+            </a>
+            <p>
+              AI-Powered Recruitment Platform for modern hiring teams. Find the
+              right talent faster with intelligent matching.
+            </p>
+          </div>
+          <!-- Product -->
+          <div class="footer-col">
+            <h4>Product</h4>
+            <a href="#features">Features</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#">Pricing</a>
+            <a href="#">Integrations</a>
+          </div>
+          <!-- Company -->
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="#">About</a>
+            <a href="#">Careers</a>
+            <a href="#">Blog</a>
+            <a href="#">Contact</a>
+          </div>
+          <!-- Support -->
+          <div class="footer-col">
+            <h4>Support</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Documentation</a>
+            <a href="#">API Status</a>
+            <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 RecruitAI. All rights reserved.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+      (function () {
+        "use strict";
+
+        // ============================================
+        // MOBILE HAMBURGER MENU TOGGLE
+        // ============================================
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        function toggleMenu() {
+          const isOpen = mobileMenu.classList.toggle("open");
+          hamburgerBtn.classList.toggle("active");
+          hamburgerBtn.setAttribute("aria-expanded", isOpen);
+
+          // Prevent body scroll when menu is open
+          document.body.style.overflow = isOpen ? "hidden" : "";
+        }
+
+        hamburgerBtn.addEventListener("click", toggleMenu);
+
+        // Close menu on link click (mobile)
+        const mobileLinks = mobileMenu.querySelectorAll(".mobile-link");
+        mobileLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (mobileMenu.classList.contains("open")) {
+              toggleMenu();
+            }
+          });
+        });
+
+        // Close menu on Escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+            toggleMenu();
+          }
+        });
+
+        // ============================================
+        // SMOOTH SCROLL FOR NAV LINKS
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              e.preventDefault();
+              const headerOffset = 80;
+              const elementPosition = targetElement.getBoundingClientRect().top;
+              const offsetPosition =
+                elementPosition + window.pageYOffset - headerOffset;
+
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth",
+              });
+            }
+          });
+        });
+
+        // ============================================
+        // BUTTON CLICK HANDLERS (Placeholders)
+        // ============================================
+        document.querySelectorAll(".btn").forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            const isPrimary = this.classList.contains("btn-primary");
+            const isOutline = this.classList.contains("btn-outline");
+
+            // Don't intercept navigation buttons
+            if (this.closest(".nav-actions") || this.closest(".mobile-menu")) {
+              return;
+            }
+
+            // For demo/placeholder actions
+            if (
+              this.getAttribute("href") &&
+              this.getAttribute("href").startsWith("#")
+            ) {
+              return; // Let smooth scroll handle it
+            }
+
+            if (
+              !this.getAttribute("href") ||
+              this.getAttribute("href") === "#"
+            ) {
+              e.preventDefault();
+              console.log(`Button clicked: ${this.textContent.trim()}`);
+
+              // Show loading spinner demo
+              const originalText = this.innerHTML;
+              this.innerHTML = '<span class="spinner"></span> Loading...';
+              this.disabled = true;
+
+              setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+
+                // Toast-like feedback (simple alert replacement)
+                const feedback = document.createElement("div");
+                feedback.style.cssText = `
+                                position: fixed;
+                                bottom: 24px;
+                                right: 24px;
+                                background: var(--primary);
+                                color: white;
+                                padding: 16px 24px;
+                                border-radius: var(--radius);
+                                box-shadow: var(--shadow-lg);
+                                font-family: var(--font-family);
+                                font-size: var(--font-size-sm);
+                                font-weight: 500;
+                                z-index: 9999;
+                                animation: slideUp 0.3s ease;
+                            `;
+                feedback.textContent = `✅ Action triggered: ${this.textContent.trim()}`;
+                document.body.appendChild(feedback);
+
+                setTimeout(() => {
+                  feedback.style.opacity = "0";
+                  feedback.style.transition = "opacity 0.3s ease";
+                  setTimeout(() => feedback.remove(), 300);
+                }, 3000);
+              }, 1500);
+            }
+          });
+        });
+
+        // ============================================
+        // SCROLL ANIMATION (Intersection Observer)
+        // ============================================
+        const animateElements = document.querySelectorAll(
+          ".feature-card, .testimonial-card",
+        );
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry, index) => {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = "0";
+                entry.target.style.transform = "translateY(30px)";
+                entry.target.style.transition = `all 0.6s ease ${index * 0.1}s`;
+
+                setTimeout(() => {
+                  entry.target.style.opacity = "1";
+                  entry.target.style.transform = "translateY(0)";
+                }, 100);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+          },
+        );
+
+        animateElements.forEach((el) => observer.observe(el));
+
+        // Set initial state for animation
+        animateElements.forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(30px)";
+        });
+
+        // Trigger animation for elements already visible
+        setTimeout(() => {
+          animateElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+              el.style.opacity = "1";
+              el.style.transform = "translateY(0)";
+            }
+          });
+        }, 100);
+
+        // ============================================
+        // ACTIVE NAV LINK HIGHLIGHT
+        // ============================================
+        const sections = document.querySelectorAll("section[id]");
+
+        window.addEventListener("scroll", () => {
+          let current = "";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop - 120;
+            if (window.pageYOffset >= sectionTop) {
+              current = section.getAttribute("id");
+            }
+          });
+
+          document.querySelectorAll(".nav-links a").forEach((link) => {
+            link.style.color = "var(--text-secondary)";
+            if (link.getAttribute("href") === `#${current}`) {
+              link.style.color = "var(--primary)";
+            }
+          });
+        });
+
+        // ============================================
+        // ADD KEYBOARD SUPPORT FOR HAMBURGER
+        // ============================================
+        hamburgerBtn.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleMenu();
+          }
+        });
+
+        // Focus trap for mobile menu
+        mobileMenu.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            toggleMenu();
+            hamburgerBtn.focus();
+          }
+        });
+
+        console.log("🚀 RecruitAI Landing Page Loaded Successfully!");
+      })();
+    </script>
+  </body>
+</html>
