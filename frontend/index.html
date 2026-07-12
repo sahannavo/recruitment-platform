@@ -1,1302 +1,1554 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RecruitAI - AI-Powered Recruitment Platform</title>
-    <meta name="description" content="RecruitAI helps you manage profiles, analyze recruitment data, and configure your hiring pipeline with AI-powered insights." />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "on-surface": "#191c1d",
-              "secondary-container": "#6bff8f",
-              "primary-fixed": "#e2dfff",
-              "surface-variant": "#e1e3e4",
-              "on-primary": "#ffffff",
-              "on-background": "#191c1d",
-              "on-secondary": "#ffffff",
-              "secondary": "#006e2f",
-              "secondary-fixed": "#6bff8f",
-              "on-tertiary-fixed": "#2a1700",
-              "inverse-surface": "#2e3132",
-              "surface-container-high": "#e7e8e9",
-              "on-error-container": "#93000a",
-              "on-primary-fixed-variant": "#3323cc",
-              "tertiary-fixed-dim": "#ffb95f",
-              "surface": "#f8f9fa",
-              "surface-dim": "#d9dadb",
-              "outline-variant": "#c7c4d8",
-              "on-tertiary-container": "#ffd4a4",
-              "surface-tint": "#4d44e3",
-              "tertiary": "#684000",
-              "error": "#ba1a1a",
-              "on-secondary-fixed-variant": "#005321",
-              "error-container": "#ffdad6",
-              "surface-container-low": "#f3f4f5",
-              "on-primary-fixed": "#0f0069",
-              "inverse-on-surface": "#f0f1f2",
-              "on-error": "#ffffff",
-              "inverse-primary": "#c3c0ff",
-              "outline": "#777587",
-              "on-tertiary": "#ffffff",
-              "primary": "#3525cd",
-              "background": "#f8f9fa",
-              "surface-bright": "#f8f9fa",
-              "surface-container-lowest": "#ffffff",
-              "primary-fixed-dim": "#c3c0ff",
-              "on-primary-container": "#dad7ff",
-              "on-secondary-container": "#007432",
-              "on-tertiary-fixed-variant": "#653e00",
-              "surface-container": "#edeeef",
-              "on-surface-variant": "#464555",
-              "tertiary-container": "#885500",
-              "on-secondary-fixed": "#002109",
-              "tertiary-fixed": "#ffddb8",
-              "primary-container": "#4f46e5",
-              "surface-container-highest": "#e1e3e4",
-              "secondary-fixed-dim": "#4ae176"
-            },
-            borderRadius: {
-              DEFAULT: "0.25rem",
-              lg: "0.5rem",
-              xl: "0.75rem",
-              full: "9999px"
-            },
-            spacing: {
-              lg: "24px",
-              gutter: "20px",
-              unit: "4px",
-              xl: "40px",
-              md: "16px",
-              sm: "8px",
-              xs: "4px",
-              "container-max": "1200px"
-            },
-            fontFamily: {
-              "headline-md": ["Inter"],
-              "headline-md-mobile": ["Inter"],
-              "body-strong": ["Inter"],
-              "label-caps": ["Inter"],
-              display: ["Inter"],
-              "label-sm": ["Inter"],
-              "body-base": ["Inter"]
-            },
-            fontSize: {
-              "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "700" }],
-              "headline-md-mobile": ["18px", { lineHeight: "26px", fontWeight: "700" }],
-              "body-strong": ["14px", { lineHeight: "20px", fontWeight: "600" }],
-              "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }],
-              display: ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
-              "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "500" }],
-              "body-base": ["14px", { lineHeight: "20px", fontWeight: "400" }]
-            }
-          }
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome 6 (Free) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* ========================================
+                   CSS CUSTOM PROPERTIES (THEME)
+                   ======================================== */
+      :root {
+        /* Primary Colors */
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #eef2ff;
+        --primary-dark: #3730a3;
+
+        /* Semantic Colors */
+        --success: #10b981;
+        --success-light: #ecfdf5;
+        --warning: #f59e0b;
+        --warning-light: #fffbeb;
+        --danger: #ef4444;
+        --danger-light: #fef2f2;
+
+        /* Neutral Colors */
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --surface-alt: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --border: #e5e7eb;
+        --border-light: #f3f4f6;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+        /* Border Radius */
+        --radius-sm: 4px;
+        --radius: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+
+        /* Spacing */
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 20px;
+        --space-6: 24px;
+        --space-8: 32px;
+        --space-10: 40px;
+        --space-12: 48px;
+        --space-16: 64px;
+        --space-20: 80px;
+        --space-24: 96px;
+
+        /* Font */
+        --font-family:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        --font-size-xs: 12px;
+        --font-size-sm: 14px;
+        --font-size-base: 16px;
+        --font-size-lg: 18px;
+        --font-size-xl: 20px;
+        --font-size-2xl: 24px;
+        --font-size-3xl: 30px;
+        --font-size-4xl: 36px;
+        --font-size-5xl: 48px;
+
+        /* Layout */
+        --max-width: 1280px;
+        --header-height: 70px;
+        --container-padding: 20px;
+      }
+
+      /* ========================================
+                   RESET & BASE
+                   ======================================== */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* ========================================
+                   CONTAINER
+                   ======================================== */
+      .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      /* ========================================
+                   BUTTONS
+                   ======================================== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: 12px 24px;
+        font-family: var(--font-family);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-primary:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--text-primary);
+        border: 2px solid var(--border);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--surface-alt);
+        border-color: var(--text-secondary);
+      }
+
+      .btn-outline-primary {
+        background-color: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .btn-lg {
+        padding: 16px 32px;
+        font-size: var(--font-size-base);
+      }
+
+      .btn-sm {
+        padding: 8px 16px;
+        font-size: var(--font-size-xs);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+        color: #ffffff;
+      }
+
+      .btn-success:hover {
+        background-color: #059669;
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+        color: #ffffff;
+      }
+
+      .btn-danger:hover {
+        background-color: #dc2626;
+      }
+
+      /* ========================================
+                   HEADER / NAVIGATION
+                   ======================================== */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        z-index: 1000;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-size: var(--font-size-xl);
+        font-weight: 800;
+        color: var(--primary);
+        flex-shrink: 0;
+      }
+
+      .logo-icon {
+        font-size: var(--font-size-2xl);
+      }
+
+      .logo span {
+        color: var(--text-primary);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-8);
+      }
+
+      .nav-links a {
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: var(--text-primary);
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary);
+        transition: width 0.2s ease;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      /* Hamburger Menu */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: var(--space-2);
+        border-radius: var(--radius);
+        transition: background 0.2s ease;
+      }
+
+      .hamburger:hover {
+        background-color: var(--surface-alt);
+      }
+
+      .hamburger span {
+        display: block;
+        width: 28px;
+        height: 3px;
+        background-color: var(--text-primary);
+        border-radius: var(--radius-full);
+        transition: all 0.3s ease;
+        transform-origin: center;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+      }
+
+      /* Mobile Menu Overlay */
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--surface);
+        padding: var(--space-6);
+        z-index: 999;
+        flex-direction: column;
+        gap: var(--space-4);
+        animation: slideDown 0.3s ease;
+      }
+
+      .mobile-menu.open {
+        display: flex;
+      }
+
+      .mobile-menu a {
+        font-size: var(--font-size-lg);
+        font-weight: 500;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius);
+        transition: background 0.2s ease;
+      }
+
+      .mobile-menu a:hover {
+        background-color: var(--surface-alt);
+      }
+
+      .mobile-menu .btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: var(--space-2);
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
+
+      /* ========================================
+                   HERO SECTION
+                   ======================================== */
+      .hero {
+        padding-top: calc(var(--header-height) + var(--space-16));
+        padding-bottom: var(--space-16);
+        background: linear-gradient(
+          135deg,
+          var(--primary-light) 0%,
+          #ffffff 70%
+        );
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-12);
+        align-items: center;
+      }
+
+      .hero-content h1 {
+        font-size: var(--font-size-5xl);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: var(--space-4);
+        letter-spacing: -0.02em;
+      }
+
+      .hero-content h1 .highlight {
+        color: var(--primary);
+        position: relative;
+      }
+
+      .hero-content h1 .highlight::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background-color: var(--primary-light);
+        border-radius: var(--radius-full);
+        z-index: -1;
+      }
+
+      .hero-content p {
+        font-size: var(--font-size-lg);
+        color: var(--text-secondary);
+        max-width: 500px;
+        margin-bottom: var(--space-8);
+        line-height: 1.8;
+      }
+
+      .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+
+      .hero-stats {
+        display: flex;
+        gap: var(--space-8);
+        margin-top: var(--space-8);
+        padding-top: var(--space-8);
+        border-top: 1px solid var(--border);
+      }
+
+      .hero-stats .stat {
+        text-align: center;
+      }
+
+      .hero-stats .stat-number {
+        font-size: var(--font-size-3xl);
+        font-weight: 800;
+        color: var(--text-primary);
+      }
+
+      .hero-stats .stat-label {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+      }
+
+      .hero-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .hero-image-placeholder {
+        width: 100%;
+        max-width: 500px;
+        aspect-ratio: 4/3;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-hover) 100%
+        );
+        border-radius: var(--radius-xl);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        padding: var(--space-8);
+        text-align: center;
+        box-shadow: var(--shadow-xl);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-image-placeholder::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+      }
+
+      .hero-image-placeholder i {
+        font-size: 80px;
+        margin-bottom: var(--space-4);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-image-placeholder h3 {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-image-placeholder p {
+        font-size: var(--font-size-sm);
+        opacity: 0.8;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ========================================
+                   FEATURES SECTION
+                   ======================================== */
+      .features {
+        padding: var(--space-16) 0;
+        background-color: var(--surface);
+      }
+
+      .section-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto var(--space-12);
+      }
+
+      .section-header h2 {
+        font-size: var(--font-size-4xl);
+        font-weight: 800;
+        margin-bottom: var(--space-3);
+        letter-spacing: -0.02em;
+      }
+
+      .section-header p {
+        font-size: var(--font-size-lg);
+        color: var(--text-secondary);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-6);
+      }
+
+      .feature-card {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+      }
+
+      .feature-card .icon {
+        width: 64px;
+        height: 64px;
+        background-color: var(--primary-light);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--space-4);
+        font-size: 28px;
+        color: var(--primary);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover .icon {
+        background-color: var(--primary);
+        color: #ffffff;
+        transform: scale(1.05);
+      }
+
+      .feature-card h3 {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-2);
+      }
+
+      .feature-card p {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        line-height: 1.7;
+      }
+
+      /* ========================================
+                   TESTIMONIALS / TRUST SECTION
+                   ======================================== */
+      .testimonials {
+        padding: var(--space-16) 0;
+        background-color: var(--background);
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-6);
+      }
+
+      .testimonial-card {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+
+      .testimonial-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .testimonial-card .stars {
+        color: var(--warning);
+        font-size: var(--font-size-base);
+        margin-bottom: var(--space-3);
+      }
+
+      .testimonial-card blockquote {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: var(--space-4);
+        font-style: italic;
+      }
+
+      .testimonial-card .author {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .testimonial-card .author-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--primary)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: var(--font-size-sm);
+        flex-shrink: 0;
+      }
+
+      .testimonial-card .author-info h4 {
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+      }
+
+      .testimonial-card .author-info p {
+        font-size: var(--font-size-xs);
+        color: var(--text-secondary);
+      }
+
+      /* ========================================
+                   CTA SECTION
+                   ======================================== */
+      .cta {
+        padding: var(--space-16) 0;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: #ffffff;
+        text-align: center;
+      }
+
+      .cta h2 {
+        font-size: var(--font-size-4xl);
+        font-weight: 800;
+        margin-bottom: var(--space-4);
+        letter-spacing: -0.02em;
+      }
+
+      .cta p {
+        font-size: var(--font-size-lg);
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto var(--space-8);
+      }
+
+      .cta .btn {
+        background-color: #ffffff;
+        color: var(--primary);
+      }
+
+      .cta .btn:hover {
+        background-color: var(--surface-alt);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      /* ========================================
+                   FOOTER
+                   ======================================== */
+      .footer {
+        background-color: var(--text-primary);
+        color: var(--text-muted);
+        padding: var(--space-12) 0 var(--space-6);
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: var(--space-8);
+        margin-bottom: var(--space-8);
+      }
+
+      .footer-brand .logo {
+        color: #ffffff;
+        margin-bottom: var(--space-4);
+      }
+
+      .footer-brand .logo span {
+        color: #ffffff;
+      }
+
+      .footer-brand p {
+        font-size: var(--font-size-sm);
+        line-height: 1.7;
+        max-width: 300px;
+      }
+
+      .footer-col h4 {
+        color: #ffffff;
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        margin-bottom: var(--space-4);
+      }
+
+      .footer-col a {
+        display: block;
+        font-size: var(--font-size-sm);
+        color: var(--text-muted);
+        padding: var(--space-1) 0;
+        transition: color 0.2s ease;
+      }
+
+      .footer-col a:hover {
+        color: #ffffff;
+      }
+
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: var(--space-6);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+
+      .footer-bottom p {
+        font-size: var(--font-size-sm);
+      }
+
+      .footer-social {
+        display: flex;
+        gap: var(--space-4);
+      }
+
+      .footer-social a {
+        color: var(--text-muted);
+        font-size: var(--font-size-lg);
+        transition: color 0.2s ease;
+      }
+
+      .footer-social a:hover {
+        color: #ffffff;
+      }
+
+      /* ========================================
+                   LOADING SPINNER
+                   ======================================== */
+      .spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 3px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ========================================
+                   RESPONSIVE - TABLET
+                   ======================================== */
+      @media (max-width: 1024px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-8);
+          text-align: center;
+        }
+
+        .hero-content p {
+          margin: 0 auto var(--space-8);
+        }
+
+        .hero-buttons {
+          justify-content: center;
+        }
+
+        .hero-stats {
+          justify-content: center;
+        }
+
+        .hero-image {
+          order: -1;
+        }
+
+        .features-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .testimonials-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .footer-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* ========================================
+                   RESPONSIVE - MOBILE
+                   ======================================== */
+      @media (max-width: 768px) {
+        :root {
+          --font-size-5xl: 32px;
+          --font-size-4xl: 28px;
+          --font-size-3xl: 24px;
+          --header-height: 60px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .nav-actions .btn {
+          display: none;
+        }
+
+        .hamburger {
+          display: flex;
+        }
+
+        .hero {
+          padding-top: calc(var(--header-height) + var(--space-8));
+          padding-bottom: var(--space-8);
+          min-height: auto;
+        }
+
+        .hero-stats {
+          flex-direction: column;
+          gap: var(--space-4);
+          align-items: center;
+        }
+
+        .hero-image-placeholder {
+          max-width: 100%;
+          aspect-ratio: 16/10;
+        }
+
+        .hero-image-placeholder i {
+          font-size: 48px;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .testimonials-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .section-header h2 {
+          font-size: var(--font-size-3xl);
+        }
+
+        .cta h2 {
+          font-size: var(--font-size-3xl);
+        }
+
+        .cta .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+
+      /* ========================================
+                   RESPONSIVE - SMALL MOBILE
+                   ======================================== */
+      @media (max-width: 480px) {
+        :root {
+          --container-padding: 16px;
+        }
+
+        .hero-content h1 {
+          font-size: 28px;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .hero-buttons .btn {
+          width: 100%;
+          max-width: 280px;
+        }
+
+        .feature-card {
+          padding: var(--space-6);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================
+    HEADER / NAVIGATION
+    ============================================ -->
+    <header class="header" role="banner" aria-label="Main navigation">
+      <div class="header-inner">
+        <!-- Logo -->
+        <a href="index.html" class="logo" aria-label="Recruiter Home">
+          <img
+            src="/recruitment-platform/frontend/assets/images/logo.png"
+            alt="Recruiter Logo"
+            style="height: 50px"
+            width="50"
+          />
+        </a>
+
+        <!-- Navigation Links (Desktop) -->
+        <nav
+          class="nav-links"
+          role="navigation"
+          aria-label="Primary navigation"
+        >
+          <a href="#features">Features</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <a href="auth/login.html" class="btn btn-outline-primary btn-sm"
+            >Sign In</a
+          >
+          <a href="auth/register.html" class="btn btn-primary btn-sm"
+            >Get Started</a
+          >
+
+          <!-- Hamburger Menu Button -->
+          <button
+            class="hamburger"
+            id="hamburgerBtn"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================
+    MOBILE MENU OVERLAY
+    ============================================ -->
+    <nav
+      class="mobile-menu"
+      id="mobileMenu"
+      role="navigation"
+      aria-label="Mobile navigation"
+    >
+      <a href="#features" class="mobile-link">Features</a>
+      <a href="#testimonials" class="mobile-link">Testimonials</a>
+      <a href="#about" class="mobile-link">About</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+      <hr style="border-color: var(--border); margin: var(--space-2) 0" />
+      <a href="auth/login.html" class="btn btn-outline-primary">Sign In</a>
+      <a href="auth/register.html" class="btn btn-primary">Get Started</a>
+    </nav>
+
+    <!-- ============================================
+    HERO SECTION
+    ============================================ -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-grid">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <h1 id="hero-title">
+              AI-Powered <br />
+              <span class="highlight">Recruitment</span> <br />
+              Talent Platform
+            </h1>
+            <p>
+              Modernize your recruitment lifecycle with AI-driven candidate
+              screening, job matching, interview scheduling, and talent
+              analytics.
+            </p>
+            <div class="hero-buttons">
+              <a href="auth/register.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket"></i> Get Started Free
+              </a>
+              <a href="#features" class="btn btn-outline btn-lg">
+                <i class="fas fa-play-circle"></i> See Features
+              </a>
+            </div>
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Active Candidates</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Companies</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Match Accuracy</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Image / Placeholder -->
+          <div class="hero-image">
+            <div class="hero-image-placeholder">
+              <i class="fas fa-robot"></i>
+              <h3>AI-Powered Recruitment</h3>
+              <p>Smart matching • Automated screening • Real-time analytics</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+    FEATURES SECTION
+    ============================================ -->
+    <section class="features" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="features-title">
+            Powerful Features for <br />Modern Recruitment
+          </h2>
+          <p>
+            Everything you need to streamline your hiring process from end to
+            end.
+          </p>
+        </div>
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-file-alt"></i></div>
+            <h3>AI Resume Parsing</h3>
+            <p>
+              Automatically extract skills, experience, and education from
+              resumes using advanced AI technology.
+            </p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Smart Candidate Ranking</h3>
+            <p>
+              AI-powered ranking system that scores candidates based on job
+              requirements and skill matching.
+            </p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-calendar-check"></i></div>
+            <h3>Automated Scheduling</h3>
+            <p>
+              Seamless interview scheduling with calendar integration for Google
+              and Outlook.
+            </p>
+          </div>
+          <!-- Feature 4 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-users"></i></div>
+            <h3>Role-Based Portals</h3>
+            <p>
+              Dedicated portals for Candidates, Recruiters, Hiring Managers, and
+              Administrators.
+            </p>
+          </div>
+          <!-- Feature 5 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-bell"></i></div>
+            <h3>Smart Notifications</h3>
+            <p>
+              Automated email and SMS notifications for application status
+              updates and interview reminders.
+            </p>
+          </div>
+          <!-- Feature 6 -->
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-chart-pie"></i></div>
+            <h3>Analytics Dashboard</h3>
+            <p>
+              Real-time recruitment KPIs, time-to-hire metrics, and
+              department-wise performance tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+    TESTIMONIALS SECTION
+    ============================================ -->
+    <section
+      class="testimonials"
+      id="testimonials"
+      aria-labelledby="testimonials-title"
+    >
+      <div class="container">
+        <div class="section-header">
+          <h2 id="testimonials-title">What Our Users Say</h2>
+          <p>Trusted by HR professionals and candidates worldwide.</p>
+        </div>
+        <div class="testimonials-grid">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+              "RecruitAI has transformed our hiring process. We've reduced
+              time-to-hire by 60% and improved candidate quality significantly."
+            </blockquote>
+            <div class="author">
+              <div class="author-avatar">JD</div>
+              <div class="author-info">
+                <h4>John Doe</h4>
+                <p>Head of Talent, TechCorp</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+              "As a recruiter, the AI ranking feature saves me hours of manual
+              screening. The match scores are incredibly accurate."
+            </blockquote>
+            <div class="author">
+              <div class="author-avatar">SM</div>
+              <div class="author-info">
+                <h4>Sarah Miller</h4>
+                <p>Senior Recruiter, GlobalHR</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+              "The candidate experience is seamless. I found my dream job
+              through AI-powered recommendations that matched my skills
+              perfectly."
+            </blockquote>
+            <div class="author">
+              <div class="author-avatar">AK</div>
+              <div class="author-info">
+                <h4>Alex Kumar</h4>
+                <p>Software Engineer, InnoTech</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+    CTA SECTION
+    ============================================ -->
+    <section class="cta" id="about" aria-labelledby="cta-title">
+      <div class="container">
+        <h2 id="cta-title">Ready to Transform Your Recruitment?</h2>
+        <p>
+          Join thousands of companies using AI to find and hire the best talent
+          faster.
+        </p>
+        <a href="auth/register.html" class="btn btn-lg">
+          <i class="fas fa-arrow-right"></i> Start Your Free Trial
+        </a>
+      </div>
+    </section>
+
+    <!-- ============================================
+    FOOTER
+    ============================================ -->
+    <footer class="footer" id="contact" role="contentinfo">
+      <div class="container">
+        <div class="footer-grid">
+          <!-- Brand -->
+          <div class="footer-brand">
+            <a href="index.html" class="logo">
+              <span class="logo-icon"><i class="fas fa-brain"></i></span>
+              Recruit<span>AI</span>
+            </a>
+            <p>
+              AI-Powered Recruitment Platform for modern hiring teams. Find the
+              right talent faster with intelligent matching.
+            </p>
+          </div>
+          <!-- Product -->
+          <div class="footer-col">
+            <h4>Product</h4>
+            <a href="#features">Features</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#">Pricing</a>
+            <a href="#">Integrations</a>
+          </div>
+          <!-- Company -->
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="#">About</a>
+            <a href="#">Careers</a>
+            <a href="#">Blog</a>
+            <a href="#">Contact</a>
+          </div>
+          <!-- Support -->
+          <div class="footer-col">
+            <h4>Support</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Documentation</a>
+            <a href="#">API Status</a>
+            <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 RecruitAI. All rights reserved.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+      (function () {
+        "use strict";
+
+        // ============================================
+        // MOBILE HAMBURGER MENU TOGGLE
+        // ============================================
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        function toggleMenu() {
+          const isOpen = mobileMenu.classList.toggle("open");
+          hamburgerBtn.classList.toggle("active");
+          hamburgerBtn.setAttribute("aria-expanded", isOpen);
+
+          // Prevent body scroll when menu is open
+          document.body.style.overflow = isOpen ? "hidden" : "";
+        }
+
+        hamburgerBtn.addEventListener("click", toggleMenu);
+
+        // Close menu on link click (mobile)
+        const mobileLinks = mobileMenu.querySelectorAll(".mobile-link");
+        mobileLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (mobileMenu.classList.contains("open")) {
+              toggleMenu();
+            }
+          });
+        });
+
+        // Close menu on Escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+            toggleMenu();
+          }
+        });
+
+        // ============================================
+        // SMOOTH SCROLL FOR NAV LINKS
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              e.preventDefault();
+              const headerOffset = 80;
+              const elementPosition = targetElement.getBoundingClientRect().top;
+              const offsetPosition =
+                elementPosition + window.pageYOffset - headerOffset;
+
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth",
+              });
+            }
+          });
+        });
+
+        // ============================================
+        // BUTTON CLICK HANDLERS (Placeholders)
+        // ============================================
+        document.querySelectorAll(".btn").forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            const isPrimary = this.classList.contains("btn-primary");
+            const isOutline = this.classList.contains("btn-outline");
+
+            // Don't intercept navigation buttons
+            if (this.closest(".nav-actions") || this.closest(".mobile-menu")) {
+              return;
+            }
+
+            // For demo/placeholder actions
+            if (
+              this.getAttribute("href") &&
+              this.getAttribute("href").startsWith("#")
+            ) {
+              return; // Let smooth scroll handle it
+            }
+
+            if (
+              !this.getAttribute("href") ||
+              this.getAttribute("href") === "#"
+            ) {
+              e.preventDefault();
+              console.log(`Button clicked: ${this.textContent.trim()}`);
+
+              // Show loading spinner demo
+              const originalText = this.innerHTML;
+              this.innerHTML = '<span class="spinner"></span> Loading...';
+              this.disabled = true;
+
+              setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+
+                // Toast-like feedback (simple alert replacement)
+                const feedback = document.createElement("div");
+                feedback.style.cssText = `
+                                position: fixed;
+                                bottom: 24px;
+                                right: 24px;
+                                background: var(--primary);
+                                color: white;
+                                padding: 16px 24px;
+                                border-radius: var(--radius);
+                                box-shadow: var(--shadow-lg);
+                                font-family: var(--font-family);
+                                font-size: var(--font-size-sm);
+                                font-weight: 500;
+                                z-index: 9999;
+                                animation: slideUp 0.3s ease;
+                            `;
+                feedback.textContent = `✅ Action triggered: ${this.textContent.trim()}`;
+                document.body.appendChild(feedback);
+
+                setTimeout(() => {
+                  feedback.style.opacity = "0";
+                  feedback.style.transition = "opacity 0.3s ease";
+                  setTimeout(() => feedback.remove(), 300);
+                }, 3000);
+              }, 1500);
+            }
+          });
+        });
+
+        // ============================================
+        // SCROLL ANIMATION (Intersection Observer)
+        // ============================================
+        const animateElements = document.querySelectorAll(
+          ".feature-card, .testimonial-card",
+        );
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry, index) => {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = "0";
+                entry.target.style.transform = "translateY(30px)";
+                entry.target.style.transition = `all 0.6s ease ${index * 0.1}s`;
+
+                setTimeout(() => {
+                  entry.target.style.opacity = "1";
+                  entry.target.style.transform = "translateY(0)";
+                }, 100);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+          },
+        );
+
+        animateElements.forEach((el) => observer.observe(el));
+
+        // Set initial state for animation
+        animateElements.forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(30px)";
+        });
+
+        // Trigger animation for elements already visible
+        setTimeout(() => {
+          animateElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+              el.style.opacity = "1";
+              el.style.transform = "translateY(0)";
+            }
+          });
+        }, 100);
+
+        // ============================================
+        // ACTIVE NAV LINK HIGHLIGHT
+        // ============================================
+        const sections = document.querySelectorAll("section[id]");
+
+        window.addEventListener("scroll", () => {
+          let current = "";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop - 120;
+            if (window.pageYOffset >= sectionTop) {
+              current = section.getAttribute("id");
+            }
+          });
+
+          document.querySelectorAll(".nav-links a").forEach((link) => {
+            link.style.color = "var(--text-secondary)";
+            if (link.getAttribute("href") === `#${current}`) {
+              link.style.color = "var(--primary)";
+            }
+          });
+        });
+
+        // ============================================
+        // ADD KEYBOARD SUPPORT FOR HAMBURGER
+        // ============================================
+        hamburgerBtn.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleMenu();
+          }
+        });
+
+        // Focus trap for mobile menu
+        mobileMenu.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            toggleMenu();
+            hamburgerBtn.focus();
+          }
+        });
+
+        console.log("🚀 RecruitAI Landing Page Loaded Successfully!");
+      })();
     </script>
-    <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="bg-surface text-on-surface font-body-base antialiased selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen flex flex-col">
-
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 z-[100] bg-surface flex items-center justify-center transition-opacity duration-500">
-        <div class="flex flex-col items-center gap-6 animate-fade-in">
-            <div class="relative">
-                <span class="material-symbols-outlined text-primary text-[48px] animate-pulse-slow">psychology</span>
-                <div class="absolute -inset-3 rounded-full border-2 border-primary/20 animate-spin-slow"></div>
-                <div class="absolute -inset-6 rounded-full border border-primary/10 animate-spin-reverse"></div>
-            </div>
-            <div class="text-center">
-                <h1 class="text-headline-md font-headline-md text-primary mb-1">RecruitAI</h1>
-                <p class="text-label-sm text-on-surface-variant">Loading your workspace...</p>
-            </div>
-            <div class="w-48 h-1 bg-surface-container-high rounded-full overflow-hidden">
-                <div class="h-full bg-primary rounded-full animate-loading-bar"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- App Shell -->
-    <div id="app" class="opacity-0 transition-opacity duration-500 min-h-screen flex flex-col">
-        <!-- Top Navigation Bar -->
-        <header id="top-nav" class="bg-surface-container-lowest border-b border-outline-variant shadow-sm w-full sticky top-0 z-50">
-            <div class="flex justify-between items-center w-full px-lg md:px-xl max-w-container-max mx-auto h-16">
-                <!-- Brand -->
-                <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('profile')">
-                    <span class="material-symbols-outlined text-primary text-[28px]">psychology</span>
-                    <span class="font-headline-md text-headline-md font-bold text-primary">RecruitAI</span>
-                </div>
-
-                <!-- Desktop Navigation Links -->
-                <nav class="hidden md:flex items-center gap-1 h-full">
-                    <a href="#profile" onclick="navigateTo('profile'); return false;" 
-                       class="nav-link px-4 py-2 rounded-lg text-on-surface-variant font-body-base hover:bg-surface-container-high hover:text-primary transition-all duration-200 flex items-center gap-2"
-                       data-page="profile">
-                        <span class="material-symbols-outlined text-[20px]">person</span>
-                        Profile
-                    </a>
-                    <a href="#analytics" onclick="navigateTo('analytics'); return false;" 
-                       class="nav-link px-4 py-2 rounded-lg text-on-surface-variant font-body-base hover:bg-surface-container-high hover:text-primary transition-all duration-200 flex items-center gap-2"
-                       data-page="analytics">
-                        <span class="material-symbols-outlined text-[20px]">analytics</span>
-                        Analytics
-                    </a>
-                    <a href="#settings" onclick="navigateTo('settings'); return false;" 
-                       class="nav-link px-4 py-2 rounded-lg text-on-surface-variant font-body-base hover:bg-surface-container-high hover:text-primary transition-all duration-200 flex items-center gap-2"
-                       data-page="settings">
-                        <span class="material-symbols-outlined text-[20px]">settings</span>
-                        Settings
-                    </a>
-                </nav>
-
-                <!-- Search & Actions -->
-                <div class="flex items-center gap-md">
-                    <div class="hidden lg:flex items-center bg-surface-container-low rounded-full px-md py-sm border border-outline-variant focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-fixed transition-all">
-                        <span class="material-symbols-outlined text-on-surface-variant text-sm mr-sm">search</span>
-                        <input class="bg-transparent border-none focus:ring-0 text-body-base font-body-base w-48 text-on-surface p-0 placeholder-on-surface-variant" placeholder="Search..." type="text" />
-                    </div>
-                    <button class="relative text-on-surface-variant hover:text-primary transition-colors duration-200 p-1" id="notification-btn">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-error rounded-full animate-pulse"></span>
-                    </button>
-                    <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-surface-container-high hover:border-primary transition-colors cursor-pointer" onclick="navigateTo('profile')">
-                        <img alt="User profile avatar" class="w-full h-full object-cover"
-                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPcXjPinq21DzokgVaxRAV-T9EUfxbr5qiERIVihvgrpoEXi15qJmhl590x3s1P3InmEtIbMYiMG0unb-pMruZtTzhbDugGXpN_-usPYcmwFZ1lkmHTqWvH568X96Oq90BR32so7EwvxvCi8jyJSJn4dg73b357B-DweaRp2XR56Dy4PhwhU5XOl_sSDLllM2omHiqXR5CXDXU6kzSbmFIa04kZLRAQTYBkIzqME-bD4VLu1ckh4RWLI4haNYq8blg6VOwbZjA2Bw7" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mobile Navigation -->
-            <div class="md:hidden border-t border-outline-variant">
-                <div class="flex justify-around px-md py-1">
-                    <a href="#profile" onclick="navigateTo('profile'); return false;" 
-                       class="nav-link flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-lg text-on-surface-variant transition-all duration-200"
-                       data-page="profile">
-                        <span class="material-symbols-outlined text-[20px]">person</span>
-                        <span class="text-[10px] font-medium">Profile</span>
-                    </a>
-                    <a href="#analytics" onclick="navigateTo('analytics'); return false;" 
-                       class="nav-link flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-lg text-on-surface-variant transition-all duration-200"
-                       data-page="analytics">
-                        <span class="material-symbols-outlined text-[20px]">analytics</span>
-                        <span class="text-[10px] font-medium">Analytics</span>
-                    </a>
-                    <a href="#settings" onclick="navigateTo('settings'); return false;" 
-                       class="nav-link flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-lg text-on-surface-variant transition-all duration-200"
-                       data-page="settings">
-                        <span class="material-symbols-outlined text-[20px]">settings</span>
-                        <span class="text-[10px] font-medium">Settings</span>
-                    </a>
-                </div>
-            </div>
-        </header>
-
-        <!-- Page Container -->
-        <div id="page-container" class="flex-1 flex">
-
-            <!-- ===================== PROFILE PAGE ===================== -->
-            <div id="page-profile" class="page hidden w-full">
-                <div class="flex flex-col md:flex-row min-h-[calc(100vh-4rem)]">
-                    <!-- Profile Sidebar -->
-                    <aside class="hidden md:flex flex-col py-lg px-md w-64 bg-surface border-r border-surface-variant shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
-                        <div class="flex flex-col items-center mb-xl text-center px-2">
-                            <div class="relative group cursor-pointer mb-md">
-                                <img alt="Candidate Profile Picture" class="w-20 h-20 rounded-full object-cover border-2 border-surface-container-lowest ambient-shadow transition-transform group-hover:scale-105"
-                                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPcXjPinq21DzokgVaxRAV-T9EUfxbr5qiERIVihvgrpoEXi15qJmhl590x3s1P3InmEtIbMYiMG0unb-pMruZtTzhbDugGXpN_-usPYcmwFZ1lkmHTqWvH568X96Oq90BR32so7EwvxvCi8jyJSJn4dg73b357B-DweaRp2XR56Dy4PhwhU5XOl_sSDLllM2omHiqXR5CXDXU6kzSbmFIa04kZLRAQTYBkIzqME-bD4VLu1ckh4RWLI4haNYq8blg6VOwbZjA2Bw7" />
-                                <div class="absolute inset-0 bg-on-surface/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="material-symbols-outlined text-on-primary">photo_camera</span>
-                                </div>
-                            </div>
-                            <h2 class="text-headline-md font-headline-md text-on-surface mb-xs">Alex Rivers</h2>
-                            <p class="text-body-base font-body-base text-on-surface-variant mb-md">Senior UI Designer</p>
-                            <button class="text-label-caps font-label-caps text-primary border border-surface-variant rounded-lg px-3 py-1.5 hover:bg-surface-container-high transition-colors w-full flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-[16px]">upload</span>
-                                Upload Photo
-                            </button>
-                        </div>
-                        <!-- Profile Sub-Navigation -->
-                        <nav class="flex-1 flex flex-col gap-1">
-                            <a class="profile-sub-nav flex items-center gap-3 px-3 py-2 text-primary font-body-strong bg-primary-fixed rounded-lg transition-all" href="#" data-section="personal">
-                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person</span>
-                                Profile
-                            </a>
-                            <a class="profile-sub-nav flex items-center gap-3 px-3 py-2 text-on-surface-variant font-body-base hover:bg-surface-container-high rounded-lg transition-all" href="#" data-section="experience">
-                                <span class="material-symbols-outlined text-[20px]">work</span>
-                                Experience
-                            </a>
-                            <a class="profile-sub-nav flex items-center gap-3 px-3 py-2 text-on-surface-variant font-body-base hover:bg-surface-container-high rounded-lg transition-all" href="#" data-section="education">
-                                <span class="material-symbols-outlined text-[20px]">school</span>
-                                Education
-                            </a>
-                            <a class="profile-sub-nav flex items-center gap-3 px-3 py-2 text-on-surface-variant font-body-base hover:bg-surface-container-high rounded-lg transition-all" href="#" data-section="skills">
-                                <span class="material-symbols-outlined text-[20px]">psychology</span>
-                                Skills
-                            </a>
-                            <a class="profile-sub-nav flex items-center gap-3 px-3 py-2 text-on-surface-variant font-body-base hover:bg-surface-container-high rounded-lg transition-all" href="#settings" onclick="navigateTo('settings'); return false;" data-section="settings">
-                                <span class="material-symbols-outlined text-[20px]">settings</span>
-                                Settings
-                            </a>
-                        </nav>
-                        <!-- CTA -->
-                        <div class="mt-auto pt-lg border-t border-surface-variant">
-                            <button class="w-full py-2.5 rounded-lg bg-surface-container-highest text-on-surface text-label-sm font-body-strong hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                View Public Profile
-                            </button>
-                        </div>
-                    </aside>
-
-                    <!-- Profile Main Content -->
-                    <main class="flex-1 overflow-y-auto bg-surface p-md md:p-xl w-full">
-                        <div class="max-w-3xl mx-auto space-y-xl pb-xl">
-                            <!-- Header -->
-                            <header class="mb-lg">
-                                <h1 class="text-display font-display text-on-surface mb-xs">Profile Management</h1>
-                                <p class="text-body-base font-body-base text-on-surface-variant">Update your personal details, experience, and upload your latest CV to improve AI matching.</p>
-                            </header>
-
-                            <!-- Personal Info -->
-                            <section id="section-personal" class="bg-surface-container-lowest border border-surface-variant rounded-xl p-lg ambient-shadow content-section">
-                                <h2 class="text-headline-md font-headline-md text-on-surface mb-md flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary">badge</span>
-                                    Personal Information
-                                </h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-                                    <div class="space-y-1">
-                                        <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Full Name</label>
-                                        <input id="input-fullname" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline" type="text" value="Alex Rivers" />
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Email Address</label>
-                                        <input id="input-email" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline" type="email" value="alex.rivers@design.com" />
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Phone Number</label>
-                                        <input id="input-phone" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline" type="tel" value="+1 (555) 019-2834" />
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Location</label>
-                                        <div class="relative">
-                                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">location_on</span>
-                                            <input id="input-location" class="w-full bg-surface border border-surface-variant rounded-lg pl-10 pr-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline" type="text" value="San Francisco, CA" />
-                                        </div>
-                                    </div>
-                                    <div class="space-y-1 md:col-span-2">
-                                        <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">LinkedIn URL</label>
-                                        <div class="relative">
-                                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">link</span>
-                                            <input id="input-linkedin" class="w-full bg-surface border border-surface-variant rounded-lg pl-10 pr-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline" type="url" value="linkedin.com/in/alexrivers" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <!-- Work Experience -->
-                            <section id="section-experience" class="space-y-md content-section">
-                                <div class="flex items-center justify-between">
-                                    <h2 class="text-headline-md font-headline-md text-on-surface flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-primary">work_history</span>
-                                        Work Experience
-                                    </h2>
-                                    <button id="btn-add-experience" class="text-primary text-label-sm font-body-strong hover:bg-primary-fixed px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[18px]">add</span>
-                                        Add
-                                    </button>
-                                </div>
-                                <!-- Experience Card 1 -->
-                                <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md md:p-lg ambient-shadow relative group">
-                                    <button class="absolute top-4 right-4 text-outline hover:text-error transition-colors opacity-0 group-hover:opacity-100">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                    </button>
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center border border-surface-variant shrink-0">
-                                            <span class="material-symbols-outlined text-outline">apartment</span>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-body-strong font-body-strong text-on-surface">Senior UI Designer</h3>
-                                            <p class="text-body-base font-body-base text-primary mb-1">TechFlow Inc.</p>
-                                            <p class="text-label-sm font-label-sm text-on-surface-variant mb-3 flex items-center gap-1">
-                                                <span class="material-symbols-outlined text-[14px]">calendar_today</span>
-                                                Jan 2021 - Present &bull; 3 yrs 5 mos
-                                            </p>
-                                            <p class="text-body-base font-body-base text-on-surface-variant leading-relaxed">
-                                                Lead the redesign of the core SaaS platform, improving user retention by 24%. Managed a team of 3 junior designers and established the company's first comprehensive design system.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Add Experience Button -->
-                                <button id="btn-add-experience-large" class="w-full border-2 border-dashed border-surface-variant rounded-xl p-4 text-on-surface-variant hover:border-primary hover:text-primary hover:bg-primary-fixed/20 transition-all flex flex-col items-center justify-center gap-2 group">
-                                    <div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">add</span>
-                                    </div>
-                                    <span class="text-label-sm font-body-strong">Add New Experience</span>
-                                </button>
-                            </section>
-
-                            <!-- Education -->
-                            <section id="section-education" class="space-y-md content-section">
-                                <div class="flex items-center justify-between">
-                                    <h2 class="text-headline-md font-headline-md text-on-surface flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-primary">school</span>
-                                        Education
-                                    </h2>
-                                    <button id="btn-add-education" class="text-primary text-label-sm font-body-strong hover:bg-primary-fixed px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[18px]">add</span>
-                                        Add
-                                    </button>
-                                </div>
-                                <!-- Education Card -->
-                                <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md md:p-lg ambient-shadow flex items-start gap-4">
-                                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center border border-surface-variant shrink-0">
-                                        <span class="material-symbols-outlined text-outline">account_balance</span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-body-strong font-body-strong text-on-surface">BFA in Interaction Design</h3>
-                                        <p class="text-body-base font-body-base text-on-surface-variant mb-1">California College of the Arts</p>
-                                        <p class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
-                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
-                                            2015 - 2019
-                                        </p>
-                                    </div>
-                                    <button class="text-outline hover:text-primary transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">edit</span>
-                                    </button>
-                                </div>
-                            </section>
-
-                            <!-- Skills -->
-                            <section id="section-skills" class="space-y-md content-section">
-                                <div class="flex items-center justify-between">
-                                    <h2 class="text-headline-md font-headline-md text-on-surface flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-primary">psychology</span>
-                                        Skills
-                                    </h2>
-                                    <button id="btn-add-skill" class="text-primary text-label-sm font-body-strong hover:bg-primary-fixed px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[18px]">add</span>
-                                        Add Skill
-                                    </button>
-                                </div>
-
-                                <!-- Add Skill Modal (inline) -->
-                                <div id="skill-add-form" class="hidden bg-surface-container-lowest border border-primary/30 rounded-xl p-md ambient-shadow animate-skill-form-in">
-                                    <div class="flex items-center gap-2 mb-md">
-                                        <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
-                                        <h3 class="text-body-strong font-body-strong text-on-surface">Add New Skill</h3>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
-                                        <div class="space-y-1">
-                                            <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Skill Name</label>
-                                            <input id="input-skill-name" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline" type="text" placeholder="e.g. React, Python..." />
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Category</label>
-                                            <select id="input-skill-category" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all">
-                                                <option value="design">Design</option>
-                                                <option value="technical">Technical</option>
-                                                <option value="soft">Soft Skills</option>
-                                                <option value="tools">Tools & Platforms</option>
-                                            </select>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Proficiency</label>
-                                            <select id="input-skill-level" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all">
-                                                <option value="expert">Expert</option>
-                                                <option value="advanced">Advanced</option>
-                                                <option value="intermediate" selected>Intermediate</option>
-                                                <option value="beginner">Beginner</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center justify-end gap-3 mt-md">
-                                        <button id="btn-cancel-skill" class="text-body-strong font-body-strong text-on-surface-variant px-4 py-2 rounded-lg hover:bg-surface-container transition-colors">Cancel</button>
-                                        <button id="btn-confirm-skill" class="bg-primary text-on-primary text-body-strong font-body-strong px-5 py-2 rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-1.5">
-                                            <span class="material-symbols-outlined text-[18px]">check</span>
-                                            Add
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Skill Category: Design -->
-                                <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md md:p-lg ambient-shadow skill-category-card" data-category="design">
-                                    <div class="flex items-center gap-2 mb-md">
-                                        <div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-primary text-[18px]">palette</span>
-                                        </div>
-                                        <h3 class="text-body-strong font-body-strong text-on-surface">Design</h3>
-                                        <span class="text-label-sm font-label-sm text-on-surface-variant ml-auto">4 skills</span>
-                                    </div>
-                                    <div class="space-y-3" id="skills-design">
-                                        <!-- Skill Row: UI/UX Design -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="UI/UX Design">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">UI/UX Design</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">Expert</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-primary transition-all duration-700" style="width: 95%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: Design Systems -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Design Systems">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Design Systems</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">Expert</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-primary transition-all duration-700" style="width: 92%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: Prototyping -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Prototyping">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Prototyping</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">Advanced</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-secondary transition-all duration-700" style="width: 80%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: User Research -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="User Research">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">User Research</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">Advanced</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-secondary transition-all duration-700" style="width: 75%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Skill Category: Technical -->
-                                <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md md:p-lg ambient-shadow skill-category-card" data-category="technical">
-                                    <div class="flex items-center gap-2 mb-md">
-                                        <div class="w-8 h-8 rounded-lg bg-secondary-fixed/30 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-secondary text-[18px]">code</span>
-                                        </div>
-                                        <h3 class="text-body-strong font-body-strong text-on-surface">Technical</h3>
-                                        <span class="text-label-sm font-label-sm text-on-surface-variant ml-auto">3 skills</span>
-                                    </div>
-                                    <div class="space-y-3" id="skills-technical">
-                                        <!-- Skill Row: HTML/CSS -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="HTML/CSS">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">HTML / CSS</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">Expert</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-primary transition-all duration-700" style="width: 90%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: JavaScript -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="JavaScript">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">JavaScript</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary border border-tertiary/20">Intermediate</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-tertiary transition-all duration-700" style="width: 60%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: React -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="React">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">React</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary border border-tertiary/20">Intermediate</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-tertiary transition-all duration-700" style="width: 55%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Skill Category: Tools & Platforms -->
-                                <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md md:p-lg ambient-shadow skill-category-card" data-category="tools">
-                                    <div class="flex items-center gap-2 mb-md">
-                                        <div class="w-8 h-8 rounded-lg bg-tertiary-fixed/30 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-tertiary text-[18px]">build</span>
-                                        </div>
-                                        <h3 class="text-body-strong font-body-strong text-on-surface">Tools & Platforms</h3>
-                                        <span class="text-label-sm font-label-sm text-on-surface-variant ml-auto">3 skills</span>
-                                    </div>
-                                    <div class="space-y-3" id="skills-tools">
-                                        <!-- Skill Row: Figma -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Figma">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Figma</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">Expert</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-primary transition-all duration-700" style="width: 98%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: Adobe Creative Suite -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Adobe Creative Suite">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Adobe Creative Suite</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">Advanced</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-secondary transition-all duration-700" style="width: 82%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: Jira / Confluence -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Jira / Confluence">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Jira / Confluence</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">Advanced</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-secondary transition-all duration-700" style="width: 78%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Skill Category: Soft Skills -->
-                                <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md md:p-lg ambient-shadow skill-category-card" data-category="soft">
-                                    <div class="flex items-center gap-2 mb-md">
-                                        <div class="w-8 h-8 rounded-lg bg-error-container/50 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-error text-[18px]">groups</span>
-                                        </div>
-                                        <h3 class="text-body-strong font-body-strong text-on-surface">Soft Skills</h3>
-                                        <span class="text-label-sm font-label-sm text-on-surface-variant ml-auto">3 skills</span>
-                                    </div>
-                                    <div class="space-y-3" id="skills-soft">
-                                        <!-- Skill Row: Team Leadership -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Team Leadership">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Team Leadership</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">Advanced</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-secondary transition-all duration-700" style="width: 85%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: Communication -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Communication">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Communication</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">Expert</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-primary transition-all duration-700" style="width: 90%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                        <!-- Skill Row: Problem Solving -->
-                                        <div class="skill-item group flex items-center gap-3" data-skill="Problem Solving">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-body-base font-body-base text-on-surface truncate">Problem Solving</span>
-                                                    <span class="skill-level-badge text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">Advanced</span>
-                                                </div>
-                                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                                                    <div class="skill-bar h-full rounded-full bg-secondary transition-all duration-700" style="width: 80%"></div>
-                                                </div>
-                                            </div>
-                                            <button class="skill-remove-btn text-outline hover:text-error transition-all opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-error-container" title="Remove skill">
-                                                <span class="material-symbols-outlined text-[16px]">close</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <!-- CV Upload -->
-                            <section id="section-cv" class="bg-surface-container-lowest border border-surface-variant rounded-xl p-lg ambient-shadow content-section">
-                                <h2 class="text-headline-md font-headline-md text-on-surface mb-xs flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary">description</span>
-                                    Resume / CV
-                                </h2>
-                                <p class="text-body-base font-body-base text-on-surface-variant mb-md">Our AI parses your resume to match you with the best roles.</p>
-                                <div id="cv-dropzone" class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center text-center bg-surface hover:bg-primary-fixed/10 hover:border-primary transition-all cursor-pointer group">
-                                    <div class="w-16 h-16 rounded-full bg-surface-container-lowest border border-surface-variant flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
-                                        <span class="material-symbols-outlined text-[32px] text-primary">cloud_upload</span>
-                                    </div>
-                                    <h3 class="text-body-strong font-body-strong text-on-surface mb-1">Drag &amp; Drop your CV here or Browse</h3>
-                                    <p class="text-label-sm font-label-sm text-on-surface-variant">Supported formats: .pdf, .docx, .txt (Max 5MB)</p>
-                                </div>
-                            </section>
-
-                            <!-- Footer Actions -->
-                            <div class="pt-md flex items-center justify-end gap-4 border-t border-surface-variant">
-                                <button id="btn-discard" class="text-body-strong font-body-strong text-on-surface-variant px-6 py-3 rounded-xl hover:bg-surface-container transition-colors">
-                                    Discard
-                                </button>
-                                <button id="btn-save-profile" class="bg-primary text-on-primary text-body-strong font-body-strong px-8 py-3 rounded-xl shadow-sm hover:opacity-90 hover:shadow-md transition-all flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]">save</span>
-                                    Save Changes
-                                </button>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            </div>
-
-            <!-- ===================== ANALYTICS PAGE ===================== -->
-            <div id="page-analytics" class="page hidden w-full">
-                <main class="flex-1 w-full max-w-container-max mx-auto px-lg md:px-xl py-xl flex flex-col gap-lg">
-                    <!-- Header & Controls -->
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
-                        <div>
-                            <h1 class="font-display text-display text-on-surface">Analytics Reports</h1>
-                            <p class="font-body-base text-body-base text-on-surface-variant mt-xs">Insights and performance metrics for your recruitment pipeline.</p>
-                        </div>
-                        <div class="flex flex-col sm:flex-row items-center gap-sm w-full md:w-auto">
-                            <!-- Date Picker Group -->
-                            <div class="flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm h-10 w-full sm:w-auto focus-within:ring-2 focus-within:ring-primary focus-within:ring-opacity-50 transition-all">
-                                <div class="flex items-center px-sm text-on-surface-variant bg-surface-container-low border-r border-outline-variant h-full">
-                                    <span class="material-symbols-outlined text-[20px]">calendar_today</span>
-                                </div>
-                                <input id="date-start" class="border-none focus:ring-0 text-body-strong font-body-strong text-on-surface bg-transparent w-32 px-sm h-full" type="date" value="2023-09-01" />
-                                <span class="text-on-surface-variant font-body-base px-xs">-</span>
-                                <input id="date-end" class="border-none focus:ring-0 text-body-strong font-body-strong text-on-surface bg-transparent w-32 px-sm h-full" type="date" value="2023-10-31" />
-                                <button id="btn-apply-dates" class="bg-primary text-on-primary font-body-strong text-body-strong px-md h-full hover:opacity-90 transition-colors active:opacity-80">
-                                    Apply
-                                </button>
-                            </div>
-                            <!-- Export Action -->
-                            <button id="btn-export" class="flex items-center justify-center gap-xs border border-outline-variant text-on-surface-variant font-body-strong text-body-strong px-md h-10 rounded-lg hover:bg-surface-container-low hover:text-on-surface transition-colors shadow-sm bg-surface-container-lowest w-full sm:w-auto active:scale-95 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">download</span>
-                                Export Report
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Dashboard Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg mt-md">
-                        <!-- Card 1: Time-to-Hire Line Chart (Premium) -->
-                        <div class="glass-card rounded-xl shadow-sm hover:shadow-lg transition-all duration-500 flex flex-col h-[360px] group/card overflow-hidden relative" id="tth-chart-card">
-                            <!-- Subtle top accent line -->
-                            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-40"></div>
-
-                            <div class="p-lg pb-0 flex justify-between items-start">
-                                <div>
-                                    <h2 class="font-body-strong text-body-strong text-on-surface flex items-center gap-2">
-                                        Time-to-Hire Trend
-                                        <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-secondary bg-secondary-fixed/30 px-2 py-0.5 rounded-full border border-secondary-fixed-dim/40">
-                                            <span class="material-symbols-outlined text-[12px]">trending_down</span>
-                                            Improving
-                                        </span>
-                                    </h2>
-                                    <p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">Average days from application to offer.</p>
-                                </div>
-                                <button class="text-on-surface-variant hover:text-primary hover:bg-primary-fixed/40 p-1.5 rounded-lg transition-all">
-                                    <span class="material-symbols-outlined text-[20px]">more_horiz</span>
-                                </button>
-                            </div>
-
-                            <!-- KPI summary row -->
-                            <div class="flex items-center gap-4 px-lg pt-3 pb-1">
-                                <div class="flex items-center gap-1.5">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
-                                    <span class="text-[11px] text-on-surface-variant">Avg</span>
-                                    <span class="text-[12px] font-bold text-on-surface">24d</span>
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
-                                    <span class="text-[11px] text-on-surface-variant">Best</span>
-                                    <span class="text-[12px] font-bold text-secondary">12d</span>
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></div>
-                                    <span class="text-[11px] text-on-surface-variant">Peak</span>
-                                    <span class="text-[12px] font-bold text-on-surface">38d</span>
-                                </div>
-                            </div>
-
-                            <!-- Chart Area -->
-                            <div class="flex-1 w-full relative px-lg pb-lg pt-1">
-                                <div class="w-full h-full rounded-xl bg-gradient-to-b from-surface-container-lowest to-surface-container-low border border-outline-variant/60 relative overflow-hidden chart-area" id="tth-chart-area">
-
-                                    <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 200" id="tth-svg">
-                                        <defs>
-                                            <!-- Rich multi-stop gradient fill -->
-                                            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stop-color="rgba(79, 70, 229, 0.28)" />
-                                                <stop offset="40%" stop-color="rgba(79, 70, 229, 0.12)" />
-                                                <stop offset="100%" stop-color="rgba(79, 70, 229, 0.0)" />
-                                            </linearGradient>
-                                            <!-- Line glow filter -->
-                                            <filter id="lineGlow" x="-20%" y="-20%" width="140%" height="140%">
-                                                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
-                                                <feMerge>
-                                                    <feMergeNode in="blur" />
-                                                    <feMergeNode in="SourceGraphic" />
-                                                </feMerge>
-                                            </filter>
-                                            <!-- Dot glow filter -->
-                                            <filter id="dotGlow" x="-100%" y="-100%" width="300%" height="300%">
-                                                <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-                                                <feMerge>
-                                                    <feMergeNode in="blur" />
-                                                    <feMergeNode in="SourceGraphic" />
-                                                </feMerge>
-                                            </filter>
-                                            <!-- Animated shimmer -->
-                                            <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="0">
-                                                <stop offset="0%" stop-color="rgba(195, 192, 255, 0)" />
-                                                <stop offset="50%" stop-color="rgba(195, 192, 255, 0.15)" />
-                                                <stop offset="100%" stop-color="rgba(195, 192, 255, 0)" />
-                                                <animateTransform attributeName="gradientTransform" type="translate" values="-1 0;2 0" dur="3s" repeatCount="indefinite" />
-                                            </linearGradient>
-                                        </defs>
-
-                                        <!-- Horizontal grid lines -->
-                                        <line x1="45" y1="20"  x2="480" y2="20"  stroke="#e1e3e4" stroke-width="0.5" stroke-dasharray="4 4" />
-                                        <line x1="45" y1="65"  x2="480" y2="65"  stroke="#e1e3e4" stroke-width="0.5" stroke-dasharray="4 4" />
-                                        <line x1="45" y1="110" x2="480" y2="110" stroke="#e1e3e4" stroke-width="0.5" stroke-dasharray="4 4" />
-                                        <line x1="45" y1="155" x2="480" y2="155" stroke="#e1e3e4" stroke-width="0.5" stroke-dasharray="4 4" />
-
-                                        <!-- Vertical grid lines (subtle) -->
-                                        <line x1="45"  y1="15" x2="45"  y2="175" stroke="#e1e3e4" stroke-width="0.3" />
-                                        <line x1="154" y1="15" x2="154" y2="175" stroke="#e1e3e4" stroke-width="0.3" />
-                                        <line x1="263" y1="15" x2="263" y2="175" stroke="#e1e3e4" stroke-width="0.3" />
-                                        <line x1="372" y1="15" x2="372" y2="175" stroke="#e1e3e4" stroke-width="0.3" />
-                                        <line x1="480" y1="15" x2="480" y2="175" stroke="#e1e3e4" stroke-width="0.3" />
-
-                                        <!-- Area fill (smooth curve) -->
-                                        <path d="M45,150 C80,145 100,130 154,125 C200,120 230,128 263,105 C295,82 340,50 372,42 C410,33 450,22 480,18 L480,175 L45,175 Z"
-                                              fill="url(#areaGrad)" class="animate-chart-fill" />
-
-                                        <!-- Shimmer overlay on area -->
-                                        <path d="M45,150 C80,145 100,130 154,125 C200,120 230,128 263,105 C295,82 340,50 372,42 C410,33 450,22 480,18 L480,175 L45,175 Z"
-                                              fill="url(#shimmer)" class="animate-chart-fill" />
-
-                                        <!-- Main line (with glow) -->
-                                        <path d="M45,150 C80,145 100,130 154,125 C200,120 230,128 263,105 C295,82 340,50 372,42 C410,33 450,22 480,18"
-                                              fill="none" stroke="#4F46E5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                              filter="url(#lineGlow)" class="animate-chart-line" />
-
-                                        <!-- Data points with outer rings -->
-                                        <g class="chart-dots">
-                                            <!-- Jun: 12d -->
-                                            <circle cx="45" cy="150" r="8" fill="rgba(79,70,229,0.08)" class="chart-dot-ring">
-                                                <animate attributeName="r" values="8;12;8" dur="2.5s" repeatCount="indefinite" />
-                                                <animate attributeName="opacity" values="0.5;0;0.5" dur="2.5s" repeatCount="indefinite" />
-                                            </circle>
-                                            <circle cx="45" cy="150" r="4" fill="white" stroke="#4F46E5" stroke-width="2" class="chart-dot" data-value="12" data-label="Jun" />
-
-                                            <!-- Jul: 15d -->
-                                            <circle cx="154" cy="125" r="8" fill="rgba(79,70,229,0.08)" class="chart-dot-ring">
-                                                <animate attributeName="r" values="8;12;8" dur="2.5s" repeatCount="indefinite" begin="0.3s" />
-                                                <animate attributeName="opacity" values="0.5;0;0.5" dur="2.5s" repeatCount="indefinite" begin="0.3s" />
-                                            </circle>
-                                            <circle cx="154" cy="125" r="4" fill="white" stroke="#4F46E5" stroke-width="2" class="chart-dot" data-value="15" data-label="Jul" />
-
-                                            <!-- Aug: 18d -->
-                                            <circle cx="263" cy="105" r="8" fill="rgba(79,70,229,0.08)" class="chart-dot-ring">
-                                                <animate attributeName="r" values="8;12;8" dur="2.5s" repeatCount="indefinite" begin="0.6s" />
-                                                <animate attributeName="opacity" values="0.5;0;0.5" dur="2.5s" repeatCount="indefinite" begin="0.6s" />
-                                            </circle>
-                                            <circle cx="263" cy="105" r="4" fill="white" stroke="#4F46E5" stroke-width="2" class="chart-dot" data-value="18" data-label="Aug" />
-
-                                            <!-- Sep: 28d -->
-                                            <circle cx="372" cy="42" r="8" fill="rgba(79,70,229,0.08)" class="chart-dot-ring">
-                                                <animate attributeName="r" values="8;12;8" dur="2.5s" repeatCount="indefinite" begin="0.9s" />
-                                                <animate attributeName="opacity" values="0.5;0;0.5" dur="2.5s" repeatCount="indefinite" begin="0.9s" />
-                                            </circle>
-                                            <circle cx="372" cy="42" r="4" fill="white" stroke="#4F46E5" stroke-width="2" class="chart-dot" data-value="28" data-label="Sep" />
-
-                                            <!-- Oct: 38d -->
-                                            <circle cx="480" cy="18" r="8" fill="rgba(79,70,229,0.08)" class="chart-dot-ring">
-                                                <animate attributeName="r" values="8;12;8" dur="2.5s" repeatCount="indefinite" begin="1.2s" />
-                                                <animate attributeName="opacity" values="0.5;0;0.5" dur="2.5s" repeatCount="indefinite" begin="1.2s" />
-                                            </circle>
-                                            <circle cx="480" cy="18" r="4" fill="white" stroke="#4F46E5" stroke-width="2" class="chart-dot" data-value="38" data-label="Oct" />
-                                        </g>
-
-                                        <!-- Y Axis Labels -->
-                                        <text x="38" y="24"  text-anchor="end" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="500">40d</text>
-                                        <text x="38" y="69"  text-anchor="end" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="500">30d</text>
-                                        <text x="38" y="114" text-anchor="end" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="500">20d</text>
-                                        <text x="38" y="159" text-anchor="end" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="500">10d</text>
-
-                                        <!-- X Axis Labels -->
-                                        <text x="45"  y="192" text-anchor="middle" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="600">Jun</text>
-                                        <text x="154" y="192" text-anchor="middle" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="600">Jul</text>
-                                        <text x="263" y="192" text-anchor="middle" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="600">Aug</text>
-                                        <text x="372" y="192" text-anchor="middle" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="600">Sep</text>
-                                        <text x="480" y="192" text-anchor="middle" class="chart-axis-label" fill="#777587" font-size="9" font-family="Inter" font-weight="600">Oct</text>
-                                    </svg>
-
-                                    <!-- Hover tooltip (positioned via JS) -->
-                                    <div id="tth-tooltip" class="absolute pointer-events-none opacity-0 transition-all duration-200 z-10"
-                                         style="transform: translate(-50%, -120%);">
-                                        <div class="bg-inverse-surface text-inverse-on-surface px-3 py-1.5 rounded-lg shadow-lg text-center whitespace-nowrap">
-                                            <div class="text-[10px] font-medium opacity-70" id="tth-tooltip-label">Jun</div>
-                                            <div class="text-[14px] font-bold" id="tth-tooltip-value">12 days</div>
-                                        </div>
-                                        <div class="w-2 h-2 bg-inverse-surface rotate-45 mx-auto -mt-1"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2: Source Effectiveness -->
-                        <div class="glass-card rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col h-[360px]">
-                            <div class="flex justify-between items-start mb-md">
-                                <div>
-                                    <h2 class="font-body-strong text-body-strong text-on-surface">Applicant Sources</h2>
-                                    <p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">Where successful candidates originate.</p>
-                                </div>
-                                <button class="text-on-surface-variant hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">pie_chart</span>
-                                </button>
-                            </div>
-                            <div class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-xl">
-                                <!-- Donut Chart -->
-                                <div class="relative w-40 h-40 flex-shrink-0">
-                                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                        <circle cx="50" cy="50" fill="transparent" r="40" stroke="#ffb95f" stroke-dasharray="251.2" stroke-dashoffset="213.52" stroke-width="16"></circle>
-                                        <circle cx="50" cy="50" fill="transparent" r="40" stroke="#4ae176" stroke-dasharray="251.2" stroke-dashoffset="188.4" stroke-width="16" transform="rotate(54 50 50)"></circle>
-                                        <circle cx="50" cy="50" fill="transparent" r="40" stroke="#0f0069" stroke-dasharray="251.2" stroke-dashoffset="200.96" stroke-width="16" transform="rotate(144 50 50)"></circle>
-                                        <circle cx="50" cy="50" fill="transparent" r="40" stroke="#4f46e5" stroke-dasharray="251.2" stroke-dashoffset="150.72" stroke-width="16" transform="rotate(216 50 50)"></circle>
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center flex-col">
-                                        <span class="font-headline-md text-headline-md text-on-surface">642</span>
-                                        <span class="font-label-caps text-label-caps text-on-surface-variant">Total</span>
-                                    </div>
-                                </div>
-                                <!-- Legend -->
-                                <div class="flex flex-col gap-sm w-full sm:w-auto">
-                                    <div class="flex items-center justify-between gap-md p-sm rounded-lg hover:bg-surface-container-low transition-colors">
-                                        <div class="flex items-center gap-xs"><div class="w-3 h-3 rounded-full bg-primary-container"></div><span class="font-body-base text-body-base text-on-surface">LinkedIn</span></div>
-                                        <span class="font-body-strong text-body-strong text-on-surface">40%</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-md p-sm rounded-lg hover:bg-surface-container-low transition-colors">
-                                        <div class="flex items-center gap-xs"><div class="w-3 h-3 rounded-full bg-secondary-fixed-dim"></div><span class="font-body-base text-body-base text-on-surface">Referrals</span></div>
-                                        <span class="font-body-strong text-body-strong text-on-surface">25%</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-md p-sm rounded-lg hover:bg-surface-container-low transition-colors">
-                                        <div class="flex items-center gap-xs"><div class="w-3 h-3 rounded-full bg-on-primary-fixed"></div><span class="font-body-base text-body-base text-on-surface">Job Boards</span></div>
-                                        <span class="font-body-strong text-body-strong text-on-surface">20%</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-md p-sm rounded-lg hover:bg-surface-container-low transition-colors">
-                                        <div class="flex items-center gap-xs"><div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></div><span class="font-body-base text-body-base text-on-surface">Website</span></div>
-                                        <span class="font-body-strong text-body-strong text-on-surface">15%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 3: Applications per Department -->
-                        <div class="glass-card rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col h-[360px]">
-                            <div class="flex justify-between items-start mb-md">
-                                <div>
-                                    <h2 class="font-body-strong text-body-strong text-on-surface">Applications by Department</h2>
-                                    <p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">Volume breakdown across major units.</p>
-                                </div>
-                                <button class="text-on-surface-variant hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">bar_chart</span>
-                                </button>
-                            </div>
-                            <div class="flex-1 flex flex-col justify-around py-sm gap-xs">
-                                <div class="flex items-center gap-md">
-                                    <div class="w-24 font-label-sm text-label-sm text-on-surface-variant truncate">Engineering</div>
-                                    <div class="flex-1 h-6 bg-surface-container-low rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary-container rounded-full animate-bar-grow" style="width: 85%"></div>
-                                    </div>
-                                    <div class="w-12 text-right font-body-strong text-body-strong text-on-surface">342</div>
-                                </div>
-                                <div class="flex items-center gap-md">
-                                    <div class="w-24 font-label-sm text-label-sm text-on-surface-variant truncate">Sales</div>
-                                    <div class="flex-1 h-6 bg-surface-container-low rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary-fixed-dim rounded-full animate-bar-grow" style="width: 65%"></div>
-                                    </div>
-                                    <div class="w-12 text-right font-body-strong text-body-strong text-on-surface">261</div>
-                                </div>
-                                <div class="flex items-center gap-md">
-                                    <div class="w-24 font-label-sm text-label-sm text-on-surface-variant truncate">Marketing</div>
-                                    <div class="flex-1 h-6 bg-surface-container-low rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary-fixed-dim rounded-full animate-bar-grow" style="width: 45%"></div>
-                                    </div>
-                                    <div class="w-12 text-right font-body-strong text-body-strong text-on-surface">184</div>
-                                </div>
-                                <div class="flex items-center gap-md">
-                                    <div class="w-24 font-label-sm text-label-sm text-on-surface-variant truncate">Product</div>
-                                    <div class="flex-1 h-6 bg-surface-container-low rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary-fixed rounded-full animate-bar-grow" style="width: 35%"></div>
-                                    </div>
-                                    <div class="w-12 text-right font-body-strong text-body-strong text-on-surface">120</div>
-                                </div>
-                                <div class="flex items-center gap-md">
-                                    <div class="w-24 font-label-sm text-label-sm text-on-surface-variant truncate">HR</div>
-                                    <div class="flex-1 h-6 bg-surface-container-low rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary-fixed rounded-full animate-bar-grow" style="width: 20%"></div>
-                                    </div>
-                                    <div class="w-12 text-right font-body-strong text-body-strong text-on-surface">86</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 4: KPI & AI Insight -->
-                        <div class="ai-insight-border shadow-md transition-shadow duration-300 flex flex-col h-[360px]">
-                            <div class="p-lg flex-1 flex flex-col">
-                                <div class="flex justify-between items-start mb-md">
-                                    <div>
-                                        <h2 class="font-body-strong text-body-strong text-on-surface flex items-center gap-xs">
-                                            <span class="material-symbols-outlined text-primary text-[18px]">auto_awesome</span>
-                                            Offer Acceptance Rate
-                                        </h2>
-                                        <p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">AI-predicted conversion likelihood.</p>
-                                    </div>
-                                </div>
-                                <div class="flex-1 flex flex-col justify-center items-center relative">
-                                    <div class="font-display text-[64px] leading-none font-bold text-on-surface tracking-tighter animate-count-up">
-                                        84<span class="text-[32px] text-on-surface-variant">%</span>
-                                    </div>
-                                    <div class="flex items-center gap-xs mt-sm bg-secondary-fixed bg-opacity-20 px-md py-xs rounded-full border border-secondary-fixed-dim">
-                                        <span class="material-symbols-outlined text-secondary text-[16px] font-bold">trending_up</span>
-                                        <span class="font-label-sm text-label-sm text-secondary font-bold">+4.2%</span>
-                                        <span class="font-label-sm text-label-sm text-on-surface-variant ml-xs">vs last month</span>
-                                    </div>
-                                </div>
-                                <div class="mt-md p-md bg-primary-fixed bg-opacity-30 rounded-lg border border-primary-fixed-dim text-center">
-                                    <p class="font-body-base text-body-base text-on-surface-variant italic">
-                                        "Candidates progressing through the Engineering pipeline are accepting offers 12% faster than the historical average."
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
-
-            <!-- ===================== SETTINGS PAGE ===================== -->
-            <div id="page-settings" class="page hidden w-full">
-                <main class="flex-1 w-full max-w-container-max mx-auto px-lg md:px-xl py-xl flex flex-col gap-lg">
-                    <!-- Header -->
-                    <div>
-                        <h1 class="font-display text-display text-on-surface">Settings</h1>
-                        <p class="font-body-base text-body-base text-on-surface-variant mt-xs">Manage system configurations, AI behaviors, and third-party integrations.</p>
-                    </div>
-
-                    <!-- Settings Tabs -->
-                    <div class="border-b border-outline-variant">
-                        <div class="flex gap-md overflow-x-auto">
-                            <button class="settings-tab text-primary border-b-2 border-primary pb-3 pt-1 px-1 font-body-strong text-body-strong whitespace-nowrap transition-all" data-tab="general">General</button>
-                            <button class="settings-tab text-on-surface-variant pb-3 pt-1 px-1 font-body-base text-body-base hover:text-primary whitespace-nowrap transition-all border-b-2 border-transparent" data-tab="ai-weights">AI Weights</button>
-                            <button class="settings-tab text-on-surface-variant pb-3 pt-1 px-1 font-body-base text-body-base hover:text-primary whitespace-nowrap transition-all border-b-2 border-transparent" data-tab="integrations">Integrations</button>
-                            <button class="settings-tab text-on-surface-variant pb-3 pt-1 px-1 font-body-base text-body-base hover:text-primary whitespace-nowrap transition-all border-b-2 border-transparent" data-tab="notifications">Notifications</button>
-                        </div>
-                    </div>
-
-                    <!-- Tab Content -->
-                    <div id="settings-content">
-                        <!-- General Tab -->
-                        <div id="tab-general" class="settings-tab-content">
-                            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
-                                <h2 class="font-body-strong text-body-strong text-on-surface mb-lg">Company Profile</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
-                                    <div class="space-y-lg">
-                                        <div class="space-y-1">
-                                            <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Company Name</label>
-                                            <input id="input-company-name" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all" type="text" value="Kinetic Talent Partners" />
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Primary Timezone</label>
-                                            <div class="relative">
-                                                <select id="select-timezone" class="w-full bg-surface border border-surface-variant rounded-lg px-4 py-2.5 text-body-base font-body-base focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none transition-all appearance-none cursor-pointer">
-                                                    <option value="UTC">Coordinated Universal Time (UTC)</option>
-                                                    <option value="EST">Eastern Standard Time (EST)</option>
-                                                    <option value="PST">Pacific Standard Time (PST)</option>
-                                                    <option value="CST">Central Standard Time (CST)</option>
-                                                    <option value="GMT">Greenwich Mean Time (GMT)</option>
-                                                </select>
-                                                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">expand_more</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-label-sm font-label-sm text-on-surface-variant ml-1">Company Logo</label>
-                                        <div id="logo-dropzone" class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center text-center bg-surface hover:bg-primary-fixed/10 hover:border-primary transition-all cursor-pointer group h-[180px]">
-                                            <span class="material-symbols-outlined text-[32px] text-outline group-hover:text-primary transition-colors mb-2">cloud_upload</span>
-                                            <p class="text-body-base font-body-base"><span class="text-primary font-body-strong">Upload a file</span> or drag and drop</p>
-                                            <p class="text-label-sm font-label-sm text-on-surface-variant mt-1">PNG, JPG, GIF up to 2MB</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-xl pt-lg border-t border-outline-variant flex justify-end">
-                                    <button id="btn-save-general" class="bg-primary text-on-primary font-body-strong text-body-strong px-8 py-3 rounded-xl hover:opacity-90 hover:shadow-md transition-all flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-[20px]">save</span>
-                                        Save Changes
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- AI Weights Tab -->
-                        <div id="tab-ai-weights" class="settings-tab-content hidden">
-                            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
-                                <div class="flex items-start gap-3 mb-lg">
-                                    <span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>
-                                    <div>
-                                        <h2 class="font-body-strong text-body-strong text-on-surface">AI Scoring Weights</h2>
-                                        <p class="text-body-base text-on-surface-variant mt-xs">Adjust how the AI evaluates and ranks candidates. These weights influence the matching algorithm.</p>
-                                    </div>
-                                </div>
-                                <div class="space-y-xl">
-                                    <!-- Skills Match -->
-                                    <div class="space-y-2">
-                                        <div class="flex justify-between items-center">
-                                            <label class="text-body-strong font-body-strong text-on-surface">Skills Match</label>
-                                            <span class="text-primary font-body-strong text-body-strong bg-primary-fixed px-3 py-0.5 rounded-full" id="skills-weight-value">40%</span>
-                                        </div>
-                                        <input type="range" id="skills-weight" min="0" max="100" value="40" class="w-full" oninput="document.getElementById('skills-weight-value').textContent = this.value + '%'" />
-                                        <p class="text-label-sm text-on-surface-variant">How closely a candidate's skills match job requirements.</p>
-                                    </div>
-                                    <!-- Experience -->
-                                    <div class="space-y-2">
-                                        <div class="flex justify-between items-center">
-                                            <label class="text-body-strong font-body-strong text-on-surface">Experience Level</label>
-                                            <span class="text-primary font-body-strong text-body-strong bg-primary-fixed px-3 py-0.5 rounded-full" id="exp-weight-value">30%</span>
-                                        </div>
-                                        <input type="range" id="exp-weight" min="0" max="100" value="30" class="w-full" oninput="document.getElementById('exp-weight-value').textContent = this.value + '%'" />
-                                        <p class="text-label-sm text-on-surface-variant">Relevance and duration of professional experience.</p>
-                                    </div>
-                                    <!-- Education -->
-                                    <div class="space-y-2">
-                                        <div class="flex justify-between items-center">
-                                            <label class="text-body-strong font-body-strong text-on-surface">Education</label>
-                                            <span class="text-primary font-body-strong text-body-strong bg-primary-fixed px-3 py-0.5 rounded-full" id="edu-weight-value">15%</span>
-                                        </div>
-                                        <input type="range" id="edu-weight" min="0" max="100" value="15" class="w-full" oninput="document.getElementById('edu-weight-value').textContent = this.value + '%'" />
-                                        <p class="text-label-sm text-on-surface-variant">Academic qualifications and certifications.</p>
-                                    </div>
-                                    <!-- Cultural Fit -->
-                                    <div class="space-y-2">
-                                        <div class="flex justify-between items-center">
-                                            <label class="text-body-strong font-body-strong text-on-surface">Cultural Fit</label>
-                                            <span class="text-primary font-body-strong text-body-strong bg-primary-fixed px-3 py-0.5 rounded-full" id="culture-weight-value">15%</span>
-                                        </div>
-                                        <input type="range" id="culture-weight" min="0" max="100" value="15" class="w-full" oninput="document.getElementById('culture-weight-value').textContent = this.value + '%'" />
-                                        <p class="text-label-sm text-on-surface-variant">Alignment with company values and team dynamics.</p>
-                                    </div>
-                                </div>
-                                <div class="mt-xl pt-lg border-t border-outline-variant flex justify-end">
-                                    <button class="bg-primary text-on-primary font-body-strong text-body-strong px-8 py-3 rounded-xl hover:opacity-90 hover:shadow-md transition-all flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-[20px]">save</span>
-                                        Save Weights
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Integrations Tab -->
-                        <div id="tab-integrations" class="settings-tab-content hidden">
-                            <div class="space-y-md">
-                                <!-- LinkedIn -->
-                                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex items-center justify-between">
-                                    <div class="flex items-center gap-md">
-                                        <div class="w-12 h-12 rounded-lg bg-[#0077B5]/10 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-[#0077B5] text-[24px]">hub</span>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-body-strong text-body-strong text-on-surface">LinkedIn</h3>
-                                            <p class="text-label-sm text-on-surface-variant">Import candidate profiles and post jobs directly.</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-sm">
-                                        <span class="text-label-sm text-secondary font-body-strong flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> Connected</span>
-                                        <button class="text-on-surface-variant hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined">settings</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Slack -->
-                                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex items-center justify-between">
-                                    <div class="flex items-center gap-md">
-                                        <div class="w-12 h-12 rounded-lg bg-[#E01E5A]/10 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-[#E01E5A] text-[24px]">chat</span>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-body-strong text-body-strong text-on-surface">Slack</h3>
-                                            <p class="text-label-sm text-on-surface-variant">Get hiring updates and team notifications.</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-sm">
-                                        <span class="text-label-sm text-secondary font-body-strong flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> Connected</span>
-                                        <button class="text-on-surface-variant hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined">settings</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Google Calendar -->
-                                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex items-center justify-between">
-                                    <div class="flex items-center gap-md">
-                                        <div class="w-12 h-12 rounded-lg bg-[#4285F4]/10 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-[#4285F4] text-[24px]">calendar_month</span>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-body-strong text-body-strong text-on-surface">Google Calendar</h3>
-                                            <p class="text-label-sm text-on-surface-variant">Sync interview schedules automatically.</p>
-                                        </div>
-                                    </div>
-                                    <button class="bg-primary text-on-primary font-body-strong text-body-strong px-4 py-2 rounded-lg hover:opacity-90 transition-all text-label-sm">
-                                        Connect
-                                    </button>
-                                </div>
-                                <!-- Greenhouse -->
-                                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex items-center justify-between">
-                                    <div class="flex items-center gap-md">
-                                        <div class="w-12 h-12 rounded-lg bg-[#3B8427]/10 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-[#3B8427] text-[24px]">eco</span>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-body-strong text-body-strong text-on-surface">Greenhouse</h3>
-                                            <p class="text-label-sm text-on-surface-variant">Sync your ATS pipeline and candidate data.</p>
-                                        </div>
-                                    </div>
-                                    <button class="bg-primary text-on-primary font-body-strong text-body-strong px-4 py-2 rounded-lg hover:opacity-90 transition-all text-label-sm">
-                                        Connect
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Notifications Tab -->
-                        <div id="tab-notifications" class="settings-tab-content hidden">
-                            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
-                                <h2 class="font-body-strong text-body-strong text-on-surface mb-lg">Notification Preferences</h2>
-                                <div class="space-y-lg">
-                                    <!-- Email Notifications -->
-                                    <div class="flex items-center justify-between p-md bg-surface rounded-lg border border-surface-variant">
-                                        <div>
-                                            <h3 class="text-body-strong font-body-strong text-on-surface">Email Notifications</h3>
-                                            <p class="text-label-sm text-on-surface-variant mt-0.5">Receive updates about new applications and status changes.</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" class="sr-only peer" checked>
-                                            <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary-fixed after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
-                                        </label>
-                                    </div>
-                                    <!-- Push Notifications -->
-                                    <div class="flex items-center justify-between p-md bg-surface rounded-lg border border-surface-variant">
-                                        <div>
-                                            <h3 class="text-body-strong font-body-strong text-on-surface">Push Notifications</h3>
-                                            <p class="text-label-sm text-on-surface-variant mt-0.5">Get instant alerts on your browser or mobile device.</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" class="sr-only peer" checked>
-                                            <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary-fixed after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
-                                        </label>
-                                    </div>
-                                    <!-- Weekly Digest -->
-                                    <div class="flex items-center justify-between p-md bg-surface rounded-lg border border-surface-variant">
-                                        <div>
-                                            <h3 class="text-body-strong font-body-strong text-on-surface">Weekly Digest</h3>
-                                            <p class="text-label-sm text-on-surface-variant mt-0.5">A summary of your hiring pipeline sent every Monday.</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" class="sr-only peer">
-                                            <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary-fixed after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
-                                        </label>
-                                    </div>
-                                    <!-- AI Insights -->
-                                    <div class="flex items-center justify-between p-md bg-surface rounded-lg border border-surface-variant">
-                                        <div>
-                                            <h3 class="text-body-strong font-body-strong text-on-surface">AI Insight Alerts</h3>
-                                            <p class="text-label-sm text-on-surface-variant mt-0.5">Get notified when AI detects notable patterns or recommendations.</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" class="sr-only peer" checked>
-                                            <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary-fixed after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="mt-xl pt-lg border-t border-outline-variant flex justify-end">
-                                    <button class="bg-primary text-on-primary font-body-strong text-body-strong px-8 py-3 rounded-xl hover:opacity-90 hover:shadow-md transition-all flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-[20px]">save</span>
-                                        Save Preferences
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 z-[200] transform translate-y-20 opacity-0 transition-all duration-500 pointer-events-none">
-        <div class="bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
-            <span class="material-symbols-outlined text-[20px] text-secondary-fixed-dim" id="toast-icon">check_circle</span>
-            <span id="toast-message" class="font-body-strong text-body-strong">Changes saved successfully!</span>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
-</body>
+  </body>
 </html>
