@@ -1,0 +1,39 @@
+# Visual Studio directories
+.vs/
+.vscode/
+.idea/
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+
+# Visual Studio cache/options
+.csproj.user
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+packages/
+.nuget/
+
+# IDE
+*.sln.iml
+.DS_Store
+
+# Local environment
+appsettings.*.local.json
+.env
+.env.local
+
+# Dependencies
+node_modules/
+.npm
+
+# Output
+dist/
+build/
