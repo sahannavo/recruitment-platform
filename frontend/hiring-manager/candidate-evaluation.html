@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate Evaluation - RecruitAI</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome 6 (Free) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* ========================================
+           CSS CUSTOM PROPERTIES
+           ======================================== */
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #eef2ff;
+        --primary-dark: #3730a3;
+        --success: #10b981;
+        --success-light: #ecfdf5;
+        --warning: #f59e0b;
+        --warning-light: #fffbeb;
+        --danger: #ef4444;
+        --danger-light: #fef2f2;
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --surface-alt: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --border: #e5e7eb;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+        --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --max-width: 1400px;
+        --header-height: 70px;
+        --container-padding: 20px;
+      }
+
+      /* ========================================
+           RESET & BASE
+           ======================================== */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* ========================================
+           CONTAINER
+           ======================================== */
+      .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      /* ========================================
+           BUTTONS
+           ======================================== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 20px;
+        font-family: var(--font-family);
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+        color: #ffffff;
+      }
+      .btn-success:hover {
+        background-color: #059669;
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+        color: #ffffff;
+      }
+      .btn-danger:hover {
+        background-color: #dc2626;
+        transform: translateY(-1px);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--text-secondary);
+        border: 1.5px solid var(--border);
+      }
+      .btn-outline:hover {
+        background-color: var(--surface-alt);
+        border-color: var(--text-secondary);
+      }
+
+      .btn-outline-success {
+        background-color: transparent;
+        color: var(--success);
+        border: 1.5px solid var(--success);
+      }
+      .btn-outline-success:hover {
+        background-color: var(--success);
+        color: #ffffff;
+      }
+
+      .btn-outline-danger {
+        background-color: transparent;
+        color: var(--danger);
+        border: 1.5px solid var(--danger);
+      }
+      .btn-outline-danger:hover {
+        background-color: var(--danger);
+        color: #ffffff;
+      }
+
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+      .btn-lg {
+        padding: 14px 28px;
+        font-size: 16px;
+      }
+
+      /* ========================================
+           HEADER
+           ======================================== */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        z-index: 1000;
+        box-shadow: var(--shadow);
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .logo span {
+        color: var(--text-primary);
+      }
+      .logo i {
+        font-size: 24px;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-right .notification-btn {
+        position: relative;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: var(--radius-full);
+        transition: background 0.2s;
+      }
+      .header-right .notification-btn:hover {
+        background-color: var(--surface-alt);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 18px;
+        height: 18px;
+        background-color: var(--danger);
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-hover)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .user-avatar:hover {
+        border-color: var(--primary);
+      }
+
+      /* ========================================
+           BREADCRUMB
+           ======================================== */
+      .breadcrumb {
+        padding-top: calc(var(--header-height) + 16px);
+        padding-bottom: 16px;
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .breadcrumb a {
+        color: var(--primary);
+        font-weight: 500;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb .separator {
+        margin: 0 8px;
+        color: var(--text-muted);
+      }
+
+      /* ========================================
+           PAGE LAYOUT
+           ======================================== */
+      .page-wrapper {
+        padding-bottom: 40px;
+      }
+
+      .evaluation-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* ========================================
+           LEFT COLUMN - CV / RESUME VIEWER
+           ======================================== */
+      .cv-section {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .cv-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        background-color: var(--surface-alt);
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .cv-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .cv-header-left h2 {
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .cv-header-left .badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 10px;
+        border-radius: var(--radius-full);
+        background-color: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .cv-header-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .cv-body {
+        padding: 20px;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .cv-body::-webkit-scrollbar {
+        width: 6px;
+      }
+      .cv-body::-webkit-scrollbar-track {
+        background: var(--surface-alt);
+        border-radius: var(--radius-full);
+      }
+      .cv-body::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: var(--radius-full);
+      }
+      .cv-body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-muted);
+      }
+
+      /* CV Preview Content */
+      .cv-preview {
+        font-size: 14px;
+        color: var(--text-primary);
+      }
+
+      .cv-preview .cv-name {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+      .cv-preview .cv-title {
+        font-size: 16px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+      .cv-preview .cv-contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+      .cv-preview .cv-contact i {
+        margin-right: 4px;
+        width: 16px;
+      }
+
+      .cv-preview .cv-section-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-top: 16px;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+      }
+
+      .cv-preview .cv-section-title i {
+        color: var(--primary);
+        margin-right: 8px;
+      }
+
+      .cv-preview .cv-item {
+        margin-bottom: 12px;
+      }
+      .cv-preview .cv-item .item-header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        flex-wrap: wrap;
+      }
+      .cv-preview .cv-item .item-sub {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .cv-preview .cv-item .item-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        padding-left: 4px;
+      }
+
+      .cv-preview .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .cv-preview .skill-tag {
+        padding: 4px 12px;
+        background-color: var(--primary-light);
+        color: var(--primary);
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      /* AI Match Score Badge */
+      .ai-match-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: var(--radius-full);
+        font-size: 13px;
+        font-weight: 600;
+        background-color: var(--success-light);
+        color: var(--success);
+      }
+      .ai-match-badge.high {
+        background-color: var(--success-light);
+        color: var(--success);
+      }
+      .ai-match-badge.medium {
+        background-color: var(--warning-light);
+        color: var(--warning);
+      }
+      .ai-match-badge.low {
+        background-color: var(--danger-light);
+        color: var(--danger);
+      }
+
+      /* ========================================
+           RIGHT COLUMN - EVALUATION FORM
+           ======================================== */
+      .evaluation-section {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        padding: 24px;
+      }
+
+      .evaluation-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .evaluation-header h2 {
+        font-size: 20px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .evaluation-header h2 .candidate-name {
+        color: var(--primary);
+      }
+      .evaluation-header p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .evaluation-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .form-group label .required {
+        color: var(--danger);
+      }
+
+      .form-group .label-hint {
+        font-size: 12px;
+        color: var(--text-secondary);
+        font-weight: 400;
+      }
+
+      /* Score Sliders */
+      .score-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .score-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .score-row .score-label {
+        min-width: 120px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .score-row input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: var(--radius-full);
+        background: var(--border);
+        outline: none;
+        transition: background 0.2s;
+      }
+
+      .score-row input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .score-row input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.15);
+        box-shadow: var(--shadow-md);
+      }
+
+      .score-row input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        border: none;
+      }
+
+      .score-value {
+        min-width: 32px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--primary);
+        text-align: center;
+      }
+
+      /* Radio Group (Decision) */
+      .radio-group {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 8px 16px;
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        transition: all 0.2s ease;
+      }
+
+      .radio-group label:hover {
+        border-color: var(--text-secondary);
+      }
+
+      .radio-group input[type="radio"] {
+        accent-color: var(--primary);
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+
+      .radio-group label.selected-hire {
+        border-color: var(--success);
+        background-color: var(--success-light);
+      }
+      .radio-group label.selected-reject {
+        border-color: var(--danger);
+        background-color: var(--danger-light);
+      }
+      .radio-group label.selected-hold {
+        border-color: var(--warning);
+        background-color: var(--warning-light);
+      }
+
+      /* Textarea */
+      .form-group textarea {
+        padding: 10px 14px;
+        font-family: var(--font-family);
+        font-size: 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        transition: all 0.2s ease;
+        resize: vertical;
+        min-height: 80px;
+        width: 100%;
+      }
+
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      /* Form Actions */
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+      .form-actions .btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+      }
+
+      /* ========================================
+           TOAST
+           ======================================== */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        padding: 16px 24px;
+        background-color: var(--success);
+        color: #ffffff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        font-family: var(--font-family);
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        max-width: 400px;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast i {
+        font-size: 20px;
+      }
+      .toast.error {
+        background-color: var(--danger);
+      }
+      .toast.warning {
+        background-color: var(--warning);
+      }
+
+      /* ========================================
+           RESPONSIVE
+           ======================================== */
+      @media (max-width: 1024px) {
+        .evaluation-layout {
+          grid-template-columns: 1fr;
+        }
+        .cv-body {
+          max-height: 400px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --header-height: 60px;
+          --container-padding: 16px;
+        }
+
+        .cv-header {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+        }
+        .cv-header-actions {
+          justify-content: flex-start;
+        }
+
+        .evaluation-section {
+          padding: 16px;
+        }
+
+        .score-row {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .score-row .score-label {
+          min-width: 100%;
+        }
+
+        .radio-group {
+          flex-direction: column;
+        }
+        .radio-group label {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+        .form-actions .btn {
+          width: 100%;
+          flex: none;
+        }
+
+        .cv-preview .cv-contact {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-right .notification-btn {
+          display: none;
+        }
+        .cv-header-left .badge {
+          display: none;
+        }
+        .cv-body {
+          padding: 12px;
+          max-height: 300px;
+        }
+        .cv-preview .cv-name {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================
+    HEADER
+    ============================================ -->
+    <header class="header" role="banner">
+      <div class="header-inner">
+        <a href="dashboard.html" class="logo">
+          <img
+            src="../assets/images/logo.png"
+            alt="Recruiter Logo"
+            style="height: 50px"
+            width="50"
+          />
+        </a>
+        <div class="header-right">
+          <button class="notification-btn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">2</span>
+          </button>
+          <div class="user-avatar" title="Profile">HM</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================
+    PAGE WRAPPER
+    ============================================ -->
+    <main class="page-wrapper" role="main">
+      <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+          <span class="separator">/</span>
+          <a href="dashboard.html#shortlisted">Shortlisted Candidates</a>
+          <span class="separator">/</span>
+          <span style="color: var(--text-primary); font-weight: 500"
+            >Evaluate: Jane Doe</span
+          >
+        </nav>
+
+        <!-- ============================================
+            EVALUATION LAYOUT
+            ============================================ -->
+        <div class="evaluation-layout">
+          <!-- ============================================
+                LEFT COLUMN - CV / RESUME VIEWER
+                ============================================ -->
+          <section class="cv-section" aria-label="Candidate CV">
+            <div class="cv-header">
+              <div class="cv-header-left">
+                <h2>
+                  <i class="fas fa-file-alt" style="color: var(--primary)"></i>
+                  Resume
+                </h2>
+                <span class="badge"
+                  ><i class="fas fa-robot"></i> AI Verified</span
+                >
+                <span class="ai-match-badge high">
+                  <i class="fas fa-star"></i> 94% Match
+                </span>
+              </div>
+              <div class="cv-header-actions">
+                <button class="btn btn-outline btn-sm" onclick="downloadCV()">
+                  <i class="fas fa-download"></i> Download
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="printCV()">
+                  <i class="fas fa-print"></i> Print
+                </button>
+              </div>
+            </div>
+
+            <div class="cv-body">
+              <div class="cv-preview">
+                <!-- Candidate Name & Title -->
+                <div class="cv-name">Jane Doe</div>
+                <div class="cv-title">Senior Full Stack Developer</div>
+
+                <!-- Contact -->
+                <div class="cv-contact">
+                  <span
+                    ><i class="fas fa-envelope"></i> jane.doe@email.com</span
+                  >
+                  <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                  <span
+                    ><i class="fas fa-map-marker-alt"></i> San Francisco,
+                    CA</span
+                  >
+                  <span
+                    ><i class="fab fa-linkedin"></i>
+                    linkedin.com/in/janedoe</span
+                  >
+                  <span><i class="fab fa-github"></i> github.com/janedoe</span>
+                </div>
+
+                <!-- Professional Summary -->
+                <div class="cv-section-title">
+                  <i class="fas fa-user"></i> Professional Summary
+                </div>
+                <p
+                  style="
+                    font-size: 14px;
+                    color: var(--text-secondary);
+                    line-height: 1.7;
+                    margin-bottom: 16px;
+                  "
+                >
+                  Senior Full Stack Developer with <strong>7+ years</strong> of
+                  experience building scalable web applications. Expertise in
+                  React, Node.js, TypeScript, and AWS. Proven track record of
+                  leading engineering teams and delivering products that serve
+                  millions of users. Passionate about clean code, mentoring, and
+                  driving technical innovation.
+                </p>
+
+                <!-- Work Experience -->
+                <div class="cv-section-title">
+                  <i class="fas fa-briefcase"></i> Work Experience
+                </div>
+
+                <div class="cv-item">
+                  <div class="item-header">
+                    <span>Senior Full Stack Developer</span>
+                    <span>2021 - Present</span>
+                  </div>
+                  <div class="item-sub">TechCorp Inc. • San Francisco, CA</div>
+                  <div class="item-desc">
+                    • Led a team of 8 engineers building a multi-tenant SaaS
+                    platform<br />
+                    • Architected microservices using Node.js and AWS ECS<br />
+                    • Improved application performance by 40% through
+                    optimization<br />
+                    • Mentored junior developers and conducted code reviews
+                  </div>
+                </div>
+
+                <div class="cv-item">
+                  <div class="item-header">
+                    <span>Full Stack Developer</span>
+                    <span>2018 - 2021</span>
+                  </div>
+                  <div class="item-sub">InnovateSoft • Austin, TX</div>
+                  <div class="item-desc">
+                    • Built and maintained React frontend with Redux state
+                    management<br />
+                    • Developed RESTful APIs with Node.js and Express<br />
+                    • Implemented CI/CD pipeline using GitHub Actions<br />
+                    • Reduced bug rate by 25% with comprehensive testing
+                  </div>
+                </div>
+
+                <!-- Education -->
+                <div class="cv-section-title">
+                  <i class="fas fa-graduation-cap"></i> Education
+                </div>
+
+                <div class="cv-item">
+                  <div class="item-header">
+                    <span>M.S. Computer Science</span>
+                    <span>2016 - 2018</span>
+                  </div>
+                  <div class="item-sub">Stanford University • GPA: 3.9</div>
+                </div>
+
+                <div class="cv-item">
+                  <div class="item-header">
+                    <span>B.S. Software Engineering</span>
+                    <span>2012 - 2016</span>
+                  </div>
+                  <div class="item-sub">
+                    University of California, Berkeley • GPA: 3.8
+                  </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="cv-section-title">
+                  <i class="fas fa-code"></i> Skills
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">React</span>
+                  <span class="skill-tag">Node.js</span>
+                  <span class="skill-tag">TypeScript</span>
+                  <span class="skill-tag">AWS</span>
+                  <span class="skill-tag">Python</span>
+                  <span class="skill-tag">Docker</span>
+                  <span class="skill-tag">PostgreSQL</span>
+                  <span class="skill-tag">MongoDB</span>
+                  <span class="skill-tag">GraphQL</span>
+                  <span class="skill-tag">CI/CD</span>
+                </div>
+
+                <!-- Certifications -->
+                <div class="cv-section-title">
+                  <i class="fas fa-certificate"></i> Certifications
+                </div>
+                <div style="font-size: 14px; color: var(--text-secondary)">
+                  • AWS Certified Solutions Architect<br />
+                  • Google Professional Cloud Developer
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+                RIGHT COLUMN - EVALUATION FORM
+                ============================================ -->
+          <section
+            class="evaluation-section"
+            aria-label="Candidate Evaluation Form"
+          >
+            <div class="evaluation-header">
+              <h2>
+                <i
+                  class="fas fa-clipboard-check"
+                  style="color: var(--primary)"
+                ></i>
+                Evaluate: <span class="candidate-name">Jane Doe</span>
+              </h2>
+              <p>
+                <i class="fas fa-briefcase"></i> Senior Full Stack Developer
+                &nbsp;•&nbsp; <i class="fas fa-building"></i> TechCorp Inc.
+                &nbsp;•&nbsp; <i class="fas fa-calendar-alt"></i> Applied: Jan
+                20, 2026
+              </p>
+            </div>
+
+            <form class="evaluation-form" id="evaluationForm" novalidate>
+              <!-- ============================================
+                        SCORING SLIDERS
+                        ============================================ -->
+              <div class="form-group">
+                <label
+                  >Scoring
+                  <span class="label-hint"
+                    >(1 = Poor, 5 = Excellent)</span
+                  ></label
+                >
+                <div class="score-group">
+                  <!-- Technical Skills -->
+                  <div class="score-row">
+                    <span class="score-label"
+                      ><i class="fas fa-code"></i> Technical</span
+                    >
+                    <input
+                      type="range"
+                      id="technicalScore"
+                      min="1"
+                      max="5"
+                      value="4"
+                      step="0.5"
+                      aria-label="Technical score"
+                      oninput="updateScoreValue(this, 'techValue')"
+                    />
+                    <span class="score-value" id="techValue">4.0</span>
+                  </div>
+
+                  <!-- Behavioral -->
+                  <div class="score-row">
+                    <span class="score-label"
+                      ><i class="fas fa-users"></i> Behavioral</span
+                    >
+                    <input
+                      type="range"
+                      id="behavioralScore"
+                      min="1"
+                      max="5"
+                      value="4.5"
+                      step="0.5"
+                      aria-label="Behavioral score"
+                      oninput="updateScoreValue(this, 'behavValue')"
+                    />
+                    <span class="score-value" id="behavValue">4.5</span>
+                  </div>
+
+                  <!-- Cultural Fit -->
+                  <div class="score-row">
+                    <span class="score-label"
+                      ><i class="fas fa-handshake"></i> Cultural Fit</span
+                    >
+                    <input
+                      type="range"
+                      id="culturalScore"
+                      min="1"
+                      max="5"
+                      value="4"
+                      step="0.5"
+                      aria-label="Cultural fit score"
+                      oninput="updateScoreValue(this, 'culturValue')"
+                    />
+                    <span class="score-value" id="culturValue">4.0</span>
+                  </div>
+
+                  <!-- Communication -->
+                  <div class="score-row">
+                    <span class="score-label"
+                      ><i class="fas fa-comments"></i> Communication</span
+                    >
+                    <input
+                      type="range"
+                      id="commScore"
+                      min="1"
+                      max="5"
+                      value="4.5"
+                      step="0.5"
+                      aria-label="Communication score"
+                      oninput="updateScoreValue(this, 'commValue')"
+                    />
+                    <span class="score-value" id="commValue">4.5</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ============================================
+                        DECISION RADIO
+                        ============================================ -->
+              <div class="form-group">
+                <label>Decision <span class="required">*</span></label>
+                <div class="radio-group" id="decisionGroup">
+                  <label class="selected-hire">
+                    <input type="radio" name="decision" value="hire" checked />
+                    <i
+                      class="fas fa-check-circle"
+                      style="color: var(--success)"
+                    ></i>
+                    Hire
+                  </label>
+                  <label>
+                    <input type="radio" name="decision" value="reject" />
+                    <i
+                      class="fas fa-times-circle"
+                      style="color: var(--danger)"
+                    ></i>
+                    Reject
+                  </label>
+                  <label>
+                    <input type="radio" name="decision" value="hold" />
+                    <i class="fas fa-clock" style="color: var(--warning)"></i>
+                    On Hold
+                  </label>
+                </div>
+              </div>
+
+              <!-- ============================================
+                        FEEDBACK / NOTES
+                        ============================================ -->
+              <div class="form-group">
+                <label for="feedbackNotes">Feedback & Notes</label>
+                <textarea
+                  id="feedbackNotes"
+                  rows="4"
+                  placeholder="Provide detailed feedback about the candidate..."
+                >
+Excellent technical skills with strong system design abilities. Good cultural fit and clear communication. Recommended for hire.</textarea
+                >
+              </div>
+
+              <!-- ============================================
+                        FORM ACTIONS
+                        ============================================ -->
+              <div class="form-actions">
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  onclick="resetForm()"
+                >
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  onclick="saveDraft()"
+                >
+                  <i class="fas fa-save"></i> Save Draft
+                </button>
+                <button type="submit" class="btn btn-success btn-lg">
+                  <i class="fas fa-check"></i> Submit Decision
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================
+    TOAST NOTIFICATION
+    ============================================ -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMessage">Evaluation submitted successfully!</span>
+    </div>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+      (function () {
+        "use strict";
+
+        // ============================================
+        // TOAST HELPER
+        // ============================================
+        function showToast(message, type) {
+          const toast = document.getElementById("toast");
+          const toastMsg = document.getElementById("toastMessage");
+          const icon = toast.querySelector("i");
+
+          toast.classList.remove("show", "error", "warning");
+          toast.style.backgroundColor = "";
+
+          toastMsg.textContent = message;
+
+          if (type === "success") {
+            toast.style.backgroundColor = "var(--success)";
+            icon.className = "fas fa-check-circle";
+          } else if (type === "error") {
+            toast.style.backgroundColor = "var(--danger)";
+            icon.className = "fas fa-exclamation-circle";
+            toast.classList.add("error");
+          } else if (type === "warning") {
+            toast.style.backgroundColor = "var(--warning)";
+            icon.className = "fas fa-exclamation-triangle";
+            toast.classList.add("warning");
+          } else {
+            toast.style.backgroundColor = "var(--primary)";
+            icon.className = "fas fa-info-circle";
+          }
+
+          setTimeout(() => toast.classList.add("show"), 100);
+          setTimeout(() => toast.classList.remove("show"), 4000);
+        }
+
+        // ============================================
+        // UPDATE SCORE DISPLAY
+        // ============================================
+        window.updateScoreValue = function (slider, displayId) {
+          const display = document.getElementById(displayId);
+          if (display) {
+            display.textContent = parseFloat(slider.value).toFixed(1);
+          }
+        };
+
+        // ============================================
+        // DECISION RADIO - Visual Feedback
+        // ============================================
+        const decisionRadios = document.querySelectorAll(
+          'input[name="decision"]',
+        );
+        decisionRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            const labels = document.querySelectorAll(".radio-group label");
+            labels.forEach((label) => {
+              label.className = "";
+            });
+            const parentLabel = this.closest("label");
+            if (this.value === "hire") {
+              parentLabel.classList.add("selected-hire");
+            } else if (this.value === "reject") {
+              parentLabel.classList.add("selected-reject");
+            } else if (this.value === "hold") {
+              parentLabel.classList.add("selected-hold");
+            }
+          });
+        });
+
+        // ============================================
+        // SUBMIT EVALUATION
+        // ============================================
+        document
+          .getElementById("evaluationForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const decision = document.querySelector(
+              'input[name="decision"]:checked',
+            );
+            if (!decision) {
+              showToast("Please select a hiring decision.", "error");
+              return;
+            }
+
+            const technical = document.getElementById("technicalScore").value;
+            const behavioral = document.getElementById("behavioralScore").value;
+            const cultural = document.getElementById("culturalScore").value;
+            const communication = document.getElementById("commScore").value;
+            const notes = document.getElementById("feedbackNotes").value;
+
+            const avgScore = (
+              (parseFloat(technical) +
+                parseFloat(behavioral) +
+                parseFloat(cultural) +
+                parseFloat(communication)) /
+              4
+            ).toFixed(1);
+
+            const formData = {
+              candidate: "Jane Doe",
+              position: "Senior Full Stack Developer",
+              scores: {
+                technical: technical,
+                behavioral: behavioral,
+                cultural: cultural,
+                communication: communication,
+                average: avgScore,
+              },
+              decision: decision.value,
+              notes: notes,
+              submittedBy: "Hiring Manager",
+              timestamp: new Date().toISOString(),
+            };
+
+            console.log("📋 Evaluation Submitted:", formData);
+
+            // Show loading state
+            const btn = this.querySelector(".btn-success");
+            const originalText = btn.innerHTML;
+            btn.innerHTML =
+              '<span class="spinner" style="display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;"></span> Submitting...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+
+              const decisionText =
+                decision.value.charAt(0).toUpperCase() +
+                decision.value.slice(1);
+              showToast(
+                `✅ ${decisionText} decision submitted for Jane Doe! (Avg Score: ${avgScore}/5)`,
+                "success",
+              );
+
+              // Update the header badge
+              const badge = document.querySelector(".cv-header-left .badge");
+              if (badge) {
+                badge.innerHTML = `<i class="fas fa-check-circle"></i> Evaluated`;
+                badge.style.backgroundColor = "var(--success-light)";
+                badge.style.color = "var(--success)";
+              }
+            }, 2000);
+          });
+
+        // ============================================
+        // SAVE DRAFT
+        // ============================================
+        window.saveDraft = function () {
+          const form = document.getElementById("evaluationForm");
+          const formData = new FormData(form);
+          const data = {};
+          formData.forEach((value, key) => {
+            data[key] = value;
+          });
+
+          console.log("📝 Draft Saved:", data);
+          showToast("💾 Draft saved successfully!", "info");
+        };
+
+        // ============================================
+        // RESET FORM
+        // ============================================
+        window.resetForm = function () {
+          if (confirm("Reset all evaluation fields to default values?")) {
+            document.getElementById("technicalScore").value = "4";
+            document.getElementById("techValue").textContent = "4.0";
+            document.getElementById("behavioralScore").value = "4.5";
+            document.getElementById("behavValue").textContent = "4.5";
+            document.getElementById("culturalScore").value = "4";
+            document.getElementById("culturValue").textContent = "4.0";
+            document.getElementById("commScore").value = "4.5";
+            document.getElementById("commValue").textContent = "4.5";
+            document.getElementById("feedbackNotes").value =
+              "Excellent technical skills with strong system design abilities. Good cultural fit and clear communication. Recommended for hire.";
+
+            // Reset radio selection to Hire
+            document.querySelector(
+              'input[name="decision"][value="hire"]',
+            ).checked = true;
+            const labels = document.querySelectorAll(".radio-group label");
+            labels.forEach((label) => {
+              label.className = "";
+            });
+            labels[0].classList.add("selected-hire");
+
+            showToast("Form reset to default values.", "info");
+          }
+        };
+
+        // ============================================
+        // DOWNLOAD CV
+        // ============================================
+        window.downloadCV = function () {
+          showToast("📄 Downloading resume...", "info");
+          console.log("📥 CV Download requested");
+        };
+
+        // ============================================
+        // PRINT CV
+        // ============================================
+        window.printCV = function () {
+          window.print();
+        };
+
+        // ============================================
+        // NOTIFICATION CLICK
+        // ============================================
+        document
+          .querySelector(".notification-btn")
+          .addEventListener("click", function () {
+            showToast("🔔 You have 2 unread notifications", "info");
+          });
+
+        // ============================================
+        // SPINNER KEYFRAME
+        // ============================================
+        const style = document.createElement("style");
+        style.textContent = `
+                        @keyframes spin {
+                            to { transform: rotate(360deg); }
+                        }
+                        .spinner {
+                            display: inline-block;
+                            width: 18px;
+                            height: 18px;
+                            border: 2px solid rgba(255,255,255,0.3);
+                            border-top-color: #fff;
+                            border-radius: 50%;
+                            animation: spin 0.6s linear infinite;
+                            margin-right: 8px;
+                        }
+                    `;
+        document.head.appendChild(style);
+
+        console.log("✅ Candidate Evaluation Page Loaded Successfully!");
+        console.log("👤 Evaluating: Jane Doe (Senior Full Stack Developer)");
+      })();
+    </script>
+  </body>
+</html>

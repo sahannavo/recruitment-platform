@@ -1,0 +1,2230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecruiterAI — Evaluate: Sarah Jenkins</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #eef2ff;
+        --success: #10b981;
+        --success-light: #d1fae5;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --radius: 8px;
+        --radius-lg: 14px;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--background);
+        color: var(--text-primary);
+        line-height: 1.5;
+        font-size: 14px;
+      }
+
+      /* Lucide outline icons */
+      .icon {
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        vertical-align: -0.125em;
+        stroke-width: 2;
+      }
+      .icon.spin {
+        animation: spin 0.8s linear infinite;
+      }
+      svg.icon {
+        stroke: currentColor;
+        fill: none;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+      button {
+        font-family: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* ===== Header ===== */
+      .app-header {
+        width: 100%;
+        background: rgba(248, 249, 250, 0.92);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid rgba(229, 231, 235, 0.85);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .header-inner {
+        max-width: 1600px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--space-5);
+        min-height: 64px;
+        box-sizing: border-box;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-weight: 800;
+        font-size: 1.15rem;
+        color: #3525cd;
+      }
+      .brand-mark {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-svg {
+        width: 100%; /* Ensures it fills the 24px container */
+        height: 100%;
+        object-fit: contain; /* Keeps the logo aspect ratio intact */
+      }
+
+      .main-nav {
+        display: flex;
+        align-items: center;
+        gap: var(--space-6);
+      }
+      .main-nav a {
+        color: #464555;
+        font-weight: 600;
+        font-size: 1.05rem;
+        padding: var(--space-2) 0;
+        border-bottom: 3px solid transparent;
+        transition:
+          color 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .main-nav a:hover {
+        color: #191c1d;
+      }
+      .main-nav a[aria-current="page"] {
+        color: #3525cd;
+        font-weight: 700;
+        border-bottom-color: #3525cd;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+      }
+      .icon-btn {
+        background: none;
+        border: none;
+        color: #191c1d;
+        font-size: 1.05rem;
+        cursor: pointer;
+        width: 34px;
+        height: 34px;
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        transition: background 0.15s ease;
+      }
+      .icon-btn svg.icon {
+        width: 22px;
+        height: 22px;
+      }
+      .icon-btn:hover {
+        background: var(--background);
+      }
+      .icon-btn .dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--danger);
+      }
+
+      .user-chip {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #7c6cf0);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .user-meta {
+        display: none;
+      }
+      .user-meta .name {
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+      .user-meta .role {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+
+      /* ===== Layout shell ===== */
+      .app-shell {
+        max-width: 1600px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+      }
+
+      .sidebar {
+        border-right: 1px solid var(--border);
+        padding: var(--space-6) var(--space-4);
+        position: sticky;
+        top: 64px;
+        align-self: start;
+        height: calc(100vh - 64px);
+        overflow-y: auto;
+      }
+      .sidebar-profile {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: 0 var(--space-2);
+        margin-bottom: var(--space-6);
+      }
+      .sidebar-profile .profile-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      }
+      .sidebar-profile .name {
+        font-weight: 800;
+        font-size: 1.02rem;
+        color: var(--primary);
+        line-height: 1.25;
+      }
+      .sidebar-profile .role {
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #374151;
+        line-height: 1.25;
+      }
+      .sidebar-nav {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: 14px 18px;
+        border-radius: 999px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 1rem;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+      .sidebar-nav a svg.icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        color: inherit;
+      }
+      .sidebar-nav a:hover {
+        background: var(--background);
+        color: var(--text-primary);
+      }
+      .sidebar-nav a.active {
+        background: #6ee7b7;
+        color: #065f46;
+        font-weight: 600;
+      }
+
+      .content {
+        padding: var(--space-5);
+        min-width: 0;
+      }
+
+      .breadcrumb {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: var(--space-3);
+      }
+      .breadcrumb a {
+        color: var(--text-secondary);
+      }
+      .breadcrumb a:hover {
+        color: var(--primary);
+      }
+      .breadcrumb .current {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .page-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--space-4);
+        margin-bottom: var(--space-5);
+      }
+      .page-header h1 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 var(--space-1);
+      }
+      .page-header .subtitle {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+      .page-header .subtitle i {
+        margin-right: 4px;
+        color: var(--text-secondary);
+      }
+
+      .page-actions {
+        display: flex;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: 10px 18px;
+        border-radius: var(--radius);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.15s ease,
+          background 0.15s ease,
+          border-color 0.15s ease;
+        white-space: nowrap;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn-secondary {
+        background: var(--surface);
+        border-color: var(--border);
+        color: var(--text-primary);
+      }
+      .btn-secondary:hover {
+        background: var(--background);
+        border-color: #d4d7dc;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: var(--shadow);
+      }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+      .btn-primary:disabled {
+        background: #c7c9f7;
+        cursor: not-allowed;
+      }
+      .btn-block {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+      }
+
+      /* ===== Evaluation grid ===== */
+      .eval-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: var(--space-5);
+        align-items: start;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      /* CV viewer */
+      .cv-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--border);
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+      .cv-toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .toolbar-btn {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+      .toolbar-btn:hover {
+        background: var(--background);
+        color: var(--text-primary);
+      }
+      .page-indicator {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+      .page-indicator strong {
+        color: var(--text-primary);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 5px 10px;
+        border-radius: 999px;
+      }
+      .badge-success {
+        background: var(--success-light);
+        color: #067a55;
+      }
+
+      .cv-toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .cv-viewer {
+        background: var(--background);
+        padding: var(--space-5);
+        min-height: 520px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .resume {
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        padding: var(--space-6);
+        width: 100%;
+        max-width: 680px;
+      }
+      .resume-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+      }
+      .resume-role {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin: 2px 0 var(--space-4);
+      }
+      .resume-divider {
+        height: 3px;
+        background: var(--primary);
+        border-radius: 3px;
+        margin-bottom: var(--space-5);
+        width: 100%;
+      }
+      .resume-columns {
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: var(--space-5);
+      }
+      .resume-section h2 {
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--primary);
+        font-weight: 700;
+        margin: 0 0 var(--space-2);
+      }
+      .resume-section + .resume-section {
+        margin-top: var(--space-5);
+      }
+      .contact-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.92rem;
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .contact-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .contact-list i {
+        color: var(--text-secondary);
+        width: 16px;
+      }
+
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .skill-tag {
+        background: var(--background);
+        border: 1px solid var(--border);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 6px 10px;
+        border-radius: 6px;
+        color: var(--text-primary);
+      }
+
+      .job {
+        margin-bottom: var(--space-4);
+      }
+      .job h3 {
+        margin: 0;
+        font-size: 1.02rem;
+        font-weight: 700;
+      }
+      .job .meta {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        margin: 2px 0 var(--space-2);
+      }
+      .job p {
+        margin: 0;
+        font-size: 0.92rem;
+        color: #374151;
+      }
+
+      /* ===== Evaluation form ===== */
+      .eval-panel-header {
+        background: linear-gradient(135deg, var(--primary), #6d5be8);
+        color: #fff;
+        padding: var(--space-4) var(--space-5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+      }
+      .eval-panel-header h2 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .eval-panel-header .save-state {
+        font-size: 0.75rem;
+        opacity: 0.85;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .eval-body {
+        padding: var(--space-5);
+      }
+      .eval-body fieldset {
+        border: none;
+        margin: 0 0 var(--space-5);
+        padding: 0;
+      }
+      .eval-body legend {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: var(--space-4);
+        padding: 0;
+      }
+
+      .score-group {
+        margin-bottom: var(--space-5);
+      }
+      .score-label-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: var(--space-2);
+      }
+      .score-label-row label {
+        font-weight: 600;
+        font-size: 0.92rem;
+      }
+      .score-value {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--primary);
+        background: var(--primary-light);
+        padding: 2px 10px;
+        border-radius: 999px;
+      }
+
+      .slider-wrap {
+        position: relative;
+        padding-top: 2px;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: linear-gradient(
+          to right,
+          var(--primary) 0%,
+          var(--primary) var(--fill, 50%),
+          var(--border) var(--fill, 50%),
+          var(--border) 100%
+        );
+        outline-offset: 6px;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid var(--primary);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        transition: transform 0.12s ease;
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid var(--primary);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+      }
+      input[type="range"]::-moz-range-track {
+        height: 6px;
+        border-radius: 999px;
+        background: var(--border);
+      }
+      input[type="range"]::-moz-range-progress {
+        height: 6px;
+        border-radius: 999px;
+        background: var(--primary);
+      }
+
+      .scale-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 6px;
+      }
+
+      /* Star rating */
+      .star-rating {
+        display: flex;
+        gap: 6px;
+      }
+      .star-rating button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.4rem;
+        color: var(--border);
+        padding: 2px;
+        transition:
+          transform 0.1s ease,
+          color 0.15s ease;
+      }
+      .star-rating button:hover {
+        transform: scale(1.15);
+      }
+      .star-rating button.filled {
+        color: var(--warning);
+      }
+      .star-rating button.filled svg {
+        fill: var(--warning);
+      }
+
+      /* Cultural alignment radio cards */
+      .option-cards {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+      .option-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease;
+      }
+      .option-card:hover {
+        border-color: var(--primary);
+      }
+      .option-card input {
+        accent-color: var(--primary);
+        width: 16px;
+        height: 16px;
+      }
+      .option-card:has(input:checked) {
+        border-color: var(--primary);
+        background: var(--primary-light);
+        color: var(--primary-hover);
+      }
+
+      /* Notes */
+      .field {
+        margin-bottom: var(--space-5);
+      }
+      .field label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.92rem;
+        margin-bottom: var(--space-2);
+      }
+      .field .hint {
+        font-weight: 400;
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+      }
+      textarea {
+        width: 100%;
+        min-height: 110px;
+        resize: vertical;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+        outline: none;
+      }
+      .char-count {
+        text-align: right;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+      }
+      .error-text {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 6px;
+        display: none;
+        align-items: center;
+        gap: 6px;
+      }
+      .error-text.show {
+        display: flex;
+      }
+      .field.invalid textarea {
+        border-color: var(--danger);
+      }
+
+      /* Decision radios */
+      .decision-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2);
+      }
+      .decision-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 10px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease;
+      }
+      .decision-card i {
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .decision-card span {
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+      .decision-card input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .decision-card.advance:has(input:checked) {
+        border-color: var(--success);
+        background: var(--success-light);
+      }
+      .decision-card.advance:has(input:checked) i {
+        color: var(--success);
+      }
+      .decision-card.hold:has(input:checked) {
+        border-color: var(--warning);
+        background: #fef3c7;
+      }
+      .decision-card.hold:has(input:checked) i {
+        color: var(--warning);
+      }
+      .decision-card.reject:has(input:checked) {
+        border-color: var(--danger);
+        background: #fee2e2;
+      }
+      .decision-card.reject:has(input:checked) i {
+        color: var(--danger);
+      }
+      .decision-card {
+        position: relative;
+      }
+
+      .submit-row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        margin-top: var(--space-6);
+      }
+
+      .success-banner {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        background: var(--success-light);
+        color: #067a55;
+        border: 1px solid #9be7c4;
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        margin-top: var(--space-3);
+      }
+      .success-banner.show {
+        display: flex;
+      }
+
+      /* Loading + empty states */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #eceef2 25%,
+          #f5f6f8 37%,
+          #eceef2 63%
+        );
+        background-size: 400% 100%;
+        animation: shimmer 1.4s ease infinite;
+        border-radius: 6px;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 100% 0;
+        }
+        100% {
+          background-position: 0 0;
+        }
+      }
+
+      .loading-overlay {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: var(--space-3);
+        min-height: 520px;
+        color: var(--text-secondary);
+      }
+      .loading-overlay.show {
+        display: flex;
+      }
+      .spinner {
+        width: 38px;
+        height: 38px;
+        border: 4px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .empty-state {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: var(--space-2);
+        min-height: 520px;
+        color: var(--text-secondary);
+        padding: var(--space-5);
+      }
+      .empty-state.show {
+        display: flex;
+      }
+      .empty-state i {
+        font-size: 2.2rem;
+        color: var(--border);
+        margin-bottom: 6px;
+      }
+      .empty-state h3 {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 1rem;
+      }
+      .empty-state p {
+        margin: 0;
+        font-size: 0.88rem;
+        max-width: 280px;
+      }
+
+      /* ===== Responsive ===== */
+      @media (min-width: 768px) {
+        .user-meta {
+          display: block;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .eval-grid {
+          grid-template-columns: 1fr;
+        }
+        .resume-columns {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .header-inner {
+          height: auto;
+          min-height: 58px;
+          padding: var(--space-2) var(--space-4);
+          flex-wrap: wrap;
+          row-gap: 8px;
+        }
+        .header-right {
+          display: contents;
+        }
+        .main-nav {
+          order: 3;
+          flex-basis: 100%;
+          gap: var(--space-4);
+          flex-wrap: wrap;
+          justify-content: flex-start;
+        }
+        .main-nav a {
+          font-size: 0.9rem;
+        }
+        .header-actions {
+          order: 2;
+          margin-left: auto;
+        }
+        .content {
+          padding: var(--space-4);
+        }
+        .page-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .page-actions {
+          justify-content: stretch;
+        }
+        .page-actions .btn {
+          flex: 1;
+          justify-content: center;
+        }
+        .decision-grid {
+          grid-template-columns: 1fr;
+        }
+        .resume {
+          padding: var(--space-4);
+        }
+        .cv-toolbar {
+          padding: var(--space-3);
+        }
+        .eval-body {
+          padding: var(--space-4);
+        }
+      }
+
+      @media (min-width: 768px) {
+        .skeleton-mobile-only {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg style="display: none" aria-hidden="true">
+      <symbol
+        id="icon-bell"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </symbol>
+      <symbol
+        id="icon-calendar-check"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <path d="m9 16 2 2 4-4" />
+      </symbol>
+      <symbol
+        id="icon-check-circle"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </symbol>
+      <symbol
+        id="icon-mail"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+        />
+        <polyline points="22,6 12,13 2,6" />
+      </symbol>
+      <symbol
+        id="icon-file-text"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+        />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+        <line x1="10" y1="9" x2="8" y2="9" />
+      </symbol>
+      <symbol
+        id="icon-id-card"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <circle cx="8" cy="12" r="2" />
+        <line x1="13" y1="10" x2="18" y2="10" />
+        <line x1="13" y1="14" x2="18" y2="14" />
+      </symbol>
+      <symbol
+        id="icon-send"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="22" y1="2" x2="11" y2="13" />
+        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+      </symbol>
+      <symbol
+        id="icon-share-2"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </symbol>
+      <symbol
+        id="icon-star"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polygon
+          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+        />
+      </symbol>
+      <symbol
+        id="icon-menu"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </symbol>
+      <symbol
+        id="icon-x"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </symbol>
+      <symbol
+        id="icon-briefcase"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="2" y="7" width="20" height="14" rx="2" />
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+      </symbol>
+      <symbol
+        id="icon-bar-chart-2"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </symbol>
+      <symbol
+        id="icon-chevron-left"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 18 9 12 15 6" />
+      </symbol>
+      <symbol
+        id="icon-chevron-right"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </symbol>
+      <symbol
+        id="icon-alert-circle"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </symbol>
+      <symbol
+        id="icon-x-circle"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="15" y1="9" x2="9" y2="15" />
+        <line x1="9" y1="9" x2="15" y2="15" />
+      </symbol>
+      <symbol
+        id="icon-more-horizontal"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="19" cy="12" r="1.5" />
+        <circle cx="5" cy="12" r="1.5" />
+      </symbol>
+      <symbol
+        id="icon-maximize-2"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 3 21 3 21 9" />
+        <polyline points="9 21 3 21 3 15" />
+        <line x1="21" y1="3" x2="14" y2="10" />
+        <line x1="3" y1="21" x2="10" y2="14" />
+      </symbol>
+      <symbol
+        id="icon-map-pin"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </symbol>
+      <symbol
+        id="icon-pause-circle"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="10" y1="15" x2="10" y2="9" />
+        <line x1="14" y1="15" x2="14" y2="9" />
+      </symbol>
+      <symbol
+        id="icon-phone"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
+        />
+      </symbol>
+      <symbol
+        id="icon-sparkles"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6L12 2z"
+        />
+        <path
+          d="M19 14l.7 2.1L22 17l-2.3.9L19 20l-.7-2.1L16 17l2.3-.9L19 14z"
+        />
+      </symbol>
+      <symbol
+        id="icon-loader-2"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="9" opacity="0.25" />
+        <path d="M21 12a9 9 0 0 0-9-9" />
+      </symbol>
+      <symbol
+        id="icon-users"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </symbol>
+      <symbol
+        id="icon-calendar-dot"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="4" width="18" height="17" rx="2" />
+        <line x1="3" y1="9" x2="21" y2="9" />
+        <line x1="8" y1="2" x2="8" y2="5" />
+        <line x1="16" y1="2" x2="16" y2="5" />
+        <circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol
+        id="icon-database"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <ellipse cx="12" cy="5.5" rx="8.5" ry="3" />
+        <path d="M3.5 5.5v6c0 1.66 3.8 3 8.5 3s8.5-1.34 8.5-3v-6" />
+        <path d="M3.5 11.5v6c0 1.66 3.8 3 8.5 3s8.5-1.34 8.5-3v-6" />
+      </symbol>
+      <symbol
+        id="icon-bar-chart-box"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <line x1="8" y1="17" x2="8" y2="12" />
+        <line x1="12" y1="17" x2="12" y2="8" />
+        <line x1="16" y1="17" x2="16" y2="14" />
+      </symbol>
+    </svg>
+
+    <!-- ===== Header ===== -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <img
+              src="../assets/images/logo.png"
+              alt="Recruiter Logo"
+              class="logo-svg"
+            />
+          </div>
+        </div>
+
+        <div class="header-right">
+          <nav class="main-nav" aria-label="Primary">
+            <a href="#" aria-current="page">Candidates</a>
+            <a href="#">Interviews</a>
+            <a href="#">Talent Pool</a>
+            <a href="#">Analytics</a>
+          </nav>
+
+          <div class="header-actions">
+            <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+              <svg
+                class="icon"
+                viewBox="1218 23 16 20"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1218 40V38H1220V31C1220 29.6167 1220.42 28.3875 1221.25 27.3125C1222.08 26.2375 1223.17 25.5333 1224.5 25.2V24.5C1224.5 24.0833 1224.65 23.7292 1224.94 23.4375C1225.23 23.1458 1225.58 23 1226 23C1226.42 23 1226.77 23.1458 1227.06 23.4375C1227.35 23.7292 1227.5 24.0833 1227.5 24.5V25.2C1228.83 25.5333 1229.92 26.2375 1230.75 27.3125C1231.58 28.3875 1232 29.6167 1232 31V38H1234V40H1218ZM1226 43C1225.45 43 1224.98 42.8042 1224.59 42.4125C1224.2 42.0208 1224 41.55 1224 41H1228C1228 41.55 1227.8 42.0208 1227.41 42.4125C1227.02 42.8042 1226.55 43 1226 43ZM1222 38H1230V31C1230 29.9 1229.61 28.9583 1228.82 28.175C1228.04 27.3917 1227.1 27 1226 27C1224.9 27 1223.96 27.3917 1223.18 28.175C1222.39 28.9583 1222 29.9 1222 31V38Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <!-- ===== Sidebar (tablet/desktop) ===== -->
+      <aside class="sidebar" aria-label="Sections">
+        <div class="sidebar-profile">
+          <svg
+            class="profile-avatar"
+            width="54"
+            height="54"
+            viewBox="0 0 54 54"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Alex Chen"
+          >
+            <defs>
+              <linearGradient id="avatarBg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4F46E5" />
+                <stop offset="100%" stop-color="#7C6CF0" />
+              </linearGradient>
+            </defs>
+            <circle cx="27" cy="27" r="27" fill="url(#avatarBg)" />
+            <circle cx="27" cy="22" r="9" fill="#ffffff" fill-opacity="0.92" />
+            <path
+              d="M8 50C8 39.5066 16.5066 31 27 31C37.4934 31 46 39.5066 46 50V54H8V50Z"
+              fill="#ffffff"
+              fill-opacity="0.92"
+            />
+          </svg>
+          <div>
+            <div class="name">Alex Chen</div>
+            <div class="role">Senior Recruiter</div>
+          </div>
+        </div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="#" class="active"
+              ><svg class="icon"><use href="#icon-users"></use></svg
+              >Candidates</a
+            >
+          </li>
+          <li>
+            <a href="#"
+              ><svg class="icon"><use href="#icon-calendar-dot"></use></svg
+              >Interviews</a
+            >
+          </li>
+          <li>
+            <a href="#"
+              ><svg class="icon"><use href="#icon-database"></use></svg>Talent
+              Pool</a
+            >
+          </li>
+          <li>
+            <a href="#"
+              ><svg class="icon"><use href="#icon-bar-chart-box"></use></svg
+              >Analytics</a
+            >
+          </li>
+        </ul>
+      </aside>
+
+      <!-- ===== Main content ===== -->
+      <main class="content" id="main">
+        <p class="breadcrumb">
+          <a href="#">Candidates</a>
+          <svg class="icon" style="font-size: 0.65em">
+            <use href="#icon-chevron-right"></use>
+          </svg>
+          <span class="current">Sarah Jenkins</span>
+        </p>
+
+        <div class="page-header">
+          <div>
+            <h1>Evaluate: Sarah Jenkins</h1>
+            <p class="subtitle">
+              <svg class="icon"><use href="#icon-briefcase"></use></svg> Senior
+              Frontend Developer &nbsp;•&nbsp;
+              <svg class="icon"><use href="#icon-map-pin"></use></svg> London,
+              UK
+            </p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary" id="exportBtn">
+              <svg class="icon"><use href="#icon-file-text"></use></svg> Export
+              PDF
+            </button>
+            <button class="btn btn-primary" id="shareBtn">
+              <svg class="icon"><use href="#icon-share-2"></use></svg> Share
+              Review
+            </button>
+          </div>
+        </div>
+
+        <div class="eval-grid">
+          <!-- ===== CV viewer panel ===== -->
+          <section class="panel" aria-labelledby="cvHeading">
+            <h2 id="cvHeading" class="visually-hidden">Resume viewer</h2>
+            <div class="cv-toolbar">
+              <div class="cv-toolbar-left">
+                <button
+                  class="toolbar-btn"
+                  id="prevPageBtn"
+                  aria-label="Previous page"
+                >
+                  <svg class="icon"><use href="#icon-chevron-left"></use></svg>
+                </button>
+                <button
+                  class="toolbar-btn"
+                  id="nextPageBtn"
+                  aria-label="Next page"
+                >
+                  <svg class="icon"><use href="#icon-chevron-right"></use></svg>
+                </button>
+                <span class="page-indicator"
+                  >Page <strong id="pageNum">1</strong> of
+                  <span id="pageTotal">2</span></span
+                >
+              </div>
+              <div class="cv-toolbar-right">
+                <span class="badge badge-success"
+                  ><svg class="icon"><use href="#icon-check-circle"></use></svg>
+                  AI Parsed</span
+                >
+              </div>
+            </div>
+
+            <!-- Loading state (hidden by default) -->
+            <div
+              class="loading-overlay"
+              id="cvLoading"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="spinner" aria-hidden="true"></div>
+              <p>Loading resume…</p>
+            </div>
+
+            <!-- Empty state (hidden by default) -->
+            <div class="empty-state" id="cvEmpty" role="status">
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-file-text"></use>
+              </svg>
+              <h3>No resume on file</h3>
+              <p>
+                This candidate hasn't uploaded a CV yet. Ask them to resubmit
+                their application.
+              </p>
+            </div>
+
+            <div class="cv-viewer" id="cvViewer">
+              <article class="resume" id="resumePage">
+                <p
+                  style="
+                    font-size: 0.75rem;
+                    color: var(--text-secondary);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    font-weight: 700;
+                    margin: 0 0 6px;
+                  "
+                >
+                  Auto-saved
+                </p>
+                <h3 class="resume-name">Sarah Jenkins</h3>
+                <p class="resume-role">Senior Frontend Developer</p>
+                <div class="resume-divider" aria-hidden="true"></div>
+
+                <div class="resume-columns">
+                  <div>
+                    <div class="resume-section">
+                      <h2>Contact</h2>
+                      <ul class="contact-list">
+                        <li>
+                          <svg class="icon"><use href="#icon-mail"></use></svg>
+                          s.jenkins@example.com
+                        </li>
+                        <li>
+                          <svg class="icon"><use href="#icon-phone"></use></svg>
+                          +44 20 7946 0958
+                        </li>
+                        <li>
+                          <svg class="icon">
+                            <use href="#icon-map-pin"></use>
+                          </svg>
+                          London, UK
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="resume-section">
+                      <h2>Skills</h2>
+                      <div class="skill-tags">
+                        <span class="skill-tag">REACT</span>
+                        <span class="skill-tag">TYPESCRIPT</span>
+                        <span class="skill-tag">NEXT.JS</span>
+                        <span class="skill-tag">TAILWIND</span>
+                        <span class="skill-tag">GRAPHQL</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="resume-section">
+                      <h2>Experience</h2>
+                      <div class="job">
+                        <h3>Senior Frontend Engineer @ TechFlow</h3>
+                        <p class="meta">2020 – Present</p>
+                        <p>
+                          Led the architectural migration of a legacy monolithic
+                          dashboard to a modern React-based micro-frontend
+                          architecture, resulting in a 40% improvement in
+                          Lighthouse scores.
+                        </p>
+                      </div>
+                      <div class="job">
+                        <h3>Frontend Developer @ CreativePixels</h3>
+                        <p class="meta">2017 – 2020</p>
+                        <p>
+                          Developed responsive web applications for Fortune 500
+                          clients using React and Redux. Focused on
+                          accessibility and pixel-perfect design implementation.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="resume-section">
+                      <h2>Education</h2>
+                      <div class="job">
+                        <h3>BSc Computer Science</h3>
+                        <p class="meta">
+                          University of Edinburgh &nbsp;•&nbsp; 2013 – 2017
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- ===== Evaluation form panel ===== -->
+          <section class="panel" aria-labelledby="evalHeading">
+            <div class="eval-panel-header">
+              <h2 id="evalHeading">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-sparkles"></use>
+                </svg>
+                AI Recommendation
+              </h2>
+              <button
+                class="icon-btn"
+                style="color: #fff; width: 30px; height: 30px"
+                aria-label="More options"
+              >
+                <svg class="icon"><use href="#icon-more-horizontal"></use></svg>
+              </button>
+            </div>
+
+            <form class="eval-body" id="evalForm" novalidate>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: var(--space-5);
+                "
+              >
+                <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800">
+                  Evaluation
+                </h3>
+                <span
+                  style="font-size: 0.78rem; color: var(--text-secondary)"
+                  id="autosaveLabel"
+                  ><svg class="icon" style="color: var(--success)">
+                    <use href="#icon-check-circle"></use>
+                  </svg>
+                  Auto-saved</span
+                >
+              </div>
+
+              <!-- Technical Skills -->
+              <div class="score-group">
+                <div class="score-label-row">
+                  <label for="techSkills">Technical Skills</label>
+                  <span class="score-value"
+                    ><span id="techSkillsVal">8.5</span>/10</span
+                  >
+                </div>
+                <div class="slider-wrap">
+                  <input
+                    type="range"
+                    id="techSkills"
+                    name="techSkills"
+                    min="0"
+                    max="10"
+                    step="0.5"
+                    value="8.5"
+                    aria-describedby="techSkillsScale"
+                  />
+                </div>
+                <div class="scale-labels" id="techSkillsScale">
+                  <span>Novice</span><span>Expert</span>
+                </div>
+              </div>
+
+              <!-- Communication -->
+              <div class="score-group">
+                <div class="score-label-row">
+                  <label for="communication">Communication</label>
+                  <span class="score-value"
+                    ><span id="commVal">7</span>/10</span
+                  >
+                </div>
+                <div class="slider-wrap">
+                  <input
+                    type="range"
+                    id="communication"
+                    name="communication"
+                    min="0"
+                    max="10"
+                    step="0.5"
+                    value="7"
+                    aria-describedby="commScale"
+                  />
+                </div>
+                <div class="scale-labels" id="commScale">
+                  <span>Poor</span><span>Excellent</span>
+                </div>
+              </div>
+
+              <!-- Behavioral Fit -->
+              <fieldset
+                class="score-group"
+                style="border: none; padding: 0; margin-bottom: var(--space-5)"
+              >
+                <legend
+                  style="
+                    font-weight: 600;
+                    font-size: 0.92rem;
+                    margin-bottom: var(--space-2);
+                    padding: 0;
+                  "
+                >
+                  Behavioral Fit
+                </legend>
+                <div
+                  class="star-rating"
+                  id="starRating"
+                  role="radiogroup"
+                  aria-label="Behavioral fit rating, out of 5 stars"
+                >
+                  <button
+                    type="button"
+                    class="star filled"
+                    data-value="1"
+                    role="radio"
+                    aria-checked="false"
+                    aria-label="1 star"
+                  >
+                    <svg class="icon"><use href="#icon-star"></use></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="star filled"
+                    data-value="2"
+                    role="radio"
+                    aria-checked="false"
+                    aria-label="2 stars"
+                  >
+                    <svg class="icon"><use href="#icon-star"></use></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="star filled"
+                    data-value="3"
+                    role="radio"
+                    aria-checked="false"
+                    aria-label="3 stars"
+                  >
+                    <svg class="icon"><use href="#icon-star"></use></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="star filled"
+                    data-value="4"
+                    role="radio"
+                    aria-checked="true"
+                    aria-label="4 stars"
+                  >
+                    <svg class="icon"><use href="#icon-star"></use></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="star"
+                    data-value="5"
+                    role="radio"
+                    aria-checked="false"
+                    aria-label="5 stars"
+                  >
+                    <svg class="icon"><use href="#icon-star"></use></svg>
+                  </button>
+                </div>
+                <input
+                  type="hidden"
+                  name="behavioralFit"
+                  id="behavioralFitInput"
+                  value="4"
+                />
+              </fieldset>
+
+              <!-- Cultural Alignment -->
+              <fieldset class="score-group">
+                <legend>Cultural Alignment</legend>
+                <div class="option-cards">
+                  <label class="option-card">
+                    <input
+                      type="radio"
+                      name="culturalAlignment"
+                      value="high"
+                      checked
+                    />
+                    High Match
+                  </label>
+                  <label class="option-card">
+                    <input
+                      type="radio"
+                      name="culturalAlignment"
+                      value="moderate"
+                    />
+                    Moderate Match
+                  </label>
+                  <label class="option-card">
+                    <input type="radio" name="culturalAlignment" value="low" />
+                    Low Match
+                  </label>
+                </div>
+              </fieldset>
+
+              <!-- Notes -->
+              <div class="field" id="notesField">
+                <label for="notes"
+                  >Recruiter notes
+                  <span class="hint">(required, min 10 characters)</span></label
+                >
+                <textarea
+                  id="notes"
+                  name="notes"
+                  placeholder="Add your observations about this candidate's interview, communication style, and overall fit…"
+                  aria-describedby="notesError notesCount"
+                  required
+                ></textarea>
+                <div class="char-count" id="notesCount">0 characters</div>
+                <p class="error-text" id="notesError" role="alert">
+                  <svg class="icon"><use href="#icon-alert-circle"></use></svg>
+                  Please add at least 10 characters of notes.
+                </p>
+              </div>
+
+              <!-- Decision -->
+              <fieldset class="score-group">
+                <legend>
+                  Decision
+                  <span class="hint" style="font-weight: 400">(required)</span>
+                </legend>
+                <div
+                  class="decision-grid"
+                  role="radiogroup"
+                  aria-label="Hiring decision"
+                >
+                  <label class="decision-card advance">
+                    <input
+                      type="radio"
+                      name="decision"
+                      value="advance"
+                      required
+                    />
+                    <svg class="icon" aria-hidden="true">
+                      <use href="#icon-check-circle"></use>
+                    </svg>
+                    <span>Advance</span>
+                  </label>
+                  <label class="decision-card hold">
+                    <input type="radio" name="decision" value="hold" />
+                    <svg class="icon" aria-hidden="true">
+                      <use href="#icon-pause-circle"></use>
+                    </svg>
+                    <span>Hold</span>
+                  </label>
+                  <label class="decision-card reject">
+                    <input type="radio" name="decision" value="reject" />
+                    <svg class="icon" aria-hidden="true">
+                      <use href="#icon-x-circle"></use>
+                    </svg>
+                    <span>Reject</span>
+                  </label>
+                </div>
+                <p class="error-text" id="decisionError" role="alert">
+                  <svg class="icon"><use href="#icon-alert-circle"></use></svg>
+                  Please select a decision before submitting.
+                </p>
+              </fieldset>
+
+              <div class="submit-row">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-block"
+                  id="submitBtn"
+                >
+                  <svg class="icon"><use href="#icon-send"></use></svg> Submit
+                  Evaluation
+                </button>
+                <div class="success-banner" id="successBanner" role="status">
+                  <svg class="icon"><use href="#icon-check-circle"></use></svg>
+                  Evaluation submitted successfully for Sarah Jenkins.
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        document.addEventListener("DOMContentLoaded", function () {
+          /* ---------- Sliders ---------- */
+          function bindSlider(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+
+            function update() {
+              const min = parseFloat(input.min);
+              const max = parseFloat(input.max);
+              const val = parseFloat(input.value);
+              const pct = ((val - min) / (max - min)) * 100;
+              input.style.setProperty("--fill", pct + "%");
+              display.textContent = Number.isInteger(val)
+                ? val
+                : val.toFixed(1);
+            }
+            input.addEventListener("input", update);
+            update();
+          }
+          bindSlider("techSkills", "techSkillsVal");
+          bindSlider("communication", "commVal");
+
+          /* ---------- Star rating ---------- */
+          const starRating = document.getElementById("starRating");
+          const stars = Array.from(starRating.querySelectorAll(".star"));
+          const behavioralFitInput =
+            document.getElementById("behavioralFitInput");
+
+          function setStars(value) {
+            stars.forEach(function (star) {
+              const v = parseInt(star.dataset.value, 10);
+              const filled = v <= value;
+              star.classList.toggle("filled", filled);
+              star.setAttribute("aria-checked", String(v === value));
+            });
+            behavioralFitInput.value = value;
+          }
+
+          stars.forEach(function (star) {
+            star.addEventListener("click", function () {
+              setStars(parseInt(star.dataset.value, 10));
+              console.log("Behavioral fit set to:", star.dataset.value);
+            });
+            star.addEventListener("mouseenter", function () {
+              const v = parseInt(star.dataset.value, 10);
+              stars.forEach(function (s) {
+                const sv = parseInt(s.dataset.value, 10);
+                s.classList.toggle("filled", sv <= v);
+              });
+            });
+          });
+          starRating.addEventListener("mouseleave", function () {
+            setStars(parseInt(behavioralFitInput.value, 10));
+          });
+
+          /* ---------- Notes validation ---------- */
+          const notes = document.getElementById("notes");
+          const notesField = document.getElementById("notesField");
+          const notesError = document.getElementById("notesError");
+          const notesCount = document.getElementById("notesCount");
+
+          function updateNotesCount() {
+            notesCount.textContent = notes.value.length + " characters";
+          }
+          function validateNotes() {
+            const valid = notes.value.trim().length >= 10;
+            notesField.classList.toggle("invalid", !valid);
+            notesError.classList.toggle("show", !valid);
+            return valid;
+          }
+          notes.addEventListener("input", function () {
+            updateNotesCount();
+            if (notesField.classList.contains("invalid")) validateNotes();
+          });
+          updateNotesCount();
+
+          /* ---------- Decision validation ---------- */
+          const decisionError = document.getElementById("decisionError");
+          function validateDecision() {
+            const checked = document.querySelector(
+              'input[name="decision"]:checked',
+            );
+            decisionError.classList.toggle("show", !checked);
+            return !!checked;
+          }
+          document
+            .querySelectorAll('input[name="decision"]')
+            .forEach(function (radio) {
+              radio.addEventListener("change", validateDecision);
+            });
+
+          /* ---------- Form submit ---------- */
+          const evalForm = document.getElementById("evalForm");
+          const submitBtn = document.getElementById("submitBtn");
+          const successBanner = document.getElementById("successBanner");
+
+          evalForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            successBanner.classList.remove("show");
+
+            const notesValid = validateNotes();
+            const decisionValid = validateDecision();
+
+            if (!notesValid) {
+              notes.focus();
+              console.log("Validation failed: notes too short");
+              return;
+            }
+            if (!decisionValid) {
+              console.log("Validation failed: no decision selected");
+              document
+                .querySelector(".decision-grid")
+                .scrollIntoView({ behavior: "smooth", block: "center" });
+              return;
+            }
+
+            const payload = {
+              candidate: "Sarah Jenkins",
+              technicalSkills: document.getElementById("techSkills").value,
+              communication: document.getElementById("communication").value,
+              behavioralFit: behavioralFitInput.value,
+              culturalAlignment: document.querySelector(
+                'input[name="culturalAlignment"]:checked',
+              ).value,
+              notes: notes.value.trim(),
+              decision: document.querySelector('input[name="decision"]:checked')
+                .value,
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+              '<svg class="icon spin"><use href="#icon-loader-2"></use></svg> Submitting…';
+
+            console.log("Submitting evaluation:", payload);
+
+            setTimeout(function () {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML =
+                '<svg class="icon"><use href="#icon-send"></use></svg> Submit Evaluation';
+              successBanner.classList.add("show");
+              console.log("Evaluation submitted successfully.");
+            }, 700);
+          });
+
+          /* ---------- Page actions (placeholders) ---------- */
+          document
+            .getElementById("exportBtn")
+            .addEventListener("click", function () {
+              console.log("Export PDF clicked for Sarah Jenkins");
+            });
+          document
+            .getElementById("shareBtn")
+            .addEventListener("click", function () {
+              console.log("Share Review clicked for Sarah Jenkins");
+            });
+          document
+            .getElementById("notifBtn")
+            .addEventListener("click", function () {
+              console.log("Notifications opened");
+            });
+
+          /* ---------- CV pagination (demo: toggles loading/empty states) ---------- */
+          const pageNum = document.getElementById("pageNum");
+          const pageTotal = 2;
+          const cvViewer = document.getElementById("cvViewer");
+          const cvLoading = document.getElementById("cvLoading");
+          const cvEmpty = document.getElementById("cvEmpty");
+          let currentPage = 1;
+
+          function goToPage(page) {
+            if (page < 1 || page > pageTotal) return;
+            cvViewer.style.display = "none";
+            cvEmpty.classList.remove("show");
+            cvLoading.classList.add("show");
+
+            setTimeout(function () {
+              cvLoading.classList.remove("show");
+              currentPage = page;
+              pageNum.textContent = currentPage;
+
+              if (currentPage === 2) {
+                // Demonstrate the empty state on page 2
+                cvEmpty.classList.add("show");
+                cvViewer.style.display = "none";
+              } else {
+                cvViewer.style.display = "flex";
+              }
+              console.log("Navigated to resume page", currentPage);
+            }, 500);
+          }
+
+          document
+            .getElementById("prevPageBtn")
+            .addEventListener("click", function () {
+              goToPage(currentPage - 1);
+            });
+          document
+            .getElementById("nextPageBtn")
+            .addEventListener("click", function () {
+              goToPage(currentPage + 1);
+            });
+        }); // end DOMContentLoaded
+      })();
+    </script>
+  </body>
+</html>
