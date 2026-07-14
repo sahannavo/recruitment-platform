@@ -1,48 +1,47 @@
+using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecruitmentAPI.Helpers;
-using RecruitmentAPI.Repository.Implementations;
-using RecruitmentAPI.Repository.Interfaces;
-using RecruitmentAPI.Services.Implementations;
-using RecruitmentAPI.Services.Interfaces;
+using RecruitmentAPI.Services.AI;
+using RecruitmentAPI.Services.Notification;
 
 namespace RecruitmentAPI.Extensions
 {
     /// <summary>
-    /// Extension methods to keep Program.cs clean by grouping service registrations.
+    /// Registers Kaveesha's module: AIService, NotificationService, AIScoreCalculator,
+    /// and their external HTTP-backed dependencies. Call
+    /// <see cref="AddKaveeshaModule"/> from Program.cs alongside the other
+    /// members' AddXxxServices() calls.
     /// </summary>
-    public static class ServiceExtensions
+    public static class KaveeshaServiceExtensions
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        /// <summary>
+        /// Adds Kaveesha's AI service, notification service, and helper registrations
+        /// to the dependency injection container.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="configuration">Application configuration for binding options.</param>
+        /// <returns>The service collection for chaining.</returns>
+        public static IServiceCollection AddKaveeshaModule(this IServiceCollection services, IConfiguration configuration)
         {
-            // Register Generic Repository
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            // Options binding
+            services.Configure<AIServiceOptions>(configuration.GetSection(AIServiceOptions.SectionName));
+            services.Configure<NotificationServiceOptions>(configuration.GetSection(NotificationServiceOptions.SectionName));
 
-            // Register Specific Repositories
-            services.AddScoped<IUserRepository, UserRepository>();
+            // AI Service - typed HttpClient with a resilient timeout; retries can be layered on
+            // with Microsoft.Extensions.Http.Resilience if desired.
+            services.AddHttpClient<IAIService, AIService>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
 
-            // 💡 Team members (Savindi, Sobani, Sandawaruni) will add their repositories here:
-            // services.AddScoped<IJobRepository, JobRepository>();
-            // services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            // Helpers
+            services.AddScoped<AIScoreCalculator>();
 
-            // Register Unit of Work
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddServices(this IServiceCollection services)
-        {
-            // Register Helpers (often Singletons or Scoped depending on state)
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
-            services.AddScoped<IJwtHelper, JwtHelper>();
-            services.AddScoped<IAIScoreCalculator, AIScoreCalculator>(); // Kaveesha will update this later
-
-            // Register Business Services
-            services.AddScoped<IAuthService, AuthService>();
-
-            // 💡 Team members will add their services here:
-            // services.AddScoped<ICandidateService, CandidateService>();
-            // services.AddScoped<IInterviewService, InterviewService>();
+            // Notification Service + provider-specific senders
+            services.AddScoped<IEmailSender, SendGridEmailSender>();
+            services.AddScoped<ISmsSender, TwilioSmsSender>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             return services;
         }

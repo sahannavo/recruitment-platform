@@ -1,44 +1,58 @@
-using RecruitmentAPI.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using RecruitmentAPI.DTOs.AI;
+using RecruitmentAPI.Services.AI;
 
 namespace RecruitmentAPI.Helpers
 {
-    public interface IAIScoreCalculator
-    {
-        int CalculateMatchScore(string candidateSkills, string jobRequirements);
-        IEnumerable<Candidate> RankCandidates(IEnumerable<Candidate> candidates, string jobRequirements);
-    }
-
     /// <summary>
-    /// Placeholder helper for AI-based candidate matching and scoring.
-    /// This will be expanded by the AI service integration later.
+    /// Convenience helper for AI-powered candidate/job scoring and ranking.
+    /// Delegates to <see cref="IAIService"/> so that the underlying implementation
+    /// (LLM provider or keyword-based fallback) is transparent to callers.
+    /// Other team members' services (Application, Job, Interview) can inject
+    /// this helper instead of depending on IAIService directly when they only
+    /// need scoring functionality.
     /// </summary>
-    public class AIScoreCalculator : IAIScoreCalculator
+    public class AIScoreCalculator
     {
+        private readonly IAIService _aiService;
+
         /// <summary>
-        /// Calculates a dummy match score between 0 and 100.
+        /// Initialises a new instance of <see cref="AIScoreCalculator"/>.
         /// </summary>
-        public int CalculateMatchScore(string candidateSkills, string jobRequirements)
+        /// <param name="aiService">The AI service used for skill extraction and scoring.</param>
+        public AIScoreCalculator(IAIService aiService)
         {
-            // TODO: Implement actual AI logic (e.g., calling OpenAI or analyzing embeddings)
-            // For now, return a random realistic match score
-            var random = new Random();
-            return random.Next(40, 99);
+            _aiService = aiService;
         }
 
         /// <summary>
-        /// Ranks a list of candidates based on dummy match scores.
+        /// Calculates a match score between a single candidate and a job posting.
         /// </summary>
-        public IEnumerable<Candidate> RankCandidates(IEnumerable<Candidate> candidates, string jobRequirements)
+        /// <param name="candidateId">The candidate's user ID.</param>
+        /// <param name="candidateSkillsText">Free-text description of the candidate's skills/resume.</param>
+        /// <param name="jobId">The job posting ID.</param>
+        /// <param name="jobRequirementsText">Free-text description of the job requirements.</param>
+        /// <returns>A <see cref="MatchScoreDto"/> containing the overall score, skill match percentage,
+        /// experience match percentage, and lists of matched/missing skills.</returns>
+        public Task<MatchScoreDto> CalculateMatchScore(int candidateId, string candidateSkillsText,
+            int jobId, string jobRequirementsText)
         {
-            // TODO: Implement actual AI batch processing/ranking
-            // For now, assign random scores and sort descending
-            var random = new Random();
+            return _aiService.MatchCandidateToJobAsync(candidateId, candidateSkillsText, jobId, jobRequirementsText);
+        }
 
-            return candidates
-                .Select(c => new { Candidate = c, Score = random.Next(40, 99) })
-                .OrderByDescending(x => x.Score)
-                .Select(x => x.Candidate)
-                .ToList();
+        /// <summary>
+        /// Ranks a set of candidates against a single job posting, returning them in
+        /// descending order of match score.
+        /// </summary>
+        /// <param name="jobId">The job posting ID.</param>
+        /// <param name="jobRequirementsText">Free-text description of the job requirements.</param>
+        /// <param name="candidateSkillsById">A dictionary mapping candidate IDs to their free-text skills/resume.</param>
+        /// <returns>A list of <see cref="CandidateRankingDto"/> ordered by score descending, with rank assigned.</returns>
+        public Task<List<CandidateRankingDto>> RankCandidates(int jobId, string jobRequirementsText,
+            IDictionary<int, string> candidateSkillsById)
+        {
+            return _aiService.RankCandidatesAsync(jobId, jobRequirementsText, candidateSkillsById);
         }
     }
 }
