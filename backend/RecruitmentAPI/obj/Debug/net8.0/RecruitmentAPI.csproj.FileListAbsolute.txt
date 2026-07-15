@@ -1,0 +1,9 @@
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.csproj.AssemblyReference.cache
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/rpswa.dswa.cache.json
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.AssemblyInfoInputs.cache
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.AssemblyInfo.cs
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.csproj.CoreCompileInputs.cache
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.MvcApplicationPartsAssemblyInfo.cs
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.MvcApplicationPartsAssemblyInfo.cache
+/Users/subodhasandawaruni/Documents/GitHub/SA/recruitment-platform/backend/RecruitmentAPI/obj/Debug/net8.0/RecruitmentAPI.sourcelink.json
