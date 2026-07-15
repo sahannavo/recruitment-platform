@@ -1,92 +1,76 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using RecruitmentAPI.Data;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
 
-namespace RecruitmentAPI.Repository.Implementations;
-
-/// <summary>
-/// Unit of Work implementation coordinating repository access and database transactions.
-/// All repositories are lazily instantiated so only those in use are allocated per request.
-/// </summary>
-public class UnitOfWork : IUnitOfWork
+namespace RecruitmentAPI.Repository.Implementations
 {
-    private readonly ApplicationDbContext _context;
-    private IDbContextTransaction? _transaction;
-
-    // ── Generic repositories ──────────────────────────────────────────────────
-    private IGenericRepository<User>? _users;
-    private IGenericRepository<Admin>? _admins;
-    private IGenericRepository<RecruitmentAnalytic>? _recruitmentAnalytics;
-    private IGenericRepository<Notification>? _notifications;
-
-    // ── Specialised repositories ──────────────────────────────────────────────
-    private IAdminRepository? _adminRepository;
-    private IAnalyticsRepository? _analyticsRepository;
-
-    public UnitOfWork(ApplicationDbContext context)
+    public class UnitOfWork : IUnitOfWork
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
+        private IDbContextTransaction? _transaction;
 
-    // ── Generic repository accessors ─────────────────────────────────────────
+        private IGenericRepository<User>? _users;
+        private IGenericRepository<Admin>? _admins;
+        private IGenericRepository<RecruitmentAnalytic>? _analytics;
+        private IGenericRepository<Notification>? _notifications;
+        private IAdminRepository? _adminRepository;
+        private IAnalyticsRepository? _analyticsRepository;
+        private IJobRepository? _jobs;
+        private IApplicationRepository? _applications;
+        private ICandidateRepository? _candidates;
+        private IInterviewRepository? _interviews;
+        private IFeedbackRepository? _feedbacks;
 
-    public IGenericRepository<User> Users =>
-        _users ??= new GenericRepository<User>(_context);
+        public UnitOfWork(ApplicationDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
-    public IGenericRepository<Admin> Admins =>
-        _admins ??= new GenericRepository<Admin>(_context);
+        public IGenericRepository<User> Users => _users ??= new GenericRepository<User>(_context);
+        public IGenericRepository<Admin> Admins => _admins ??= new GenericRepository<Admin>(_context);
+        public IGenericRepository<RecruitmentAnalytic> RecruitmentAnalytics => _analytics ??= new GenericRepository<RecruitmentAnalytic>(_context);
+        public IGenericRepository<Notification> Notifications => _notifications ??= new GenericRepository<Notification>(_context);
 
-    public IGenericRepository<RecruitmentAnalytic> RecruitmentAnalytics =>
-        _recruitmentAnalytics ??= new GenericRepository<RecruitmentAnalytic>(_context);
+        public IAdminRepository AdminRepository => _adminRepository ??= new AdminRepository(_context);
+        public IAnalyticsRepository AnalyticsRepository => _analyticsRepository ??= new AnalyticsRepository(_context);
+        public IJobRepository Jobs => _jobs ??= new JobRepository(_context);
+        public IApplicationRepository Applications => _applications ??= new ApplicationRepository(_context);
+        public ICandidateRepository Candidates => _candidates ??= new CandidateRepository(_context);
+        public IInterviewRepository Interviews => _interviews ??= new InterviewRepository(_context);
+        public IFeedbackRepository Feedbacks => _feedbacks ??= new FeedbackRepository(_context);
 
-    public IGenericRepository<Notification> Notifications =>
-        _notifications ??= new GenericRepository<Notification>(_context);
+        public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
 
-    // ── Specialised repository accessors ─────────────────────────────────────
+        public async Task BeginTransactionAsync() => _transaction = await _context.Database.BeginTransactionAsync();
 
-    public IAdminRepository AdminRepository =>
-        _adminRepository ??= new AdminRepository(_context);
+        public async Task CommitTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
 
-    public IAnalyticsRepository AnalyticsRepository =>
-        _analyticsRepository ??= new AnalyticsRepository(_context);
+        public async Task RollbackTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
 
-    // ── Persistence ───────────────────────────────────────────────────────────
-
-    public async Task<int> SaveChangesAsync() =>
-        await _context.SaveChangesAsync();
-
-    // ── Transaction management ────────────────────────────────────────────────
-
-    public async Task BeginTransactionAsync()
-    {
-        _transaction = await _context.Database.BeginTransactionAsync();
-    }
-
-    public async Task CommitTransactionAsync()
-    {
-        if (_transaction is null)
-            throw new InvalidOperationException("No active transaction to commit.");
-
-        await _transaction.CommitAsync();
-        await _transaction.DisposeAsync();
-        _transaction = null;
-    }
-
-    public async Task RollbackTransactionAsync()
-    {
-        if (_transaction is null)
-            throw new InvalidOperationException("No active transaction to rollback.");
-
-        await _transaction.RollbackAsync();
-        await _transaction.DisposeAsync();
-        _transaction = null;
-    }
-
-    public void Dispose()
-    {
-        _transaction?.Dispose();
-        _context.Dispose();
+        public void Dispose()
+        {
+            _transaction?.Dispose();
+            _context.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }
-

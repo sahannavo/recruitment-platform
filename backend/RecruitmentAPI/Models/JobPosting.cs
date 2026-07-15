@@ -127,25 +127,12 @@ namespace RecruitmentAPI.Models
     /// </summary>
     public enum JobStatus
     {
-        [Display(Name = "Draft")]
         Draft = 0,
-
-        [Display(Name = "Published")]
         Published = 1,
-
-        [Display(Name = "Open")]
         Open = 2,
-
-        [Display(Name = "Closed")]
         Closed = 3,
-
-        [Display(Name = "On Hold")]
         OnHold = 4,
-
-        [Display(Name = "Filled")]
         Filled = 5,
-
-        [Display(Name = "Archived")]
         Archived = 6
     }
 

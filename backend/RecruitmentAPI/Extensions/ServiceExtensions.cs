@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RecruitmentAPI.Helpers;
 using RecruitmentAPI.Services.AI;
 using RecruitmentAPI.Services.Notification;
+using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Extensions
 {

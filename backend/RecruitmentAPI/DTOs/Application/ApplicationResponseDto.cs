@@ -248,4 +248,26 @@ namespace RecruitmentAPI.DTOs
         public Dictionary<string, int> ApplicationsByMonth { get; set; }
         public Dictionary<string, int> ApplicationsBySource { get; set; }
     }
+    public class ApplicationTimelineDto
+    {
+        public int ApplicationId { get; set; }
+        public string JobTitle { get; set; } = string.Empty;
+        public DateTime AppliedAt { get; set; }
+        public DateTime? ReviewedAt { get; set; }
+        public DateTime? ShortlistedAt { get; set; }
+        public DateTime? InterviewedAt { get; set; }
+        public DateTime? HiredAt { get; set; }
+        public DateTime? RejectedAt { get; set; }
+        public string CurrentStatus { get; set; } = string.Empty;
+        public List<StatusChangeDto> StatusChanges { get; set; } = new();
+    }
+
+    public class StatusChangeDto
+    {
+        public string FromStatus { get; set; } = string.Empty;
+        public string ToStatus { get; set; } = string.Empty;
+        public DateTime ChangedAt { get; set; }
+        public string ChangedBy { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
+    }
 }

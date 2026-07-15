@@ -1,7 +1,9 @@
+using System;
 using System.Threading.Tasks;
 using RecruitmentAPI.DTOs.Notification;
 
-namespace RecruitmentAPI.Services.Notification
+// Changed to match the standard interface namespace pattern so your services can find it
+namespace RecruitmentAPI.Services.Interfaces
 {
     /// <summary>
     /// Sends transactional notifications (email/SMS) related to recruitment events.
@@ -14,10 +16,30 @@ namespace RecruitmentAPI.Services.Notification
 
         /// <summary>Sends a reminder for an upcoming interview, using the "InterviewReminder" template.</summary>
         Task<NotificationResultDto> SendInterviewReminderAsync(int userId, string toEmail, string candidateName,
-            string jobTitle, System.DateTime scheduledAt, string meetingLink);
+            string jobTitle, DateTime scheduledAt, string meetingLink);
 
         /// <summary>Notifies a candidate that their application status has changed.</summary>
         Task<NotificationResultDto> SendStatusUpdateAsync(int userId, string toEmail, string candidateName,
             string jobTitle, string newStatus);
+
+        // ── Added Helper Signatures to support ApplicationService pipelines ──
+        
+        Task SendApplicationSubmittedAsync(string toEmail, string jobTitle) => 
+            Task.CompletedTask;
+
+        Task SendApplicationWithdrawnAsync(string toEmail, string jobTitle) => 
+            Task.CompletedTask;
+
+        Task SendApplicationUnderReviewAsync(string toEmail, string jobTitle) => 
+            Task.CompletedTask;
+
+        Task SendApplicationShortlistedAsync(string toEmail, string jobTitle) => 
+            Task.CompletedTask;
+
+        Task SendApplicationHiredAsync(string toEmail, string jobTitle) => 
+            Task.CompletedTask;
+
+        Task SendApplicationRejectedAsync(string toEmail, string jobTitle, string? reason) => 
+            Task.CompletedTask;
     }
 }

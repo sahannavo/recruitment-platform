@@ -11,7 +11,7 @@ using RecruitmentAPI.Data;
 using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Helpers;
 using RecruitmentAPI.Models;
-using RecruitmentAPI.Repositories.Interfaces;
+using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.Implementations

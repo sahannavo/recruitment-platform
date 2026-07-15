@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Models;
-using RecruitmentAPI.Repositories.Interfaces;
+using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Interfaces;
+using RecruitmentAPI.Services.Notification;
 
-namespace RecruitmentAPI.Services.Implementations
+namespace RecruitmentAPI.Services.Implementations;
+
+/// <summary>
+/// Service implementation for application operations
+/// </summary>
+public class ApplicationService : IApplicationService
 {
-    /// <summary>
-    /// Service implementation for application operations
-    /// </summary>
-    public class ApplicationService : IApplicationService
-    {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAIService _aiService;
         private readonly INotificationService _notificationService;
@@ -374,7 +375,7 @@ namespace RecruitmentAPI.Services.Implementations
         /// <summary>
         /// Get application statistics for dashboard
         /// </summary>
-        public async Task<ApplicationStatistics> GetApplicationStatisticsAsync()
+        public async Task<RecruitmentAPI.DTOs.ApplicationStatistics> GetApplicationStatisticsAsync()
         {
             try
             {
@@ -766,11 +767,11 @@ namespace RecruitmentAPI.Services.Implementations
         /// <summary>
         /// Get application statistics by department
         /// </summary>
-        public async Task<Dictionary<string, ApplicationStatistics>> GetStatisticsByDepartmentAsync()
+        public async Task<Dictionary<string, RecruitmentAPI.DTOs.ApplicationStatistics>> GetStatisticsByDepartmentAsync()
         {
             try
             {
-                var stats = new Dictionary<string, ApplicationStatistics>();
+                var stats = new Dictionary<string, RecruitmentAPI.DTOs.ApplicationStatistics>();
                 var departments = await _unitOfWork.Jobs.GetDepartmentJobCountsAsync();
 
                 foreach (var dept in departments.Keys)
@@ -778,27 +779,20 @@ namespace RecruitmentAPI.Services.Implementations
                     var applications = await _unitOfWork.Applications.GetByDepartmentAsync(dept);
                     var appList = applications.ToList();
 
-                    stats[dept] = new ApplicationStatistics
+                    stats[dept] = new RecruitmentAPI.DTOs.ApplicationStatistics
                     {
                         TotalApplications = appList.Count,
-                        Submitted = appList.Count(a => a.Status == ApplicationStatus.Submitted),
-                        UnderReview = appList.Count(a => a.Status == ApplicationStatus.UnderReview),
+                        PendingReview = appList.Count(a => a.Status == ApplicationStatus.Submitted),
                         Shortlisted = appList.Count(a => a.Status == ApplicationStatus.Shortlisted),
                         InterviewScheduled = appList.Count(a => a.Status == ApplicationStatus.InterviewScheduled),
-                        Interviewed = appList.Count(a => a.Status == ApplicationStatus.Interviewed),
                         Hired = appList.Count(a => a.Status == ApplicationStatus.Hired),
-                        Rejected = appList.Count(a => a.Status == ApplicationStatus.Rejected),
-                        Withdrawn = appList.Count(a => a.Status == ApplicationStatus.Withdrawn),
-                        OnHold = appList.Count(a => a.Status == ApplicationStatus.OnHold),
-                        LastApplicationDate = appList.Any() ? appList.Max(a => a.AppliedAt) : DateTime.UtcNow
+                        Rejected = appList.Count(a => a.Status == ApplicationStatus.Rejected)
                     };
 
                     if (appList.Any(a => a.AI_Score.HasValue))
                     {
-                        var scores = appList.Where(a => a.AI_Score.HasValue).Select(a => a.AI_Score.Value);
+                        var scores = appList.Where(a => a.AI_Score.HasValue).Select(a => (decimal)a.AI_Score.Value);
                         stats[dept].AverageAIScore = scores.Average();
-                        stats[dept].HighestAIScore = scores.Max();
-                        stats[dept].LowestAIScore = scores.Min();
                     }
                 }
 
@@ -928,4 +922,3 @@ namespace RecruitmentAPI.Services.Implementations
 
         #endregion
     }
-}

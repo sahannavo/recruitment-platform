@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RecruitmentAPI.DTOs.Notification;
+using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.Notification
 {

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentAPI.Data;
 using RecruitmentAPI.Models;
-using RecruitmentAPI.Repositories.Interfaces;
+using RecruitmentAPI.Repository.Interfaces;
 
-namespace RecruitmentAPI.Repositories.Implementations
+namespace RecruitmentAPI.Repository.Implementations
 {
     /// <summary>
     /// Repository implementation for JobPosting entity operations

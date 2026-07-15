@@ -61,31 +61,14 @@ namespace RecruitmentAPI.Models
 
     public enum ApplicationStatus
     {
-        [Display(Name = "Submitted")]
         Submitted = 0,
-
-        [Display(Name = "Under Review")]
         UnderReview = 1,
-
-        [Display(Name = "Shortlisted")]
         Shortlisted = 2,
-
-        [Display(Name = "Interview Scheduled")]
         InterviewScheduled = 3,
-
-        [Display(Name = "Interviewed")]
         Interviewed = 4,
-
-        [Display(Name = "Hired")]
         Hired = 5,
-
-        [Display(Name = "Rejected")]
         Rejected = 6,
-
-        [Display(Name = "Withdrawn")]
         Withdrawn = 7,
-
-        [Display(Name = "On Hold")]
         OnHold = 8
     }
 

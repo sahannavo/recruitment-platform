@@ -18,9 +18,14 @@ public class ApplicationDbContext : DbContext
     public DbSet<Admin> Admins => Set<Admin>();
     public DbSet<RecruitmentAnalytic> RecruitmentAnalytics => Set<RecruitmentAnalytic>();
     public DbSet<Notification> Notifications => Set<Notification>();
-
-    /// <summary>Immutable audit trail of all admin actions.</summary>
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    // Core Recruitment Tables
+    public DbSet<JobPosting> JobPostings => Set<JobPosting>();
+    public DbSet<Application> Applications => Set<Application>();
+    public DbSet<Interview> Interviews => Set<Interview>();
+    public DbSet<InterviewFeedback> InterviewFeedbacks => Set<InterviewFeedback>();
+    public DbSet<Candidate> Candidates => Set<Candidate>();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Fluent API configuration
@@ -92,12 +97,29 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(a => a.PerformedByUserId);
             entity.HasIndex(a => new { a.EntityType, a.EntityId });
 
-            // Restrict so audit logs survive even if the admin account is later removed
             entity.HasOne(a => a.PerformedBy)
                 .WithMany()
                 .HasForeignKey(a => a.PerformedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
+        // ── JobPosting Mapping (Updated Type Parameter) ───────────────────────
+        modelBuilder.Entity<JobPosting>(entity =>
+        {
+            entity.HasKey(j => j.JobId);
+            entity.Property(j => j.Title).HasMaxLength(200).IsRequired();
+            entity.Property(j => j.Department).HasMaxLength(100).IsRequired();
+        });
+
+        // ── Application Mapping (Updated Relation to target JobPosting) ───────
+        modelBuilder.Entity<Application>(entity =>
+        {
+            entity.HasKey(ap => ap.ApplicationId);
+            
+            entity.HasOne(ap => ap.Job)
+                .WithMany(j => j.Applications)
+                .HasForeignKey(ap => ap.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
-

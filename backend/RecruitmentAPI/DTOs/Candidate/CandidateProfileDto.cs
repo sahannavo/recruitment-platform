@@ -109,62 +109,6 @@ namespace RecruitmentAPI.DTOs
     }
 
     /// <summary>
-    /// DTO for updating candidate profile information
-    /// </summary>
-    public class CandidateUpdateDto
-    {
-        /// <summary>
-        /// Candidate's first name
-        /// </summary>
-        public string FirstName { get; set; }
-
-        /// <summary>
-        /// Candidate's last name
-        /// </summary>
-        public string LastName { get; set; }
-
-        /// <summary>
-        /// Candidate's phone number
-        /// </summary>
-        public string Phone { get; set; }
-
-        /// <summary>
-        /// Candidate's location (city, country)
-        /// </summary>
-        public string Location { get; set; }
-
-        /// <summary>
-        /// Candidate's LinkedIn profile URL
-        /// </summary>
-        public string LinkedIn { get; set; }
-
-        /// <summary>
-        /// Summary of candidate's skills
-        /// </summary>
-        public string SkillsSummary { get; set; }
-
-        /// <summary>
-        /// Candidate's current job title
-        /// </summary>
-        public string CurrentJobTitle { get; set; }
-
-        /// <summary>
-        /// Candidate's current company
-        /// </summary>
-        public string CurrentCompany { get; set; }
-
-        /// <summary>
-        /// Years of experience
-        /// </summary>
-        public int? YearsOfExperience { get; set; }
-
-        /// <summary>
-        /// Highest education level
-        /// </summary>
-        public string EducationLevel { get; set; }
-    }
-
-    /// <summary>
     /// DTO for candidate registration
     /// </summary>
     public class CandidateRegisterDto

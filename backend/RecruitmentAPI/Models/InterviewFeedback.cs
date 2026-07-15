@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -47,6 +48,7 @@ public class InterviewFeedback
     [ForeignKey("InterviewId")]
     public virtual Interview? Interview { get; set; }
 
+    // Changed from HiringManager to User to match your database user identity scheme
     [ForeignKey("ManagerId")]
-    public virtual HiringManager? Manager { get; set; }
+    public virtual User? Manager { get; set; }
 }

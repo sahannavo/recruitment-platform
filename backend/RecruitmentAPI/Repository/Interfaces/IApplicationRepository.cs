@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RecruitmentAPI.Models;
 
-namespace RecruitmentAPI.Repositories.Interfaces
+namespace RecruitmentAPI.Repository.Interfaces
 {
     /// <summary>
     /// Repository interface for Application entity operations

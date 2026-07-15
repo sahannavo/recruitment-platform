@@ -602,7 +602,7 @@ public class AdminService : IAdminService
     };
 
     private static NotificationResponseDto MapToNotificationResponse(
-        Notification notification,
+        Models.Notification notification,
         User user) => new()
     {
         NotificationId = notification.NotificationId,

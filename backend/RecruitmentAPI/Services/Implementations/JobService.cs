@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Models;
-using RecruitmentAPI.Repositories.Interfaces;
+using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.Implementations
