@@ -136,18 +136,37 @@ public class AdminsController : ControllerBase
     }
 
     /// <summary>
-    /// Toggles a user's active/inactive status.
+    /// Disables a user account (sets IsActive = false). An audit log entry is written.
     /// </summary>
-    /// <param name="userId">User ID.</param>
-    /// <returns>Updated user summary.</returns>
-    /// <response code="200">Status toggled successfully.</response>
+    /// <param name="userId">User ID to disable.</param>
+    /// <response code="200">User disabled successfully.</response>
+    /// <response code="400">User is already inactive.</response>
     /// <response code="404">User not found.</response>
-    [HttpPatch("users/{userId:int}/toggle-status")]
-    [ProducesResponseType(typeof(UserSummaryDto), StatusCodes.Status200OK)]
+    [HttpPut("users/{userId:int}/disable")]
+    [ProducesResponseType(typeof(UserManagementDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UserSummaryDto>> ToggleUserStatus(int userId)
+    public async Task<ActionResult<UserManagementDto>> DisableUser(int userId)
     {
-        var user = await _adminService.ToggleUserActiveStatusAsync(userId);
+        // performedByUserId = 0 when called without a JWT claim (should not happen in prod)
+        var user = await _adminService.DisableUserAsync(userId, performedByUserId: 0);
+        return Ok(user);
+    }
+
+    /// <summary>
+    /// Re-enables a user account (sets IsActive = true). An audit log entry is written.
+    /// </summary>
+    /// <param name="userId">User ID to enable.</param>
+    /// <response code="200">User enabled successfully.</response>
+    /// <response code="400">User is already active.</response>
+    /// <response code="404">User not found.</response>
+    [HttpPut("users/{userId:int}/enable")]
+    [ProducesResponseType(typeof(UserManagementDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserManagementDto>> EnableUser(int userId)
+    {
+        var user = await _adminService.EnableUserAsync(userId, performedByUserId: 0);
         return Ok(user);
     }
 
@@ -205,4 +224,3 @@ public class AdminsController : ControllerBase
         return Ok(notification);
     }
 }
-
