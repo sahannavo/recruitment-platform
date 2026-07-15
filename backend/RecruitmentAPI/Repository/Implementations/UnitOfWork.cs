@@ -1,63 +1,92 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using RecruitmentAPI.Data;
+using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
 
-namespace RecruitmentAPI.Repository.Implementations
+namespace RecruitmentAPI.Repository.Implementations;
+
+/// <summary>
+/// Unit of Work implementation coordinating repository access and database transactions.
+/// All repositories are lazily instantiated so only those in use are allocated per request.
+/// </summary>
+public class UnitOfWork : IUnitOfWork
 {
-    /// <summary>
-    /// Implementation of the Unit of Work pattern using Entity Framework Core.
-    /// </summary>
-    public class UnitOfWork : IUnitOfWork
+    private readonly ApplicationDbContext _context;
+    private IDbContextTransaction? _transaction;
+
+    // ── Generic repositories ──────────────────────────────────────────────────
+    private IGenericRepository<User>? _users;
+    private IGenericRepository<Admin>? _admins;
+    private IGenericRepository<RecruitmentAnalytic>? _recruitmentAnalytics;
+    private IGenericRepository<Notification>? _notifications;
+
+    // ── Specialised repositories ──────────────────────────────────────────────
+    private IAdminRepository? _adminRepository;
+    private IAnalyticsRepository? _analyticsRepository;
+
+    public UnitOfWork(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
-        private IDbContextTransaction? _transaction;
+        _context = context;
+    }
 
-        // Lazy initialization backing fields
-        private IUserRepository? _userRepository;
+    // ── Generic repository accessors ─────────────────────────────────────────
 
-        public UnitOfWork(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public IGenericRepository<User> Users =>
+        _users ??= new GenericRepository<User>(_context);
 
-        // Initialize repository only when requested
-        public IUserRepository Users => _userRepository ??= new UserRepository(_context);
+    public IGenericRepository<Admin> Admins =>
+        _admins ??= new GenericRepository<Admin>(_context);
 
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
+    public IGenericRepository<RecruitmentAnalytic> RecruitmentAnalytics =>
+        _recruitmentAnalytics ??= new GenericRepository<RecruitmentAnalytic>(_context);
 
-        public async Task BeginTransactionAsync()
-        {
-            _transaction = await _context.Database.BeginTransactionAsync();
-        }
+    public IGenericRepository<Notification> Notifications =>
+        _notifications ??= new GenericRepository<Notification>(_context);
 
-        public async Task CommitTransactionAsync()
-        {
-            if (_transaction != null)
-            {
-                await _transaction.CommitAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
+    // ── Specialised repository accessors ─────────────────────────────────────
 
-        public async Task RollbackTransactionAsync()
-        {
-            if (_transaction != null)
-            {
-                await _transaction.RollbackAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
+    public IAdminRepository AdminRepository =>
+        _adminRepository ??= new AdminRepository(_context);
 
-        public void Dispose()
-        {
-            _context.Dispose();
-            _transaction?.Dispose();
-            GC.SuppressFinalize(this);
-        }
+    public IAnalyticsRepository AnalyticsRepository =>
+        _analyticsRepository ??= new AnalyticsRepository(_context);
+
+    // ── Persistence ───────────────────────────────────────────────────────────
+
+    public async Task<int> SaveChangesAsync() =>
+        await _context.SaveChangesAsync();
+
+    // ── Transaction management ────────────────────────────────────────────────
+
+    public async Task BeginTransactionAsync()
+    {
+        _transaction = await _context.Database.BeginTransactionAsync();
+    }
+
+    public async Task CommitTransactionAsync()
+    {
+        if (_transaction is null)
+            throw new InvalidOperationException("No active transaction to commit.");
+
+        await _transaction.CommitAsync();
+        await _transaction.DisposeAsync();
+        _transaction = null;
+    }
+
+    public async Task RollbackTransactionAsync()
+    {
+        if (_transaction is null)
+            throw new InvalidOperationException("No active transaction to rollback.");
+
+        await _transaction.RollbackAsync();
+        await _transaction.DisposeAsync();
+        _transaction = null;
+    }
+
+    public void Dispose()
+    {
+        _transaction?.Dispose();
+        _context.Dispose();
     }
 }
+

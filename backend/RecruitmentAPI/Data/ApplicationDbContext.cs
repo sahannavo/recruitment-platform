@@ -1,92 +1,103 @@
 using Microsoft.EntityFrameworkCore;
 using RecruitmentAPI.Models;
 
-namespace RecruitmentAPI.Data
+namespace RecruitmentAPI.Data;
+
+/// <summary>
+/// Entity Framework Core database context for the recruitment platform.
+/// </summary>
+public class ApplicationDbContext : DbContext
 {
-    /// <summary>
-    /// The main database context for the Recruitment Platform.
-    /// Manages the entity objects during runtime and coordinates database operations.
-    /// </summary>
-    public class ApplicationDbContext : DbContext
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // DbSets
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Admin> Admins => Set<Admin>();
+    public DbSet<RecruitmentAnalytic> RecruitmentAnalytics => Set<RecruitmentAnalytic>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+
+    /// <summary>Immutable audit trail of all admin actions.</summary>
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Fluent API configuration
+    // ─────────────────────────────────────────────────────────────────────────
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        base.OnModelCreating(modelBuilder);
+
+        // ── User ──────────────────────────────────────────────────────────────
+        modelBuilder.Entity<User>(entity =>
         {
-        }
+            entity.HasKey(u => u.UserId);
+            entity.HasIndex(u => u.Email).IsUnique();
+            entity.Property(u => u.Email).HasMaxLength(256).IsRequired();
+            entity.Property(u => u.FirstName).HasMaxLength(100).IsRequired();
+            entity.Property(u => u.LastName).HasMaxLength(100).IsRequired();
+            entity.Property(u => u.Role).HasMaxLength(50).IsRequired();
+        });
 
-        // 👤 Sahan's Base & Role Entities
-        public DbSet<User> Users { get; set; }
-        public DbSet<Candidate> Candidates { get; set; }
-        public DbSet<Recruiter> Recruiters { get; set; }
-        public DbSet<HiringManager> HiringManagers { get; set; }
-        public DbSet<Admin> Admins { get; set; }
-
-        // 📝 Savindi's Job & Application Entities
-        public DbSet<JobPosting> JobPostings { get; set; }
-        public DbSet<Application> Applications { get; set; }
-        public DbSet<Document> Documents { get; set; }
-
-        // 🤝 Sobani's Interview & Feedback Entities
-        public DbSet<Interview> Interviews { get; set; }
-        public DbSet<InterviewFeedback> InterviewFeedbacks { get; set; }
-
-        // 📊 Sandawaruni's Admin & Analytics Entities
-        public DbSet<Notification> Notifications { get; set; }
-        public DbSet<RecruitmentAnalytic> RecruitmentAnalytics { get; set; }
-
-        /// <summary>
-        /// Configures the database schema, relationships, and constraints.
-        /// </summary>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // ── Admin ─────────────────────────────────────────────────────────────
+        modelBuilder.Entity<Admin>(entity =>
         {
-            base.OnModelCreating(modelBuilder);
+            entity.HasKey(a => a.AdminId);
+            entity.Property(a => a.Department).HasMaxLength(100).IsRequired();
+            entity.Property(a => a.Permissions).HasMaxLength(500);
 
-            // 1. User Inheritance Setup (Table-Per-Hierarchy)
-            // This maps all user roles to a single 'Users' table and adds a discriminator column.
-            modelBuilder.Entity<User>()
-                .HasDiscriminator<string>("UserType")
-                .HasValue<Candidate>("Candidate")
-                .HasValue<Recruiter>("Recruiter")
-                .HasValue<HiringManager>("HiringManager")
-                .HasValue<Admin>("Admin");
+            // One-to-one: one User has at most one Admin profile
+            entity.HasOne(a => a.User)
+                .WithOne(u => u.Admin)
+                .HasForeignKey<Admin>(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-            // 2. Global Constraints
-            // Ensure email addresses are unique across the entire platform
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+        // ── RecruitmentAnalytic ───────────────────────────────────────────────
+        modelBuilder.Entity<RecruitmentAnalytic>(entity =>
+        {
+            entity.HasKey(a => a.AnalyticsId);
+            entity.Property(a => a.Department).HasMaxLength(100).IsRequired();
+            entity.Property(a => a.MetricName).HasMaxLength(100).IsRequired();
+            entity.Property(a => a.Value).HasPrecision(18, 2);
 
-            // 3. Entity Specific Configurations (Precision, Limits, etc.)
+            entity.HasIndex(a => new { a.Department, a.Date, a.MetricName });
+        });
 
-            // JobPosting: Set precision for SalaryRange if you choose to store it as decimals later, 
-            // but for now, we assume it's a string based on your DTOs.
-            modelBuilder.Entity<JobPosting>()
-                .Property(j => j.Title)
-                .HasMaxLength(200)
-                .IsRequired();
+        // ── Notification ──────────────────────────────────────────────────────
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(n => n.NotificationId);
+            entity.Property(n => n.Type).HasMaxLength(50).IsRequired();
+            entity.Property(n => n.Subject).HasMaxLength(200).IsRequired();
+            entity.Property(n => n.Content).HasMaxLength(4000).IsRequired();
+            entity.Property(n => n.DeliveryStatus).HasMaxLength(50).IsRequired();
 
-            // Application: Configure the AI Score to ensure it stores correctly
-            modelBuilder.Entity<Application>()
-                .Property(a => a.AI_Score)
-                .HasColumnType("int");
+            entity.HasOne(n => n.User)
+                .WithMany(u => u.Notifications)
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-            // Document: Ensure blob URLs can hold long paths
-            modelBuilder.Entity<Document>()
-                .Property(d => d.BlobUrl)
-                .HasMaxLength(1000);
+        // ── AuditLog ──────────────────────────────────────────────────────────
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(a => a.AuditLogId);
+            entity.Property(a => a.Action).HasMaxLength(100).IsRequired();
+            entity.Property(a => a.EntityType).HasMaxLength(100).IsRequired();
+            entity.Property(a => a.Details).HasMaxLength(2000);
 
-            // 4. Cascade Delete Behaviors
-            // Prevent accidental deletion of a Job if applications exist
-            modelBuilder.Entity<Application>()
-                .HasOne<JobPosting>()
+            entity.HasIndex(a => a.PerformedByUserId);
+            entity.HasIndex(a => new { a.EntityType, a.EntityId });
+
+            // Restrict so audit logs survive even if the admin account is later removed
+            entity.HasOne(a => a.PerformedBy)
                 .WithMany()
-                .HasForeignKey(a => a.JobId)
+                .HasForeignKey(a => a.PerformedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Application>()
-                .HasOne<Candidate>()
-                .WithMany()
-                .HasForeignKey(a => a.CandidateId)
-                .OnDelete(DeleteBehavior.Cascade); // Deleting a candidate removes their apps
-        }
+        });
     }
 }
+
