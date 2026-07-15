@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecruitAI - Dashboard</title>
+    <script
+      src="https://kit.fontawesome.com/8f3e2c6c3f.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --success: #10b981;
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --radius: 12px;
+        --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", system_ui, sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.5;
+      }
+
+      .header {
+        background: white;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary);
+      }
+
+      .nav {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .nav a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        padding: 0.5rem 0;
+        transition: all 0.2s;
+      }
+
+      .nav a.active {
+        color: var(--primary);
+        border-bottom: 3px solid var(--primary);
+      }
+
+      .user-section {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+
+      .notification {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .notification-dot {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .main-container {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 2rem;
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .greeting {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: var(--shadow);
+      }
+
+      .greeting-text h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .greeting-text p {
+        color: var(--text-secondary);
+      }
+
+      .view-schedule {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.75rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .view-schedule:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .section-header h2 {
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .recommended-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .job-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .job-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+      }
+
+      .match-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #ecfdf5;
+        color: #10b981;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 9999px;
+      }
+
+      .job-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0.75rem 0 0.5rem;
+      }
+
+      .company {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .job-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-secondary);
+      }
+
+      .quick-apply {
+        width: 100%;
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        padding: 0.75rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .quick-apply:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      .upcoming {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        height: fit-content;
+      }
+
+      .interview-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .interview-item:last-child {
+        border-bottom: none;
+      }
+
+      .interview-date {
+        display: inline-flex;
+        align-items: center;
+        background: #f3e8ff;
+        color: #7c3aed;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .interview-time {
+        margin-top: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .recent-applications {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        text-align: left;
+        padding: 0.75rem 0;
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      td {
+        padding: 1rem 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .status {
+        padding: 4px 14px;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .status-interview {
+        background: #e0f2fe;
+        color: #0369a1;
+      }
+
+      .status-offer {
+        background: #ecfdf5;
+        color: #10b981;
+      }
+
+      .status-applied {
+        background: #f3f4f6;
+        color: #6b7280;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .profile-activity {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .activity-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .hamburger {
+        display: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 1024px) {
+        .main-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          padding: 1rem;
+        }
+
+        .nav {
+          display: none;
+          position: fixed;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background: white;
+          flex-direction: column;
+          padding: 1rem;
+          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+          z-index: 100;
+        }
+
+        .nav.show {
+          display: flex;
+        }
+
+        .hamburger {
+          display: block;
+        }
+
+        .recommended-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .main-container {
+          padding: 1rem;
+          gap: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div style="display: flex; align-items: center; gap: 1.5rem">
+        <div onclick="toggleMobileMenu()" class="hamburger">
+          <i class="fas fa-bars"></i>
+        </div>
+        <div class="logo">
+          <img
+            src="../assets/images/logo.png"
+            alt="Recruiter Logo"
+            style="height: 50px"
+            width="50"
+          />
+        </div>
+      </div>
+
+      <nav class="nav" id="main-nav">
+        <a href="#" class="active">Dashboard</a>
+        <a href="job-detail.html">Job details</a>
+        <a href="#">Interviews</a>
+        <a href="#">Profile</a>
+      </nav>
+
+      <div class="user-section">
+        <div class="notification">
+          <i class="fas fa-bell" style="font-size: 1.4rem; color: #6b7280"></i>
+          <div class="notification-dot"></div>
+        </div>
+        <div class="avatar">A</div>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- MAIN CONTENT -->
+      <div class="content">
+        <!-- GREETING -->
+        <div class="greeting">
+          <div class="greeting-text">
+            <h1>Good morning, Alex!</h1>
+            <p>
+              You have <strong>2 interviews</strong> scheduled this week. Keep
+              up the momentum.
+            </p>
+          </div>
+          <button class="view-schedule" onclick="viewSchedule()">
+            <i class="fas fa-calendar"></i>
+            View Schedule
+          </button>
+        </div>
+
+        <!-- RECOMMENDED -->
+        <div>
+          <div class="section-header">
+            <h2><span style="color: #6366f1">✦</span> Recommended for You</h2>
+            <a
+              href="#"
+              style="
+                color: var(--primary);
+                text-decoration: none;
+                font-weight: 500;
+              "
+              >View all</a
+            >
+          </div>
+
+          <div class="recommended-grid">
+            <!-- Card 1 -->
+            <div class="job-card">
+              <div class="match-badge">
+                <i class="fas fa-check-circle"></i>
+                98% Match
+              </div>
+              <div class="job-title">Senior Frontend Engineer</div>
+              <div class="company">TechFlow Inc.</div>
+              <div class="job-meta">
+                <div class="meta-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  San Francisco (Hybrid)
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-dollar-sign"></i>
+                  $140k – $170k
+                </div>
+              </div>
+              <button class="quick-apply" onclick="quickApply(this)">
+                Quick Apply
+              </button>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="job-card">
+              <div
+                class="match-badge"
+                style="background: #f0fdf4; color: #4ade80"
+              >
+                <i class="fas fa-check-circle"></i>
+                92% Match
+              </div>
+              <div class="job-title">UX/UI Designer</div>
+              <div class="company">CreativeEdge Agency</div>
+              <div class="job-meta">
+                <div class="meta-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Remote
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-dollar-sign"></i>
+                  $110k – $130k
+                </div>
+              </div>
+              <button class="quick-apply" onclick="quickApply(this)">
+                Quick Apply
+              </button>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="job-card">
+              <div
+                class="match-badge"
+                style="background: #fef3c7; color: #d97706"
+              >
+                <i class="fas fa-check-circle"></i>
+                85% Match
+              </div>
+              <div class="job-title">Product Manager</div>
+              <div class="company">Nexus Systems</div>
+              <div class="job-meta">
+                <div class="meta-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Austin, TX
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-dollar-sign"></i>
+                  $135k – $165k
+                </div>
+              </div>
+              <button class="quick-apply" onclick="quickApply(this)">
+                Quick Apply
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT APPLICATIONS -->
+        <div class="recent-applications">
+          <div class="section-header">
+            <h2>Recent Applications</h2>
+            <i
+              class="fas fa-filter"
+              style="color: #9ca3af; cursor: pointer"
+            ></i>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ROLE</th>
+                <th>COMPANY</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Full Stack Developer</strong></td>
+                <td>Global Tech Co.</td>
+                <td><span class="status status-interview">Interview</span></td>
+                <td>
+                  <button
+                    onclick="viewDetails()"
+                    style="
+                      background: none;
+                      border: none;
+                      color: var(--primary);
+                      cursor: pointer;
+                    "
+                  >
+                    View →
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Frontend Engineer</strong></td>
+                <td>InnovateApp</td>
+                <td><span class="status status-offer">Offer</span></td>
+                <td>
+                  <button
+                    onclick="viewDetails()"
+                    style="
+                      background: none;
+                      border: none;
+                      color: var(--primary);
+                      cursor: pointer;
+                    "
+                  >
+                    View →
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>React Developer</strong></td>
+                <td>StartupHub</td>
+                <td><span class="status status-applied">Applied</span></td>
+                <td>
+                  <button
+                    onclick="viewDetails()"
+                    style="
+                      background: none;
+                      border: none;
+                      color: var(--primary);
+                      cursor: pointer;
+                    "
+                  >
+                    View →
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <!-- UPCOMING INTERVIEWS -->
+        <div class="upcoming">
+          <div class="section-header">
+            <h2><i class="fas fa-calendar-alt"></i> Upcoming Interviews</h2>
+          </div>
+
+          <div class="interview-item">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: start;
+              "
+            >
+              <div>
+                <span class="interview-date">OCT 24</span>
+                <div style="margin-top: 8px; font-weight: 600">
+                  Technical Round
+                </div>
+                <div style="color: var(--text-secondary)">Global Tech Co.</div>
+              </div>
+              <div style="text-align: right; font-size: 0.9rem">
+                <div>10:00 AM - 11:00 AM</div>
+                <div style="margin-top: 4px; color: #6b7280">Sarah Jenkins</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="interview-item">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: start;
+              "
+            >
+              <div>
+                <span class="interview-date">OCT 26</span>
+                <div style="margin-top: 8px; font-weight: 600">Culture Fit</div>
+                <div style="color: var(--text-secondary)">InnovateApp</div>
+              </div>
+              <div style="text-align: right; font-size: 0.9rem">
+                <div>2:30 PM - 3:00 PM</div>
+                <div style="margin-top: 4px; color: #6b7280">Michael Chen</div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onclick="syncCalendar()"
+            style="
+              margin-top: 1rem;
+              width: 100%;
+              padding: 12px;
+              background: white;
+              border: 2px solid #e5e7eb;
+              border-radius: 9999px;
+              color: #4f46e5;
+              font-weight: 600;
+              cursor: pointer;
+            "
+          >
+            Sync to Calendar
+          </button>
+        </div>
+
+        <!-- PROFILE ACTIVITY -->
+        <div class="profile-activity">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div>
+              <div style="font-size: 0.9rem; color: var(--text-secondary)">
+                PROFILE ACTIVITY
+              </div>
+              <div class="activity-number">12</div>
+              <div style="color: var(--text-secondary)">
+                Profile views this week
+              </div>
+            </div>
+            <div
+              style="
+                background: #ecfdf5;
+                color: #10b981;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                font-size: 0.85rem;
+                font-weight: 600;
+              "
+            >
+              +15%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const nav = document.getElementById("main-nav");
+        nav.classList.toggle("show");
+      }
+
+      // Quick apply button animation
+      function quickApply(btn) {
+        const originalText = btn.textContent;
+        btn.style.transition = "all 0.3s";
+        btn.textContent = "✓ Applied!";
+        btn.style.background = "#10B981";
+        btn.style.color = "white";
+        btn.style.borderColor = "#10B981";
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = "white";
+          btn.style.color = "#4F46E5";
+          btn.style.borderColor = "#4F46E5";
+        }, 2000);
+      }
+
+      function viewSchedule() {
+        console.log(
+          "%c📅 Opening full schedule...",
+          "color: #4F46E5; font-weight: bold",
+        );
+        alert("Opening your interview schedule (demo)");
+      }
+
+      function viewDetails() {
+        console.log(
+          "%c👀 Viewing application details...",
+          "color: #4F46E5; font-weight: bold",
+        );
+      }
+
+      function syncCalendar() {
+        console.log(
+          "%c📆 Syncing to calendar...",
+          "color: #4F46E5; font-weight: bold",
+        );
+        alert("✅ Calendar synced successfully!");
+      }
+
+      // Keyboard shortcut hint
+      document.addEventListener("keydown", function (e) {
+        if (
+          e.key === "/" &&
+          document.activeElement.tagName !== "INPUT" &&
+          document.activeElement.tagName !== "TEXTAREA"
+        ) {
+          console.log("%c💡 Press / to search jobs (demo)", "color: #64748B");
+        }
+      });
+
+      // Make it feel alive
+      console.log(
+        "%c✅ RecruitAI Candidate Dashboard loaded successfully!",
+        "color: #4F46E5; font-size: 14px; font-weight: bold",
+      );
+    </script>
+  </body>
+</html>

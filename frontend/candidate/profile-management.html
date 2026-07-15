@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Management - RecruitAI</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome 6 (Free) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* ========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           ======================================== */
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #eef2ff;
+        --primary-dark: #3730a3;
+        --success: #10b981;
+        --success-light: #ecfdf5;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --background: #f9fafb;
+        --surface: #ffffff;
+        --surface-alt: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --border: #e5e7eb;
+        --border-dashed: #d1d5db;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+        --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --max-width: 1280px;
+        --header-height: 70px;
+        --sidebar-width: 260px;
+        --container-padding: 20px;
+      }
+
+      /* ========================================
+           RESET & BASE
+           ======================================== */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* ========================================
+           CONTAINER
+           ======================================== */
+      .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      /* ========================================
+           BUTTONS
+           ======================================== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 20px;
+        font-family: var(--font-family);
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--text-secondary);
+        border: 1.5px solid var(--border);
+      }
+      .btn-outline:hover {
+        background-color: var(--surface-alt);
+        border-color: var(--text-secondary);
+      }
+
+      .btn-danger-outline {
+        background-color: transparent;
+        color: var(--danger);
+        border: 1.5px solid var(--danger);
+      }
+      .btn-danger-outline:hover {
+        background-color: var(--danger);
+        color: #ffffff;
+      }
+
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+      .btn-lg {
+        padding: 14px 28px;
+        font-size: 16px;
+      }
+
+      /* ========================================
+           HEADER / NAVIGATION
+           ======================================== */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        z-index: 1000;
+        box-shadow: var(--shadow);
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .logo span {
+        color: var(--text-primary);
+      }
+      .logo i {
+        font-size: 24px;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-right .notification-btn {
+        position: relative;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: var(--radius-full);
+        transition: background 0.2s;
+      }
+      .header-right .notification-btn:hover {
+        background-color: var(--surface-alt);
+      }
+      .notification-badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 18px;
+        height: 18px;
+        background-color: var(--danger);
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-hover)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .user-avatar:hover {
+        border-color: var(--primary);
+      }
+
+      /* ========================================
+           LAYOUT - SIDEBAR + CONTENT
+           ======================================== */
+      .page-wrapper {
+        padding-top: calc(var(--header-height) + 24px);
+        padding-bottom: 40px;
+      }
+
+      .page-layout {
+        display: grid;
+        grid-template-columns: var(--sidebar-width) 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* ========================================
+           SIDEBAR
+           ======================================== */
+      .sidebar {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        padding: 20px 16px;
+        position: sticky;
+        top: calc(var(--header-height) + 24px);
+      }
+
+      .sidebar-profile {
+        text-align: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+
+      .sidebar-avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .sidebar-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-hover)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 32px;
+        font-weight: 700;
+        border: 3px solid var(--surface);
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+      }
+      .sidebar-avatar-wrapper:hover .sidebar-avatar {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .sidebar-avatar-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: var(--primary);
+        color: #ffffff;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        border: 2px solid var(--surface);
+      }
+
+      .sidebar-profile h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-top: 8px;
+        margin-bottom: 2px;
+      }
+      .sidebar-profile p {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: var(--radius);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+      }
+      .sidebar-nav a i {
+        width: 20px;
+        text-align: center;
+        font-size: 16px;
+      }
+      .sidebar-nav a:hover {
+        background-color: var(--surface-alt);
+        color: var(--text-primary);
+      }
+      .sidebar-nav a.active {
+        background-color: var(--primary-light);
+        color: var(--primary);
+      }
+
+      /* ========================================
+           MAIN CONTENT - PROFILE FORM
+           ======================================== */
+      .main-content {
+        background-color: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        padding: 32px;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .page-header h1 {
+        font-size: 24px;
+        font-weight: 800;
+      }
+      .page-header p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 24px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .form-group label .required {
+        color: var(--danger);
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 14px;
+        font-family: var(--font-family);
+        font-size: 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        transition: all 0.2s ease;
+        background-color: var(--surface);
+        color: var(--text-primary);
+        width: 100%;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: var(--text-muted);
+      }
+
+      .form-group .helper-text {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .form-group .helper-text .required-text {
+        color: var(--danger);
+      }
+
+      .form-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: 12px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+
+      /* ========================================
+           RESUME / CV UPLOAD SECTION
+           ======================================== */
+      .resume-section {
+        grid-column: 1 / -1;
+        margin-top: 8px;
+        padding: 24px;
+        background-color: var(--background);
+        border-radius: var(--radius);
+        border: 1.5px dashed var(--border-dashed);
+        transition: all 0.3s ease;
+      }
+      .resume-section.drag-over {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+
+      .resume-section .resume-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .resume-section .resume-header h3 {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .resume-section .resume-header .file-types {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .upload-zone {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 20px;
+        border: 2px dashed var(--border-dashed);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 140px;
+      }
+      .upload-zone:hover {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+      .upload-zone i {
+        font-size: 40px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .upload-zone p {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+      .upload-zone .upload-btn-text {
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .upload-zone .file-types-text {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+      .upload-zone input[type="file"] {
+        display: none;
+      }
+
+      /* Current Resume Display */
+      .current-resume {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background-color: var(--surface);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-top: 12px;
+      }
+      .current-resume i {
+        font-size: 24px;
+        color: var(--danger);
+      }
+      .current-resume .resume-info {
+        flex: 1;
+      }
+      .current-resume .resume-info .name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .current-resume .resume-info .meta {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .current-resume .resume-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      /* ========================================
+           SUCCESS TOAST
+           ======================================== */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        padding: 16px 24px;
+        background-color: var(--success);
+        color: #ffffff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        font-family: var(--font-family);
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast i {
+        font-size: 20px;
+      }
+
+      /* ========================================
+           RESPONSIVE
+           ======================================== */
+      @media (max-width: 1024px) {
+        .page-layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: static;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: 20px;
+          align-items: center;
+          padding: 16px 20px;
+        }
+        .sidebar-profile {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          border-bottom: none;
+          padding-bottom: 0;
+          margin-bottom: 0;
+        }
+        .sidebar-avatar {
+          width: 56px;
+          height: 56px;
+          font-size: 22px;
+        }
+        .sidebar-profile h3 {
+          margin-top: 0;
+          text-align: left;
+        }
+        .sidebar-profile p {
+          text-align: left;
+        }
+        .sidebar-nav {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .sidebar-nav a {
+          padding: 6px 12px;
+          font-size: 13px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --header-height: 60px;
+          --container-padding: 16px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .main-content {
+          padding: 20px 16px;
+        }
+
+        .page-header {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+        .sidebar-profile {
+          flex-direction: column;
+          text-align: center;
+        }
+        .sidebar-profile h3,
+        .sidebar-profile p {
+          text-align: center;
+        }
+        .sidebar-nav {
+          justify-content: center;
+        }
+
+        .resume-section {
+          padding: 16px;
+        }
+        .current-resume {
+          flex-wrap: wrap;
+        }
+        .current-resume .resume-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+        .form-actions .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-right .notification-btn {
+          display: none;
+        }
+        .sidebar-avatar {
+          width: 64px;
+          height: 64px;
+          font-size: 24px;
+        }
+        .upload-zone {
+          padding: 20px 16px;
+          min-height: 100px;
+        }
+        .upload-zone i {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================
+    HEADER
+    ============================================ -->
+    <header class="header" role="banner">
+      <div class="header-inner">
+        <a href="dashboard.html" class="logo">
+          <img
+            src="../assets/images/logo.png"
+            alt="Recruiter Logo"
+            style="height: 50px"
+            width="50"
+          />
+        </a>
+        <div class="header-right">
+          <button class="notification-btn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="user-avatar" title="Profile">JD</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================
+    PAGE WRAPPER
+    ============================================ -->
+    <main class="page-wrapper" role="main">
+      <div class="container">
+        <div class="page-layout">
+          <!-- ============================================
+                SIDEBAR - Candidate Navigation
+                ============================================ -->
+          <aside
+            class="sidebar"
+            role="complementary"
+            aria-label="Candidate navigation"
+          >
+            <div class="sidebar-profile">
+              <div class="sidebar-avatar-wrapper">
+                <div class="sidebar-avatar">JD</div>
+                <div class="sidebar-avatar-overlay">
+                  <i class="fas fa-camera"></i>
+                </div>
+              </div>
+              <div>
+                <h3>Jane Doe</h3>
+                <p>Senior Software Engineer</p>
+              </div>
+            </div>
+            <nav class="sidebar-nav" aria-label="Candidate menu">
+              <a href="dashboard.html">
+                <i class="fas fa-th-large"></i> Dashboard
+              </a>
+              <a href="job-search.html">
+                <i class="fas fa-search"></i> Find Jobs
+              </a>
+              <a href="my-applications.html">
+                <i class="fas fa-file-alt"></i> My Applications
+              </a>
+              <a href="../candidate/profile-management.html" class="active">
+                <i class="fas fa-user-cog"></i> Profile
+              </a>
+              <a href="../admin/settings.html">
+                <i class="fas fa-sliders-h"></i> Settings
+              </a>
+              <a
+                href="../auth/login.html"
+                style="margin-top: 8px; color: var(--danger)"
+              >
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+              </a>
+            </nav>
+          </aside>
+
+          <!-- ============================================
+                MAIN CONTENT - Profile Form
+                ============================================ -->
+          <section class="main-content" aria-labelledby="profile-title">
+            <div class="page-header">
+              <div>
+                <h1 id="profile-title">Profile Management</h1>
+                <p>
+                  Update your personal information and upload your latest
+                  resume.
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button class="btn btn-outline btn-sm" onclick="resetForm()">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+                <button class="btn btn-primary" onclick="saveProfile()">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </div>
+
+            <form id="profileForm" novalidate>
+              <div class="form-grid">
+                <!-- First Name -->
+                <div class="form-group">
+                  <label for="firstName"
+                    >First Name <span class="required">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="firstName"
+                    placeholder="e.g. Jane"
+                    value="Jane"
+                    required
+                  />
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group">
+                  <label for="lastName"
+                    >Last Name <span class="required">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="lastName"
+                    placeholder="e.g. Doe"
+                    value="Doe"
+                    required
+                  />
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                  <label for="email"
+                    >Email Address <span class="required">*</span></label
+                  >
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="jane@example.com"
+                    value="jane.doe@example.com"
+                    required
+                  />
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group">
+                  <label for="phone">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="+1 (555) 000-0000"
+                    value="+1 (555) 123-4567"
+                  />
+                </div>
+
+                <!-- Location -->
+                <div class="form-group full-width">
+                  <label for="location">Location</label>
+                  <input
+                    type="text"
+                    id="location"
+                    placeholder="e.g. San Francisco, CA"
+                    value="San Francisco, CA"
+                  />
+                </div>
+
+                <!-- Bio / Summary -->
+                <div class="form-group full-width">
+                  <label for="bio">Professional Summary</label>
+                  <textarea
+                    id="bio"
+                    rows="3"
+                    placeholder="Brief summary about yourself..."
+                  >
+Senior Software Engineer with 7+ years of experience in full-stack development, specializing in React, Node.js, and cloud architecture. Passionate about building scalable applications and mentoring junior developers.</textarea
+                  >
+                </div>
+
+                <!-- Skills -->
+                <div class="form-group full-width">
+                  <label for="skills"
+                    >Skills <span class="required">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="skills"
+                    placeholder="e.g. React, Node.js, AWS, Python"
+                    value="React, Node.js, AWS, Python, TypeScript, Docker"
+                    required
+                  />
+                  <span class="helper-text"
+                    >Enter skills separated by commas</span
+                  >
+                </div>
+
+                <!-- Current Company -->
+                <div class="form-group">
+                  <label for="currentCompany">Current Company</label>
+                  <input
+                    type="text"
+                    id="currentCompany"
+                    placeholder="e.g. Google"
+                    value="TechCorp Inc."
+                  />
+                </div>
+
+                <!-- Years of Experience -->
+                <div class="form-group">
+                  <label for="experience">Years of Experience</label>
+                  <select id="experience">
+                    <option value="0-1">0-1 years</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="5-7">5-7 years</option>
+                    <option value="7-10" selected>7-10 years</option>
+                    <option value="10+">10+ years</option>
+                  </select>
+                </div>
+
+                <!-- ============================================
+                            RESUME / CV UPLOAD SECTION
+                            ============================================ -->
+                <div class="resume-section" id="resumeSection">
+                  <div class="resume-header">
+                    <h3>
+                      <i
+                        class="fas fa-file-pdf"
+                        style="color: var(--danger); margin-right: 8px"
+                      ></i
+                      >Resume / CV
+                    </h3>
+                    <span class="file-types">PDF, DOCX up to 10MB</span>
+                  </div>
+
+                  <!-- Upload Zone -->
+                  <div class="upload-zone" id="uploadZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>
+                      <span class="upload-btn-text">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <span class="file-types-text">PDF, DOCX up to 10MB</span>
+                    <input type="file" id="fileInput" accept=".pdf,.docx" />
+                  </div>
+
+                  <!-- Current Resume (shown if exists) -->
+                  <div class="current-resume" id="currentResume">
+                    <i class="fas fa-file-pdf"></i>
+                    <div class="resume-info">
+                      <div class="name">Jane_Doe_Resume.pdf</div>
+                      <div class="meta">Uploaded on Jan 15, 2026 • 2.4 MB</div>
+                    </div>
+                    <div class="resume-actions">
+                      <button
+                        class="btn btn-outline btn-sm"
+                        onclick="viewResume()"
+                      >
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button
+                        class="btn btn-danger-outline btn-sm"
+                        onclick="removeResume()"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    onclick="resetForm()"
+                  >
+                    <i class="fas fa-undo"></i> Reset All
+                  </button>
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Save Profile
+                  </button>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================
+    TOAST NOTIFICATION
+    ============================================ -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMessage">Profile updated successfully!</span>
+    </div>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+      (function () {
+        "use strict";
+
+        // ============================================
+        // TOAST HELPER
+        // ============================================
+        function showToast(message, type) {
+          const toast = document.getElementById("toast");
+          const toastMsg = document.getElementById("toastMessage");
+          const icon = toast.querySelector("i");
+
+          // Reset classes
+          toast.classList.remove("show");
+          toast.style.backgroundColor = "";
+
+          // Set message
+          toastMsg.textContent = message;
+
+          // Set color based on type
+          if (type === "success") {
+            toast.style.backgroundColor = "var(--success)";
+            icon.className = "fas fa-check-circle";
+          } else if (type === "error") {
+            toast.style.backgroundColor = "var(--danger)";
+            icon.className = "fas fa-exclamation-circle";
+          } else {
+            toast.style.backgroundColor = "var(--primary)";
+            icon.className = "fas fa-info-circle";
+          }
+
+          // Show toast
+          setTimeout(() => {
+            toast.classList.add("show");
+          }, 100);
+
+          // Auto hide after 3 seconds
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 3500);
+        }
+
+        // ============================================
+        // SAVE PROFILE
+        // ============================================
+        window.saveProfile = function () {
+          const form = document.getElementById("profileForm");
+          const inputs = form.querySelectorAll(
+            "input[required], textarea[required]",
+          );
+          let isValid = true;
+
+          // Simple validation
+          inputs.forEach((input) => {
+            input.style.borderColor = "var(--border)";
+            if (!input.value.trim()) {
+              input.style.borderColor = "var(--danger)";
+              isValid = false;
+            }
+          });
+
+          if (!isValid) {
+            showToast("Please fill in all required fields.", "error");
+            return;
+          }
+
+          // Collect form data
+          const formData = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value,
+            location: document.getElementById("location").value,
+            bio: document.getElementById("bio").value,
+            skills: document.getElementById("skills").value,
+            currentCompany: document.getElementById("currentCompany").value,
+            experience: document.getElementById("experience").value,
+          };
+
+          console.log("📝 Profile Data Saved:", formData);
+
+          // Show loading state
+          const btn = document.querySelector(".form-actions .btn-primary");
+          const originalText = btn.innerHTML;
+          btn.innerHTML =
+            '<span class="spinner" style="display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;"></span> Saving...';
+          btn.disabled = true;
+
+          // Simulate API call
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            showToast("Profile updated successfully!", "success");
+          }, 1500);
+        };
+
+        // ============================================
+        // RESET FORM
+        // ============================================
+        window.resetForm = function () {
+          if (confirm("Reset all changes to default values?")) {
+            document.getElementById("firstName").value = "Jane";
+            document.getElementById("lastName").value = "Doe";
+            document.getElementById("email").value = "jane.doe@example.com";
+            document.getElementById("phone").value = "+1 (555) 123-4567";
+            document.getElementById("location").value = "San Francisco, CA";
+            document.getElementById("bio").value =
+              "Senior Software Engineer with 7+ years of experience in full-stack development, specializing in React, Node.js, and cloud architecture. Passionate about building scalable applications and mentoring junior developers.";
+            document.getElementById("skills").value =
+              "React, Node.js, AWS, Python, TypeScript, Docker";
+            document.getElementById("currentCompany").value = "TechCorp Inc.";
+            document.getElementById("experience").value = "7-10";
+
+            // Reset any error borders
+            document.querySelectorAll("input, textarea").forEach((el) => {
+              el.style.borderColor = "var(--border)";
+            });
+
+            showToast("Form reset to saved values.", "info");
+          }
+        };
+
+        // ============================================
+        // FILE UPLOAD - CLICK & DRAG/DROP
+        // ============================================
+        const uploadZone = document.getElementById("uploadZone");
+        const fileInput = document.getElementById("fileInput");
+
+        // Click to upload
+        uploadZone.addEventListener("click", function (e) {
+          e.stopPropagation();
+          fileInput.click();
+        });
+
+        // File selection
+        fileInput.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            handleFileUpload(file);
+          }
+        });
+
+        // Drag & Drop
+        uploadZone.addEventListener("dragover", function (e) {
+          e.preventDefault();
+          this.classList.add("drag-over");
+        });
+
+        uploadZone.addEventListener("dragleave", function (e) {
+          e.preventDefault();
+          this.classList.remove("drag-over");
+        });
+
+        uploadZone.addEventListener("drop", function (e) {
+          e.preventDefault();
+          this.classList.remove("drag-over");
+
+          const files = e.dataTransfer.files;
+          if (files.length > 0) {
+            const file = files[0];
+            const validTypes = [
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ];
+            if (
+              validTypes.includes(file.type) ||
+              file.name.endsWith(".pdf") ||
+              file.name.endsWith(".docx")
+            ) {
+              handleFileUpload(file);
+            } else {
+              showToast("Please upload a PDF or DOCX file.", "error");
+            }
+          }
+        });
+
+        // File upload handler
+        function handleFileUpload(file) {
+          // Check size (10MB max)
+          if (file.size > 10 * 1024 * 1024) {
+            showToast("File size exceeds 10MB limit.", "error");
+            return;
+          }
+
+          console.log(
+            "📄 File uploaded:",
+            file.name,
+            `(${(file.size / 1024 / 1024).toFixed(1)} MB)`,
+          );
+
+          // Update current resume display
+          const resumeContainer = document.getElementById("currentResume");
+          const nameSpan = resumeContainer.querySelector(".resume-info .name");
+          const metaSpan = resumeContainer.querySelector(".resume-info .meta");
+
+          nameSpan.textContent = file.name;
+
+          const date = new Date();
+          const dateStr = date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+          const sizeStr = (file.size / 1024 / 1024).toFixed(1);
+          metaSpan.textContent = `Uploaded on ${dateStr} • ${sizeStr} MB`;
+
+          // Update file icon based on type
+          const icon = resumeContainer.querySelector("i");
+          if (file.name.endsWith(".pdf")) {
+            icon.className = "fas fa-file-pdf";
+          } else if (file.name.endsWith(".docx")) {
+            icon.className = "fas fa-file-word";
+          }
+
+          // Show resume container
+          resumeContainer.style.display = "flex";
+
+          // Reset file input
+          fileInput.value = "";
+
+          showToast(`Resume "${file.name}" uploaded successfully!`, "success");
+
+          // Simulate AI parsing
+          console.log("🤖 AI Parsing started...");
+          setTimeout(() => {
+            console.log(
+              "✅ AI Parsing complete! Extracted skills: React, Node.js, AWS, Python",
+            );
+          }, 2000);
+        }
+
+        // ============================================
+        // VIEW RESUME
+        // ============================================
+        window.viewResume = function () {
+          const name = document.querySelector(
+            ".current-resume .resume-info .name",
+          ).textContent;
+          showToast(`Opening ${name}...`, "info");
+          console.log("👁️ Viewing resume:", name);
+        };
+
+        // ============================================
+        // REMOVE RESUME
+        // ============================================
+        window.removeResume = function () {
+          if (
+            confirm("Are you sure you want to remove your uploaded resume?")
+          ) {
+            const resumeContainer = document.getElementById("currentResume");
+            resumeContainer.style.display = "none";
+            // Reset file input
+            document.getElementById("fileInput").value = "";
+            showToast("Resume removed successfully.", "info");
+            console.log("🗑️ Resume removed");
+          }
+        };
+
+        // ============================================
+        // FORM SUBMISSION (prevent default)
+        // ============================================
+        document
+          .getElementById("profileForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            saveProfile();
+          });
+
+        // ============================================
+        // SIDEBAR AVATAR CLICK - Edit photo
+        // ============================================
+        document
+          .querySelector(".sidebar-avatar-wrapper")
+          .addEventListener("click", function () {
+            showToast("Click to upload profile photo (coming soon)", "info");
+            console.log("🖼️ Profile photo edit clicked");
+          });
+
+        // ============================================
+        // NOTIFICATION CLICK
+        // ============================================
+        document
+          .querySelector(".notification-btn")
+          .addEventListener("click", function () {
+            showToast("You have 3 unread notifications", "info");
+            console.log("🔔 Notifications clicked");
+          });
+
+        // ============================================
+        // SPINNER KEYFRAME (injected)
+        // ============================================
+        const style = document.createElement("style");
+        style.textContent = `
+                        @keyframes spin {
+                            to { transform: rotate(360deg); }
+                        }
+                    `;
+        document.head.appendChild(style);
+
+        console.log("✅ Profile Management Page Loaded Successfully!");
+        console.log("👤 Current User: Jane Doe (Candidate)");
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,931 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using RecruitmentAPI.DTOs;
+using RecruitmentAPI.Models;
+using RecruitmentAPI.Repositories.Interfaces;
+using RecruitmentAPI.Services.Interfaces;
+
+namespace RecruitmentAPI.Services.Implementations
+{
+    /// <summary>
+    /// Service implementation for application operations
+    /// </summary>
+    public class ApplicationService : IApplicationService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAIService _aiService;
+        private readonly INotificationService _notificationService;
+        private readonly ILogger<ApplicationService> _logger;
+
+        public ApplicationService(
+            IUnitOfWork unitOfWork,
+            IAIService aiService,
+            INotificationService notificationService,
+            ILogger<ApplicationService> logger)
+        {
+            _unitOfWork = unitOfWork;
+            _aiService = aiService;
+            _notificationService = notificationService;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Submit a new job application
+        /// </summary>
+        public async Task<ApplicationResponseDto> SubmitApplicationAsync(ApplicationSubmitDto submitDto)
+        {
+            try
+            {
+                // Validate candidate exists
+                var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(submitDto.CandidateId);
+                if (candidate == null)
+                    throw new KeyNotFoundException($"Candidate with ID {submitDto.CandidateId} not found");
+
+                // Validate job exists and is open
+                var job = await _unitOfWork.Jobs.GetByIdAsync(submitDto.JobId);
+                if (job == null)
+                    throw new KeyNotFoundException($"Job with ID {submitDto.JobId} not found");
+
+                if (job.Status != JobStatus.Open && job.Status != JobStatus.Published)
+                    throw new InvalidOperationException("This job is no longer accepting applications");
+
+                // Check if candidate already applied
+                var existingApplication = await _unitOfWork.Applications
+                    .GetByCandidateAndJobAsync(submitDto.CandidateId, submitDto.JobId);
+                if (existingApplication != null)
+                    throw new InvalidOperationException("You have already applied for this position");
+
+                // Create the application
+                var application = new Application
+                {
+                    CandidateId = submitDto.CandidateId,
+                    JobId = submitDto.JobId,
+                    Status = ApplicationStatus.Submitted,
+                    AppliedAt = DateTime.UtcNow,
+                    Notes = submitDto.Notes,
+                    Source = submitDto.Source ?? "Direct",
+                    ExpectedSalary = submitDto.ExpectedSalary,
+                    AvailableFrom = submitDto.AvailableFrom
+                };
+
+                // Calculate AI score
+                var aiScore = await _aiService.MatchCandidateToJobAsync(submitDto.CandidateId, submitDto.JobId);
+                application.AI_Score = aiScore.OverallScore;
+
+                await _unitOfWork.Applications.AddAsync(application);
+                await _unitOfWork.SaveChangesAsync();
+
+                // Send notification
+                await _notificationService.SendApplicationSubmittedAsync(candidate.Email, job.Title);
+
+                _logger.LogInformation("Application {ApplicationId} submitted for job {JobId} by candidate {CandidateId}",
+                    application.ApplicationId, submitDto.JobId, submitDto.CandidateId);
+
+                return await GetByIdAsync(application.ApplicationId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error submitting application for job {JobId} by candidate {CandidateId}",
+                    submitDto.JobId, submitDto.CandidateId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application by ID
+        /// </summary>
+        public async Task<ApplicationResponseDto> GetByIdAsync(int applicationId)
+        {
+            try
+            {
+                var application = await _unitOfWork.Applications.GetApplicationWithDetailsAsync(applicationId);
+                if (application == null)
+                    throw new KeyNotFoundException($"Application with ID {applicationId} not found");
+
+                return new ApplicationResponseDto
+                {
+                    ApplicationId = application.ApplicationId,
+                    JobId = application.JobId,
+                    JobTitle = application.Job.Title,
+                    Company = application.Job.Department,
+                    Department = application.Job.Department,
+                    Location = application.Job.Location,
+                    Status = application.Status.ToString(),
+                    AppliedAt = application.AppliedAt,
+                    UpdatedAt = application.UpdatedAt,
+                    AI_Score = application.AI_Score,
+                    CandidateId = application.CandidateId,
+                    CandidateName = $"{application.Candidate.FirstName} {application.Candidate.LastName}",
+                    CandidateEmail = application.Candidate.Email,
+                    Notes = application.Notes,
+                    Source = application.Source,
+                    ExpectedSalary = application.ExpectedSalary,
+                    AvailableFrom = application.AvailableFrom,
+                    Success = true,
+                    Message = "Application retrieved successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application by ID {ApplicationId}", applicationId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get all applications by candidate
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByCandidateAsync(int candidateId)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetCandidateApplicationsWithJobDetailsAsync(candidateId);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Department = a.Job.Department,
+                    Location = a.Job.Location,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    UpdatedAt = a.UpdatedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateId = a.CandidateId,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Notes = a.Notes,
+                    Source = a.Source,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications for candidate {CandidateId}", candidateId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get all applications for a specific job
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByJobAsync(int jobId)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetByJobAsync(jobId);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Department = a.Job.Department,
+                    Location = a.Job.Location,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    UpdatedAt = a.UpdatedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateId = a.CandidateId,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Notes = a.Notes,
+                    Source = a.Source,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications for job {JobId}", jobId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Update application status
+        /// </summary>
+        public async Task<ApplicationResponseDto> UpdateStatusAsync(int applicationId, ApplicationStatusUpdateDto updateDto)
+        {
+            try
+            {
+                var application = await _unitOfWork.Applications.GetApplicationWithDetailsAsync(applicationId);
+                if (application == null)
+                    throw new KeyNotFoundException($"Application with ID {applicationId} not found");
+
+                if (!Enum.TryParse<ApplicationStatus>(updateDto.Status, true, out var newStatus))
+                    throw new ArgumentException($"Invalid status: {updateDto.Status}");
+
+                // Validate status transition
+                if (!IsValidStatusTransition(application.Status, newStatus))
+                    throw new InvalidOperationException($"Invalid status transition from {application.Status} to {newStatus}");
+
+                application.Status = newStatus;
+                application.UpdatedAt = DateTime.UtcNow;
+
+                // Update timestamps based on status
+                switch (newStatus)
+                {
+                    case ApplicationStatus.UnderReview:
+                        application.ReviewedAt = DateTime.UtcNow;
+                        application.ReviewedBy = updateDto.ReviewedBy;
+                        break;
+                    case ApplicationStatus.Shortlisted:
+                        application.ShortlistedAt = DateTime.UtcNow;
+                        break;
+                    case ApplicationStatus.Interviewed:
+                        application.InterviewedAt = DateTime.UtcNow;
+                        break;
+                    case ApplicationStatus.Hired:
+                        application.HiredAt = DateTime.UtcNow;
+                        break;
+                    case ApplicationStatus.Rejected:
+                        application.RejectedAt = DateTime.UtcNow;
+                        application.RejectionReason = updateDto.RejectionReason;
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(updateDto.Notes))
+                    application.Notes = updateDto.Notes;
+
+                await _unitOfWork.SaveChangesAsync();
+
+                // Send notification based on status
+                await SendStatusNotificationAsync(application);
+
+                _logger.LogInformation("Application {ApplicationId} status updated to {NewStatus}",
+                    applicationId, newStatus);
+
+                return await GetByIdAsync(applicationId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating application {ApplicationId} status", applicationId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Withdraw an application
+        /// </summary>
+        public async Task<bool> WithdrawAsync(int applicationId, int candidateId)
+        {
+            try
+            {
+                var application = await _unitOfWork.Applications.GetByIdAsync(applicationId);
+                if (application == null)
+                    return false;
+
+                // Verify ownership
+                if (application.CandidateId != candidateId)
+                    throw new UnauthorizedAccessException("You can only withdraw your own applications");
+
+                if (application.Status == ApplicationStatus.Hired || application.Status == ApplicationStatus.Rejected)
+                    throw new InvalidOperationException($"Cannot withdraw application with status {application.Status}");
+
+                application.Status = ApplicationStatus.Withdrawn;
+                application.UpdatedAt = DateTime.UtcNow;
+
+                await _unitOfWork.SaveChangesAsync();
+
+                // Send notification
+                await _notificationService.SendApplicationWithdrawnAsync(
+                    application.Candidate.Email,
+                    application.Job.Title);
+
+                _logger.LogInformation("Application {ApplicationId} withdrawn by candidate {CandidateId}",
+                    applicationId, candidateId);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error withdrawing application {ApplicationId} by candidate {CandidateId}",
+                    applicationId, candidateId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications by status
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByStatusAsync(ApplicationStatus status)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetByStatusAsync(status);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications by status {Status}", status);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications with AI score above threshold
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetWithHighAIScoreAsync(double threshold)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetWithAI_ScoreAsync(threshold);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications with high AI score above {Threshold}", threshold);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application statistics for dashboard
+        /// </summary>
+        public async Task<ApplicationStatistics> GetApplicationStatisticsAsync()
+        {
+            try
+            {
+                return await _unitOfWork.Applications.GetApplicationStatisticsAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application statistics");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications by date range
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetByDateRangeAsync(startDate, endDate);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications by date range {StartDate} to {EndDate}", startDate, endDate);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications for a recruiter
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByRecruiterAsync(int recruiterId)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetByRecruiterAsync(recruiterId);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications for recruiter {RecruiterId}", recruiterId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get recent applications
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetRecentApplicationsAsync(int days)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetRecentApplicationsAsync(days);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting recent applications for {Days} days", days);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications pending review
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetPendingReviewApplicationsAsync()
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetPendingReviewApplicationsAsync();
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting pending review applications");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications with interviews scheduled
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetApplicationsWithInterviewsAsync()
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetApplicationsWithInterviewsAsync();
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications with interviews");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Search applications by candidate name or job title
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> SearchApplicationsAsync(string searchTerm)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.SearchApplicationsAsync(searchTerm);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching applications with term {SearchTerm}", searchTerm);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Bulk update application status
+        /// </summary>
+        public async Task<int> BulkUpdateStatusAsync(List<int> applicationIds, ApplicationStatus status, string notes = null)
+        {
+            try
+            {
+                var count = await _unitOfWork.Applications.BulkUpdateStatusAsync(applicationIds, status, notes);
+
+                _logger.LogInformation("Bulk updated {Count} applications to status {Status}", count, status);
+                return count;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in bulk update application status");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application with full details including interviews and feedback
+        /// </summary>
+        public async Task<ApplicationWithInterviewDto> GetApplicationWithDetailsAsync(int applicationId)
+        {
+            try
+            {
+                var baseResponse = await GetByIdAsync(applicationId);
+                var application = await _unitOfWork.Applications.GetApplicationWithDetailsAsync(applicationId);
+
+                var interview = await _unitOfWork.Interviews.GetByApplicationIdAsync(applicationId);
+                var feedback = await _unitOfWork.Feedbacks.GetByApplicationIdAsync(applicationId);
+
+                return new ApplicationWithInterviewDto
+                {
+                    ApplicationId = baseResponse.ApplicationId,
+                    JobId = baseResponse.JobId,
+                    JobTitle = baseResponse.JobTitle,
+                    Company = baseResponse.Company,
+                    Status = baseResponse.Status,
+                    AppliedAt = baseResponse.AppliedAt,
+                    AI_Score = baseResponse.AI_Score,
+                    CandidateName = baseResponse.CandidateName,
+                    CandidateEmail = baseResponse.CandidateEmail,
+                    Message = baseResponse.Message,
+                    Success = baseResponse.Success,
+                    ScoreBreakdown = baseResponse.ScoreBreakdown,
+                    Department = baseResponse.Department,
+                    Location = baseResponse.Location,
+
+                    Interview = interview != null ? new InterviewDetailsDto
+                    {
+                        InterviewId = interview.InterviewId,
+                        ScheduledAt = interview.ScheduledAt,
+                        Duration = interview.Duration,
+                        Type = interview.Type,
+                        Status = interview.Status.ToString(),
+                        MeetingLink = interview.MeetingLink
+                    } : null,
+
+                    Feedback = feedback != null ? new FeedbackDetailsDto
+                    {
+                        FeedbackId = feedback.FeedbackId,
+                        TechnicalScore = feedback.TechnicalScore,
+                        BehavioralScore = feedback.BehavioralScore,
+                        CommunicationScore = feedback.CommunicationScore,
+                        AverageScore = (feedback.TechnicalScore + feedback.BehavioralScore + feedback.CommunicationScore) / 3,
+                        Comments = feedback.Comments,
+                        Decision = feedback.Decision,
+                        CreatedAt = feedback.CreatedAt
+                    } : null
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application with details for {ApplicationId}", applicationId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application count by status for a job
+        /// </summary>
+        public async Task<Dictionary<ApplicationStatus, int>> GetApplicationCountByStatusAsync(int jobId)
+        {
+            try
+            {
+                return await _unitOfWork.Applications.GetApplicationCountByStatusAsync(jobId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application count by status for job {JobId}", jobId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications by AI score range
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByAIScoreRangeAsync(double minScore, double maxScore)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetByAIScoreRangeAsync(minScore, maxScore);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications by AI score range {MinScore} to {MaxScore}", minScore, maxScore);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application with status history
+        /// </summary>
+        public async Task<ApplicationResponseDto> GetApplicationWithStatusHistoryAsync(int applicationId)
+        {
+            // Placeholder - would need a status history table
+            return await GetByIdAsync(applicationId);
+        }
+
+        /// <summary>
+        /// Check if candidate has applied to a job
+        /// </summary>
+        public async Task<bool> HasCandidateAppliedAsync(int candidateId, int jobId)
+        {
+            try
+            {
+                return await _unitOfWork.Applications.HasCandidateAppliedAsync(candidateId, jobId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking if candidate {CandidateId} applied to job {JobId}", candidateId, jobId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get total application count for a job
+        /// </summary>
+        public async Task<int> GetApplicationCountForJobAsync(int jobId)
+        {
+            try
+            {
+                return await _unitOfWork.Applications.GetApplicationCountForJobAsync(jobId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application count for job {JobId}", jobId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get active applications for a candidate
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetActiveApplicationsForCandidateAsync(int candidateId)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetActiveApplicationsForCandidateAsync(candidateId);
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
+                    CandidateEmail = a.Candidate.Email,
+                    Success = true,
+                    Message = "Applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting active applications for candidate {CandidateId}", candidateId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application statistics by department
+        /// </summary>
+        public async Task<Dictionary<string, ApplicationStatistics>> GetStatisticsByDepartmentAsync()
+        {
+            try
+            {
+                var stats = new Dictionary<string, ApplicationStatistics>();
+                var departments = await _unitOfWork.Jobs.GetDepartmentJobCountsAsync();
+
+                foreach (var dept in departments.Keys)
+                {
+                    var applications = await _unitOfWork.Applications.GetByDepartmentAsync(dept);
+                    var appList = applications.ToList();
+
+                    stats[dept] = new ApplicationStatistics
+                    {
+                        TotalApplications = appList.Count,
+                        Submitted = appList.Count(a => a.Status == ApplicationStatus.Submitted),
+                        UnderReview = appList.Count(a => a.Status == ApplicationStatus.UnderReview),
+                        Shortlisted = appList.Count(a => a.Status == ApplicationStatus.Shortlisted),
+                        InterviewScheduled = appList.Count(a => a.Status == ApplicationStatus.InterviewScheduled),
+                        Interviewed = appList.Count(a => a.Status == ApplicationStatus.Interviewed),
+                        Hired = appList.Count(a => a.Status == ApplicationStatus.Hired),
+                        Rejected = appList.Count(a => a.Status == ApplicationStatus.Rejected),
+                        Withdrawn = appList.Count(a => a.Status == ApplicationStatus.Withdrawn),
+                        OnHold = appList.Count(a => a.Status == ApplicationStatus.OnHold),
+                        LastApplicationDate = appList.Any() ? appList.Max(a => a.AppliedAt) : DateTime.UtcNow
+                    };
+
+                    if (appList.Any(a => a.AI_Score.HasValue))
+                    {
+                        var scores = appList.Where(a => a.AI_Score.HasValue).Select(a => a.AI_Score.Value);
+                        stats[dept].AverageAIScore = scores.Average();
+                        stats[dept].HighestAIScore = scores.Max();
+                        stats[dept].LowestAIScore = scores.Min();
+                    }
+                }
+
+                return stats;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application statistics by department");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get application timeline for a candidate
+        /// </summary>
+        public async Task<IEnumerable<ApplicationTimelineDto>> GetApplicationTimelineAsync(int candidateId)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetCandidateApplicationsWithJobDetailsAsync(candidateId);
+
+                return applications.Select(a => new ApplicationTimelineDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobTitle = a.Job.Title,
+                    AppliedAt = a.AppliedAt,
+                    ReviewedAt = a.ReviewedAt,
+                    ShortlistedAt = a.ShortlistedAt,
+                    InterviewedAt = a.InterviewedAt,
+                    HiredAt = a.HiredAt,
+                    RejectedAt = a.RejectedAt,
+                    CurrentStatus = a.Status.ToString(),
+                    StatusChanges = new List<StatusChangeDto>() // Would need status history table
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application timeline for candidate {CandidateId}", candidateId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Recalculate AI scores for all applications of a job
+        /// </summary>
+        public async Task<int> RecalculateAIScoresForJobAsync(int jobId)
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetByJobAsync(jobId);
+                var count = 0;
+
+                foreach (var application in applications)
+                {
+                    var aiScore = await _aiService.MatchCandidateToJobAsync(application.CandidateId, jobId);
+                    application.AI_Score = aiScore.OverallScore;
+                    application.UpdatedAt = DateTime.UtcNow;
+                    count++;
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+                _logger.LogInformation("Recalculated AI scores for {Count} applications for job {JobId}", count, jobId);
+                return count;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error recalculating AI scores for job {JobId}", jobId);
+                throw;
+            }
+        }
+
+        #region Private Methods
+
+        /// <summary>
+        /// Validate status transition
+        /// </summary>
+        private bool IsValidStatusTransition(ApplicationStatus current, ApplicationStatus next)
+        {
+            var validTransitions = new Dictionary<ApplicationStatus, List<ApplicationStatus>>
+            {
+                { ApplicationStatus.Submitted, new List<ApplicationStatus> { ApplicationStatus.UnderReview, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.UnderReview, new List<ApplicationStatus> { ApplicationStatus.Shortlisted, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.Shortlisted, new List<ApplicationStatus> { ApplicationStatus.InterviewScheduled, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.InterviewScheduled, new List<ApplicationStatus> { ApplicationStatus.Interviewed, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.Interviewed, new List<ApplicationStatus> { ApplicationStatus.Hired, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.Hired, new List<ApplicationStatus>() },
+                { ApplicationStatus.Rejected, new List<ApplicationStatus>() },
+                { ApplicationStatus.Withdrawn, new List<ApplicationStatus>() },
+                { ApplicationStatus.OnHold, new List<ApplicationStatus> { ApplicationStatus.UnderReview, ApplicationStatus.Rejected } }
+            };
+
+            return validTransitions.ContainsKey(current) && validTransitions[current].Contains(next);
+        }
+
+        /// <summary>
+        /// Send notification based on status
+        /// </summary>
+        private async Task SendStatusNotificationAsync(Application application)
+        {
+            try
+            {
+                var candidateEmail = application.Candidate.Email;
+                var jobTitle = application.Job.Title;
+
+                switch (application.Status)
+                {
+                    case ApplicationStatus.UnderReview:
+                        await _notificationService.SendApplicationUnderReviewAsync(candidateEmail, jobTitle);
+                        break;
+                    case ApplicationStatus.Shortlisted:
+                        await _notificationService.SendApplicationShortlistedAsync(candidateEmail, jobTitle);
+                        break;
+                    case ApplicationStatus.Hired:
+                        await _notificationService.SendApplicationHiredAsync(candidateEmail, jobTitle);
+                        break;
+                    case ApplicationStatus.Rejected:
+                        await _notificationService.SendApplicationRejectedAsync(candidateEmail, jobTitle, application.RejectionReason);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to send notification for application {ApplicationId}", application.ApplicationId);
+            }
+        }
+
+        #endregion
+    }
+}
