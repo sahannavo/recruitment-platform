@@ -83,10 +83,10 @@ public class FeedbackService : IFeedbackService
             await _feedbackRepository.AddAsync(feedback);
             await _context.SaveChangesAsync();
 
-            // Update application status to "Reviewed"
+            // Update application status to "UnderReview"
             if (interview.Application != null)
             {
-                interview.Application.Status = "Reviewed";
+                interview.Application.Status = ApplicationStatus.UnderReview;
                 await _context.SaveChangesAsync();
             }
 
@@ -222,7 +222,7 @@ public class FeedbackService : IFeedbackService
         var interviewData = interview ?? feedback.Interview;
         var application = interviewData?.Application;
         var candidate = application?.Candidate;
-        var jobPosting = application?.JobPosting;
+        var jobPosting = application?.Job;
         var manager = feedback.Manager;
 
         return new FeedbackResponseDto

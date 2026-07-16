@@ -34,7 +34,6 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 "recruiter" => new Recruiter { Department = "General" },
                 "hiringmanager" => new HiringManager { Department = "General" },
-                "admin" => new Admin { Role = "Admin" },
                 _ => new Candidate() // Default to Candidate
             };
 
@@ -42,11 +41,25 @@ namespace RecruitmentAPI.Services.Implementations
             newUser.FirstName = request.FirstName;
             newUser.LastName = request.LastName;
             newUser.PasswordHash = _passwordHasher.HashPassword(request.Password);
+            newUser.Role = request.Role; // Set Role on the base User object
             newUser.CreatedAt = DateTime.UtcNow;
             newUser.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Users.AddAsync(newUser);
             await _unitOfWork.SaveChangesAsync();
+
+            // If the role is Admin, create Admin profile after User is saved
+            if (request.Role.ToLower() == "admin")
+            {
+                var adminProfile = new Admin
+                {
+                    UserId = newUser.UserId,
+                    Department = "General",
+                    Permissions = ""
+                };
+                await _unitOfWork.Admins.AddAsync(adminProfile);
+                await _unitOfWork.SaveChangesAsync();
+            }
 
             // Generate Token for immediate login after registration
             var token = _jwtHelper.GenerateToken(newUser, request.Role);
@@ -56,7 +69,7 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 Token = token,
                 ExpiresAt = expiry,
-                UserId = newUser.Id,
+                UserId = newUser.UserId,
                 Email = newUser.Email,
                 Role = request.Role
             };
@@ -71,15 +84,8 @@ namespace RecruitmentAPI.Services.Implementations
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }
 
-            // Determine Role based on entity type
-            string role = user switch
-            {
-                Admin => "Admin",
-                HiringManager => "HiringManager",
-                Recruiter => "Recruiter",
-                Candidate => "Candidate",
-                _ => "User"
-            };
+            // Determine Role based on user.Role property
+            string role = user.Role;
 
             var token = _jwtHelper.GenerateToken(user, role);
             var expiry = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"]!));
@@ -88,7 +94,7 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 Token = token,
                 ExpiresAt = expiry,
-                UserId = user.Id,
+                UserId = user.UserId,
                 Email = user.Email,
                 Role = role
             };
@@ -120,7 +126,7 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 Token = newToken,
                 ExpiresAt = expiry,
-                UserId = user.Id,
+                UserId = user.UserId,
                 Email = user.Email,
                 Role = role
             };

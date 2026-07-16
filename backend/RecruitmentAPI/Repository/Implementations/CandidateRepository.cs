@@ -23,6 +23,12 @@ namespace RecruitmentAPI.Repository.Implementations
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
+        public async Task<Candidate?> GetByEmailAsync(string email)
+        {
+            return await _context.Candidates
+                .FirstOrDefaultAsync(c => c.Email == email);
+        }
+
         public async Task<IEnumerable<Candidate>> GetCandidatesBySkillAsync(string skill)
         {
             return await _context.Candidates

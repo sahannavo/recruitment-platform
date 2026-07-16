@@ -37,7 +37,7 @@ namespace RecruitmentAPI.Middleware
             string userIdentifier = "Anonymous";
             if (context.Items["User"] is User user)
             {
-                userIdentifier = $"User:{user.Id} ({user.Email})";
+                userIdentifier = $"User:{user.UserId} ({user.Email})";
             }
 
             _logger.LogInformation(

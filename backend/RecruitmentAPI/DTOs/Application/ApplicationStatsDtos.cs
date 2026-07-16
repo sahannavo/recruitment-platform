@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RecruitmentAPI.DTOs
 {
@@ -19,5 +20,8 @@ namespace RecruitmentAPI.DTOs
         public decimal AverageAIScore { get; set; }
         public decimal HighestAIScore { get; set; }
         public decimal LowestAIScore { get; set; }
+        public Dictionary<string, int> ApplicationsByDepartment { get; set; } = new();
+        public Dictionary<string, int> ApplicationsBySource { get; set; } = new();
+        public Dictionary<string, int> ApplicationsByMonth { get; set; } = new();
     }
 }

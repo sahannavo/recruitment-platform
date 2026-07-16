@@ -25,7 +25,7 @@ public class FeedbackRepository : IFeedbackRepository
                     .ThenInclude(a => a!.Candidate)
             .Include(f => f.Interview)
                 .ThenInclude(i => i!.Application)
-                    .ThenInclude(a => a!.JobPosting)
+                    .ThenInclude(a => a!.Job)
             .Include(f => f.Manager)
             .FirstOrDefaultAsync(f => f.FeedbackId == feedbackId);
     }
@@ -50,7 +50,7 @@ public class FeedbackRepository : IFeedbackRepository
                     .ThenInclude(a => a!.Candidate)
             .Include(f => f.Interview)
                 .ThenInclude(i => i!.Application)
-                    .ThenInclude(a => a!.JobPosting)
+                    .ThenInclude(a => a!.Job)
             .Where(f => f.ManagerId == managerId)
             .OrderByDescending(f => f.CreatedAt)
             .ToListAsync();
@@ -64,7 +64,7 @@ public class FeedbackRepository : IFeedbackRepository
                     .ThenInclude(a => a!.Candidate)
             .Include(f => f.Interview)
                 .ThenInclude(i => i!.Application)
-                    .ThenInclude(a => a!.JobPosting)
+                    .ThenInclude(a => a!.Job)
             .Include(f => f.Manager)
             .Where(f => f.Decision == decision)
             .OrderByDescending(f => f.CreatedAt)
@@ -79,7 +79,7 @@ public class FeedbackRepository : IFeedbackRepository
                     .ThenInclude(a => a!.Candidate)
             .Include(f => f.Interview)
                 .ThenInclude(i => i!.Application)
-                    .ThenInclude(a => a!.JobPosting)
+                    .ThenInclude(a => a!.Job)
             .Include(f => f.Manager)
             .OrderByDescending(f => f.CreatedAt)
             .ToListAsync();
@@ -111,5 +111,20 @@ public class FeedbackRepository : IFeedbackRepository
     {
         return await _context.InterviewFeedbacks
             .AnyAsync(f => f.InterviewId == interviewId && f.ManagerId == managerId);
+    }
+
+    public async Task<IEnumerable<InterviewFeedback>> GetByApplicationIdAsync(int applicationId)
+    {
+        return await _context.InterviewFeedbacks
+            .Include(f => f.Interview)
+                .ThenInclude(i => i!.Application)
+                    .ThenInclude(a => a!.Candidate)
+            .Include(f => f.Interview)
+                .ThenInclude(i => i!.Application)
+                    .ThenInclude(a => a!.Job)
+            .Include(f => f.Manager)
+            .Where(f => f.Interview != null && f.Interview.ApplicationId == applicationId)
+            .OrderByDescending(f => f.CreatedAt)
+            .ToListAsync();
     }
 }

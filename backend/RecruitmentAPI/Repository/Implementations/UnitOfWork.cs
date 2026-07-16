@@ -12,10 +12,12 @@ namespace RecruitmentAPI.Repository.Implementations
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction? _transaction;
 
-        private IGenericRepository<User>? _users;
+        private IUserRepository? _users;
         private IGenericRepository<Admin>? _admins;
         private IGenericRepository<RecruitmentAnalytic>? _analytics;
         private IGenericRepository<Notification>? _notifications;
+        private IGenericRepository<Recruiter>? _recruiters;
+        private IGenericRepository<Document>? _documents;
         private IAdminRepository? _adminRepository;
         private IAnalyticsRepository? _analyticsRepository;
         private IJobRepository? _jobs;
@@ -29,10 +31,12 @@ namespace RecruitmentAPI.Repository.Implementations
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public IGenericRepository<User> Users => _users ??= new GenericRepository<User>(_context);
+        public IUserRepository Users => _users ??= new UserRepository(_context);
         public IGenericRepository<Admin> Admins => _admins ??= new GenericRepository<Admin>(_context);
         public IGenericRepository<RecruitmentAnalytic> RecruitmentAnalytics => _analytics ??= new GenericRepository<RecruitmentAnalytic>(_context);
         public IGenericRepository<Notification> Notifications => _notifications ??= new GenericRepository<Notification>(_context);
+        public IGenericRepository<Recruiter> Recruiters => _recruiters ??= new GenericRepository<Recruiter>(_context);
+        public IGenericRepository<Document> Documents => _documents ??= new GenericRepository<Document>(_context);
 
         public IAdminRepository AdminRepository => _adminRepository ??= new AdminRepository(_context);
         public IAnalyticsRepository AnalyticsRepository => _analyticsRepository ??= new AnalyticsRepository(_context);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Models;
 
 namespace RecruitmentAPI.Repository.Interfaces
@@ -195,29 +196,5 @@ namespace RecruitmentAPI.Repository.Interfaces
         /// <param name="jobId">Job ID</param>
         /// <returns>True if candidate has applied</returns>
         Task<bool> HasCandidateAppliedAsync(int candidateId, int jobId);
-    }
-
-    /// <summary>
-    /// DTO for application statistics
-    /// </summary>
-    public class ApplicationStatistics
-    {
-        public int TotalApplications { get; set; }
-        public int Submitted { get; set; }
-        public int UnderReview { get; set; }
-        public int Shortlisted { get; set; }
-        public int InterviewScheduled { get; set; }
-        public int Interviewed { get; set; }
-        public int Hired { get; set; }
-        public int Rejected { get; set; }
-        public int Withdrawn { get; set; }
-        public int OnHold { get; set; }
-        public double AverageAIScore { get; set; }
-        public double HighestAIScore { get; set; }
-        public double LowestAIScore { get; set; }
-        public DateTime LastApplicationDate { get; set; }
-        public Dictionary<string, int> ApplicationsByDepartment { get; set; }
-        public Dictionary<string, int> ApplicationsBySource { get; set; }
-        public Dictionary<string, int> ApplicationsByMonth { get; set; }
     }
 }

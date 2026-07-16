@@ -211,26 +211,6 @@ namespace RecruitmentAPI.DTOs
     }
 
     /// <summary>
-    /// DTO for updating a job posting
-    /// </summary>
-    public class JobUpdateDto
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Requirements { get; set; }
-        public string Department { get; set; }
-        public string Location { get; set; }
-        public string SalaryRange { get; set; }
-        public string Status { get; set; }
-        public DateTime? ExpiryDate { get; set; }
-        public int PositionsAvailable { get; set; }
-        public string ExperienceLevel { get; set; }
-        public string EmploymentType { get; set; }
-        public bool IsRemote { get; set; }
-        public string RequiredSkills { get; set; }
-    }
-
-    /// <summary>
     /// DTO for job listing (summary view)
     /// </summary>
     public class JobSummaryDto

@@ -61,4 +61,9 @@ public interface IInterviewRepository
     /// Get interviews by status
     /// </summary>
     Task<IEnumerable<Interview>> GetByStatusAsync(string status);
+
+    /// <summary>
+    /// Get interviews by application ID
+    /// </summary>
+    Task<IEnumerable<Interview>> GetByApplicationIdAsync(int applicationId);
 }

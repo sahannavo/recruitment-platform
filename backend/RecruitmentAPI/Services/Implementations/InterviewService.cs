@@ -37,7 +37,7 @@ public class InterviewService : IInterviewService
             // Validate application exists
             var application = await _context.Applications
                 .Include(a => a.Candidate)
-                .Include(a => a.JobPosting)
+                .Include(a => a.Job)
                 .FirstOrDefaultAsync(a => a.ApplicationId == dto.ApplicationId);
 
             if (application == null)
@@ -264,7 +264,7 @@ public class InterviewService : IInterviewService
                 ? $"{app.Candidate.FirstName} {app.Candidate.LastName}" 
                 : "N/A",
             CandidateEmail = app?.Candidate?.Email ?? "N/A",
-            JobTitle = app?.JobPosting?.Title ?? "N/A",
+            JobTitle = app?.Job?.Title ?? "N/A",
             ScheduledAt = interview.ScheduledAt,
             Duration = interview.Duration,
             Type = interview.Type,
@@ -287,7 +287,7 @@ public class InterviewService : IInterviewService
                 UserId = application.CandidateId,
                 Type = "InterviewScheduled",
                 Subject = "Interview Scheduled",
-                Content = $"Your interview for {application.JobPosting?.Title} has been scheduled for {interview.ScheduledAt:f}."
+                Content = $"Your interview for {application.Job?.Title} has been scheduled for {interview.ScheduledAt:f}."
             };
 
             await _notificationService.SendEmailAsync(notification);

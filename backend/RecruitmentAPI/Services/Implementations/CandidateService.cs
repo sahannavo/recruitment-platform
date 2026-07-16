@@ -12,6 +12,7 @@ using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Helpers;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
+using RecruitmentAPI.Services.AI;
 using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.Implementations
@@ -64,7 +65,7 @@ namespace RecruitmentAPI.Services.Implementations
                     SkillsSummary = candidate.SkillsSummary,
                     IsActive = candidate.IsActive,
                     CreatedAt = candidate.CreatedAt,
-                    UpdatedAt = candidate.UpdatedAt,
+                    UpdatedAt = candidate.UpdatedAt ?? DateTime.UtcNow,
                     TotalApplications = applicationsList.Count,
                     ActiveApplications = applicationsList.Count(a => a.Status != ApplicationStatus.Rejected
                                                                       && a.Status != ApplicationStatus.Withdrawn)
@@ -146,7 +147,7 @@ namespace RecruitmentAPI.Services.Implementations
                     throw new ArgumentException("File size exceeds 5MB limit");
 
                 // Upload to blob storage
-                var blobUrl = await _blobStorageService.UploadFileAsync(file, $"candidates/{userId}/cv");
+                var blobUrl = await _blobStorageService.UploadFileAsync(file.OpenReadStream(), $"candidates/{userId}/cv", file.ContentType);
 
                 var document = new Document
                 {
@@ -256,20 +257,12 @@ namespace RecruitmentAPI.Services.Implementations
                 {
                     ExtractedText = parseResult.ExtractedText,
                     Skills = parseResult.Skills,
-                    Experience = parseResult.Experience,
-                    Education = parseResult.Education,
-                    Certifications = parseResult.Certifications,
-                    Languages = parseResult.Languages,
-                    ContactInfo = parseResult.ContactInfo,
-                    WorkExperience = parseResult.WorkExperience?.Select(we => new WorkExperienceDto
-                    {
-                        Company = we.Company,
-                        Title = we.Title,
-                        StartDate = we.StartDate,
-                        EndDate = we.EndDate,
-                        Description = we.Description,
-                        IsCurrent = we.IsCurrent
-                    }).ToList()
+                    Experience = string.Join(", ", parseResult.Experience.Select(e => $"{e.Title} at {e.Company} ({e.Duration})")),
+                    Education = string.Join(", ", parseResult.Education.Select(e => $"{e.Degree} from {e.Institution} ({e.Year})")),
+                    Certifications = new List<string>(),
+                    Languages = new List<string>(),
+                    ContactInfo = new Dictionary<string, string>(),
+                    WorkExperience = new List<WorkExperienceDto>()
                 };
             }
             catch (Exception ex)
@@ -614,7 +607,7 @@ namespace RecruitmentAPI.Services.Implementations
                 if (file == null || file.Length == 0)
                     throw new ArgumentException("File is required");
 
-                var blobUrl = await _blobStorageService.UploadFileAsync(file, $"candidates/{userId}/profile");
+                var blobUrl = await _blobStorageService.UploadFileAsync(file.OpenReadStream(), $"candidates/{userId}/profile", file.ContentType);
 
                 candidate.ProfilePictureUrl = blobUrl;
                 candidate.UpdatedAt = DateTime.UtcNow;
@@ -644,13 +637,13 @@ namespace RecruitmentAPI.Services.Implementations
 
                 return new AvailabilityStatusDto
                 {
-                    IsAvailable = candidate.IsAvailable,
+                    IsAvailable = candidate.IsAvailable ?? false,
                     AvailableFrom = candidate.AvailableFrom,
                     NoticePeriod = candidate.NoticePeriod,
-                    IsOpenToOpportunities = candidate.IsOpenToOpportunities,
+                    IsOpenToOpportunities = candidate.IsOpenToOpportunities ?? false,
                     PreferredLocations = candidate.PreferredLocations,
-                    WillingToRelocate = candidate.WillingToRelocate,
-                    WillingToWorkRemote = candidate.WillingToWorkRemote
+                    WillingToRelocate = candidate.WillingToRelocate ?? false,
+                    WillingToWorkRemote = candidate.WillingToWorkRemote ?? false
                 };
             }
             catch (Exception ex)

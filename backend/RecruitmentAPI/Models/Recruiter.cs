@@ -1,6 +1,4 @@
-using RecruitmentAPI.Models;
-
-namespace Backend.RecruitmentAPI.Models
+namespace RecruitmentAPI.Models
 {
     public class Recruiter : User
     {

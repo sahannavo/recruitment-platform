@@ -10,6 +10,7 @@ namespace RecruitmentAPI.Repository.Interfaces
     public interface ICandidateRepository : IGenericRepository<Candidate>
     {
         Task<Candidate?> GetByUserIdAsync(int userId);
+        Task<Candidate?> GetByEmailAsync(string email);
         Task<IEnumerable<Candidate>> GetCandidatesBySkillAsync(string skill);
     }
 }

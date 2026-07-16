@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RecruitmentAPI.DTOs;
+using RecruitmentAPI.DTOs.Application;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
+using RecruitmentAPI.Services.AI;
 using RecruitmentAPI.Services.Interfaces;
 using RecruitmentAPI.Services.Notification;
 
@@ -68,13 +70,17 @@ public class ApplicationService : IApplicationService
                     AppliedAt = DateTime.UtcNow,
                     Notes = submitDto.Notes,
                     Source = submitDto.Source ?? "Direct",
-                    ExpectedSalary = submitDto.ExpectedSalary,
+                    ExpectedSalary = string.IsNullOrEmpty(submitDto.ExpectedSalary) ? null : decimal.Parse(submitDto.ExpectedSalary),
                     AvailableFrom = submitDto.AvailableFrom
                 };
 
-                // Calculate AI score
-                var aiScore = await _aiService.MatchCandidateToJobAsync(submitDto.CandidateId, submitDto.JobId);
-                application.AI_Score = aiScore.OverallScore;
+                // Calculate AI score - pass empty strings for skills/requirements as fallback
+                var aiScore = await _aiService.MatchCandidateToJobAsync(
+                    submitDto.CandidateId, 
+                    "",  // candidateSkillsText - placeholder
+                    submitDto.JobId, 
+                    ""); // jobRequirementsText - placeholder
+                application.AI_Score = aiScore.Score;
 
                 await _unitOfWork.Applications.AddAsync(application);
                 await _unitOfWork.SaveChangesAsync();
@@ -123,7 +129,7 @@ public class ApplicationService : IApplicationService
                     CandidateEmail = application.Candidate.Email,
                     Notes = application.Notes,
                     Source = application.Source,
-                    ExpectedSalary = application.ExpectedSalary,
+                    ExpectedSalary = application.ExpectedSalary?.ToString(),
                     AvailableFrom = application.AvailableFrom,
                     Success = true,
                     Message = "Application retrieved successfully"
@@ -597,8 +603,8 @@ public class ApplicationService : IApplicationService
                 var baseResponse = await GetByIdAsync(applicationId);
                 var application = await _unitOfWork.Applications.GetApplicationWithDetailsAsync(applicationId);
 
-                var interview = await _unitOfWork.Interviews.GetByApplicationIdAsync(applicationId);
-                var feedback = await _unitOfWork.Feedbacks.GetByApplicationIdAsync(applicationId);
+                var interviews = await _unitOfWork.Interviews.GetByApplicationIdAsync(applicationId);
+                var feedbacks = await _unitOfWork.Feedbacks.GetByApplicationIdAsync(applicationId);
 
                 return new ApplicationWithInterviewDto
                 {
@@ -617,26 +623,26 @@ public class ApplicationService : IApplicationService
                     Department = baseResponse.Department,
                     Location = baseResponse.Location,
 
-                    Interview = interview != null ? new InterviewDetailsDto
+                    Interview = interviews.FirstOrDefault() != null ? new InterviewDetailsDto
                     {
-                        InterviewId = interview.InterviewId,
-                        ScheduledAt = interview.ScheduledAt,
-                        Duration = interview.Duration,
-                        Type = interview.Type,
-                        Status = interview.Status.ToString(),
-                        MeetingLink = interview.MeetingLink
+                        InterviewId = interviews.FirstOrDefault()!.InterviewId,
+                        ScheduledAt = interviews.FirstOrDefault()!.ScheduledAt,
+                        Duration = interviews.FirstOrDefault()!.Duration,
+                        Type = interviews.FirstOrDefault()!.Type,
+                        Status = interviews.FirstOrDefault()!.Status.ToString(),
+                        MeetingLink = interviews.FirstOrDefault()!.MeetingLink
                     } : null,
 
-                    Feedback = feedback != null ? new FeedbackDetailsDto
+                    Feedback = feedbacks.FirstOrDefault() != null ? new FeedbackDetailsDto
                     {
-                        FeedbackId = feedback.FeedbackId,
-                        TechnicalScore = feedback.TechnicalScore,
-                        BehavioralScore = feedback.BehavioralScore,
-                        CommunicationScore = feedback.CommunicationScore,
-                        AverageScore = (feedback.TechnicalScore + feedback.BehavioralScore + feedback.CommunicationScore) / 3,
-                        Comments = feedback.Comments,
-                        Decision = feedback.Decision,
-                        CreatedAt = feedback.CreatedAt
+                        FeedbackId = feedbacks.FirstOrDefault()!.FeedbackId,
+                        TechnicalScore = (double)feedbacks.FirstOrDefault()!.TechnicalScore,
+                        BehavioralScore = (double)feedbacks.FirstOrDefault()!.BehavioralScore,
+                        CommunicationScore = (double)feedbacks.FirstOrDefault()!.CommunicationScore,
+                        AverageScore = (double)(feedbacks.FirstOrDefault()!.TechnicalScore + feedbacks.FirstOrDefault()!.BehavioralScore + feedbacks.FirstOrDefault()!.CommunicationScore) / 3,
+                        Comments = feedbacks.FirstOrDefault()!.Comments,
+                        Decision = feedbacks.FirstOrDefault()!.Decision,
+                        CreatedAt = feedbacks.FirstOrDefault()!.CreatedAt
                     } : null
                 };
             }
@@ -847,8 +853,8 @@ public class ApplicationService : IApplicationService
 
                 foreach (var application in applications)
                 {
-                    var aiScore = await _aiService.MatchCandidateToJobAsync(application.CandidateId, jobId);
-                    application.AI_Score = aiScore.OverallScore;
+                var aiScore = await _aiService.MatchCandidateToJobAsync(application.CandidateId, "", jobId, "");
+                    application.AI_Score = aiScore.Score;
                     application.UpdatedAt = DateTime.UtcNow;
                     count++;
                 }

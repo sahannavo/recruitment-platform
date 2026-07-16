@@ -3,8 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecruitmentAPI.Helpers;
 using RecruitmentAPI.Services.AI;
-using RecruitmentAPI.Services.Notification;
 using RecruitmentAPI.Services.Interfaces;
+using RecruitmentAPI.Services.Notification;
 
 namespace RecruitmentAPI.Extensions
 {

@@ -234,13 +234,13 @@ public class AnalyticsService : IAnalyticsService
             .GroupBy(r => r.Department)
             .Select(g =>
             {
-                var values = g.Select(r => r.Value).ToList();
+                var values = g.Select(r => (double)r.Value).ToList();
                 return new TimeToHireDto
                 {
                     Department  = g.Key,
-                    AverageDays = Math.Round(values.Average(), 2),
-                    MinDays     = values.Min(),
-                    MaxDays     = values.Max(),
+                    AverageDays = values.Average(),
+                    MinDays     = (decimal)values.Min(),
+                    MaxDays     = (decimal)values.Max(),
                     HireCount   = values.Count
                 };
             })
@@ -275,10 +275,10 @@ public class AnalyticsService : IAnalyticsService
             .GroupBy(r => r.Department)
             .Select(g =>
             {
-                var avgRate = Math.Round(g.Average(r => r.Value), 2);
+                var avgRate = Math.Round(g.Average(r => (double)r.Value), 2);
                 var total   = totalByDept.GetValueOrDefault(g.Key, 0);
                 var filled  = total > 0
-                    ? (int)Math.Round(total * avgRate / 100m)
+                    ? (int)Math.Round(total * (double)avgRate / 100.0)
                     : 0;
 
                 return new FillRateDto

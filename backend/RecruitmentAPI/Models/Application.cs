@@ -25,6 +25,12 @@ namespace RecruitmentAPI.Models
 
         public double? AI_Score { get; set; }
 
+        public decimal? ExpectedSalary { get; set; }
+
+        public DateTime? AvailableFrom { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+
         [MaxLength(500)]
         public string Notes { get; set; }
 

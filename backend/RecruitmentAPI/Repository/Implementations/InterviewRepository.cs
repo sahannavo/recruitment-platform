@@ -23,7 +23,7 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Candidate)
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
             .FirstOrDefaultAsync(i => i.InterviewId == interviewId);
     }
@@ -32,7 +32,7 @@ public class InterviewRepository : IInterviewRepository
     {
         return await _context.Interviews
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
             .Where(i => i.Application!.CandidateId == candidateId)
             .OrderByDescending(i => i.ScheduledAt)
@@ -45,9 +45,9 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Candidate)
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
-            .Where(i => i.Application!.JobPosting!.PostedBy == recruiterId)
+            .Where(i => i.Application!.Job!.PostedBy == recruiterId)
             .OrderByDescending(i => i.ScheduledAt)
             .ToListAsync();
     }
@@ -59,7 +59,7 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Candidate)
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
             .Where(i => i.Feedbacks.Any(f => f.ManagerId == managerId))
             .OrderByDescending(i => i.ScheduledAt)
@@ -72,7 +72,7 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Candidate)
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
             .Where(i => i.ScheduledAt >= startDate && i.ScheduledAt <= endDate)
             .OrderBy(i => i.ScheduledAt)
@@ -85,7 +85,7 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Candidate)
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
             .OrderByDescending(i => i.ScheduledAt)
             .ToListAsync();
@@ -124,9 +124,22 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Candidate)
             .Include(i => i.Application)
-                .ThenInclude(a => a!.JobPosting)
+                .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
             .Where(i => i.Status == status)
+            .OrderByDescending(i => i.ScheduledAt)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Interview>> GetByApplicationIdAsync(int applicationId)
+    {
+        return await _context.Interviews
+            .Include(i => i.Application)
+                .ThenInclude(a => a!.Candidate)
+            .Include(i => i.Application)
+                .ThenInclude(a => a!.Job)
+            .Include(i => i.Feedbacks)
+            .Where(i => i.ApplicationId == applicationId)
             .OrderByDescending(i => i.ScheduledAt)
             .ToListAsync();
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RecruitmentAPI.DTOs;
+using RecruitmentAPI.DTOs.Application;
 using RecruitmentAPI.Models;
 
 namespace RecruitmentAPI.Services.Interfaces
@@ -197,25 +198,12 @@ namespace RecruitmentAPI.Services.Interfaces
     public class JobWithStatsDto : JobResponseDto
     {
         public Dictionary<string, int> ApplicationStatusCounts { get; set; }
-        public List<ApplicationSummaryDto> RecentApplications { get; set; }
+        public List<JobApplicationSummaryDto> RecentApplications { get; set; }
         public double AverageAIScore { get; set; }
         public double TopAIScore { get; set; }
         public int TotalApplicants { get; set; }
         public int ShortlistedCount { get; set; }
         public int InterviewedCount { get; set; }
         public int HiredCount { get; set; }
-    }
-
-    /// <summary>
-    /// DTO for application summary
-    /// </summary>
-    public class ApplicationSummaryDto
-    {
-        public int ApplicationId { get; set; }
-        public string CandidateName { get; set; }
-        public string CandidateEmail { get; set; }
-        public string Status { get; set; }
-        public DateTime AppliedAt { get; set; }
-        public double? AI_Score { get; set; }
     }
 }

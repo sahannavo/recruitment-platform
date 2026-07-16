@@ -48,5 +48,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate) =>
         await _dbSet.AnyAsync(predicate);
+
+    public async Task<IEnumerable<T>> GetByCandidateAsync(int candidateId) =>
+        await _dbSet.Where(e => e.GetType().GetProperty("CandidateId") != null && 
+            (int)e.GetType().GetProperty("CandidateId")!.GetValue(e)! == candidateId).ToListAsync();
 }
 

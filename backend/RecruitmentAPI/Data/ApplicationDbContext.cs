@@ -26,6 +26,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Interview> Interviews => Set<Interview>();
     public DbSet<InterviewFeedback> InterviewFeedbacks => Set<InterviewFeedback>();
     public DbSet<Candidate> Candidates => Set<Candidate>();
+    public DbSet<HiringManager> HiringManagers => Set<HiringManager>();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Fluent API configuration

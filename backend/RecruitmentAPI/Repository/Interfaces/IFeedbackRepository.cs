@@ -51,4 +51,9 @@ public interface IFeedbackRepository
     /// Check if feedback exists for an interview by a specific manager
     /// </summary>
     Task<bool> ExistsByInterviewAndManagerAsync(int interviewId, int managerId);
+
+    /// <summary>
+    /// Get feedback by application ID
+    /// </summary>
+    Task<IEnumerable<InterviewFeedback>> GetByApplicationIdAsync(int applicationId);
 }

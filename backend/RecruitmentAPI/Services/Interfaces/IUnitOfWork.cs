@@ -10,10 +10,12 @@ namespace RecruitmentAPI.Repository.Interfaces;
 public interface IUnitOfWork : IDisposable
 {
     // Generic repositories
-    IGenericRepository<User> Users { get; }
+    IUserRepository Users { get; }
     IGenericRepository<Admin> Admins { get; }
     IGenericRepository<RecruitmentAnalytic> RecruitmentAnalytics { get; }
     IGenericRepository<Notification> Notifications { get; }
+    IGenericRepository<Recruiter> Recruiters { get; }
+    IGenericRepository<Document> Documents { get; }
 
     // Specialised repositories
     IAdminRepository AdminRepository { get; }

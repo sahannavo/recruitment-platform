@@ -71,6 +71,8 @@ namespace RecruitmentAPI.DTOs
         public string Notes { get; set; }
 
         public string RejectionReason { get; set; }
+
+        public int? ReviewedBy { get; set; }
     }
 
     /// <summary>

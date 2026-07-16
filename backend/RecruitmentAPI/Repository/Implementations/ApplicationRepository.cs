@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentAPI.Data;
+using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
 
@@ -278,9 +279,9 @@ namespace RecruitmentAPI.Repository.Implementations
             if (applications.Any(a => a.AI_Score.HasValue))
             {
                 var scores = applications.Where(a => a.AI_Score.HasValue).Select(a => a.AI_Score.Value);
-                stats.AverageAIScore = scores.Average();
-                stats.HighestAIScore = scores.Max();
-                stats.LowestAIScore = scores.Min();
+                stats.AverageAIScore = (decimal)scores.Average();
+                stats.HighestAIScore = (decimal)scores.Max();
+                stats.LowestAIScore = (decimal)scores.Min();
             }
 
             stats.ApplicationsByDepartment = applications

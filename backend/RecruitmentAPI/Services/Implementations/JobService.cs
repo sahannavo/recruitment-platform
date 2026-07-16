@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RecruitmentAPI.DTOs;
+using RecruitmentAPI.DTOs.Application;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
+using RecruitmentAPI.Services.AI;
 using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.Implementations
@@ -266,7 +268,7 @@ namespace RecruitmentAPI.Services.Implementations
                     job.ExpiryDate = jobUpdateDto.ExpiryDate;
 
                 if (jobUpdateDto.PositionsAvailable > 0)
-                    job.PositionsAvailable = jobUpdateDto.PositionsAvailable;
+                    job.PositionsAvailable = jobUpdateDto.PositionsAvailable.Value;
 
                 if (!string.IsNullOrEmpty(jobUpdateDto.ExperienceLevel))
                     job.ExperienceLevel = jobUpdateDto.ExperienceLevel;
@@ -848,7 +850,7 @@ namespace RecruitmentAPI.Services.Implementations
                 var recentApps = applicationsList
                     .OrderByDescending(a => a.AppliedAt)
                     .Take(5)
-                    .Select(a => new ApplicationSummaryDto
+                    .Select(a => new JobApplicationSummaryDto
                     {
                         ApplicationId = a.ApplicationId,
                         CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",

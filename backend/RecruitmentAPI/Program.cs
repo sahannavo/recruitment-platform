@@ -12,7 +12,7 @@ using RecruitmentAPI.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────-
 // MVC + API Explorer
 // ─────────────────────────────────────────────────────────────────────────────
 builder.Services.AddControllers();

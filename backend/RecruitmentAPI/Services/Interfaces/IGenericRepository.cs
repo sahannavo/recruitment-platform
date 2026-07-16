@@ -17,5 +17,8 @@ public interface IGenericRepository<T> where T : class
     void Remove(T entity);
     Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null);
     Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
+    
+    // Helper method to get entities by candidate ID (for Document entity)
+    Task<IEnumerable<T>> GetByCandidateAsync(int candidateId);
 }
 

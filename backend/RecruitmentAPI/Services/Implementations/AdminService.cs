@@ -5,6 +5,7 @@ using RecruitmentAPI.Exceptions;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Interfaces;
+using Notification = RecruitmentAPI.Models.Notification;
 
 namespace RecruitmentAPI.Services.Implementations;
 
@@ -360,7 +361,7 @@ public class AdminService : IAdminService
         await _unitOfWork.SaveChangesAsync();
 
         // Queue invite notification
-        var notification = new Notification
+        var notification = new Models.Notification
         {
             UserId  = user.UserId,
             Type    = "InviteEmail",
@@ -410,7 +411,7 @@ public class AdminService : IAdminService
         var user = await _unitOfWork.Users.GetByIdAsync(request.UserId)
             ?? throw new NotFoundException($"User with ID {request.UserId} was not found.");
 
-        var notification = new Notification
+        var notification = new Models.Notification
         {
             UserId         = request.UserId,
             Type           = request.Type,
