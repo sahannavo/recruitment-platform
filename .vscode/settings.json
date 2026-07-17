@@ -1,3 +1,4 @@
 {
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "csharp-dev-tools.build.configuration": "Debug"
 }
