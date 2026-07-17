@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
@@ -21,12 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Reference Kaveesha's Services/DTOs project -->
-    <ProjectReference Include="../RecruitmentAPI.Kaveesha.csproj" />
-    <!-- Once merged into the real solution, replace this with a reference to the
-         actual RecruitmentAPI Web project so ApiIntegrationTests can find `Program`,
-         and remove Contracts/TeamContracts.cs + the Compile Include below. -->
-    <Compile Include="../Contracts/TeamContracts.cs" />
+    <!-- Reference the actual RecruitmentAPI Web project -->
+    <ProjectReference Include="../RecruitmentAPI/RecruitmentAPI.csproj" />
+    <!-- Team contracts are now part of the main project -->
   </ItemGroup>
 
 </Project>

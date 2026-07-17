@@ -7,22 +7,14 @@ using Xunit;
 
 namespace RecruitmentAPI.Tests.Integration
 {
-    // NOTE: Requires a reference to the actual RecruitmentAPI Web project (Program.cs must be
-    // public/partial for WebApplicationFactory<Program> to work - add
-    // `public partial class Program { }` at the bottom of Program.cs if not already present).
-    // Point TFactory at the real API assembly once the Web project exists; this file assumes
-    // the class is named `Program` in the RecruitmentAPI namespace.
-    //
     // These tests hit an in-memory TestServer and exercise full request pipelines
-    // (routing -> middleware -> controller -> service -> repository -> InMemory/Test DB),
-    // so appsettings for the test environment should point at either a SQL Server LocalDB
-    // instance or be swapped for EF Core's InMemory provider via WebApplicationFactory
-    // .WithWebHostBuilder(builder => builder.ConfigureServices(...)).
-    public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    // (routing -> middleware -> controller -> service -> repository -> InMemory/Test DB).
+    // The CustomWebApplicationFactory configures the API to use EF Core's InMemory database.
+    public class ApiIntegrationTests : IClassFixture<CustomWebApplicationFactory>
     {
         private readonly HttpClient _client;
 
-        public ApiIntegrationTests(WebApplicationFactory<Program> factory)
+        public ApiIntegrationTests(CustomWebApplicationFactory factory)
         {
             _client = factory.CreateClient();
         }

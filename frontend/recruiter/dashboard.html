@@ -3,301 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recruiter Dashboard - NexusApp</title>
-    <!-- Google Fonts: Inter -->
+    <title>RecruitAI - Recruiter Dashboard</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <!-- Font Awesome (Free CDN) -->
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
+    <!-- Unified CSS -->
+    <link rel="stylesheet" href="../css/main.css" />
+
     <style>
-      /* --- CSS Variables --- */
-      :root {
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
-        --primary-light: #eef2ff;
-        --success: #10b981;
-        --success-light: #d1fae5;
-        --warning: #f59e0b;
-        --warning-light: #fef3c7;
-        --danger: #ef4444;
-        --danger-light: #fee2e2;
-        --info: #3b82f6;
-        --info-light: #dbeafe;
-        --background: #f9fafb;
-        --surface: #ffffff;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --border: #e5e7eb;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        --radius: 8px;
-        --radius-lg: 12px;
-      }
-
-      /* --- Base Styles --- */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--background);
-        color: var(--text-primary);
-        line-height: 1.5;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      a {
-        color: var(--primary);
-        text-decoration: none;
-        transition: color 0.2s ease;
-      }
-
-      /* --- Typography --- */
-      h1,
-      h2,
-      h3 {
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-      .text-secondary {
-        color: var(--text-secondary);
-      }
-      .font-medium {
-        font-weight: 500;
-      }
-      .text-sm {
-        font-size: 0.875rem;
-      }
-
-      /* --- Layout --- */
-      .container {
-        width: 100%;
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-      }
-
-      /* --- Header --- */
-      .header {
-        background-color: var(--surface);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-      }
-
-      .header .container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 64px;
-      }
-
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-      }
-
-      .desktop-nav {
-        display: flex;
-        gap: 1.5rem;
-      }
-
-      .desktop-nav a {
-        color: var(--text-secondary);
-        font-weight: 500;
-        padding: 0.5rem 0;
-        border-bottom: 2px solid transparent;
-      }
-
-      .desktop-nav a:hover,
-      .desktop-nav a.active {
-        color: var(--text-primary);
-        border-bottom-color: var(--primary);
-      }
-
-      .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-      }
-
-      .icon-btn {
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        font-size: 1.25rem;
-        cursor: pointer;
-        position: relative;
-      }
-
-      .icon-btn:hover {
-        color: var(--text-primary);
-      }
-
-      .notification-dot {
-        position: absolute;
-        top: -2px;
-        right: -2px;
-        width: 8px;
-        height: 8px;
-        background-color: var(--danger);
-        border-radius: 50%;
-      }
-
-      .avatar {
-        width: 36px;
-        height: 36px;
-        background-color: var(--primary-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--primary);
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .mobile-toggle {
-        display: none;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: var(--text-secondary);
-        cursor: pointer;
-      }
-
-      /* --- Dashboard Main Area --- */
-      .dashboard-main {
-        padding: 2rem 0;
-        flex: 1;
-      }
-
-      .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-      }
-
-      .page-title {
-        font-size: 1.5rem;
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border-radius: var(--radius);
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .btn-primary {
-        background-color: var(--primary);
-        color: #fff;
-      }
-
-      .btn-primary:hover {
-        background-color: var(--primary-hover);
-      }
-
-      /* --- KPI Grid --- */
+      /* Dashboard specific styles */
       .kpi-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        gap: 20px;
+        margin-bottom: 32px;
       }
 
       .kpi-card {
-        background-color: var(--surface);
-        padding: 1.5rem;
+        background: var(--surface);
         border-radius: var(--radius-lg);
+        padding: 24px;
         border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        flex-direction: column;
+        box-shadow: var(--shadow);
       }
 
       .kpi-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 12px;
         color: var(--text-secondary);
       }
 
       .kpi-icon {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         border-radius: var(--radius);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.25rem;
+        font-size: 20px;
       }
-
-      .icon-blue {
-        background: var(--info-light);
-        color: var(--info);
+      .kpi-icon.blue {
+        background: var(--primary-light);
+        color: var(--primary);
       }
-      .icon-green {
+      .kpi-icon.green {
         background: var(--success-light);
         color: var(--success);
       }
-      .icon-yellow {
-        background: var(--warning-light);
+      .kpi-icon.yellow {
+        background: #fef3c7;
         color: var(--warning);
       }
-      .icon-purple {
+      .kpi-icon.purple {
         background: #f3e8ff;
         color: #9333ea;
       }
 
       .kpi-value {
-        font-size: 2rem;
+        font-size: 28px;
         font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 0.25rem;
+        margin-bottom: 4px;
       }
 
       .kpi-trend {
-        font-size: 0.875rem;
+        font-size: 14px;
         display: flex;
         align-items: center;
-        gap: 0.25rem;
+        gap: 4px;
       }
-
       .trend-up {
         color: var(--success);
       }
@@ -305,49 +91,46 @@
         color: var(--danger);
       }
 
-      /* --- Dashboard Content Grid --- */
-      .dashboard-content {
+      .dashboard-grid {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        gap: 1.5rem;
+        gap: 24px;
       }
 
       .card {
-        background-color: var(--surface);
+        background: var(--surface);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
+        box-shadow: var(--shadow);
         overflow: hidden;
       }
 
       .card-header {
-        padding: 1.25rem 1.5rem;
+        padding: 20px 24px;
         border-bottom: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
-
-      .card-title {
-        font-size: 1.125rem;
+      .card-header h2 {
+        font-size: 18px;
+        font-weight: 700;
       }
 
-      /* --- Table Styles --- */
       .table-responsive {
         overflow-x: auto;
-        width: 100%;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        text-align: left;
       }
 
       th {
-        background-color: var(--background);
-        padding: 0.75rem 1.5rem;
-        font-size: 0.75rem;
+        text-align: left;
+        padding: 12px 24px;
+        background: var(--background);
+        font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: var(--text-secondary);
@@ -355,65 +138,58 @@
       }
 
       td {
-        padding: 1rem 1.5rem;
+        padding: 16px 24px;
         border-bottom: 1px solid var(--border);
-        font-size: 0.875rem;
-        white-space: nowrap;
+        font-size: 14px;
       }
 
       tbody tr {
-        transition: background-color 0.15s ease;
         cursor: pointer;
+        transition: background 0.15s ease;
       }
-
       tbody tr:hover {
-        background-color: var(--background);
+        background: var(--background);
       }
 
-      .candidate-info {
+      .candidate-cell {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 12px;
       }
 
       .candidate-avatar {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background-color: var(--border);
+        background: linear-gradient(135deg, var(--primary), #818cf8);
         background-size: cover;
         background-position: center;
       }
 
-      /* --- Status Badges --- */
       .badge {
         display: inline-flex;
-        align-items: center;
-        padding: 0.25rem 0.625rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 500;
+        padding: 4px 14px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
       }
-
-      /* These will be assigned dynamically via JS */
       .badge-review {
-        background-color: var(--warning-light);
-        color: #b45309;
+        background: #fef3c7;
+        color: #92400e;
       }
       .badge-interview {
-        background-color: var(--info-light);
-        color: #1d4ed8;
+        background: var(--primary-light);
+        color: var(--primary);
       }
       .badge-hired {
-        background-color: var(--success-light);
-        color: #047857;
+        background: var(--success-light);
+        color: #065f46;
       }
       .badge-rejected {
-        background-color: var(--danger-light);
-        color: #b91c1c;
+        background: #fee2e2;
+        color: #991b1b;
       }
 
-      /* --- Jobs List --- */
       .job-list {
         list-style: none;
         padding: 0;
@@ -421,436 +197,349 @@
       }
 
       .job-item {
-        padding: 1.25rem 1.5rem;
+        padding: 16px 24px;
         border-bottom: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        transition: background-color 0.15s;
+        align-items: center;
         cursor: pointer;
+        transition: background 0.15s ease;
       }
-
+      .job-item:hover {
+        background: var(--background);
+      }
       .job-item:last-child {
         border-bottom: none;
       }
 
-      .job-item:hover {
-        background-color: var(--background);
-      }
-
       .job-title {
         font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.25rem;
       }
-
       .job-meta {
-        font-size: 0.75rem;
+        font-size: 13px;
         color: var(--text-secondary);
+        margin-top: 4px;
         display: flex;
-        align-items: center;
-        gap: 0.75rem;
+        gap: 12px;
       }
-
-      .job-meta span {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
-
       .job-stats {
         text-align: right;
       }
-
       .job-count {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--primary);
-        font-size: 0.875rem;
+        font-size: 18px;
       }
-
       .job-count-label {
-        font-size: 0.7rem;
+        font-size: 12px;
         color: var(--text-secondary);
       }
 
-      /* Mobile Menu Container */
-      .mobile-nav-menu {
-        display: none;
-        flex-direction: column;
-        background: var(--surface);
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--border);
-        position: absolute;
-        top: 64px;
-        left: 0;
-        right: 0;
-        box-shadow: var(--shadow-md);
-      }
-      .mobile-nav-menu.active {
+      .page-header {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
       }
-      .mobile-nav-menu a {
-        padding: 0.75rem 0;
-        color: var(--text-secondary);
-        font-weight: 500;
-        border-bottom: 1px solid var(--border);
-      }
-      .mobile-nav-menu a:last-child {
-        border-bottom: none;
+      .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
       }
 
-      /* --- Responsive Breakpoints --- */
-
-      /* Tablet: 768px - 1024px */
       @media (max-width: 1024px) {
-        .dashboard-content {
-          grid-template-columns: 1fr; /* Stack table and jobs */
-        }
         .kpi-grid {
           grid-template-columns: repeat(2, 1fr);
+        }
+        .dashboard-grid {
+          grid-template-columns: 1fr;
         }
       }
 
-      /* Mobile: < 768px */
-      @media (max-width: 767px) {
-        .desktop-nav {
-          display: none;
-        }
-        .nav-actions {
-          display: none;
-        }
-        .mobile-toggle {
-          display: block;
-        }
-
+      @media (max-width: 768px) {
         .kpi-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1rem;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
         }
         .kpi-card {
-          padding: 1rem;
+          padding: 16px;
         }
         .kpi-value {
-          font-size: 1.5rem;
+          font-size: 22px;
         }
-        .kpi-icon {
-          width: 32px;
-          height: 32px;
-          font-size: 1rem;
-        }
-
-        .page-header {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 1rem;
-        }
-
-        .table-responsive {
-          /* Ensures horizontal scroll on small devices */
-          -webkit-overflow-scrolling: touch;
-        }
-
-        .job-item {
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-        .job-stats {
-          text-align: left;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-      }
-
-      /* Small Mobile: < 480px */
-      @media (max-width: 480px) {
-        .kpi-grid {
-          grid-template-columns: 1fr;
+        td,
+        th {
+          padding: 12px 16px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Header Navigation -->
-    <header class="header" role="banner">
-      <div class="container">
-        <div class="header-left">
-          <a href="dashboard.html" class="logo" aria-label="Recruiter Home">
-            <img
-              src="../assets/images/logo.png"
-              alt="Recruiter Logo"
-              style="height: 50px"
-              width="50"
-            />
-          </a>
-          <nav class="desktop-nav" role="navigation">
-            <a href="#" class="active">Dashboard</a>
-            <a href="#">Jobs</a>
-            <a href="#">Candidates</a>
-            <a href="#">Reports</a>
-          </nav>
-        </div>
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="dashboard.html" class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+          <span>RecruitAI</span>
+        </a>
 
-        <button
-          class="mobile-toggle"
-          id="mobileMenuBtn"
-          aria-label="Toggle navigation menu"
-          aria-expanded="false"
-        >
-          <i class="fa-solid fa-bars"></i>
-        </button>
+        <nav class="main-nav" aria-label="Primary navigation">
+          <a href="dashboard.html" class="nav-link active" data-page="dashboard"
+            >Dashboard</a
+          >
+          <a href="manage-jobs.html" class="nav-link" data-page="jobs">Jobs</a>
+          <a href="candidates.html" class="nav-link" data-page="candidates"
+            >Candidates</a
+          >
+          <a
+            href="schedule-interview.html"
+            class="nav-link"
+            data-page="interviews"
+            >Interviews</a
+          >
+        </nav>
 
-        <div class="nav-actions">
-          <button class="icon-btn" aria-label="Notifications">
-            <i class="fa-regular fa-bell"></i>
+        <div class="header-actions">
+          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
             <span class="notification-dot"></span>
           </button>
-          <div
-            class="avatar"
-            aria-label="User profile"
-            role="button"
-            tabindex="0"
-          >
-            JD
-          </div>
+          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+          </button>
         </div>
       </div>
 
-      <!-- Mobile Navigation Menu -->
-      <nav class="mobile-nav-menu" id="mobileNavMenu" role="navigation">
-        <a href="#" class="active">Dashboard</a>
-        <a href="#">Jobs</a>
-        <a href="#">Candidates</a>
-        <a href="#">Reports</a>
-        <a href="#">Notifications</a>
-        <a href="#">Profile Settings</a>
-      </nav>
+      <!-- Mobile Menu -->
+      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a
+          href="dashboard.html"
+          class="mobile-link active"
+          data-page="dashboard"
+          >Dashboard</a
+        >
+        <a href="manage-jobs.html" class="mobile-link" data-page="jobs">Jobs</a>
+        <a href="candidates.html" class="mobile-link" data-page="candidates"
+          >Candidates</a
+        >
+        <a
+          href="schedule-interview.html"
+          class="mobile-link"
+          data-page="interviews"
+          >Interviews</a
+        >
+        <a
+          href="../auth/login.html"
+          class="mobile-link"
+          style="color: var(--danger); border-bottom: none"
+          >Sign Out</a
+        >
+      </div>
     </header>
 
-    <!-- Main Dashboard Content -->
-    <main class="dashboard-main container" role="main">
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
       <div class="page-header">
-        <h1 class="page-title">Recruitment Overview</h1>
-        <button class="btn btn-primary" id="postJobBtn">
-          <i class="fa-solid fa-plus"></i> Post New Job
+        <div>
+          <h1>Recruitment Overview</h1>
+          <p style="color: var(--text-secondary)">
+            Track your hiring progress and manage candidates
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="postNewJob()">
+          <i class="fas fa-plus"></i> Post New Job
         </button>
       </div>
 
-      <!-- Top KPI Cards -->
+      <!-- KPI Cards -->
       <section class="kpi-grid" aria-label="Key Performance Indicators">
-        <!-- Card 1 -->
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="font-medium text-sm">Open Jobs</span>
-            <div class="kpi-icon icon-blue">
-              <i class="fa-solid fa-briefcase"></i>
-            </div>
+            <span class="font-medium">Open Jobs</span>
+            <div class="kpi-icon blue"><i class="fas fa-briefcase"></i></div>
           </div>
           <div class="kpi-value">12</div>
           <div class="kpi-trend trend-up">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <span>+2 this week</span>
+            <i class="fas fa-arrow-trend-up"></i> +2 this week
           </div>
         </div>
 
-        <!-- Card 2 -->
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="font-medium text-sm">Total Applicants</span>
-            <div class="kpi-icon icon-purple">
-              <i class="fa-solid fa-users"></i>
-            </div>
+            <span class="font-medium">Total Applicants</span>
+            <div class="kpi-icon purple"><i class="fas fa-users"></i></div>
           </div>
           <div class="kpi-value">248</div>
           <div class="kpi-trend trend-up">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <span>+18% vs last month</span>
+            <i class="fas fa-arrow-trend-up"></i> +18% vs last month
           </div>
         </div>
 
-        <!-- Card 3 -->
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="font-medium text-sm">Interviews Scheduled</span>
-            <div class="kpi-icon icon-yellow">
-              <i class="fa-regular fa-calendar-check"></i>
+            <span class="font-medium">Interviews Scheduled</span>
+            <div class="kpi-icon yellow">
+              <i class="fas fa-calendar-check"></i>
             </div>
           </div>
           <div class="kpi-value">34</div>
           <div class="kpi-trend trend-down">
-            <i class="fa-solid fa-arrow-trend-down"></i>
-            <span>-5% vs last month</span>
+            <i class="fas fa-arrow-trend-down"></i> -5% vs last month
           </div>
         </div>
 
-        <!-- Card 4 -->
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="font-medium text-sm">Hired Candidates</span>
-            <div class="kpi-icon icon-green">
-              <i class="fa-solid fa-user-check"></i>
-            </div>
+            <span class="font-medium">Hired Candidates</span>
+            <div class="kpi-icon green"><i class="fas fa-user-check"></i></div>
           </div>
           <div class="kpi-value">8</div>
           <div class="kpi-trend trend-up">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <span>+2 this month</span>
+            <i class="fas fa-arrow-trend-up"></i> +2 this month
           </div>
         </div>
       </section>
 
-      <!-- Bottom Grid: Table & Jobs List -->
-      <section class="dashboard-content">
-        <!-- Recent Applications Table -->
-        <div class="card applications-card">
+      <!-- Dashboard Grid -->
+      <section class="dashboard-grid">
+        <!-- Recent Applications -->
+        <div class="card">
           <div class="card-header">
-            <h2 class="card-title">Recent Applications</h2>
-            <a href="#" class="text-sm font-medium">View All</a>
+            <h2>Recent Applications</h2>
+            <a
+              href="candidates.html"
+              style="color: var(--primary); font-weight: 600; font-size: 14px"
+              >View All →</a
+            >
           </div>
           <div class="table-responsive">
-            <table id="applicationsTable" aria-label="Recent Applications">
+            <table>
               <thead>
                 <tr>
                   <th>Candidate</th>
-                  <th>Role Applied</th>
-                  <th>Date Applied</th>
+                  <th>Role</th>
+                  <th>Date</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                <tr data-id="CAN-001">
+                <tr onclick="viewCandidate('Sarah Jenkins')">
                   <td>
-                    <div class="candidate-info">
+                    <div class="candidate-cell">
                       <div
                         class="candidate-avatar"
                         style="
-                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4&quot;);
+                          background-image: url(&quot;https://i.pravatar.cc/80?img=32&quot;);
                         "
                       ></div>
                       <div>
-                        <div class="font-medium">Sarah Jenkins</div>
-                        <div class="text-sm text-secondary">
+                        <div style="font-weight: 600">Sarah Jenkins</div>
+                        <div
+                          style="font-size: 13px; color: var(--text-secondary)"
+                        >
                           sarah.j@example.com
                         </div>
                       </div>
                     </div>
                   </td>
                   <td>Senior Frontend Developer</td>
-                  <td class="text-secondary">Oct 24, 2023</td>
-                  <td>
-                    <span class="badge" data-status="Review">In Review</span>
-                  </td>
+                  <td style="color: var(--text-secondary)">Oct 24, 2023</td>
+                  <td><span class="badge badge-review">In Review</span></td>
                 </tr>
-                <tr data-id="CAN-002">
+                <tr onclick="viewCandidate('Marcus Rodriguez')">
                   <td>
-                    <div class="candidate-info">
+                    <div class="candidate-cell">
                       <div
                         class="candidate-avatar"
                         style="
-                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus&backgroundColor=c0aede&quot;);
+                          background-image: url(&quot;https://i.pravatar.cc/80?img=51&quot;);
                         "
                       ></div>
                       <div>
-                        <div class="font-medium">Marcus Rodriguez</div>
-                        <div class="text-sm text-secondary">
+                        <div style="font-weight: 600">Marcus Rodriguez</div>
+                        <div
+                          style="font-size: 13px; color: var(--text-secondary)"
+                        >
                           m.rodriguez@example.com
                         </div>
                       </div>
                     </div>
                   </td>
                   <td>Product Designer</td>
-                  <td class="text-secondary">Oct 23, 2023</td>
-                  <td>
-                    <span class="badge" data-status="Interview">Interview</span>
-                  </td>
+                  <td style="color: var(--text-secondary)">Oct 23, 2023</td>
+                  <td><span class="badge badge-interview">Interview</span></td>
                 </tr>
-                <tr data-id="CAN-003">
+                <tr onclick="viewCandidate('Emily Chen')">
                   <td>
-                    <div class="candidate-info">
+                    <div class="candidate-cell">
                       <div
                         class="candidate-avatar"
                         style="
-                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Emily&backgroundColor=ffd5dc&quot;);
+                          background-image: url(&quot;https://i.pravatar.cc/80?img=25&quot;);
                         "
                       ></div>
                       <div>
-                        <div class="font-medium">Emily Chen</div>
-                        <div class="text-sm text-secondary">
+                        <div style="font-weight: 600">Emily Chen</div>
+                        <div
+                          style="font-size: 13px; color: var(--text-secondary)"
+                        >
                           emily.chen@example.com
                         </div>
                       </div>
                     </div>
                   </td>
                   <td>Marketing Manager</td>
-                  <td class="text-secondary">Oct 21, 2023</td>
-                  <td><span class="badge" data-status="Hired">Hired</span></td>
+                  <td style="color: var(--text-secondary)">Oct 21, 2023</td>
+                  <td><span class="badge badge-hired">Hired</span></td>
                 </tr>
-                <tr data-id="CAN-004">
+                <tr onclick="viewCandidate('David Kim')">
                   <td>
-                    <div class="candidate-info">
+                    <div class="candidate-cell">
                       <div
                         class="candidate-avatar"
                         style="
-                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=ffdfbf&quot;);
+                          background-image: url(&quot;https://i.pravatar.cc/80?img=68&quot;);
                         "
                       ></div>
                       <div>
-                        <div class="font-medium">David Kim</div>
-                        <div class="text-sm text-secondary">
+                        <div style="font-weight: 600">David Kim</div>
+                        <div
+                          style="font-size: 13px; color: var(--text-secondary)"
+                        >
                           dkim88@example.com
                         </div>
                       </div>
                     </div>
                   </td>
                   <td>Backend Engineer</td>
-                  <td class="text-secondary">Oct 20, 2023</td>
-                  <td>
-                    <span class="badge" data-status="Rejected">Rejected</span>
-                  </td>
-                </tr>
-                <tr data-id="CAN-005">
-                  <td>
-                    <div class="candidate-info">
-                      <div
-                        class="candidate-avatar"
-                        style="
-                          background-image: url(&quot;https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica&backgroundColor=b6e3f4&quot;);
-                        "
-                      ></div>
-                      <div>
-                        <div class="font-medium">Jessica Taylor</div>
-                        <div class="text-sm text-secondary">
-                          jtaylor@example.com
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>UX Researcher</td>
-                  <td class="text-secondary">Oct 19, 2023</td>
-                  <td>
-                    <span class="badge" data-status="Review">In Review</span>
-                  </td>
+                  <td style="color: var(--text-secondary)">Oct 20, 2023</td>
+                  <td><span class="badge badge-rejected">Rejected</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Active Jobs List -->
-        <div class="card jobs-card">
+        <!-- Active Jobs -->
+        <div class="card">
           <div class="card-header">
-            <h2 class="card-title">Active Jobs</h2>
-            <a href="#" class="text-sm font-medium">Manage</a>
+            <h2>Active Jobs</h2>
+            <a
+              href="manage-jobs.html"
+              style="color: var(--primary); font-weight: 600; font-size: 14px"
+              >Manage →</a
+            >
           </div>
-          <ul class="job-list" id="activeJobsList">
-            <li class="job-item" tabindex="0">
+          <ul class="job-list">
+            <li class="job-item" onclick="viewJob('Senior Frontend Developer')">
               <div>
                 <div class="job-title">Senior Frontend Developer</div>
                 <div class="job-meta">
-                  <span><i class="fa-solid fa-location-dot"></i> Remote</span>
-                  <span
-                    ><i class="fa-regular fa-clock"></i> 14 days active</span
-                  >
+                  <span><i class="fas fa-location-dot"></i> Remote</span>
+                  <span><i class="fas fa-clock"></i> 14 days active</span>
                 </div>
               </div>
               <div class="job-stats">
@@ -858,14 +547,12 @@
                 <div class="job-count-label">Applicants</div>
               </div>
             </li>
-            <li class="job-item" tabindex="0">
+            <li class="job-item" onclick="viewJob('Product Designer')">
               <div>
                 <div class="job-title">Product Designer</div>
                 <div class="job-meta">
-                  <span
-                    ><i class="fa-solid fa-location-dot"></i> New York, NY</span
-                  >
-                  <span><i class="fa-regular fa-clock"></i> 5 days active</span>
+                  <span><i class="fas fa-location-dot"></i> New York, NY</span>
+                  <span><i class="fas fa-clock"></i> 5 days active</span>
                 </div>
               </div>
               <div class="job-stats">
@@ -873,16 +560,12 @@
                 <div class="job-count-label">Applicants</div>
               </div>
             </li>
-            <li class="job-item" tabindex="0">
+            <li class="job-item" onclick="viewJob('Marketing Manager')">
               <div>
                 <div class="job-title">Marketing Manager</div>
                 <div class="job-meta">
-                  <span
-                    ><i class="fa-solid fa-location-dot"></i> London, UK</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-clock"></i> 21 days active</span
-                  >
+                  <span><i class="fas fa-location-dot"></i> London, UK</span>
+                  <span><i class="fas fa-clock"></i> 21 days active</span>
                 </div>
               </div>
               <div class="job-stats">
@@ -890,12 +573,12 @@
                 <div class="job-count-label">Applicants</div>
               </div>
             </li>
-            <li class="job-item" tabindex="0">
+            <li class="job-item" onclick="viewJob('DevOps Engineer')">
               <div>
                 <div class="job-title">DevOps Engineer</div>
                 <div class="job-meta">
-                  <span><i class="fa-solid fa-location-dot"></i> Remote</span>
-                  <span><i class="fa-regular fa-clock"></i> 2 days active</span>
+                  <span><i class="fas fa-location-dot"></i> Remote</span>
+                  <span><i class="fas fa-clock"></i> 2 days active</span>
                 </div>
               </div>
               <div class="job-stats">
@@ -908,101 +591,84 @@
       </section>
     </main>
 
-    <!-- Interactive Logic (Vanilla JS) -->
+    <!-- ===== FOOTER ===== -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <img
+              src="../assets/images/logo.png"
+              alt="RecruitAI Logo"
+              style="height: 36px"
+            />
+            <span>RecruitAI</span>
+          </div>
+          <p>
+            AI-powered recruitment platform connecting top talent with great
+            companies.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h4>For Recruiters</h4>
+          <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="manage-jobs.html">Manage Jobs</a></li>
+            <li><a href="candidates.html">Candidates</a></li>
+            <li><a href="schedule-interview.html">Interviews</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+        <div class="footer-social">
+          <a href="#" aria-label="LinkedIn"
+            ><i class="fab fa-linkedin-in"></i
+          ></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <script src="../js/main.js"></script>
+
+    <!-- Page-specific JavaScript -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- 1. Mobile Menu Toggle Logic ---
-        const mobileBtn = document.getElementById("mobileMenuBtn");
-        const mobileNavMenu = document.getElementById("mobileNavMenu");
-        const menuIcon = mobileBtn.querySelector("i");
+      function postNewJob() {
+        window.location.href = "post-job.html";
+      }
 
-        mobileBtn.addEventListener("click", () => {
-          const isActive = mobileNavMenu.classList.toggle("active");
-          mobileBtn.setAttribute("aria-expanded", isActive);
+      function viewCandidate(name) {
+        alert(`👤 Viewing candidate: ${name}`);
+      }
 
-          if (isActive) {
-            menuIcon.classList.remove("fa-bars");
-            menuIcon.classList.add("fa-xmark");
-          } else {
-            menuIcon.classList.remove("fa-xmark");
-            menuIcon.classList.add("fa-bars");
-          }
-        });
-
-        // --- 2. Status Badge Color Coding (Dynamic CSS classes based on data attribute) ---
-        const badges = document.querySelectorAll(".badge");
-
-        badges.forEach((badge) => {
-          const status = badge.getAttribute("data-status");
-          // Remove existing status classes just in case
-          badge.className = "badge";
-
-          switch (status) {
-            case "Review":
-              badge.classList.add("badge-review");
-              break;
-            case "Interview":
-              badge.classList.add("badge-interview");
-              break;
-            case "Hired":
-              badge.classList.add("badge-hired");
-              break;
-            case "Rejected":
-              badge.classList.add("badge-rejected");
-              break;
-            default:
-              // Fallback generic style
-              badge.style.backgroundColor = "var(--border)";
-              badge.style.color = "var(--text-secondary)";
-          }
-        });
-
-        // --- 3. Click Handlers for Interactive Elements (Rows & Jobs) ---
-
-        // Table Rows
-        const tableRows = document.querySelectorAll(
-          "#applicationsTable tbody tr",
-        );
-        tableRows.forEach((row) => {
-          row.addEventListener("click", () => {
-            const candidateId = row.getAttribute("data-id");
-            const candidateName = row.querySelector(".font-medium").textContent;
-            console.log(
-              `Opening candidate profile: ${candidateName} (ID: ${candidateId})`,
-            );
-
-            // Visual feedback (optional ripple/flash could go here)
-            row.style.backgroundColor = "var(--primary-light)";
-            setTimeout(() => {
-              row.style.backgroundColor = "";
-            }, 200);
-          });
-        });
-
-        // Job List Items
-        const jobItems = document.querySelectorAll(".job-item");
-        jobItems.forEach((item) => {
-          // Handle Click
-          item.addEventListener("click", () => {
-            const jobTitle = item.querySelector(".job-title").textContent;
-            console.log(`Opening job details for: ${jobTitle}`);
-          });
-
-          // Handle Keyboard Accessibility (Enter key on focused list item)
-          item.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-              const jobTitle = item.querySelector(".job-title").textContent;
-              console.log(`(Keyboard) Opening job details for: ${jobTitle}`);
-            }
-          });
-        });
-
-        // --- 4. General Action Buttons ---
-        const postJobBtn = document.getElementById("postJobBtn");
-        postJobBtn.addEventListener("click", () => {
-          console.log('Action: Initiating "Post New Job" workflow...');
-        });
-      });
+      function viewJob(title) {
+        alert(`📋 Viewing job: ${title}`);
+      }
     </script>
   </body>
 </html>

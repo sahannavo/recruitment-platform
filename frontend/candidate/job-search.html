@@ -1,583 +1,523 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Jobs</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap");
-
-      :root {
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
-        --success: #10b981;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --background: #f9fafb;
-        --surface: #ffffff;
-        --border: #e5e7eb;
-        --shadow:
-          0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --radius: 12px;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Inter", system_ui, sans-serif;
-        background-color: var(--background);
-        color: var(--text-primary);
-        line-height: 1.5;
-      }
-
-      header {
-        background-color: white;
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-      }
-
-      .nav-container {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-      }
-
-      .top-nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 70px;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        font-weight: 700;
-        font-size: 1.5rem;
-        color: var(--primary);
-      }
-
-      .logo-dot {
-        color: #10b981;
-      }
-
-      .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-      }
-
-      .nav-links a {
-        text-decoration: none;
-        color: var(--text-secondary);
-        font-weight: 500;
-        transition: all 0.2s;
-        position: relative;
-      }
-
-      .nav-links a.active {
-        color: var(--text-primary);
-      }
-
-      .nav-links a.active::after {
-        content: "";
-        position: absolute;
-        bottom: -24px;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background-color: var(--primary);
-        border-radius: 3px;
-      }
-
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-      }
-
-      .icon-btn {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        color: var(--text-secondary);
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .icon-btn:hover {
-        background-color: #f3f4f6;
-        color: var(--text-primary);
-      }
-
-      .avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #4f46e5, #7c3aed);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-      }
-
-      .main-content {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 2rem 1.5rem;
-      }
-
-      .search-section {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 2rem;
-      }
-
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Job Search</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Unified CSS -->
+  <link rel="stylesheet" href="../css/main.css" />
+  
+  <style>
+    /* ========================================
+       JOB SEARCH SPECIFIC STYLES
+       ======================================== */
+    .search-section {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+    }
+    
+    .search-bar {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .search-input-wrapper {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-family: var(--font-family);
+      transition: all var(--transition);
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-select {
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-size: 14px;
+      font-family: var(--font-family);
+      color: var(--text-primary);
+      cursor: pointer;
+      min-width: 160px;
+      transition: all var(--transition);
+    }
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    .filter-select:hover {
+      border-color: var(--text-secondary);
+    }
+    
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .results-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .results-header h1 span {
+      color: var(--text-secondary);
+      font-weight: 400;
+      font-size: 16px;
+    }
+    .results-header .sort-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .job-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .job-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 20px;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .job-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-light);
+    }
+    
+    .company-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+    }
+    
+    .job-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .job-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .job-title:hover {
+      color: var(--primary);
+    }
+    .company-name {
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .match-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .match-high {
+      background: var(--success-light);
+      color: #065f46;
+    }
+    .match-medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .match-low {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 8px 0 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .job-meta i {
+      width: 16px;
+      margin-right: 4px;
+    }
+    .job-meta .salary {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .job-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+      align-items: center;
+    }
+    
+    .job-actions .btn {
+      padding: 8px 18px;
+      font-size: 13px;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+      display: none;
+    }
+    .empty-state i {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 16px;
+    }
+    .empty-state h3 {
+      font-size: 20px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .empty-state p {
+      color: var(--text-secondary);
+    }
+    
+    /* Loading State */
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    .loading-spinner .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
       .search-bar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
-
-      .search-input-wrapper {
-        flex: 1;
-        min-width: 280px;
-        position: relative;
-      }
-
-      .search-input {
-        width: 100%;
-        padding: 14px 20px 14px 52px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 1rem;
-        background-color: white;
-        transition: all 0.2s;
-      }
-
-      .search-input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-      }
-
-      .search-icon {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-secondary);
-      }
-
-      .filters {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .filter-select {
-        padding: 12px 16px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background-color: white;
-        font-size: 0.95rem;
-        min-width: 180px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .job-list {
-        display: flex;
         flex-direction: column;
-        gap: 1.25rem;
       }
-
+      .search-input-wrapper {
+        min-width: unset;
+      }
+      .filters {
+        flex-direction: column;
+      }
+      .filter-select {
+        width: 100%;
+        min-width: unset;
+      }
+      
       .job-card {
-        background-color: white;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 1.5rem;
-        display: flex;
-        gap: 1.25rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: var(--shadow);
+        flex-direction: column;
+        padding: 18px;
       }
-
-      .job-card:hover {
-        transform: translateY(-4px);
-        box-shadow:
-          0 20px 25px -5px rgb(0 0 0 / 0.1),
-          0 8px 10px -6px rgb(0 0 0 / 0.1);
-        border-color: #c7d2fe;
-      }
-
       .company-logo {
-        width: 56px;
-        height: 56px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 1.75rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
       }
-
-      .job-info {
-        flex: 1;
-        min-width: 0;
-      }
-
-      .job-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 0.5rem;
-      }
-
-      .job-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.25rem;
-      }
-
-      .company-name {
-        color: var(--text-secondary);
-        font-weight: 500;
-      }
-
-      .match-badge {
-        padding: 4px 12px;
-        border-radius: 9999px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .match-high {
-        background-color: #e0e7ff;
-        color: #4338ca;
-      }
-
-      .match-medium {
-        background-color: #dbeafe;
-        color: #1e40af;
-      }
-
-      .match-low {
-        background-color: #fef3c7;
-        color: #92400e;
-      }
-
-      .job-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        margin-bottom: 1.25rem;
-      }
-
-      .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .salary {
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-
       .job-actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-shrink: 0;
-        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
       }
-
-      .btn {
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
+      .job-actions .btn {
+        flex: 1;
         justify-content: center;
-        gap: 6px;
-        text-decoration: none;
-        border: none;
       }
-
-      .btn-outline {
-        border: 1px solid var(--border);
-        background: white;
-        color: var(--text-primary);
+      .job-header {
+        flex-direction: column;
+        align-items: flex-start;
       }
-
-      .btn-outline:hover {
-        background-color: #f8fafc;
+    }
+    
+    @media (max-width: 480px) {
+      .search-section {
+        padding: 20px;
       }
-
-      .btn-primary {
-        background-color: var(--primary);
-        color: white;
+      .results-header {
+        flex-direction: column;
+        align-items: flex-start;
       }
-
-      .btn-primary:hover {
-        background-color: var(--primary-hover);
+      .job-title {
+        font-size: 16px;
       }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- ============================================
+       HEADER (Unified)
+       ============================================ -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
+  
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="job-search.html" class="nav-link active" data-page="jobs">Jobs</a>
+        <a href="my-applications.html" class="nav-link" data-page="applications">Applications</a>
+        <a href="profile-management.html" class="nav-link" data-page="profile">Profile</a>
+      </nav>
+  
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="job-search.html" class="mobile-link active" data-page="jobs">Jobs</a>
+      <a href="my-applications.html" class="mobile-link" data-page="applications">Applications</a>
+      <a href="profile-management.html" class="mobile-link" data-page="profile">Profile</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none;">Sign Out</a>
+    </div>
+  </header>
 
-      .footer {
-        text-align: center;
-        padding: 2rem 1rem;
-        color: var(--text-secondary);
-        font-size: 0.85rem;
-        border-top: 1px solid var(--border);
-        margin-top: 4rem;
-      }
-
-      /* Mobile */
-      .hamburger {
-        display: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: var(--text-secondary);
-      }
-
-      @media (max-width: 768px) {
-        .nav-links {
-          position: fixed;
-          top: 70px;
-          left: 0;
-          right: 0;
-          background: white;
-          flex-direction: column;
-          padding: 1.5rem;
-          gap: 1.5rem;
-          box-shadow: var(--shadow);
-          transform: translateY(-150%);
-          opacity: 0;
-          transition: all 0.3s ease;
-          z-index: 100;
-        }
-
-        .nav-links.active {
-          transform: translateY(0);
-          opacity: 1;
-        }
-
-        .hamburger {
-          display: block;
-        }
-
-        .search-bar {
-          flex-direction: column;
-        }
-
-        .job-card {
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .job-actions {
-          justify-content: flex-start;
-        }
-      }
-
-      /* Loading state */
-      .loading {
-        display: none;
-        text-align: center;
-        padding: 3rem;
-      }
-
-      .spinner {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        border: 4px solid #e5e7eb;
-        border-top: 4px solid var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- HEADER -->
-    <header>
-      <div class="nav-container">
-        <div class="top-nav">
-          <!-- Logo -->
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="Recruiter Logo"
-              style="height: 50px"
-              width="50"
-            />
-          </div>
-
-          <!-- Desktop Nav -->
-          <nav class="nav-links" id="navLinks">
-            <a href="#" class="active">Jobs</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="#">Messages</a>
-            <a href="#">Talent</a>
-          </nav>
-
-          <!-- Right side -->
-          <div class="nav-right">
-            <div class="icon-btn" onclick="toggleNotifications()">
-              <i class="fa-solid fa-bell"></i>
-            </div>
-            <div class="icon-btn">
-              <i class="fa-solid fa-gear"></i>
-            </div>
-            <div class="avatar" onclick="showProfileMenu()">JD</div>
-            <!-- Hamburger -->
-            <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
-              <i class="fa-solid fa-bars"></i>
-            </div>
-          </div>
+  <!-- ============================================
+       MAIN CONTENT
+       ============================================ -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px;">
+    
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-bar">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search job titles, keywords, or companies..." 
+            onkeyup="filterJobs()"
+            aria-label="Search jobs"
+          />
+          <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-muted);">
+            <kbd style="background: var(--surface-alt); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 11px;">⌘K</kbd>
+          </span>
         </div>
-      </div>
-    </header>
-
-    <div class="main-content">
-      <!-- Search -->
-      <div class="search-section">
-        <div class="search-bar">
-          <div class="search-input-wrapper">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input
-              type="text"
-              id="searchInput"
-              class="search-input"
-              placeholder="Search job titles, keywords, or companies"
-              onkeyup="filterJobs()"
-            />
-          </div>
-
-          <div class="filters">
-            <select
-              class="filter-select"
-              id="locationFilter"
-              onchange="filterJobs()"
-            >
-              <option value="">🌍 All Locations</option>
-              <option value="San Francisco">San Francisco, CA</option>
-              <option value="Remote">Remote</option>
-              <option value="New York">New York, NY</option>
-            </select>
-
-            <select
-              class="filter-select"
-              id="categoryFilter"
-              onchange="filterJobs()"
-            >
-              <option value="">💼 All Categories</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Design">Design</option>
-              <option value="Data">Data Science</option>
-            </select>
-          </div>
+        <div class="filters">
+          <select class="filter-select" id="locationFilter" onchange="filterJobs()" aria-label="Filter by location">
+            <option value="">🌍 All Locations</option>
+            <option value="San Francisco">San Francisco, CA</option>
+            <option value="Remote">Remote</option>
+            <option value="New York">New York, NY</option>
+            <option value="Austin">Austin, TX</option>
+            <option value="Seattle">Seattle, WA</option>
+          </select>
+          <select class="filter-select" id="categoryFilter" onchange="filterJobs()" aria-label="Filter by category">
+            <option value="">💼 All Categories</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Design">Design</option>
+            <option value="Data">Data Science</option>
+            <option value="Product">Product</option>
+            <option value="Marketing">Marketing</option>
+          </select>
         </div>
-      </div>
-
-      <!-- Results header -->
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.5rem;
-        "
-      >
-        <h1 style="font-size: 1.75rem; font-weight: 600">
-          Recommended Jobs
-          <span
-            id="resultCount"
-            style="
-              color: var(--text-secondary);
-              font-size: 1rem;
-              font-weight: 400;
-            "
-            >(3)</span
-          >
-        </h1>
-        <div
-          style="
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          "
-        >
-          <i class="fa-solid fa-sliders"></i>
-          <span>Sort by: Relevance</span>
-        </div>
-      </div>
-
-      <!-- Job Listings -->
-      <div class="job-list" id="jobList">
-        <!-- Populated by JS -->
-      </div>
-
-      <!-- Empty state -->
-      <div
-        id="emptyState"
-        class="loading"
-        style="display: none; color: var(--text-secondary)"
-      >
-        <i
-          class="fa-solid fa-magnifying-glass"
-          style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3"
-        ></i>
-        <h3>No jobs found</h3>
-        <p>Try adjusting your search or filters</p>
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p>&copy; 2026 RecruitAI. All rights reserved.</p>
-    </footer>
+    <!-- Results Header -->
+    <div class="results-header">
+      <h1>
+        Recommended Jobs 
+        <span id="resultCount">(3)</span>
+      </h1>
+      <div class="sort-label">
+        <i class="fas fa-sliders-h"></i>
+        <span>Sort by: Relevance</span>
+      </div>
+    </div>
 
-    <script>
-      // Sample job data
+    <!-- Loading State -->
+    <div class="loading-spinner" id="loadingState">
+      <div class="spinner" aria-hidden="true"></div>
+      <p style="color: var(--text-secondary);">Loading jobs...</p>
+    </div>
+
+    <!-- Job List -->
+    <div class="job-list" id="jobList">
+      <!-- Jobs rendered by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+      <i class="fas fa-search"></i>
+      <h3>No jobs found</h3>
+      <p>Try adjusting your search or filters to find more opportunities.</p>
+      <button class="btn btn-primary" onclick="resetFilters()" style="margin-top: 16px;">
+        <i class="fas fa-undo"></i> Reset Filters
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ============================================
+       FOOTER (Unified)
+       ============================================ -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px;" />
+          <span>RecruitAI</span>
+        </div>
+        <p>AI-powered recruitment platform connecting top talent with great companies.</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>For Candidates</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="job-search.html">Browse Jobs</a></li>
+          <li><a href="my-applications.html">My Applications</a></li>
+          <li><a href="profile-management.html">Profile</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       UNIFIED JAVASCRIPT
+       ============================================ -->
+  <script src="../js/main.js"></script>
+  
+  <!-- ============================================
+       PAGE-SPECIFIC JAVASCRIPT
+       ============================================ -->
+  <script>
+    (function() {
+      'use strict';
+
+      // ============================================
+      // SAMPLE JOB DATA
+      // ============================================
       const jobs = [
         {
           id: 1,
@@ -590,6 +530,7 @@
           match: 96,
           logo: "🔷",
           category: "Engineering",
+          description: "Leading the development of next-gen enterprise solutions."
         },
         {
           id: 2,
@@ -602,6 +543,7 @@
           match: 88,
           logo: "🌌",
           category: "Data",
+          description: "Building cutting-edge AI models for healthcare applications."
         },
         {
           id: 3,
@@ -614,203 +556,283 @@
           match: 72,
           logo: "🟢",
           category: "Design",
+          description: "Designing beautiful, intuitive experiences for Fortune 500 clients."
         },
+        {
+          id: 4,
+          title: "DevOps Engineer",
+          company: "CloudSphere",
+          location: "Austin, TX",
+          type: "Hybrid",
+          posted: "3 days ago",
+          salary: "$130k - $170k",
+          match: 91,
+          logo: "☁️",
+          category: "Engineering",
+          description: "Managing cloud infrastructure and CI/CD pipelines."
+        },
+        {
+          id: 5,
+          title: "Data Analyst",
+          company: "Insight Analytics",
+          location: "Remote",
+          type: "",
+          posted: "1 day ago",
+          salary: "$90k - $120k",
+          match: 78,
+          logo: "📊",
+          category: "Data",
+          description: "Turning data into actionable business insights."
+        },
+        {
+          id: 6,
+          title: "Product Manager",
+          company: "Nexus Systems",
+          location: "San Francisco, CA",
+          type: "Hybrid",
+          posted: "4 days ago",
+          salary: "$135k - $165k",
+          match: 85,
+          logo: "📱",
+          category: "Product",
+          description: "Driving product strategy and roadmap for enterprise SaaS."
+        }
       ];
 
-      // Render jobs
+      // ============================================
+      // RENDER JOBS
+      // ============================================
       function renderJobs(filteredJobs) {
-        const container = document.getElementById("jobList");
-        container.innerHTML = "";
-
-        if (filteredJobs.length === 0) {
-          document.getElementById("emptyState").style.display = "block";
-          document.getElementById("resultCount").textContent = "(0)";
+        const container = document.getElementById('jobList');
+        const emptyState = document.getElementById('emptyState');
+        const resultCount = document.getElementById('resultCount');
+        const loadingState = document.getElementById('loadingState');
+        
+        // Hide loading
+        loadingState.style.display = 'none';
+        container.innerHTML = '';
+        
+        if (!filteredJobs || filteredJobs.length === 0) {
+          emptyState.style.display = 'block';
+          resultCount.textContent = '(0)';
           return;
         }
-
-        document.getElementById("emptyState").style.display = "none";
-        document.getElementById("resultCount").textContent =
-          `(${filteredJobs.length})`;
-
-        filteredJobs.forEach((job) => {
-          const matchClass =
-            job.match >= 90
-              ? "match-high"
-              : job.match >= 75
-                ? "match-medium"
-                : "match-low";
-
-          const cardHTML = `
-                    <div class="job-card" data-id="${job.id}">
-                        <div class="company-logo">${job.logo}</div>
-                        
-                        <div class="job-info">
-                            <div class="job-header">
-                                <div>
-                                    <div class="job-title">${job.title}</div>
-                                    <div class="company-name">${job.company}</div>
-                                </div>
-                                <div class="match-badge ${matchClass}">
-                                    <i class="fa-solid fa-star"></i>
-                                    ${job.match}% Match
-                                </div>
-                            </div>
-                            
-                            <div class="job-meta">
-                                <div class="meta-item">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                    ${job.location} ${job.type ? `(${job.type})` : ""}
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fa-solid fa-clock"></i>
-                                    Posted ${job.posted}
-                                </div>
-                                ${
-                                  job.salary
-                                    ? `
-                                <div class="meta-item salary">
-                                    <i class="fa-solid fa-dollar-sign"></i>
-                                    ${job.salary}
-                                </div>`
-                                    : ""
-                                }
-                            </div>
-                        </div>
-                        
-                        <div class="job-actions">
-                            <button onclick="viewDetails(${job.id}); event.stopImmediatePropagation()" 
-                                    class="btn btn-outline">View Details</button>
-                            ${
-                              job.match >= 85
-                                ? `
-                            <button onclick="quickApply(${job.id}); event.stopImmediatePropagation()" 
-                                    class="btn btn-primary">Quick Apply</button>`
-                                : `
-                            <button onclick="saveJob(${job.id}); event.stopImmediatePropagation()" 
-                                    class="btn btn-outline">
-                                <i class="fa-solid fa-bookmark"></i> Save
-                            </button>`
-                            }
-                        </div>
-                    </div>
-                `;
-          container.innerHTML += cardHTML;
-        });
-      }
-
-      // Filter jobs
-      function filterJobs() {
-        const searchTerm = document
-          .getElementById("searchInput")
-          .value.toLowerCase()
-          .trim();
-        const locationFilter = document.getElementById("locationFilter").value;
-        const categoryFilter = document.getElementById("categoryFilter").value;
-
-        let filtered = jobs;
-
-        if (searchTerm) {
-          filtered = filtered.filter(
-            (job) =>
-              job.title.toLowerCase().includes(searchTerm) ||
-              job.company.toLowerCase().includes(searchTerm),
-          );
-        }
-
-        if (locationFilter) {
-          filtered = filtered.filter((job) =>
-            job.location.includes(locationFilter),
-          );
-        }
-
-        if (categoryFilter) {
-          filtered = filtered.filter((job) => job.category === categoryFilter);
-        }
-
-        renderJobs(filtered);
-      }
-
-      // Interactions
-      function viewDetails(id) {
-        console.log(
-          `%cViewing details for job #${id}`,
-          "color: #4F46E5; font-weight: bold",
-        );
-        alert(
-          `Opening details for job ID: ${id}\n\n(This would open a modal or new page in a real app)`,
-        );
-      }
-
-      function quickApply(id) {
-        console.log(
-          `%cQuick applying to job #${id}`,
-          "color: #10B981; font-weight: bold",
-        );
-        const btns = document.querySelectorAll(".btn-primary");
-        btns.forEach((b) => {
-          if (b.textContent.includes("Quick Apply")) {
-            const originalText = b.textContent;
-            b.textContent = "✓ Applied!";
-            b.style.backgroundColor = "#10B981";
-            setTimeout(() => {
-              b.textContent = originalText;
-              b.style.backgroundColor = "";
-            }, 2500);
+        
+        emptyState.style.display = 'none';
+        resultCount.textContent = `(${filteredJobs.length})`;
+        
+        filteredJobs.forEach((job, index) => {
+          // Determine match class
+          let matchClass = 'match-low';
+          let matchIcon = 'fa-star';
+          if (job.match >= 90) {
+            matchClass = 'match-high';
+            matchIcon = 'fa-check-circle';
+          } else if (job.match >= 75) {
+            matchClass = 'match-medium';
+            matchIcon = 'fa-star';
           }
+          
+          const card = document.createElement('div');
+          card.className = 'job-card';
+          card.style.animationDelay = `${index * 50}ms`;
+          
+          card.innerHTML = `
+            <div class="company-logo">${job.logo}</div>
+            <div class="job-info">
+              <div class="job-header">
+                <div>
+                  <div class="job-title">${job.title}</div>
+                  <div class="company-name">${job.company}</div>
+                </div>
+                <span class="match-badge ${matchClass}">
+                  <i class="fas ${matchIcon}"></i> ${job.match}% Match
+                </span>
+              </div>
+              <div class="job-meta">
+                <span><i class="fas fa-location-dot"></i> ${job.location} ${job.type ? `(${job.type})` : ''}</span>
+                <span><i class="fas fa-clock"></i> Posted ${job.posted}</span>
+                ${job.salary ? `<span class="salary"><i class="fas fa-dollar-sign"></i> ${job.salary}</span>` : ''}
+              </div>
+            </div>
+            <div class="job-actions">
+              <button class="btn btn-secondary" onclick="viewDetails(${job.id})">
+                <i class="fas fa-eye"></i> Details
+              </button>
+              ${job.match >= 85 ? 
+                `<button class="btn btn-primary" onclick="quickApply(${job.id})">
+                  <i class="fas fa-paper-plane"></i> Apply
+                </button>` : 
+                `<button class="btn btn-secondary" onclick="saveJob(${job.id})">
+                  <i class="fas fa-bookmark"></i> Save
+                </button>`
+              }
+            </div>
+          `;
+          
+          container.appendChild(card);
         });
       }
 
-      function saveJob(id) {
-        console.log(`%cSaving job #${id}`, "color: #F59E0B; font-weight: bold");
-        alert("Job saved to your bookmarks!");
-      }
+      // ============================================
+      // FILTER JOBS
+      // ============================================
+      window.filterJobs = function() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const locationFilter = document.getElementById('locationFilter').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        
+        let filtered = jobs;
+        
+        // Search filter
+        if (searchTerm) {
+          filtered = filtered.filter(job => 
+            job.title.toLowerCase().includes(searchTerm) || 
+            job.company.toLowerCase().includes(searchTerm) ||
+            job.description.toLowerCase().includes(searchTerm)
+          );
+        }
+        
+        // Location filter
+        if (locationFilter) {
+          filtered = filtered.filter(job => 
+            job.location.includes(locationFilter)
+          );
+        }
+        
+        // Category filter
+        if (categoryFilter) {
+          filtered = filtered.filter(job => 
+            job.category === categoryFilter
+          );
+        }
+        
+        // Sort by match (highest first)
+        filtered.sort((a, b) => b.match - a.match);
+        
+        renderJobs(filtered);
+      };
 
-      function toggleMobileMenu() {
-        const nav = document.getElementById("navLinks");
-        nav.classList.toggle("active");
-      }
+      // ============================================
+      // RESET FILTERS
+      // ============================================
+      window.resetFilters = function() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('locationFilter').value = '';
+        document.getElementById('categoryFilter').value = '';
+        filterJobs();
+      };
 
-      function toggleNotifications() {
-        alert("🛎️ You have 3 new messages and 2 application updates!");
-      }
+      // ============================================
+      // VIEW DETAILS
+      // ============================================
+      window.viewDetails = function(id) {
+        const job = jobs.find(j => j.id === id);
+        if (!job) return;
+        
+        // In a real app, navigate to job-detail.html with the ID
+        // window.location.href = `job-detail.html?id=${id}`;
+        
+        alert(`📄 ${job.title}\n\n🏢 ${job.company}\n📍 ${job.location}\n💰 ${job.salary || 'Salary not specified'}\n\n📝 ${job.description}\n\n🎯 ${job.match}% Match\n\n(Would navigate to job details page in a real app)`);
+      };
 
-      function showProfileMenu() {
-        alert("👋 Welcome back, Jane Doe!\n\nProfile • Settings • Logout");
-      }
+      // ============================================
+      // QUICK APPLY
+      // ============================================
+      window.quickApply = function(id) {
+        const job = jobs.find(j => j.id === id);
+        if (!job) return;
+        
+        const btn = event && event.target ? event.target.closest('.btn') : null;
+        
+        if (btn) {
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+          btn.disabled = true;
+          
+          setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-check"></i> Applied!';
+            btn.style.background = 'var(--success)';
+            
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              btn.style.background = '';
+              btn.disabled = false;
+            }, 2000);
+          }, 1500);
+        }
+        
+        console.log(`✅ Quick applied to: ${job.title} at ${job.company}`);
+      };
 
-      // Keyboard support
-      document.addEventListener("keydown", function (e) {
-        if (
-          e.key === "/" &&
-          document.getElementById("searchInput") !== document.activeElement
-        ) {
+      // ============================================
+      // SAVE JOB
+      // ============================================
+      window.saveJob = function(id) {
+        const job = jobs.find(j => j.id === id);
+        if (!job) return;
+        
+        alert(`📌 "${job.title}" at ${job.company} saved to your bookmarks!`);
+        console.log(`💾 Job saved: ${job.title} at ${job.company}`);
+      };
+
+      // ============================================
+      // KEYBOARD SHORTCUTS
+      // ============================================
+      document.addEventListener('keydown', function(e) {
+        // Ctrl+K or Cmd+K for search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
           e.preventDefault();
-          document.getElementById("searchInput").focus();
+          const searchInput = document.getElementById('searchInput');
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+          }
+        }
+        
+        // Escape to clear search
+        if (e.key === 'Escape') {
+          const searchInput = document.getElementById('searchInput');
+          if (searchInput && document.activeElement === searchInput) {
+            searchInput.value = '';
+            filterJobs();
+            searchInput.blur();
+          }
         }
       });
 
-      // Initialize
-      function init() {
-        // Render all jobs initially
-        renderJobs(jobs);
-
-        // Close mobile menu when clicking outside
-        document.addEventListener("click", function (e) {
-          const nav = document.getElementById("navLinks");
-          const hamburger = document.getElementById("hamburger");
-          if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
-            nav.classList.remove("active");
-          }
+      // ============================================
+      // SMOOTH ANIMATION ON SCROLL
+      // ============================================
+      function animateCards() {
+        const cards = document.querySelectorAll('.job-card');
+        cards.forEach((card, index) => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          card.style.transition = 'all 0.4s ease';
+          
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, 100 + (index * 50));
         });
-
-        console.log(
-          "%c🚀 RecruitAI Job Board Ready!",
-          "color: #4F46E5; font-size: 1.1rem; font-weight: 600",
-        );
       }
 
-      // Auto start
-      window.onload = init;
-    </script>
-  </body>
+      // ============================================
+      // INIT
+      // ============================================
+      // Show loading state briefly
+      document.getElementById('loadingState').style.display = 'block';
+      
+      // Initial render with delay to show loading
+      setTimeout(() => {
+        renderJobs(jobs);
+        animateCards();
+      }, 500);
+
+      console.log('🔍 Job Search page initialized with', jobs.length, 'jobs');
+
+    })();
+  </script>
+</body>
 </html>

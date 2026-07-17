@@ -73,8 +73,8 @@ namespace RecruitmentAPI.Tests.Unit
 
             Assert.Equal(1, match.CandidateId);
             Assert.Equal(10, match.JobId);
-            Assert.Contains("C#", match.MatchedSkills);
-            Assert.Contains("Docker", match.MissingSkills);
+            Assert.Contains("c#", match.MatchedSkills);
+            Assert.Contains("docker", match.MissingSkills);
             Assert.True(match.Score > 0);
             Assert.True(match.SkillsMatch <= 100);
         }

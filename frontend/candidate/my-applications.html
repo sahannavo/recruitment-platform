@@ -1,712 +1,350 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Applications - RecruitAI</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --background: #f9fafb;
-        --surface: #ffffff;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --border: #e5e7eb;
-        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        --radius: 12px;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - My Applications</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  
+  <style>
+    .applications-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+    
+    th {
+      text-align: left;
+      padding: 16px 24px;
+      background: var(--surface-alt);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    
+    tr:hover {
+      background: var(--surface-alt);
+    }
+    
+    .job-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .location {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .location i {
+      width: 14px;
+    }
+    
+    .status {
+      padding: 4px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .status-submitted { background: var(--surface-alt); color: var(--text-secondary); }
+    .status-review { background: var(--primary-light); color: var(--primary); }
+    .status-interview { background: #fef3c7; color: #92400e; }
+    .status-offer { background: var(--success-light); color: #065f46; }
+    .status-rejected { background: #fee2e2; color: var(--danger); }
+    
+    .actions {
+      text-align: right;
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all var(--transition);
+    }
+    .action-btn:hover {
+      background: var(--surface-alt);
+      color: var(--primary);
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .page-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .page-btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+    
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    
+    @media (max-width: 768px) {
+      td, th {
+        padding: 12px 16px;
       }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      .page-header h1 {
+        font-size: 22px;
       }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
+  
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="job-search.html" class="nav-link" data-page="jobs">Jobs</a>
+        <a href="my-applications.html" class="nav-link active" data-page="applications">Applications</a>
+        <a href="profile-management.html" class="nav-link" data-page="profile">Profile</a>
+      </nav>
+  
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="job-search.html" class="mobile-link" data-page="jobs">Jobs</a>
+      <a href="my-applications.html" class="mobile-link active" data-page="applications">Applications</a>
+      <a href="profile-management.html" class="mobile-link" data-page="profile">Profile</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none;">Sign Out</a>
+    </div>
+  </header>
 
-      body {
-        font-family:
-          "Inter",
-          system-ui,
-          -apple-system,
-          sans-serif;
-        background-color: var(--background);
-        color: var(--text-primary);
-        line-height: 1.5;
-      }
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px;">
+    <div class="page-header">
+      <h1>My Applications</h1>
+      <p>Track the status of your recent job submissions.</p>
+    </div>
 
-      .nav {
-        background: white;
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-      }
-
-      .nav-container {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 72px;
-      }
-
-      .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 32px;
-      }
-
-      .logo {
-        font-size: 24px;
-        font-weight: 700;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 28px;
-        font-weight: 500;
-      }
-
-      .nav-links a {
-        text-decoration: none;
-        color: var(--text-secondary);
-        transition: all 0.2s;
-      }
-
-      .nav-links a.active {
-        color: var(--primary);
-        font-weight: 600;
-        position: relative;
-      }
-
-      .nav-links a.active:after {
-        content: "";
-        position: absolute;
-        bottom: -22px;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background: var(--primary);
-      }
-
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-
-      .icon-btn {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        color: var(--text-secondary);
-        cursor: pointer;
-        border-radius: 50%;
-        transition: all 0.2s;
-      }
-
-      .icon-btn:hover {
-        background: #f3f4f6;
-      }
-
-      .avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid white;
-        box-shadow: var(--shadow);
-      }
-
-      .hamburger {
-        display: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--text-primary);
-      }
-
-      .main-container {
-        max-width: 1280px;
-        margin: 40px auto;
-        padding: 0 24px;
-      }
-
-      .page-header {
-        margin-bottom: 32px;
-      }
-
-      .page-title {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 8px;
-      }
-
-      .page-subtitle {
-        color: var(--text-secondary);
-        font-size: 16px;
-      }
-
-      .applications-card {
-        background: white;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-
-      .table-container {
-        overflow-x: auto;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 900px;
-      }
-
-      th {
-        text-align: left;
-        padding: 20px 24px;
-        background: #f8fafc;
-        font-weight: 600;
-        color: var(--text-secondary);
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      td {
-        padding: 24px;
-        border-bottom: 1px solid var(--border);
-        vertical-align: top;
-      }
-
-      tr:hover {
-        background-color: #f8fafc;
-      }
-
-      .job-title {
-        font-weight: 600;
-        font-size: 16px;
-      }
-
-      .location {
-        font-size: 14px;
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        margin-top: 4px;
-      }
-
-      .status {
-        padding: 6px 16px;
-        border-radius: 9999px;
-        font-size: 13px;
-        font-weight: 600;
-        display: inline-block;
-        text-align: center;
-        white-space: nowrap;
-      }
-
-      .status-submitted {
-        background: #e5e7eb;
-        color: #4b5563;
-      }
-
-      .status-review {
-        background: #e0e7ff;
-        color: #4f46e5;
-      }
-
-      .status-interview {
-        background: #fef3c7;
-        color: #d97706;
-      }
-
-      .status-offer {
-        background: #d1fae5;
-        color: #10b981;
-      }
-
-      .status-rejected {
-        background: #fee2e2;
-        color: #ef4444;
-      }
-
-      .actions {
-        text-align: right;
-      }
-
-      .action-btn {
-        background: none;
-        border: none;
-        font-size: 20px;
-        color: var(--text-secondary);
-        cursor: pointer;
-        padding: 8px;
-        border-radius: 50%;
-        transition: all 0.2s;
-      }
-
-      .action-btn:hover {
-        background: #f3f4f6;
-        color: var(--primary);
-      }
-
-      .pagination {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 24px;
-        border-top: 1px solid var(--border);
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
-
-      .pagination-controls {
-        display: flex;
-        gap: 8px;
-      }
-
-      .page-btn {
-        width: 36px;
-        height: 36px;
-        border: 1px solid var(--border);
-        background: white;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .page-btn:hover {
-        background: #f8fafc;
-      }
-
-      .empty-state {
-        padding: 80px 40px;
-        text-align: center;
-        display: none;
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .nav-links {
-          display: none;
-        }
-
-        .hamburger {
-          display: block;
-        }
-
-        .main-container {
-          padding: 0 16px;
-          margin: 24px auto;
-        }
-
-        .page-title {
-          font-size: 24px;
-        }
-
-        table {
-          min-width: 600px;
-        }
-
-        th,
-        td {
-          padding: 16px 12px;
-        }
-      }
-
-      /* Mobile Menu */
-      .mobile-menu {
-        display: none;
-        position: fixed;
-        top: 72px;
-        left: 0;
-        right: 0;
-        background: white;
-        border-bottom: 1px solid var(--border);
-        padding: 20px;
-        box-shadow: var(--shadow);
-        z-index: 100;
-      }
-
-      .mobile-menu.active {
-        display: block;
-      }
-
-      .mobile-link {
-        padding: 16px 0;
-        display: block;
-        font-size: 18px;
-        color: var(--text-primary);
-        text-decoration: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .fade-in {
-        animation: fadeIn 0.5s ease forwards;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(15px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navigation -->
-    <nav class="nav">
-      <div class="nav-container">
-        <div class="nav-left">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="Recruiter Logo"
-              style="height: 50px"
-              width="50"
-            />
-          </div>
-
-          <div class="nav-links">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="job-search.html">Jobs</a>
-            <a href="my-applications.html" class="active">My Applications</a>
-            <a href="profile-management.html">Profile</a>
-          </div>
-        </div>
-
-        <div class="nav-right">
-          <div class="icon-btn" onclick="showSearch()">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-          <div class="icon-btn" onclick="showNotifications()">
-            <i class="fa-solid fa-bell"></i>
-          </div>
-          <div class="icon-btn">
-            <i class="fa-solid fa-gear"></i>
-          </div>
-          <div onclick="viewProfile()" style="cursor: pointer">
-            <img
-              src="https://picsum.photos/id/64/128/128"
-              alt="Alex Rivera"
-              class="avatar"
-            />
-          </div>
-          <div class="hamburger" onclick="toggleMobileMenu()">
-            <i class="fa-solid fa-bars"></i>
-          </div>
-        </div>
+    <div class="applications-card">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>JOB TITLE</th>
+              <th>COMPANY</th>
+              <th>APPLIED DATE</th>
+              <th>STATUS</th>
+              <th style="text-align: right;">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="job-title">Senior Frontend Engineer</div>
+                <div class="location"><i class="fas fa-location-dot"></i> San Francisco, CA</div>
+              </td>
+              <td><strong>TechCorp Solutions</strong></td>
+              <td>Oct 24, 2023</td>
+              <td><span class="status status-submitted">Submitted</span></td>
+              <td class="actions">
+                <button onclick="viewApplication(1)" class="action-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="job-title">Product Designer</div>
+                <div class="location"><i class="fas fa-location-dot"></i> Remote</div>
+              </td>
+              <td><strong>Innovate AI</strong></td>
+              <td>Oct 20, 2023</td>
+              <td><span class="status status-review">Under Review</span></td>
+              <td class="actions">
+                <button onclick="viewApplication(2)" class="action-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="job-title">Staff Data Scientist</div>
+                <div class="location"><i class="fas fa-location-dot"></i> New York, NY</div>
+              </td>
+              <td><strong>FinTech Dynamics</strong></td>
+              <td>Oct 15, 2023</td>
+              <td><span class="status status-interview">Interview</span></td>
+              <td class="actions">
+                <button onclick="viewApplication(3)" class="action-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="job-title">UX Researcher</div>
+                <div class="location"><i class="fas fa-location-dot"></i> Austin, TX</div>
+              </td>
+              <td><strong>Global Health Systems</strong></td>
+              <td>Sep 28, 2023</td>
+              <td><span class="status status-offer">Offer</span></td>
+              <td class="actions">
+                <button onclick="viewApplication(4)" class="action-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="job-title">Backend Developer</div>
+                <div class="location"><i class="fas fa-location-dot"></i> Seattle, WA</div>
+              </td>
+              <td><strong>CloudStream Networks</strong></td>
+              <td>Sep 10, 2023</td>
+              <td><span class="status status-rejected">Rejected</span></td>
+              <td class="actions">
+                <button onclick="viewApplication(5)" class="action-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <!-- Mobile Menu -->
-      <div id="mobile-menu" class="mobile-menu">
-        <a href="#" class="mobile-link">Dashboard</a>
-        <a href="#" class="mobile-link">Jobs</a>
-        <a href="#" class="mobile-link active">My Applications</a>
-        <a href="#" class="mobile-link">Profile</a>
-      </div>
-    </nav>
-
-    <div class="main-container">
-      <div class="page-header fade-in">
-        <h1 class="page-title">My Applications</h1>
-        <p class="page-subtitle">
-          Track the status of your recent job submissions.
-        </p>
-      </div>
-
-      <div class="applications-card fade-in">
-        <div class="table-container">
-          <table aria-label="Job Applications">
-            <thead>
-              <tr>
-                <th>JOB TITLE</th>
-                <th>COMPANY</th>
-                <th>APPLIED DATE</th>
-                <th>STATUS</th>
-                <th style="text-align: right">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Row 1 -->
-              <tr>
-                <td>
-                  <div class="job-title">Senior Frontend Engineer</div>
-                  <div class="location">
-                    <i class="fa-solid fa-location-dot"></i>
-                    San Francisco, CA
-                  </div>
-                </td>
-                <td><strong>TechCorp Solutions</strong></td>
-                <td>Oct 24, 2023</td>
-                <td>
-                  <span class="status status-submitted">Submitted</span>
-                </td>
-                <td class="actions">
-                  <button
-                    onclick="viewApplication(1)"
-                    class="action-btn"
-                    aria-label="View details"
-                  >
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                </td>
-              </tr>
-
-              <!-- Row 2 -->
-              <tr>
-                <td>
-                  <div class="job-title">Product Designer</div>
-                  <div class="location">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Remote
-                  </div>
-                </td>
-                <td><strong>Innovate AI</strong></td>
-                <td>Oct 20, 2023</td>
-                <td>
-                  <span class="status status-review">Under Review</span>
-                </td>
-                <td class="actions">
-                  <button
-                    onclick="viewApplication(2)"
-                    class="action-btn"
-                    aria-label="View details"
-                  >
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                </td>
-              </tr>
-
-              <!-- Row 3 -->
-              <tr>
-                <td>
-                  <div class="job-title">Staff Data Scientist</div>
-                  <div class="location">
-                    <i class="fa-solid fa-location-dot"></i>
-                    New York, NY
-                  </div>
-                </td>
-                <td><strong>FinTech Dynamics</strong></td>
-                <td>Oct 15, 2023</td>
-                <td>
-                  <span class="status status-interview">Interview</span>
-                </td>
-                <td class="actions">
-                  <button
-                    onclick="viewApplication(3)"
-                    class="action-btn"
-                    aria-label="View details"
-                  >
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                </td>
-              </tr>
-
-              <!-- Row 4 -->
-              <tr>
-                <td>
-                  <div class="job-title">UX Researcher</div>
-                  <div class="location">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Austin, TX
-                  </div>
-                </td>
-                <td><strong>Global Health Systems</strong></td>
-                <td>Sep 28, 2023</td>
-                <td>
-                  <span class="status status-offer">Offer</span>
-                </td>
-                <td class="actions">
-                  <button
-                    onclick="viewApplication(4)"
-                    class="action-btn"
-                    aria-label="View details"
-                  >
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                </td>
-              </tr>
-
-              <!-- Row 5 -->
-              <tr>
-                <td>
-                  <div class="job-title">Backend Developer</div>
-                  <div class="location">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Seattle, WA
-                  </div>
-                </td>
-                <td><strong>CloudStream Networks</strong></td>
-                <td>Sep 10, 2023</td>
-                <td>
-                  <span class="status status-rejected">Rejected</span>
-                </td>
-                <td class="actions">
-                  <button
-                    onclick="viewApplication(5)"
-                    class="action-btn"
-                    aria-label="View details"
-                  >
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pagination">
-          <div>Showing 1 to 5 of 12 entries</div>
-          <div class="pagination-controls">
-            <div
-              onclick="prevPage()"
-              class="page-btn"
-              aria-label="Previous page"
-            >
-              <i class="fa-solid fa-chevron-left"></i>
-            </div>
-            <div onclick="nextPage()" class="page-btn" aria-label="Next page">
-              <i class="fa-solid fa-chevron-right"></i>
-            </div>
-          </div>
+      <div class="pagination">
+        <div>Showing 1 to 5 of 12 entries</div>
+        <div class="pagination-controls" style="display: flex; gap: 8px;">
+          <button onclick="prevPage()" class="page-btn"><i class="fas fa-chevron-left"></i></button>
+          <button onclick="nextPage()" class="page-btn"><i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
     </div>
+  </main>
 
-    <!-- Footer -->
-    <footer
-      style="
-        background: white;
-        border-top: 1px solid var(--border);
-        padding: 40px 24px;
-        text-align: center;
-        color: var(--text-secondary);
-        font-size: 14px;
-        margin-top: 80px;
-      "
-    >
-      <p>&copy; 2026 RecruitAI. All rights reserved.</p>
-    </footer>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px;" />
+          <span>RecruitAI</span>
+        </div>
+        <p>AI-powered recruitment platform connecting top talent with great companies.</p>
+      </div>
 
-    <script>
-      // Mobile menu
-      function toggleMobileMenu() {
-        const menu = document.getElementById("mobile-menu");
-        menu.classList.toggle("active");
-      }
+      <div class="footer-links">
+        <h4>For Candidates</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="job-search.html">Browse Jobs</a></li>
+          <li><a href="my-applications.html">My Applications</a></li>
+          <li><a href="profile-management.html">Profile</a></li>
+        </ul>
+      </div>
 
-      // View application details
-      function viewApplication(id) {
-        const titles = [
-          "",
-          "Senior Frontend Engineer at TechCorp Solutions",
-          "Product Designer at Innovate AI",
-          "Staff Data Scientist at FinTech Dynamics",
-          "UX Researcher at Global Health Systems",
-          "Backend Developer at CloudStream Networks",
-        ];
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
 
-        alert(
-          `📄 Application Details #${id}\n\n${titles[id]}\n\nStatus: ${getStatusText(id)}\n\nClick "View in Job Board" to see full posting.`,
-        );
-      }
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
 
-      function getStatusText(id) {
-        if (id === 1) return "Submitted";
-        if (id === 2) return "Under Review";
-        if (id === 3) return "Interview Scheduled";
-        if (id === 4) return "Offer Received";
-        if (id === 5) return "Rejected";
-        return "Submitted";
-      }
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-      // Pagination placeholders
-      function prevPage() {
-        alert("← Previous page (Demo: Page 1 of 3)");
-      }
-
-      function nextPage() {
-        alert("→ Next page (Demo: Page 2 of 3)");
-      }
-
-      function showSearch() {
-        const query = prompt("🔍 Search your applications:", "");
-        if (query) {
-          alert(`Found 2 matches for "${query}"`);
-        }
-      }
-
-      function showNotifications() {
-        alert(
-          "🛎️ Notifications:\n\n• Interview scheduled with FinTech Dynamics\n• Offer from Global Health Systems",
-        );
-      }
-
-      function viewProfile() {
-        alert("👋 Alex Rivera\nProfile completion: 95%");
-      }
-
-      // Keyboard support
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          const menu = document.getElementById("mobile-menu");
-          if (menu.classList.contains("active")) {
-            menu.classList.remove("active");
-          }
-        }
-      });
-
-      // Close mobile menu when clicking outside
-      document.addEventListener("click", (e) => {
-        const menu = document.getElementById("mobile-menu");
-        const hamburger = document.querySelector(".hamburger");
-        if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
-          menu.classList.remove("active");
-        }
-      });
-
-      // Initialize
-      console.log(
-        "%c✅ My Applications page loaded successfully!",
-        "color: #4F46E5; font-weight: 600;",
-      );
-
-      // Demo: random row highlight
-      setTimeout(() => {
-        const rows = document.querySelectorAll("tbody tr");
-        if (rows.length > 2) {
-          rows[2].style.transition = "background 1s";
-        }
-      }, 1200);
-    </script>
-  </body>
+  <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/main.js"></script>
+  
+  <!-- Page-specific JavaScript -->
+  <script>
+    function viewApplication(id) {
+      const titles = ['', 'Senior Frontend Engineer at TechCorp Solutions', 'Product Designer at Innovate AI', 'Staff Data Scientist at FinTech Dynamics', 'UX Researcher at Global Health Systems', 'Backend Developer at CloudStream Networks'];
+      alert(`📄 Application Details #${id}\n\n${titles[id]}`);
+    }
+    
+    function prevPage() {
+      alert('← Previous page');
+    }
+    
+    function nextPage() {
+      alert('→ Next page');
+    }
+  </script>
+</body>
 </html>

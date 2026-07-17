@@ -1,0 +1,36 @@
+<header class="app-header" role="banner">
+  <div class="header-inner">
+    <a href="/candidate/dashboard.html" class="logo">
+      <img src="/assets/images/logo.png" alt="RecruitAI Logo" />
+      <span>RecruitAI</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="/candidate/dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+      <a href="/candidate/job-search.html" class="nav-link" data-page="jobs">Jobs</a>
+      <a href="/candidate/my-applications.html" class="nav-link" data-page="applications">Applications</a>
+      <a href="/candidate/profile-management.html" class="nav-link" data-page="profile">Profile</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notification-dot"></span>
+      </button>
+      <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/candidate/dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+    <a href="/candidate/job-search.html" class="mobile-link" data-page="jobs">Jobs</a>
+    <a href="/candidate/my-applications.html" class="mobile-link" data-page="applications">Applications</a>
+    <a href="/candidate/profile-management.html" class="mobile-link" data-page="profile">Profile</a>
+    <a href="/auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none;">Sign Out</a>
+  </div>
+</header>

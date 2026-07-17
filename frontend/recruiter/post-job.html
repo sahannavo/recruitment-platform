@@ -3,292 +3,139 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Post a New Job - NexusApp</title>
-    <!-- Google Fonts: Inter -->
+    <title>RecruitAI - Post New Job</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <!-- Font Awesome (Free CDN) -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link rel="stylesheet" href="../css/main.css" />
 
     <style>
-      /* --- CSS Variables --- */
-      :root {
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
-        --primary-light: #eef2ff;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --background: #f9fafb;
-        --surface: #ffffff;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --border: #e5e7eb;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        --radius: 8px;
-        --radius-lg: 12px;
-      }
-
-      /* --- Base Styles --- */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--background);
-        color: var(--text-primary);
-        line-height: 1.5;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      a {
-        color: var(--primary);
-        text-decoration: none;
-        transition: color 0.2s ease;
-      }
-
-      /* --- Layout --- */
-      .container {
-        width: 100%;
-        max-width: 1024px; /* Slightly narrower for forms */
-        margin: 0 auto;
-        padding: 0 1.5rem;
-      }
-
-      /* --- Header (Reused from Dashboard) --- */
-      .header {
-        background-color: var(--surface);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-      }
-
-      .header .container-fluid {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 64px;
-        padding: 0 1.5rem;
-        max-width: 1280px;
-        margin: 0 auto;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-      }
-
-      .desktop-nav {
-        display: flex;
-        gap: 1.5rem;
-      }
-      .desktop-nav a {
-        color: var(--text-secondary);
-        font-weight: 500;
-        padding: 0.5rem 0;
-        border-bottom: 2px solid transparent;
-      }
-      .desktop-nav a:hover,
-      .desktop-nav a.active {
-        color: var(--text-primary);
-        border-bottom-color: var(--primary);
-      }
-
-      .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-      }
-      .avatar {
-        width: 36px;
-        height: 36px;
-        background-color: var(--primary-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--primary);
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .mobile-toggle {
-        display: none;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: var(--text-secondary);
-        cursor: pointer;
-      }
-
-      /* --- Main Form Area --- */
-      .main-content {
-        padding: 2.5rem 0;
-        flex: 1;
-      }
-
-      .page-header {
-        margin-bottom: 2rem;
-      }
-
-      .page-title {
-        font-size: 1.875rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-      }
-
-      .page-description {
-        color: var(--text-secondary);
-      }
-
       .form-card {
-        background-color: var(--surface);
+        background: var(--surface);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
-        padding: 2rem;
+        padding: 32px;
+        box-shadow: var(--shadow);
+        max-width: 900px;
+        margin: 0 auto;
       }
 
-      /* --- Form Elements --- */
       .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .full-width {
-        grid-column: 1 / -1;
+        gap: 20px;
       }
 
       .form-group {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 6px;
+      }
+      .form-group.full-width {
+        grid-column: 1 / -1;
       }
 
-      .form-label {
-        font-size: 0.875rem;
+      .form-group label {
+        font-size: 14px;
         font-weight: 600;
-        color: var(--text-primary);
       }
-
-      .form-label .required {
+      .form-group label .required {
         color: var(--danger);
-        margin-left: 0.25rem;
       }
 
       .form-control,
       .form-select {
-        width: 100%;
-        padding: 0.625rem 1rem;
-        border: 1px solid var(--border);
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
         border-radius: var(--radius);
-        font-size: 1rem;
         font-family: inherit;
-        color: var(--text-primary);
-        background-color: var(--surface);
+        font-size: 14px;
         transition: all 0.2s ease;
+        background: var(--surface);
+        color: var(--text-primary);
       }
-
-      .form-control::placeholder {
-        color: #9ca3af;
-      }
-
       .form-control:focus,
-      .form-select:focus,
-      .tags-container.focused {
+      .form-select:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        box-shadow: 0 0 0 3px var(--primary-light);
       }
-
       .form-control.is-invalid {
         border-color: var(--danger);
       }
-
       .error-message {
         display: none;
         color: var(--danger);
-        font-size: 0.75rem;
+        font-size: 13px;
         font-weight: 500;
       }
+      .error-message.show {
+        display: block;
+      }
 
-      /* Textarea specific */
       textarea.form-control {
         resize: vertical;
         min-height: 120px;
       }
 
-      .textarea-footer {
-        display: flex;
-        justify-content: flex-end;
-        font-size: 0.75rem;
+      .char-counter {
+        text-align: right;
+        font-size: 12px;
         color: var(--text-secondary);
-        margin-top: 0.25rem;
+        margin-top: 4px;
       }
-
-      .textarea-footer.limit-reached {
+      .char-counter.limit {
         color: var(--danger);
       }
 
-      /* --- Tags Input Component --- */
       .tags-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
-        padding: 0.5rem;
-        border: 1px solid var(--border);
+        gap: 8px;
+        padding: 10px;
+        border: 1.5px solid var(--border);
         border-radius: var(--radius);
-        background-color: var(--surface);
-        transition: all 0.2s ease;
-        cursor: text;
         min-height: 42px;
+        cursor: text;
+        transition: all 0.2s ease;
+      }
+      .tags-container:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .tags-container.is-invalid {
+        border-color: var(--danger);
       }
 
       .tag-chip {
-        background-color: var(--primary-light);
-        color: var(--primary-hover);
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.875rem;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        font-size: 13px;
         font-weight: 500;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 6px;
       }
-
       .tag-chip button {
         background: none;
         border: none;
-        color: currentColor;
+        color: var(--primary);
         cursor: pointer;
         padding: 0;
         display: flex;
         align-items: center;
-        opacity: 0.7;
+        font-size: 14px;
+        opacity: 0.6;
       }
-
       .tag-chip button:hover {
         opacity: 1;
       }
@@ -299,71 +146,18 @@
         flex: 1;
         min-width: 120px;
         font-family: inherit;
-        font-size: 1rem;
+        font-size: 14px;
         background: transparent;
-        padding: 0.125rem 0;
+        padding: 4px 0;
       }
 
-      /* --- Buttons & Actions --- */
       .form-actions {
         display: flex;
         justify-content: flex-end;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding-top: 1.5rem;
+        gap: 12px;
+        padding-top: 20px;
         border-top: 1px solid var(--border);
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        font-size: 0.875rem;
-        font-weight: 600;
-        border-radius: var(--radius);
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-      }
-
-      .btn-primary {
-        background-color: var(--primary);
-        color: #fff;
-      }
-
-      .btn-primary:hover {
-        background-color: var(--primary-hover);
-      }
-
-      .btn-secondary {
-        background-color: var(--surface);
-        border-color: var(--border);
-        color: var(--text-primary);
-      }
-
-      .btn-secondary:hover {
-        background-color: var(--background);
-      }
-
-      .btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-
-      /* Loading Spinner */
-      .spinner {
-        display: none;
-        width: 1rem;
-        height: 1rem;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        position: absolute;
+        margin-top: 8px;
       }
 
       .btn.is-loading {
@@ -372,138 +166,123 @@
       .btn.is-loading .spinner {
         display: block;
       }
-      .btn-secondary.is-loading .spinner {
-        border-top-color: var(--primary);
-        border-color: rgba(0, 0, 0, 0.1);
+      .spinner {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        position: absolute;
       }
-
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
 
-      /* Mobile Menu Container */
-      .mobile-nav-menu {
-        display: none;
-        flex-direction: column;
-        background: var(--surface);
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--border);
-        position: absolute;
-        top: 64px;
-        left: 0;
-        right: 0;
-        box-shadow: var(--shadow-lg);
-      }
-      .mobile-nav-menu.active {
-        display: flex;
-      }
-      .mobile-nav-menu a {
-        padding: 0.75rem 0;
-        color: var(--text-secondary);
-        font-weight: 500;
-        border-bottom: 1px solid var(--border);
-      }
-      .mobile-nav-menu a:last-child {
-        border-bottom: none;
-      }
-
-      /* --- Responsive Breakpoints --- */
       @media (max-width: 768px) {
-        .desktop-nav,
-        .nav-actions {
-          display: none;
-        }
-        .mobile-toggle {
-          display: block;
-        }
-
         .form-grid {
-          grid-template-columns: 1fr; /* Stack all fields vertically */
-          gap: 1rem;
+          grid-template-columns: 1fr;
         }
-
         .form-card {
-          padding: 1.5rem;
+          padding: 20px;
         }
-
         .form-actions {
-          flex-direction: column-reverse; /* Secondary below Primary */
-          gap: 1rem;
+          flex-direction: column-reverse;
         }
-
-        .btn {
+        .form-actions .btn {
           width: 100%;
+          justify-content: center;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Header Navigation -->
-    <header class="header" role="banner">
-      <div class="container-fluid">
-        <a href="dashboard.html" class="logo" aria-label="Recruiter Home">
-          <img
-            src="../assets/images/logo.png"
-            alt="Recruiter Logo"
-            style="height: 50px"
-            width="50"
-          />
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="dashboard.html" class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+          <span>RecruitAI</span>
         </a>
-        <nav class="desktop-nav" role="navigation">
-          <a href="#">Dashboard</a>
-          <a href="#" class="active">Jobs</a>
-          <a href="#">Candidates</a>
-          <a href="#">Reports</a>
-        </nav>
-        <button
-          class="mobile-toggle"
-          id="mobileMenuBtn"
-          aria-label="Toggle navigation menu"
-          aria-expanded="false"
-        >
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <div class="nav-actions">
-          <div
-            class="avatar"
-            aria-label="User profile"
-            role="button"
-            tabindex="0"
+
+        <nav class="main-nav" aria-label="Primary navigation">
+          <a href="dashboard.html" class="nav-link" data-page="dashboard"
+            >Dashboard</a
           >
-            JD
-          </div>
+          <a href="manage-jobs.html" class="nav-link active" data-page="jobs"
+            >Jobs</a
+          >
+          <a href="candidates.html" class="nav-link" data-page="candidates"
+            >Candidates</a
+          >
+          <a
+            href="schedule-interview.html"
+            class="nav-link"
+            data-page="interviews"
+            >Interviews</a
+          >
+        </nav>
+
+        <div class="header-actions">
+          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-dot"></span>
+          </button>
+          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+          </button>
         </div>
       </div>
-      <!-- Mobile Navigation Menu -->
-      <nav class="mobile-nav-menu" id="mobileNavMenu" role="navigation">
-        <a href="#">Dashboard</a>
-        <a href="#" class="active">Jobs</a>
-        <a href="#">Candidates</a>
-        <a href="#">Reports</a>
-        <a href="#">Profile Settings</a>
-      </nav>
+
+      <!-- Mobile Menu -->
+      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
+          >Dashboard</a
+        >
+        <a href="manage-jobs.html" class="mobile-link active" data-page="jobs"
+          >Jobs</a
+        >
+        <a href="candidates.html" class="mobile-link" data-page="candidates"
+          >Candidates</a
+        >
+        <a
+          href="schedule-interview.html"
+          class="mobile-link"
+          data-page="interviews"
+          >Interviews</a
+        >
+        <a
+          href="../auth/login.html"
+          class="mobile-link"
+          style="color: var(--danger); border-bottom: none"
+          >Sign Out</a
+        >
+      </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content container" role="main">
-      <div class="page-header">
-        <h1 class="page-title">Post a New Job</h1>
-        <p class="page-description">
-          Fill out the details below to publish a new job opening to your career
-          page.
-        </p>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+      <div class="page-header" style="max-width: 900px; margin: 0 auto 24px">
+        <div>
+          <h1 style="font-size: 28px; font-weight: 700">Post a New Job</h1>
+          <p style="color: var(--text-secondary)">
+            Fill out the details below to publish a new job opening.
+          </p>
+        </div>
       </div>
 
-      <section class="form-card">
+      <div class="form-card">
         <form id="postJobForm" novalidate>
           <div class="form-grid">
             <!-- Job Title -->
             <div class="form-group full-width">
-              <label for="jobTitle" class="form-label"
-                >Job Title
-                <span class="required" aria-hidden="true">*</span></label
+              <label for="jobTitle"
+                >Job Title <span class="required">*</span></label
               >
               <input
                 type="text"
@@ -511,59 +290,45 @@
                 class="form-control"
                 placeholder="e.g. Senior Product Designer"
                 required
-                aria-required="true"
               />
               <div class="error-message">Please provide a job title.</div>
             </div>
 
             <!-- Department -->
             <div class="form-group">
-              <label for="department" class="form-label"
-                >Department
-                <span class="required" aria-hidden="true">*</span></label
+              <label for="department"
+                >Department <span class="required">*</span></label
               >
-              <select
-                id="department"
-                class="form-select"
-                required
-                aria-required="true"
-              >
-                <option value="" disabled selected>Select a department</option>
-                <option value="engineering">Engineering</option>
-                <option value="design">Design</option>
-                <option value="marketing">Marketing</option>
-                <option value="sales">Sales</option>
-                <option value="hr">Human Resources</option>
+              <select id="department" class="form-select" required>
+                <option value="">Select a department</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Design">Design</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Sales">Sales</option>
+                <option value="HR">Human Resources</option>
               </select>
               <div class="error-message">Please select a department.</div>
             </div>
 
             <!-- Employment Type -->
             <div class="form-group">
-              <label for="employmentType" class="form-label"
-                >Employment Type
-                <span class="required" aria-hidden="true">*</span></label
+              <label for="employmentType"
+                >Employment Type <span class="required">*</span></label
               >
-              <select
-                id="employmentType"
-                class="form-select"
-                required
-                aria-required="true"
-              >
-                <option value="" disabled selected>Select type</option>
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="contract">Contract</option>
-                <option value="internship">Internship</option>
+              <select id="employmentType" class="form-select" required>
+                <option value="">Select type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+                <option value="Internship">Internship</option>
               </select>
               <div class="error-message">Please select an employment type.</div>
             </div>
 
             <!-- Location -->
             <div class="form-group full-width">
-              <label for="location" class="form-label"
-                >Location
-                <span class="required" aria-hidden="true">*</span></label
+              <label for="location"
+                >Location <span class="required">*</span></label
               >
               <input
                 type="text"
@@ -571,38 +336,44 @@
                 class="form-control"
                 placeholder="e.g. New York, NY or Remote"
                 required
-                aria-required="true"
               />
               <div class="error-message">Please specify a location.</div>
             </div>
 
-            <!-- Rich Description (Textarea) -->
+            <!-- Description -->
             <div class="form-group full-width">
-              <label for="description" class="form-label"
-                >Job Description
-                <span class="required" aria-hidden="true">*</span></label
+              <label for="description"
+                >Job Description <span class="required">*</span></label
               >
               <textarea
                 id="description"
                 class="form-control"
                 placeholder="Describe the role, responsibilities, and requirements..."
                 required
-                aria-required="true"
                 maxlength="2000"
               ></textarea>
-              <div class="error-message">Please provide a job description.</div>
-              <div class="textarea-footer">
-                <span id="charCount">0</span> / 2000 characters
+              <div class="char-counter" id="charCounter">
+                0 / 2000 characters
               </div>
+              <div class="error-message">Please provide a job description.</div>
             </div>
 
-            <!-- Skills / Tags Input -->
+            <!-- Skills -->
             <div class="form-group full-width">
-              <label for="skillsInput" class="form-label"
-                >Required Skills</label
-              >
+              <label for="skillsInput">Required Skills</label>
               <div class="tags-container" id="tagsContainer">
-                <!-- Tags will be dynamically inserted here -->
+                <div class="tag-chip">
+                  React
+                  <button type="button" onclick="removeTag(this)">
+                    <i class="fas fa-xmark"></i>
+                  </button>
+                </div>
+                <div class="tag-chip">
+                  TypeScript
+                  <button type="button" onclick="removeTag(this)">
+                    <i class="fas fa-xmark"></i>
+                  </button>
+                </div>
                 <input
                   type="text"
                   id="skillsInput"
@@ -614,229 +385,221 @@
             </div>
           </div>
 
-          <!-- Form Actions -->
           <div class="form-actions">
-            <button type="button" class="btn btn-secondary" id="saveDraftBtn">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="saveDraft()"
+            >
               <span class="btn-text">Save Draft</span>
-              <div class="spinner" aria-hidden="true"></div>
+              <div class="spinner"></div>
             </button>
             <button type="submit" class="btn btn-primary" id="publishBtn">
-              <span class="btn-text">Publish Job</span>
-              <div class="spinner" aria-hidden="true"></div>
+              <span class="btn-text"
+                ><i class="fas fa-paper-plane"></i> Publish Job</span
+              >
+              <div class="spinner"></div>
             </button>
           </div>
         </form>
-      </section>
+      </div>
     </main>
 
-    <!-- Interactive Logic (Vanilla JS) -->
+    <!-- ===== FOOTER ===== -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <img
+              src="../assets/images/logo.png"
+              alt="RecruitAI Logo"
+              style="height: 36px"
+            />
+            <span>RecruitAI</span>
+          </div>
+          <p>
+            AI-powered recruitment platform connecting top talent with great
+            companies.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h4>For Recruiters</h4>
+          <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="manage-jobs.html">Manage Jobs</a></li>
+            <li><a href="candidates.html">Candidates</a></li>
+            <li><a href="schedule-interview.html">Interviews</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+        <div class="footer-social">
+          <a href="#" aria-label="LinkedIn"
+            ><i class="fab fa-linkedin-in"></i
+          ></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <script src="../js/main.js"></script>
+
+    <!-- Page-specific JavaScript -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- Mobile Menu Toggle ---
-        const mobileBtn = document.getElementById("mobileMenuBtn");
-        const mobileNavMenu = document.getElementById("mobileNavMenu");
-        const menuIcon = mobileBtn.querySelector("i");
+      // Character counter
+      const description = document.getElementById("description");
+      const charCounter = document.getElementById("charCounter");
 
-        mobileBtn.addEventListener("click", () => {
-          const isActive = mobileNavMenu.classList.toggle("active");
-          mobileBtn.setAttribute("aria-expanded", isActive);
-          menuIcon.className = isActive
-            ? "fa-solid fa-xmark"
-            : "fa-solid fa-bars";
+      description.addEventListener("input", function () {
+        const count = this.value.length;
+        charCounter.textContent = `${count} / 2000 characters`;
+        charCounter.classList.toggle("limit", count >= 2000);
+      });
+
+      // Tags input
+      const skillsInput = document.getElementById("skillsInput");
+      const tagsContainer = document.getElementById("tagsContainer");
+      let tags = ["React", "TypeScript"];
+
+      function renderTags() {
+        // Remove existing tag chips (keep input)
+        const chips = tagsContainer.querySelectorAll(".tag-chip");
+        chips.forEach((chip) => chip.remove());
+
+        tags.forEach((tag) => {
+          const chip = document.createElement("div");
+          chip.className = "tag-chip";
+          chip.innerHTML = `
+          ${tag}
+          <button type="button" onclick="removeTag(this)"><i class="fas fa-xmark"></i></button>
+        `;
+          tagsContainer.insertBefore(chip, skillsInput);
         });
+      }
 
-        // --- Character Counter for Textarea ---
-        const description = document.getElementById("description");
-        const charCount = document.getElementById("charCount");
-        const textareaFooter = document.querySelector(".textarea-footer");
-        const MAX_CHARS = 2000;
+      function removeTag(btn) {
+        const chip = btn.closest(".tag-chip");
+        const tagText = chip.textContent.trim();
+        tags = tags.filter((t) => t !== tagText);
+        chip.remove();
+        validateTags();
+      }
 
-        description.addEventListener("input", () => {
-          const currentLength = description.value.length;
-          charCount.textContent = currentLength;
-
-          if (currentLength >= MAX_CHARS) {
-            textareaFooter.classList.add("limit-reached");
-          } else {
-            textareaFooter.classList.remove("limit-reached");
-          }
-
-          // Clear validation error on input
-          if (currentLength > 0) {
-            description.classList.remove("is-invalid");
-            description.nextElementSibling.style.display = "none";
-          }
-        });
-
-        // --- Skills Tag Input System ---
-        const tagsContainer = document.getElementById("tagsContainer");
-        const skillsInput = document.getElementById("skillsInput");
-        let tags = ["React", "UI/UX"]; // Initial dummy tags
-
-        const renderTags = () => {
-          // Remove existing tag DOM elements (keep the input)
-          const existingChips = tagsContainer.querySelectorAll(".tag-chip");
-          existingChips.forEach((chip) => chip.remove());
-
-          // Insert new tags before the input element
-          tags.forEach((tag, index) => {
-            const chip = document.createElement("div");
-            chip.className = "tag-chip";
-            chip.innerHTML = `
-                        <span>${tag}</span>
-                        <button type="button" aria-label="Remove ${tag}" data-index="${index}">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    `;
-            tagsContainer.insertBefore(chip, skillsInput);
-          });
-        };
-
-        // Focus styling proxy for the container
-        skillsInput.addEventListener("focus", () =>
-          tagsContainer.classList.add("focused"),
-        );
-        skillsInput.addEventListener("blur", () =>
-          tagsContainer.classList.remove("focused"),
-        );
-        tagsContainer.addEventListener("click", () => skillsInput.focus());
-
-        // Handle typing and adding tags
-        skillsInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === ",") {
-            e.preventDefault(); // Prevent form submission or typing comma
-            const newTag = skillsInput.value.trim().replace(/,/g, ""); // strip commas
-            if (newTag && !tags.includes(newTag)) {
-              tags.push(newTag);
-              skillsInput.value = "";
-              renderTags();
-
-              // Clear validation error if any
-              tagsContainer.classList.remove("is-invalid");
-              tagsContainer.nextElementSibling.style.display = "none";
-            }
-          } else if (
-            e.key === "Backspace" &&
-            skillsInput.value === "" &&
-            tags.length > 0
-          ) {
-            // Remove last tag on backspace if input is empty
-            tags.pop();
-            renderTags();
-          }
-        });
-
-        // Handle removing tags via click
-        tagsContainer.addEventListener("click", (e) => {
-          const btn = e.target.closest("button");
-          if (btn) {
-            const index = parseInt(btn.getAttribute("data-index"), 10);
-            tags.splice(index, 1);
-            renderTags();
-          }
-        });
-
-        // Initial render
-        renderTags();
-
-        // --- Form Validation & Submission ---
-        const form = document.getElementById("postJobForm");
-        const requiredFields = form.querySelectorAll("[required]");
-        const publishBtn = document.getElementById("publishBtn");
-        const saveDraftBtn = document.getElementById("saveDraftBtn");
-
-        // Utility to show/hide errors
-        const setError = (element, show) => {
-          if (show) {
-            element.classList.add("is-invalid");
-            element.nextElementSibling.style.display = "block";
-          } else {
-            element.classList.remove("is-invalid");
-            element.nextElementSibling.style.display = "none";
-          }
-        };
-
-        // Clear errors on input change for required fields
-        requiredFields.forEach((field) => {
-          field.addEventListener("input", () => setError(field, false));
-          field.addEventListener("change", () => setError(field, false)); // For selects
-        });
-
-        form.addEventListener("submit", (e) => {
+      skillsInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === ",") {
           e.preventDefault();
-          let isValid = true;
+          const newTag = this.value.trim().replace(/,/g, "");
+          if (newTag && !tags.includes(newTag)) {
+            tags.push(newTag);
+            this.value = "";
+            renderTags();
+            validateTags();
+          }
+        }
+      });
 
-          // Validate standard required fields
+      function validateTags() {
+        const container = document.getElementById("tagsContainer");
+        const error = container.nextElementSibling;
+        if (tags.length === 0) {
+          container.classList.add("is-invalid");
+          error.classList.add("show");
+          return false;
+        } else {
+          container.classList.remove("is-invalid");
+          error.classList.remove("show");
+          return true;
+        }
+      }
+
+      // Form submission
+      document
+        .getElementById("postJobForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Validate required fields
+          let isValid = true;
+          const requiredFields = this.querySelectorAll("[required]");
           requiredFields.forEach((field) => {
             if (!field.value.trim()) {
-              setError(field, true);
+              field.classList.add("is-invalid");
+              field.nextElementSibling.classList.add("show");
               isValid = false;
+            } else {
+              field.classList.remove("is-invalid");
+              field.nextElementSibling.classList.remove("show");
             }
           });
 
-          // Validate Custom Tag Input (require at least 1 tag)
-          if (tags.length === 0) {
-            tagsContainer.classList.add("is-invalid");
-            tagsContainer.nextElementSibling.style.display = "block";
-            isValid = false;
-          }
+          // Validate tags
+          if (!validateTags()) isValid = false;
 
           if (isValid) {
-            const payload = {
-              title: document.getElementById("jobTitle").value,
-              department: document.getElementById("department").value,
-              type: document.getElementById("employmentType").value,
-              location: document.getElementById("location").value,
-              description: document.getElementById("description").value,
-              skills: tags,
-            };
-
-            console.log("Form is valid. Publishing Job:", payload);
-
-            // Simulate Loading
-            publishBtn.classList.add("is-loading");
-            publishBtn.disabled = true;
-            saveDraftBtn.disabled = true;
+            const btn = document.getElementById("publishBtn");
+            btn.classList.add("is-loading");
+            btn.disabled = true;
 
             setTimeout(() => {
-              publishBtn.classList.remove("is-loading");
-              publishBtn.querySelector(".btn-text").textContent = "Published!";
-              publishBtn.style.backgroundColor = "var(--success)";
+              btn.classList.remove("is-loading");
+              btn.disabled = false;
+              btn.querySelector(".btn-text").innerHTML =
+                '<i class="fas fa-check"></i> Published!';
+              btn.style.background = "var(--success)";
 
               setTimeout(() => {
-                // Reset state (placeholder for routing)
-                publishBtn.disabled = false;
-                saveDraftBtn.disabled = false;
-                publishBtn.querySelector(".btn-text").textContent =
-                  "Publish Job";
-                publishBtn.style.backgroundColor = "";
-                form.reset();
-                tags = [];
-                renderTags();
-                charCount.textContent = "0";
-              }, 2000);
+                btn.querySelector(".btn-text").innerHTML =
+                  '<i class="fas fa-paper-plane"></i> Publish Job';
+                btn.style.background = "";
+                alert("✅ Job published successfully!");
+                window.location.href = "manage-jobs.html";
+              }, 1500);
             }, 1500);
           }
         });
 
-        // Save Draft button handler
-        saveDraftBtn.addEventListener("click", () => {
-          console.log("Saving Draft...", {
-            title: document.getElementById("jobTitle").value,
-            // ... other partial data
-          });
+      function saveDraft() {
+        const btn = document.querySelector(".btn-secondary");
+        btn.classList.add("is-loading");
 
-          saveDraftBtn.classList.add("is-loading");
+        setTimeout(() => {
+          btn.classList.remove("is-loading");
+          btn.querySelector(".btn-text").textContent = "✓ Draft Saved";
           setTimeout(() => {
-            saveDraftBtn.classList.remove("is-loading");
-            saveDraftBtn.querySelector(".btn-text").textContent = "Saved";
-            setTimeout(() => {
-              saveDraftBtn.querySelector(".btn-text").textContent =
-                "Save Draft";
-            }, 2000);
-          }, 1000);
-        });
-      });
+            btn.querySelector(".btn-text").textContent = "Save Draft";
+          }, 2000);
+          alert("📝 Draft saved successfully!");
+        }, 1000);
+      }
+
+      // Initial render
+      renderTags();
     </script>
   </body>
 </html>
