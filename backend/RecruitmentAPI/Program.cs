@@ -41,24 +41,48 @@ namespace RecruitmentAPI
             builder.Services.AddEndpointsApiExplorer();
 
             // ─────────────────────────────────────────────────────────────────────────────
+            // CORS Configuration
+            // ─────────────────────────────────────────────────────────────────────────────
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.WithOrigins(
+                                "http://localhost:5500",      // VS Code Live Server
+                                "https://localhost:5500",
+                                "http://127.0.0.1:5500",
+                                "http://localhost:3000",      // React
+                                "https://localhost:3000",
+                                "http://localhost:8080",      // Vue.js
+                                "https://localhost:8080",
+                                "http://localhost:4200"       // Angular
+                            )
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials(); // Required for cookies/auth
+                    });
+            });
+
+            // ─────────────────────────────────────────────────────────────────────────────
             // Swagger / OpenAPI
             // ─────────────────────────────────────────────────────────────────────────────
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title       = "Recruitment Platform API",
-                    Version     = "v1",
+                    Title = "Recruitment Platform API",
+                    Version = "v1",
                     Description = "AI-Powered Recruitment and Talent Management Platform API"
                 });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Name        = "Authorization",
-                    Type        = SecuritySchemeType.Http,
-                    Scheme      = "bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
                     BearerFormat = "JWT",
-                    In          = ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Description = "Enter your JWT token"
                 });
 
@@ -122,7 +146,7 @@ namespace RecruitmentAPI
             var jwtKey = builder.Configuration["Jwt:Key"]
                 ?? throw new InvalidOperationException("JWT Key is not configured.");
 
-            var jwtIssuer   = builder.Configuration["Jwt:Issuer"];
+            var jwtIssuer = builder.Configuration["Jwt:Issuer"];
             var jwtAudience = builder.Configuration["Jwt:Audience"];
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -130,13 +154,13 @@ namespace RecruitmentAPI
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer           = true,
-                        ValidateAudience         = true,
-                        ValidateLifetime         = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer              = jwtIssuer,
-                        ValidAudience            = jwtAudience,
-                        IssuerSigningKey         = new SymmetricSecurityKey(
+                        ValidIssuer = jwtIssuer,
+                        ValidAudience = jwtAudience,
+                        IssuerSigningKey = new SymmetricSecurityKey(
                                                        Encoding.UTF8.GetBytes(jwtKey)),
 
                         // Map the JWT "role" claim to ClaimTypes.Role so
@@ -152,7 +176,10 @@ namespace RecruitmentAPI
             // ─────────────────────────────────────────────────────────────────────────────
             var app = builder.Build();
 
-            // Global exception ��� RFC 7807 ProblemDetails
+            // Use CORS - MUST BE BEFORE Authentication/Authorization
+            app.UseCors("AllowFrontend");
+
+            // Global exception - RFC 7807 ProblemDetails
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             if (app.Environment.IsDevelopment())

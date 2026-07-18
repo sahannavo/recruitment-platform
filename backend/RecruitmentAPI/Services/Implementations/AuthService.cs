@@ -13,7 +13,11 @@ namespace RecruitmentAPI.Services.Implementations
         private readonly IJwtHelper _jwtHelper;
         private readonly IConfiguration _configuration;
 
-        public AuthService(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, IJwtHelper jwtHelper, IConfiguration configuration)
+        public AuthService(
+            IUnitOfWork unitOfWork,
+            IPasswordHasher passwordHasher,
+            IJwtHelper jwtHelper,
+            IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
@@ -29,41 +33,73 @@ namespace RecruitmentAPI.Services.Implementations
                 throw new InvalidOperationException("User with this email already exists.");
             }
 
-            // Map DTO to appropriate Entity based on requested role
-            User newUser = request.Role.ToLower() switch
+            // Create base user
+            var newUser = new User
             {
-                "recruiter" => new Recruiter { Department = "General" },
-                "hiringmanager" => new HiringManager { Department = "General" },
-                _ => new Candidate() // Default to Candidate
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PasswordHash = _passwordHasher.HashPassword(request.Password),
+                Role = request.Role ?? "Candidate",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
-
-            newUser.Email = request.Email;
-            newUser.FirstName = request.FirstName;
-            newUser.LastName = request.LastName;
-            newUser.PasswordHash = _passwordHasher.HashPassword(request.Password);
-            newUser.Role = request.Role; // Set Role on the base User object
-            newUser.CreatedAt = DateTime.UtcNow;
-            newUser.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Users.AddAsync(newUser);
             await _unitOfWork.SaveChangesAsync();
 
-            // If the role is Admin, create Admin profile after User is saved
-            if (request.Role.ToLower() == "admin")
+            // Create role-specific profile
+            var role = request.Role?.ToLower() ?? "candidate";
+            switch (role)
             {
-                var adminProfile = new Admin
-                {
-                    UserId = newUser.UserId,
-                    Department = "General",
-                    Permissions = ""
-                };
-                await _unitOfWork.Admins.AddAsync(adminProfile);
-                await _unitOfWork.SaveChangesAsync();
+                case "candidate":
+                    var candidate = new Candidate
+                    {
+                        UserId = newUser.UserId,
+                        IsAvailable = true,
+                        IsOpenToOpportunities = true
+                    };
+                    await _unitOfWork.Candidates.AddAsync(candidate);
+                    break;
+
+                case "recruiter":
+                    var recruiter = new Recruiter
+                    {
+                        UserId = newUser.UserId,
+                        Department = "General",
+                        JobTitle = "Recruiter"
+                    };
+                    await _unitOfWork.Recruiters.AddAsync(recruiter);
+                    break;
+
+                case "hiringmanager":
+                    var hiringManager = new HiringManager
+                    {
+                        UserId = newUser.UserId,
+                        Department = "General"
+                    };
+                    await _unitOfWork.HiringManagers.AddAsync(hiringManager);
+                    break;
+
+                case "admin":
+                case "superadmin":
+                    var admin = new Admin
+                    {
+                        UserId = newUser.UserId,
+                        Department = "General",
+                        Permissions = "All"
+                    };
+                    await _unitOfWork.Admins.AddAsync(admin);
+                    break;
             }
 
+            await _unitOfWork.SaveChangesAsync();
+
             // Generate Token for immediate login after registration
-            var token = _jwtHelper.GenerateToken(newUser, request.Role);
-            var expiry = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"]!));
+            var token = _jwtHelper.GenerateToken(newUser, request.Role ?? "Candidate");
+            var expiry = DateTime.UtcNow.AddMinutes(
+                double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60"));
 
             return new AuthResponse
             {
@@ -71,7 +107,9 @@ namespace RecruitmentAPI.Services.Implementations
                 ExpiresAt = expiry,
                 UserId = newUser.UserId,
                 Email = newUser.Email,
-                Role = request.Role
+                Role = newUser.Role,
+                FirstName = newUser.FirstName,  // ✅ ADD
+                LastName = newUser.LastName     // ✅ ADD
             };
         }
 
@@ -79,16 +117,15 @@ namespace RecruitmentAPI.Services.Implementations
         {
             var user = await _unitOfWork.Users.GetByEmailAsync(request.Email);
 
-            if (user == null || !user.IsActive || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
+            if (user == null || !user.IsActive ||
+                !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
             {
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }
 
-            // Determine Role based on user.Role property
-            string role = user.Role;
-
-            var token = _jwtHelper.GenerateToken(user, role);
-            var expiry = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"]!));
+            var token = _jwtHelper.GenerateToken(user, user.Role);
+            var expiry = DateTime.UtcNow.AddMinutes(
+                double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60"));
 
             return new AuthResponse
             {
@@ -96,7 +133,9 @@ namespace RecruitmentAPI.Services.Implementations
                 ExpiresAt = expiry,
                 UserId = user.UserId,
                 Email = user.Email,
-                Role = role
+                Role = user.Role,
+                FirstName = user.FirstName,  // ✅ ADD
+                LastName = user.LastName     // ✅ ADD
             };
         }
 
@@ -109,7 +148,8 @@ namespace RecruitmentAPI.Services.Implementations
             }
 
             var email = principal.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-            if (email == null) throw new UnauthorizedAccessException("Invalid token claims.");
+            if (email == null)
+                throw new UnauthorizedAccessException("Invalid token claims.");
 
             var user = await _unitOfWork.Users.GetByEmailAsync(email);
             if (user == null || !user.IsActive)
@@ -117,10 +157,13 @@ namespace RecruitmentAPI.Services.Implementations
                 throw new UnauthorizedAccessException("User not found or inactive.");
             }
 
-            var role = principal.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Candidate";
+            var role = principal.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                       ?? user.Role
+                       ?? "Candidate";
 
             var newToken = _jwtHelper.GenerateToken(user, role);
-            var expiry = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"]!));
+            var expiry = DateTime.UtcNow.AddMinutes(
+                double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60"));
 
             return new AuthResponse
             {
@@ -128,7 +171,9 @@ namespace RecruitmentAPI.Services.Implementations
                 ExpiresAt = expiry,
                 UserId = user.UserId,
                 Email = user.Email,
-                Role = role
+                Role = role,
+                FirstName = user.FirstName,  
+                LastName = user.LastName     
             };
         }
     }

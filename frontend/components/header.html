@@ -6,10 +6,24 @@
     </a>
 
     <nav class="main-nav" aria-label="Primary navigation">
-      <a href="/candidate/dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
-      <a href="/candidate/job-search.html" class="nav-link" data-page="jobs">Jobs</a>
-      <a href="/candidate/my-applications.html" class="nav-link" data-page="applications">Applications</a>
-      <a href="/candidate/profile-management.html" class="nav-link" data-page="profile">Profile</a>
+      <a href="/candidate/dashboard.html" class="nav-link" data-page="dashboard"
+        >Dashboard</a
+      >
+      <a href="/candidate/job-search.html" class="nav-link" data-page="jobs"
+        >Jobs</a
+      >
+      <a
+        href="/candidate/my-applications.html"
+        class="nav-link"
+        data-page="applications"
+        >Applications</a
+      >
+      <a
+        href="/candidate/profile-management.html"
+        class="nav-link"
+        data-page="profile"
+        >Profile</a
+      >
     </nav>
 
     <div class="header-actions">
@@ -17,7 +31,9 @@
         <i class="fas fa-bell"></i>
         <span class="notification-dot"></span>
       </button>
-      <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
+      <div class="user-avatar" id="userAvatar" title="Profile">
+        <span id="userInitials">JD</span>
+      </div>
       <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
         <i class="fas fa-bars"></i>
       </button>
@@ -27,10 +43,137 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="/candidate/dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
-    <a href="/candidate/job-search.html" class="mobile-link" data-page="jobs">Jobs</a>
-    <a href="/candidate/my-applications.html" class="mobile-link" data-page="applications">Applications</a>
-    <a href="/candidate/profile-management.html" class="mobile-link" data-page="profile">Profile</a>
-    <a href="/auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none;">Sign Out</a>
+    <div class="mobile-user-info" id="mobileUserInfo">
+      <span id="mobileUserInitials" class="mobile-avatar">JD</span>
+      <div>
+        <div id="mobileUserName" class="mobile-user-name">John Doe</div>
+        <div id="mobileUserRole" class="mobile-user-role">Candidate</div>
+      </div>
+    </div>
+    <a
+      href="/candidate/dashboard.html"
+      class="mobile-link"
+      data-page="dashboard"
+      >Dashboard</a
+    >
+    <a href="/candidate/job-search.html" class="mobile-link" data-page="jobs"
+      >Jobs</a
+    >
+    <a
+      href="/candidate/my-applications.html"
+      class="mobile-link"
+      data-page="applications"
+      >Applications</a
+    >
+    <a
+      href="/candidate/profile-management.html"
+      class="mobile-link"
+      data-page="profile"
+      >Profile</a
+    >
+    <a
+      href="#"
+      id="signOutLink"
+      class="mobile-link"
+      style="color: var(--danger); border-bottom: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Sign Out
+    </a>
   </div>
 </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Load user data into header
+    function updateHeaderUser() {
+      const user = window.API?.getCurrentUser();
+      if (!user) {
+        // Redirect to login if not authenticated
+        if (
+          !window.location.pathname.includes("login.html") &&
+          !window.location.pathname.includes("register.html")
+        ) {
+          window.location.href = "/auth/login.html";
+        }
+        return;
+      }
+
+      const initials = window.API?.getUserInitials() || "?";
+      const fullName = window.API?.getUserFullName() || "User";
+      const role = user.role || user.Role || "Candidate";
+
+      // Update desktop avatar
+      const userAvatar = document.getElementById("userAvatar");
+      if (userAvatar) {
+        userAvatar.innerHTML = `<span id="userInitials">${initials}</span>`;
+      }
+
+      // Update mobile menu
+      const mobileInitials = document.getElementById("mobileUserInitials");
+      const mobileName = document.getElementById("mobileUserName");
+      const mobileRole = document.getElementById("mobileUserRole");
+
+      if (mobileInitials) mobileInitials.textContent = initials;
+      if (mobileName) mobileName.textContent = fullName;
+      if (mobileRole) mobileRole.textContent = role;
+
+      // Update role-based navigation
+      const roleMap = {
+        Candidate: "/candidate/",
+        Recruiter: "/recruiter/",
+        HiringManager: "/hiring-manager/",
+        Admin: "/admin/",
+        SuperAdmin: "/admin/",
+      };
+
+      const basePath = roleMap[role] || "/candidate/";
+      document.querySelectorAll(".nav-link, .mobile-link").forEach((link) => {
+        if (
+          link.getAttribute("href") &&
+          !link.getAttribute("href").startsWith("#")
+        ) {
+          // Ensure links point to correct role base
+          const href = link.getAttribute("href");
+          if (href.startsWith("/candidate/") && role !== "Candidate") {
+            link.setAttribute("href", href.replace("/candidate/", basePath));
+          }
+        }
+      });
+    }
+
+    // Sign out handler
+    document
+      .getElementById("signOutLink")
+      ?.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (window.API?.Auth) {
+          window.API.Auth.logout();
+        } else {
+          window.location.href = "/auth/login.html";
+        }
+      });
+
+    // Initialize
+    if (typeof window.API !== "undefined") {
+      updateHeaderUser();
+    }
+
+    // Avatar click - go to profile
+    document
+      .getElementById("userAvatar")
+      ?.addEventListener("click", function () {
+        const user = window.API?.getCurrentUser();
+        if (user) {
+          const roleMap = {
+            Candidate: "/candidate/profile-management.html",
+            Recruiter: "/recruiter/profile-management.html",
+            HiringManager: "/hiring-manager/profile-management.html",
+            Admin: "/admin/profile-management.html",
+          };
+          const role = user.role || user.Role || "Candidate";
+          window.location.href =
+            roleMap[role] || "/candidate/profile-management.html";
+        }
+      });
+  });
+</script>

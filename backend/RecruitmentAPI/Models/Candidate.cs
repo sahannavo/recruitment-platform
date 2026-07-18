@@ -14,5 +14,10 @@ namespace RecruitmentAPI.Models
         public bool? WillingToRelocate { get; set; }
         public bool? WillingToWorkRemote { get; set; }
         public string? PreferredLocations { get; set; }
+
+
+        // Navigation properties
+        public User User { get; set; } = null!;
+        public ICollection<Application> Applications { get; set; } = new List<Application>();
     }
 }

@@ -20,6 +20,9 @@ public class User
 
     // Navigation properties
     public Admin? Admin { get; set; }
-    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public Candidate? Candidate { get; set; }
+    public Recruiter? Recruiter { get; set; }
+    public HiringManager? HiringManager { get; set; }
+    public virtual ICollection<JobPosting> JobPostings { get; set; } = new List<JobPosting>();
 }
 
