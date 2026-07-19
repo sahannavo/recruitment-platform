@@ -10,32 +10,19 @@ public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // DbSets
-    // ─────────────────────────────────────────────────────────────────────────
-
-    // Base Users & Roles
     public DbSet<User> Users => Set<User>();
     public DbSet<Admin> Admins => Set<Admin>();
     public DbSet<Candidate> Candidates => Set<Candidate>();
     public DbSet<Recruiter> Recruiters => Set<Recruiter>();
     public DbSet<HiringManager> HiringManagers => Set<HiringManager>();
-
-    // Core Recruitment Tables
     public DbSet<JobPosting> JobPostings => Set<JobPosting>();
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<Interview> Interviews => Set<Interview>();
     public DbSet<InterviewFeedback> InterviewFeedbacks => Set<InterviewFeedback>();
-
-    // Support Tables
     public DbSet<RecruitmentAnalytic> RecruitmentAnalytics => Set<RecruitmentAnalytic>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Document> Documents => Set<Document>();
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Fluent API configuration
-    // ─────────────────────────────────────────────────────────────────────────
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -83,15 +70,18 @@ public class ApplicationDbContext : DbContext
             entity.Property(c => c.IsAvailable).HasDefaultValue(true);
             entity.Property(c => c.IsOpenToOpportunities).HasDefaultValue(true);
 
-            entity.HasOne(c => c.User)
-                .WithOne(u => u.Candidate)
-                .HasForeignKey<Candidate>(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // Candidate inherits from User - UserId is the key
+            entity.Property(c => c.UserId);
 
             entity.HasMany(c => c.Applications)
                 .WithOne(a => a.Candidate)
                 .HasForeignKey(a => a.CandidateId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(c => c.Documents)
+                .WithOne(d => d.Candidate)
+                .HasForeignKey(d => d.CandidateId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // ── Recruiter ──────────────────────────────────────────────────────────
@@ -130,7 +120,7 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // ── JobPosting ───────────────────────────────────────────────────────── (SINGLE CONFIGURATION)
+        // ── JobPosting ─────────────────────────────────────────────────────────
         modelBuilder.Entity<JobPosting>(entity =>
         {
             entity.HasKey(j => j.JobId);
@@ -149,7 +139,6 @@ public class ApplicationDbContext : DbContext
             entity.Property(j => j.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
             entity.Property(j => j.ExpiresAt).IsRequired(false);
 
-            // Indexes
             entity.HasIndex(j => j.Status);
             entity.HasIndex(j => j.Department);
             entity.HasIndex(j => j.CreatedAt);
@@ -158,7 +147,6 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(j => new { j.Status, j.CreatedAt });
             entity.HasIndex(j => new { j.Department, j.Status });
 
-            // Relationships
             entity.HasOne(j => j.Recruiter)
                 .WithMany(r => r.JobPostings)
                 .HasForeignKey(j => j.RecruiterId)
@@ -211,11 +199,12 @@ public class ApplicationDbContext : DbContext
             entity.Property(i => i.Notes).HasMaxLength(1000);
 
             entity.HasIndex(i => i.Status);
-            entity.HasIndex(i => i.ScheduledDate);
+            entity.HasIndex(i => i.ScheduledAt);
 
+            // ✅ FIXED: One-to-Many (Application has many Interviews)
             entity.HasOne(i => i.Application)
-                .WithOne(a => a.Interview)
-                .HasForeignKey<Interview>(i => i.ApplicationId)
+                .WithMany(a => a.Interviews)
+                .HasForeignKey(i => i.ApplicationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(i => i.Interviewer)
@@ -228,18 +217,20 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<InterviewFeedback>(entity =>
         {
             entity.HasKey(f => f.FeedbackId);
-            entity.Property(f => f.Rating).HasDefaultValue(0);
             entity.Property(f => f.Comments).HasMaxLength(2000);
-            entity.Property(f => f.Decision).HasMaxLength(50);
+            entity.Property(f => f.Decision).HasMaxLength(50).IsRequired();
+            entity.Property(f => f.TechnicalScore).HasPrecision(3, 1);
+            entity.Property(f => f.BehavioralScore).HasPrecision(3, 1);
+            entity.Property(f => f.CommunicationScore).HasPrecision(3, 1);
 
             entity.HasOne(f => f.Interview)
                 .WithMany(i => i.Feedbacks)
                 .HasForeignKey(f => f.InterviewId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(f => f.Reviewer)
+            entity.HasOne(f => f.Manager)
                 .WithMany()
-                .HasForeignKey(f => f.ReviewerId)
+                .HasForeignKey(f => f.ManagerId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -279,12 +270,11 @@ public class ApplicationDbContext : DbContext
             entity.Property(a => a.Details).HasMaxLength(2000);
             entity.Property(a => a.IpAddress).HasMaxLength(45);
             entity.Property(a => a.UserAgent).HasMaxLength(500);
-            entity.Property(a => a.Timestamp).HasDefaultValueSql("GETUTCDATE()");
             entity.Property(a => a.PerformedAt).HasDefaultValueSql("GETUTCDATE()");
 
             entity.HasIndex(a => a.PerformedByUserId);
             entity.HasIndex(a => new { a.EntityType, a.EntityId });
-            entity.HasIndex(a => a.Timestamp);
+            entity.HasIndex(a => a.PerformedAt);
 
             entity.HasOne(a => a.PerformedBy)
                 .WithMany()

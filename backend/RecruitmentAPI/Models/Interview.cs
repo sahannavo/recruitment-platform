@@ -17,23 +17,42 @@ public class Interview
     [Required]
     public DateTime ScheduledAt { get; set; }
 
+    //  Alias for ScheduledAt (some code uses ScheduledDate)
+    [NotMapped]
+    public DateTime ScheduledDate
+    {
+        get => ScheduledAt;
+        set => ScheduledAt = value;
+    }
+
     [Required]
     [Range(15, 480)]
-    public int Duration { get; set; } // Duration in minutes
+    public int Duration { get; set; } = 60; // Duration in minutes
 
     [Required]
     [StringLength(50)]
-    public string Type { get; set; } = string.Empty; // Online, Physical, Technical, HR
+    public string Type { get; set; } = "Online"; // Online, Physical, Technical, HR
 
     [Required]
     [StringLength(50)]
     public string Status { get; set; } = "Scheduled"; // Scheduled, Completed, Cancelled
+
+    //  Location for physical interviews
+    [StringLength(200)]
+    public string? Location { get; set; }
 
     [StringLength(500)]
     public string? MeetingLink { get; set; }
 
     [StringLength(1000)]
     public string? Notes { get; set; }
+
+    // Interviewer ID
+    public int? InterviewerId { get; set; }
+
+    // Navigation property for Interviewer
+    [ForeignKey("InterviewerId")]
+    public virtual User? Interviewer { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

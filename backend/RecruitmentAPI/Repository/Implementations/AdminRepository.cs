@@ -1,111 +1,95 @@
 using Microsoft.EntityFrameworkCore;
 using RecruitmentAPI.Data;
-using RecruitmentAPI.Exceptions;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
 
-namespace RecruitmentAPI.Repository.Implementations;
-
-/// <summary>
-/// EF Core implementation of <see cref="IAdminRepository"/>.
-/// Provides user-management and audit-log queries that go beyond generic CRUD.
-/// </summary>
-public class AdminRepository : IAdminRepository
+namespace RecruitmentAPI.Repository.Implementations
 {
-    private readonly ApplicationDbContext _context;
-
-    public AdminRepository(ApplicationDbContext context)
+    public class AdminRepository : IAdminRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    /// <inheritdoc />
-    public async Task<IEnumerable<User>> GetAllUsersAsync() =>
-        await _context.Users
-            .OrderBy(u => u.LastName)
-            .ThenBy(u => u.FirstName)
-            .AsNoTracking()
-            .ToListAsync();
+        public AdminRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    /// <inheritdoc />
-    public async Task<IEnumerable<User>> GetUsersByRoleAsync(string role) =>
-        await _context.Users
-            .Where(u => u.Role == role)
-            .OrderBy(u => u.LastName)
-            .AsNoTracking()
-            .ToListAsync();
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
 
-    /// <inheritdoc />
-    public async Task<IEnumerable<User>> GetActiveUsersAsync() =>
-        await _context.Users
-            .Where(u => u.IsActive)
-            .OrderBy(u => u.LastName)
-            .AsNoTracking()
-            .ToListAsync();
+        public async Task<IEnumerable<User>> GetUsersByRoleAsync(string role)
+        {
+            return await _context.Users
+                .Where(u => u.Role == role)
+                .ToListAsync();
+        }
 
-    /// <inheritdoc />
-    public async Task DisableUserAsync(int userId)
-    {
-        var user = await _context.Users.FindAsync(userId)
-            ?? throw new NotFoundException($"User with ID {userId} was not found.");
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+        }
 
-        user.IsActive = false;
-        user.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
-    }
+        public async Task UpdateUserRoleAsync(int userId, string newRole)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.Role = newRole;
+                user.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+        }
 
-    /// <inheritdoc />
-    public async Task EnableUserAsync(int userId)
-    {
-        var user = await _context.Users.FindAsync(userId)
-            ?? throw new NotFoundException($"User with ID {userId} was not found.");
+        public async Task DisableUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.IsActive = false;
+                user.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+        }
 
-        user.IsActive = true;
-        user.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
-    }
+        public async Task EnableUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.IsActive = true;
+                user.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+        }
 
-    /// <inheritdoc />
-    public async Task UpdateUserRoleAsync(int userId, string newRole)
-    {
-        var user = await _context.Users.FindAsync(userId)
-            ?? throw new NotFoundException($"User with ID {userId} was not found.");
+        public async Task<IEnumerable<AuditLog>> GetAuditLogsAsync(int? performedByUserId = null, string? entityType = null)
+        {
+            var query = _context.AuditLogs.AsQueryable();
 
-        user.Role = newRole;
-        user.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
-    }
+            if (performedByUserId.HasValue)
+                query = query.Where(a => a.PerformedByUserId == performedByUserId.Value);
 
-    /// <inheritdoc />
-    public async Task<User?> GetUserByEmailAsync(string email) =>
-        await _context.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email == email);
+            if (!string.IsNullOrEmpty(entityType))
+                query = query.Where(a => a.EntityType == entityType);
 
-    /// <inheritdoc />
-    public async Task<IEnumerable<AuditLog>> GetAuditLogsAsync(
-        int? performedByUserId = null,
-        string? entityType = null)
-    {
-        var query = _context.AuditLogs
-            .AsNoTracking()
-            .AsQueryable();
+            return await query
+                .OrderByDescending(a => a.PerformedAt)
+                .ToListAsync();
+        }
 
-        if (performedByUserId.HasValue)
-            query = query.Where(a => a.PerformedByUserId == performedByUserId.Value);
+        public async Task AddAuditLogAsync(AuditLog log)
+        {
+            await _context.AuditLogs.AddAsync(log);
+            await _context.SaveChangesAsync();
+        }
 
-        if (!string.IsNullOrWhiteSpace(entityType))
-            query = query.Where(a => a.EntityType == entityType);
-
-        return await query
-            .OrderByDescending(a => a.PerformedAt)
-            .ToListAsync();
-    }
-
-    /// <inheritdoc />
-    public async Task AddAuditLogAsync(AuditLog entry)
-    {
-        await _context.AuditLogs.AddAsync(entry);
-        await _context.SaveChangesAsync();
+        /// <summary>Add a new admin</summary>
+        public async Task AddAsync(Admin admin)
+        {
+            await _context.Admins.AddAsync(admin);
+        }
     }
 }

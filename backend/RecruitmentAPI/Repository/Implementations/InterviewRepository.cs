@@ -47,7 +47,7 @@ public class InterviewRepository : IInterviewRepository
             .Include(i => i.Application)
                 .ThenInclude(a => a!.Job)
             .Include(i => i.Feedbacks)
-            .Where(i => i.Application!.Job!.PostedBy == recruiterId)
+            .Where(i => i.Application!.Job!.RecruiterId == recruiterId)
             .OrderByDescending(i => i.ScheduledAt)
             .ToListAsync();
     }

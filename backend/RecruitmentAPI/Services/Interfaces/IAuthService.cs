@@ -7,7 +7,7 @@ namespace RecruitmentAPI.Services.Interfaces
         Task<AuthResponse> LoginAsync(LoginRequest request);
         Task<AuthResponse> RegisterAsync(RegisterRequest request);
         Task<AuthResponse> RefreshTokenAsync(string token);
+        Task<bool> LogoutAsync(int userId);
         Task<bool> ValidateTokenAsync(string token);
-        Task LogoutAsync(int userId);
     }
 }

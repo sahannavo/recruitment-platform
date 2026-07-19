@@ -11,6 +11,9 @@ using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Implementations;
 using RecruitmentAPI.Services.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.Options;
+using RecruitmentAPI.Services.Notification;
+using RecruitmentAPI.Services.AI;
 
 namespace RecruitmentAPI
 {

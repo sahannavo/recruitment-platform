@@ -9,7 +9,7 @@ namespace RecruitmentAPI.Repository.Interfaces
     /// <summary>
     /// Repository interface for Application entity operations
     /// </summary>
-    public interface IApplicationRepository : IRepository<Application>
+    public interface IApplicationRepository : IGenericRepository<Application>
     {
         /// <summary>
         /// Get all applications by candidate ID

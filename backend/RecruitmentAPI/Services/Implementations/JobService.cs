@@ -149,7 +149,7 @@ namespace RecruitmentAPI.Services.Implementations
                     Location = job.Location,
                     SalaryRange = job.SalaryRange,
                     Status = job.Status.ToString(),
-                    PostedBy = job.PostedBy,
+                    PostedBy = job.RecruiterId,
                     PostedByName = job.Recruiter != null ? $"{job.Recruiter.FirstName} {job.Recruiter.LastName}" : "Unknown",
                     CreatedAt = job.CreatedAt,
                     UpdatedAt = job.UpdatedAt,
@@ -166,7 +166,7 @@ namespace RecruitmentAPI.Services.Implementations
                         ? new List<string>()
                         : job.RequiredSkills.Split(',').Select(s => s.Trim()).ToList(),
                     IsAcceptingApplications = job.Status == JobStatus.Open || job.Status == JobStatus.Published,
-                    ExpiryDate = job.ExpiryDate,
+                    ExpiryDate = job.ExpiresAt,
                     AverageAIScore = applicationsList.Any(a => a.AI_Score.HasValue)
                         ? applicationsList.Where(a => a.AI_Score.HasValue).Average(a => a.AI_Score.Value)
                         : null,
@@ -189,7 +189,6 @@ namespace RecruitmentAPI.Services.Implementations
         {
             try
             {
-                // Validate recruiter exists
                 var recruiter = await _unitOfWork.Recruiters.GetByIdAsync(recruiterId);
                 if (recruiter == null)
                     throw new KeyNotFoundException($"Recruiter with ID {recruiterId} not found");
@@ -203,10 +202,10 @@ namespace RecruitmentAPI.Services.Implementations
                     Location = jobPostDto.Location,
                     SalaryRange = jobPostDto.SalaryRange,
                     Status = Enum.TryParse<JobStatus>(jobPostDto.Status, true, out var status) ? status : JobStatus.Draft,
-                    PostedBy = recruiterId,
+                    RecruiterId = recruiterId,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    ExpiryDate = jobPostDto.ExpiryDate,
+                    ExpiresAt = jobPostDto.ExpiryDate,
                     PositionsAvailable = jobPostDto.PositionsAvailable,
                     ExperienceLevel = jobPostDto.ExperienceLevel,
                     EmploymentType = jobPostDto.EmploymentType,
@@ -239,7 +238,6 @@ namespace RecruitmentAPI.Services.Implementations
                 if (job == null)
                     throw new KeyNotFoundException($"Job with ID {jobId} not found");
 
-                // Update only provided fields
                 if (!string.IsNullOrEmpty(jobUpdateDto.Title))
                     job.Title = jobUpdateDto.Title;
 
@@ -265,7 +263,7 @@ namespace RecruitmentAPI.Services.Implementations
                 }
 
                 if (jobUpdateDto.ExpiryDate.HasValue)
-                    job.ExpiryDate = jobUpdateDto.ExpiryDate;
+                    job.ExpiresAt = jobUpdateDto.ExpiryDate;
 
                 if (jobUpdateDto.PositionsAvailable > 0)
                     job.PositionsAvailable = jobUpdateDto.PositionsAvailable.Value;
@@ -308,7 +306,6 @@ namespace RecruitmentAPI.Services.Implementations
                 if (job == null)
                     return false;
 
-                // Soft delete - archive the job
                 job.Status = JobStatus.Archived;
                 job.UpdatedAt = DateTime.UtcNow;
 
@@ -497,7 +494,6 @@ namespace RecruitmentAPI.Services.Implementations
                     JobsByEmploymentType = jobList.GroupBy(j => j.EmploymentType ?? "Unknown").ToDictionary(g => g.Key, g => g.Count())
                 };
 
-                // Calculate applications data
                 var totalApplications = 0;
                 var jobsWithNoApplications = 0;
                 foreach (var job in jobList)
@@ -806,10 +802,10 @@ namespace RecruitmentAPI.Services.Implementations
                     Location = originalJob.Location,
                     SalaryRange = originalJob.SalaryRange,
                     Status = JobStatus.Draft,
-                    PostedBy = recruiterId,
+                    RecruiterId = recruiterId,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    ExpiryDate = originalJob.ExpiryDate,
+                    ExpiresAt = originalJob.ExpiresAt,
                     PositionsAvailable = originalJob.PositionsAvailable,
                     ExperienceLevel = originalJob.ExperienceLevel,
                     EmploymentType = originalJob.EmploymentType,

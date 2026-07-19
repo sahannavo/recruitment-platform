@@ -567,7 +567,7 @@ namespace RecruitmentAPI.Services.Implementations
                     Location = j.Location,
                     SalaryRange = j.SalaryRange,
                     Status = j.Status.ToString(),
-                    PostedBy = j.PostedBy,
+                    PostedBy = j.RecruiterId,
                     CreatedAt = j.CreatedAt,
                     UpdatedAt = j.UpdatedAt,
                     ApplicantsCount = j.Applications?.Count ?? 0,
@@ -637,13 +637,13 @@ namespace RecruitmentAPI.Services.Implementations
 
                 return new AvailabilityStatusDto
                 {
-                    IsAvailable = candidate.IsAvailable ?? false,
+                    IsAvailable = candidate.IsAvailable,
                     AvailableFrom = candidate.AvailableFrom,
                     NoticePeriod = candidate.NoticePeriod,
-                    IsOpenToOpportunities = candidate.IsOpenToOpportunities ?? false,
+                    IsOpenToOpportunities = candidate.IsOpenToOpportunities,
                     PreferredLocations = candidate.PreferredLocations,
-                    WillingToRelocate = candidate.WillingToRelocate ?? false,
-                    WillingToWorkRemote = candidate.WillingToWorkRemote ?? false
+                    WillingToRelocate = candidate.WillingToRelocate,
+                    WillingToWorkRemote = candidate.WillingToWorkRemote
                 };
             }
             catch (Exception ex)

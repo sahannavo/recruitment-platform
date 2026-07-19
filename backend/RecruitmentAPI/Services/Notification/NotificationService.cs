@@ -169,7 +169,7 @@ namespace RecruitmentAPI.Services.Notification
             {
                 if (userId == 0) return;
 
-                var notification = new Notification
+                var notification = new RecruitmentAPI.Models.Notification
                 {
                     UserId = userId,
                     Type = type,

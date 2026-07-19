@@ -13,7 +13,7 @@ namespace RecruitmentAPI.Repository.Implementations
     /// <summary>
     /// Repository implementation for Application entity operations
     /// </summary>
-    public class ApplicationRepository : Repository<Application>, IApplicationRepository
+    public class ApplicationRepository : GenericRepository<Application>, IApplicationRepository
     {
         public ApplicationRepository(ApplicationDbContext context) : base(context)
         {
@@ -119,7 +119,7 @@ namespace RecruitmentAPI.Repository.Implementations
         public async Task<IEnumerable<Application>> GetByRecruiterAsync(int recruiterId)
         {
             return await _context.Applications
-                .Where(a => a.Job.PostedBy == recruiterId)
+                .Where(a => a.Job.RecruiterId == recruiterId)
                 .Include(a => a.Candidate)
                 .Include(a => a.Job)
                 .Include(a => a.Interviews)

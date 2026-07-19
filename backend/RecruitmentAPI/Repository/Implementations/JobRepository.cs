@@ -174,7 +174,7 @@ namespace RecruitmentAPI.Repository.Implementations
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<JobPosting>> GetAllAsync()
+        public override async Task<IEnumerable<JobPosting>> GetAllAsync()
         {
             return await _dbSet
                 .OrderByDescending(j => j.CreatedAt)

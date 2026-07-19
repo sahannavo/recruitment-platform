@@ -5,6 +5,8 @@ using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Interfaces;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace RecruitmentAPI.Services.Implementations
 {
@@ -19,6 +21,7 @@ namespace RecruitmentAPI.Services.Implementations
         private readonly IJwtHelper _jwtHelper;
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<AuthService> _logger;  // ✅ ADDED
 
         public AuthService(
             IUserRepository userRepository,
@@ -29,7 +32,8 @@ namespace RecruitmentAPI.Services.Implementations
             IPasswordHasher passwordHasher,
             IJwtHelper jwtHelper,
             IConfiguration configuration,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ILogger<AuthService> logger)  // ✅ ADDED
         {
             _userRepository = userRepository;
             _candidateRepository = candidateRepository;
@@ -40,6 +44,7 @@ namespace RecruitmentAPI.Services.Implementations
             _jwtHelper = jwtHelper;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
+            _logger = logger;  // ✅ ADDED
         }
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
@@ -50,7 +55,6 @@ namespace RecruitmentAPI.Services.Implementations
                 throw new InvalidOperationException("User with this email already exists.");
             }
 
-            // Create base user
             var newUser = new User
             {
                 Email = request.Email,
@@ -66,7 +70,6 @@ namespace RecruitmentAPI.Services.Implementations
             await _userRepository.AddAsync(newUser);
             await _unitOfWork.SaveChangesAsync();
 
-            // Create role-specific profile
             var role = request.Role?.ToLower() ?? "candidate";
             switch (role)
             {
@@ -90,7 +93,25 @@ namespace RecruitmentAPI.Services.Implementations
                     await _recruiterRepository.AddAsync(recruiter);
                     break;
 
-                    // ... etc for other roles
+                case "hiringmanager":
+                    var hiringManager = new HiringManager
+                    {
+                        UserId = newUser.UserId,
+                        Department = "General"
+                    };
+                    await _hiringManagerRepository.AddAsync(hiringManager);
+                    break;
+
+                case "admin":
+                case "superadmin":
+                    var admin = new Admin
+                    {
+                        UserId = newUser.UserId,
+                        Department = "General",
+                        Permissions = "All"
+                    };
+                    await _adminRepository.AddAsync(admin);
+                    break;
             }
 
             await _unitOfWork.SaveChangesAsync();
@@ -111,7 +132,6 @@ namespace RecruitmentAPI.Services.Implementations
             };
         }
 
-        // LoginAsync and RefreshTokenAsync...
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
@@ -137,53 +157,7 @@ namespace RecruitmentAPI.Services.Implementations
                 LastName = user.LastName
             };
         }
-        
 
-        public async Task<bool> ValidateTokenAsync(string token)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(token))
-                    return false;
-
-                var principal = _jwtHelper.ValidateToken(token);
-                if (principal == null)
-                    return false;
-
-                // Check if token is expired
-                if (_jwtHelper.IsTokenExpired(token))
-                    return false;
-
-                // Verify user still exists and is active
-                var emailClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-                if (string.IsNullOrEmpty(emailClaim))
-                    return false;
-
-                var user = await _userRepository.GetByEmailAsync(emailClaim);
-                return user != null && user.IsActive;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error validating token");
-                return false;
-            }
-        }
-
-        public async Task<bool> LogoutAsync(int userId)
-        {
-            try
-            {
-                // JWT is stateless, so we don't need to do anything server-side
-                // If using refresh tokens, they would be revoked here
-                _logger.LogInformation("User {UserId} logged out", userId);
-                return await Task.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during logout for user {UserId}", userId);
-                return false;
-            }
-        }
         public async Task<AuthResponse> RefreshTokenAsync(string token)
         {
             var principal = _jwtHelper.ValidateToken(token);
@@ -219,6 +193,48 @@ namespace RecruitmentAPI.Services.Implementations
                 FirstName = user.FirstName,
                 LastName = user.LastName
             };
+        }
+
+        public async Task<bool> ValidateTokenAsync(string token)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(token))
+                    return false;
+
+                var principal = _jwtHelper.ValidateToken(token);
+                if (principal == null)
+                    return false;
+
+                if (_jwtHelper.IsTokenExpired(token))
+                    return false;
+
+                var emailClaim = principal.FindFirst(ClaimTypes.Email)?.Value;
+                if (string.IsNullOrEmpty(emailClaim))
+                    return false;
+
+                var user = await _userRepository.GetByEmailAsync(emailClaim);
+                return user != null && user.IsActive;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating token");
+                return false;
+            }
+        }
+
+        public async Task<bool> LogoutAsync(int userId)
+        {
+            try
+            {
+                _logger.LogInformation("User {UserId} logged out", userId);
+                return await Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during logout for user {UserId}", userId);
+                return false;
+            }
         }
     }
 }
