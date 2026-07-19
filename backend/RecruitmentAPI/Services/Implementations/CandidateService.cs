@@ -56,15 +56,15 @@ namespace RecruitmentAPI.Services.Implementations
                 return new CandidateProfileDto
                 {
                     UserId = candidate.UserId,
-                    FirstName = candidate.FirstName,
-                    LastName = candidate.LastName,
-                    Email = candidate.Email,
+                    FirstName = candidate.User.FirstName,
+                    LastName = candidate.User.LastName,
+                    Email = candidate.User.Email,
                     Phone = candidate.Phone,
                     Location = candidate.Location,
                     LinkedIn = candidate.LinkedIn,
                     SkillsSummary = candidate.SkillsSummary,
-                    IsActive = candidate.IsActive,
-                    CreatedAt = candidate.CreatedAt,
+                    IsActive = candidate.User.IsActive,
+                    CreatedAt = candidate.User.CreatedAt,
                     UpdatedAt = candidate.UpdatedAt ?? DateTime.UtcNow,
                     TotalApplications = applicationsList.Count,
                     ActiveApplications = applicationsList.Count(a => a.Status != ApplicationStatus.Rejected
@@ -91,10 +91,10 @@ namespace RecruitmentAPI.Services.Implementations
 
                 // Update only provided fields
                 if (!string.IsNullOrWhiteSpace(updateDto.FirstName))
-                    candidate.FirstName = updateDto.FirstName;
+                    candidate.User.FirstName = updateDto.FirstName;
 
                 if (!string.IsNullOrWhiteSpace(updateDto.LastName))
-                    candidate.LastName = updateDto.LastName;
+                    candidate.User.LastName = updateDto.LastName;
 
                 if (!string.IsNullOrWhiteSpace(updateDto.Phone))
                     candidate.Phone = updateDto.Phone;
@@ -364,13 +364,13 @@ namespace RecruitmentAPI.Services.Implementations
                 return new CandidateSummaryDto
                 {
                     UserId = candidate.UserId,
-                    FullName = $"{candidate.FirstName} {candidate.LastName}",
-                    Email = candidate.Email,
+                    FullName = $"{candidate.User.FirstName} {candidate.User.LastName}",
+                    Email = candidate.User.Email,
                     Location = candidate.Location,
                     SkillsSummary = candidate.SkillsSummary,
                     TotalApplications = applicationsList.Count,
-                    CreatedAt = candidate.CreatedAt,
-                    IsActive = candidate.IsActive
+                    CreatedAt = candidate.User.CreatedAt,
+                    IsActive = candidate.User.IsActive
                 };
             }
             catch (Exception ex)
@@ -414,8 +414,8 @@ namespace RecruitmentAPI.Services.Implementations
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
                     CandidateId = a.CandidateId,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email
                 });
             }
             catch (Exception ex)
@@ -502,7 +502,7 @@ namespace RecruitmentAPI.Services.Implementations
                 if (candidate == null)
                     return false;
 
-                candidate.IsActive = false;
+                candidate.User.IsActive = false;
                 candidate.UpdatedAt = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangesAsync();
@@ -528,7 +528,7 @@ namespace RecruitmentAPI.Services.Implementations
                 if (candidate == null)
                     return false;
 
-                candidate.IsActive = true;
+                candidate.User.IsActive = true;
                 candidate.UpdatedAt = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangesAsync();

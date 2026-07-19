@@ -242,11 +242,11 @@ namespace RecruitmentAPI.Repository.Implementations
 
             var term = searchTerm.ToLower();
             return await _context.Applications
-                .Where(a => a.Candidate.FirstName.ToLower().Contains(term) ||
-                            a.Candidate.LastName.ToLower().Contains(term) ||
+                .Where(a => a.Candidate.User.FirstName.ToLower().Contains(term) ||
+                            a.Candidate.User.LastName.ToLower().Contains(term) ||
                             a.Job.Title.ToLower().Contains(term) ||
                             a.Job.Department.ToLower().Contains(term))
-                .Include(a => a.Candidate)
+                .Include(a => a.Candidate).ThenInclude(c => c.User)
                 .Include(a => a.Job)
                 .OrderByDescending(a => a.AppliedAt)
                 .ToListAsync();

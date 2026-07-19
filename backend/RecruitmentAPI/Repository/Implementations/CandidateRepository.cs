@@ -26,7 +26,8 @@ namespace RecruitmentAPI.Repository.Implementations
         public async Task<Candidate?> GetByEmailAsync(string email)
         {
             return await _context.Candidates
-                .FirstOrDefaultAsync(c => c.Email == email);
+                .Include(c => c.User)
+                .FirstOrDefaultAsync(c => c.User.Email == email);
         }
 
         public async Task<IEnumerable<Candidate>> GetCandidatesBySkillAsync(string skill)

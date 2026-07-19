@@ -261,9 +261,9 @@ public class InterviewService : IInterviewService
             InterviewId = interview.InterviewId,
             ApplicationId = interview.ApplicationId,
             CandidateName = app?.Candidate != null 
-                ? $"{app.Candidate.FirstName} {app.Candidate.LastName}" 
+                ? $"{app.Candidate.User.FirstName} {app.Candidate.User.LastName}" 
                 : "N/A",
-            CandidateEmail = app?.Candidate?.Email ?? "N/A",
+            CandidateEmail = app?.Candidate?.User?.Email ?? "N/A",
             JobTitle = app?.Job?.Title ?? "N/A",
             ScheduledAt = interview.ScheduledAt,
             Duration = interview.Duration,

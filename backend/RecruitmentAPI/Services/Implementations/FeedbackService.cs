@@ -230,7 +230,7 @@ public class FeedbackService : IFeedbackService
             FeedbackId = feedback.FeedbackId,
             InterviewId = feedback.InterviewId,
             CandidateName = candidate != null 
-                ? $"{candidate.FirstName} {candidate.LastName}" 
+                ? $"{candidate.User.FirstName} {candidate.User.LastName}" 
                 : "N/A",
             JobTitle = jobPosting?.Title ?? "N/A",
             ManagerName = manager != null 

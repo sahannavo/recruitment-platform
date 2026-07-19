@@ -69,10 +69,17 @@ public class ApplicationDbContext : DbContext
             entity.Property(c => c.PreferredLocations).HasMaxLength(500);
             entity.Property(c => c.IsAvailable).HasDefaultValue(true);
             entity.Property(c => c.IsOpenToOpportunities).HasDefaultValue(true);
+            entity.Property(c => c.AvailableFrom);
+            entity.Property(c => c.WillingToRelocate);
+            entity.Property(c => c.WillingToWorkRemote);
+            entity.Property(c => c.UpdatedAt).IsRequired(false);
 
-            // Candidate inherits from User - UserId is the key
-            entity.Property(c => c.UserId);
+            entity.HasOne(c => c.User)
+                .WithOne(u => u.Candidate)
+                .HasForeignKey<Candidate>(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            // Relationships
             entity.HasMany(c => c.Applications)
                 .WithOne(a => a.Candidate)
                 .HasForeignKey(a => a.CandidateId)
@@ -130,7 +137,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(j => j.Requirements).HasMaxLength(4000);
             entity.Property(j => j.Location).HasMaxLength(200);
             entity.Property(j => j.SalaryRange).HasMaxLength(100);
-            entity.Property(j => j.Status).HasMaxLength(50).HasDefaultValue("Open");
+            entity.Property(j => j.Status).HasDefaultValue(JobStatus.Open);
             entity.Property(j => j.EmploymentType).HasMaxLength(50);
             entity.Property(j => j.ExperienceLevel).HasMaxLength(50);
             entity.Property(j => j.RequiredSkills).HasMaxLength(500);
@@ -167,7 +174,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Application>(entity =>
         {
             entity.HasKey(ap => ap.ApplicationId);
-            entity.Property(ap => ap.Status).HasMaxLength(50).IsRequired().HasDefaultValue("Pending");
+            entity.Property(ap => ap.Status).IsRequired().HasDefaultValue(ApplicationStatus.Submitted);
             entity.Property(ap => ap.Notes).HasMaxLength(1000);
             entity.Property(ap => ap.AppliedAt).HasDefaultValueSql("GETUTCDATE()");
             entity.Property(ap => ap.Source).HasMaxLength(50);

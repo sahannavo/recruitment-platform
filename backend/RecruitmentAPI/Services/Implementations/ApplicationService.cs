@@ -86,7 +86,7 @@ public class ApplicationService : IApplicationService
                 await _unitOfWork.SaveChangesAsync();
 
                 // Send notification
-                await _notificationService.SendApplicationSubmittedAsync(candidate.Email, job.Title);
+                await _notificationService.SendApplicationSubmittedAsync(candidate.User.Email, job.Title);
 
                 _logger.LogInformation("Application {ApplicationId} submitted for job {JobId} by candidate {CandidateId}",
                     application.ApplicationId, submitDto.JobId, submitDto.CandidateId);
@@ -125,8 +125,8 @@ public class ApplicationService : IApplicationService
                     UpdatedAt = application.UpdatedAt,
                     AI_Score = application.AI_Score,
                     CandidateId = application.CandidateId,
-                    CandidateName = $"{application.Candidate.FirstName} {application.Candidate.LastName}",
-                    CandidateEmail = application.Candidate.Email,
+                    CandidateName = $"{application.Candidate.User.FirstName} {application.Candidate.User.LastName}",
+                    CandidateEmail = application.Candidate.User.Email,
                     Notes = application.Notes,
                     Source = application.Source,
                     ExpectedSalary = application.ExpectedSalary?.ToString(),
@@ -163,8 +163,8 @@ public class ApplicationService : IApplicationService
                     UpdatedAt = a.UpdatedAt,
                     AI_Score = a.AI_Score,
                     CandidateId = a.CandidateId,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Notes = a.Notes,
                     Source = a.Source,
                     Success = true,
@@ -199,8 +199,8 @@ public class ApplicationService : IApplicationService
                     UpdatedAt = a.UpdatedAt,
                     AI_Score = a.AI_Score,
                     CandidateId = a.CandidateId,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Notes = a.Notes,
                     Source = a.Source,
                     Success = true,
@@ -302,7 +302,7 @@ public class ApplicationService : IApplicationService
 
                 // Send notification
                 await _notificationService.SendApplicationWithdrawnAsync(
-                    application.Candidate.Email,
+                    application.Candidate.User.Email,
                     application.Job.Title);
 
                 _logger.LogInformation("Application {ApplicationId} withdrawn by candidate {CandidateId}",
@@ -335,8 +335,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -365,8 +365,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -411,8 +411,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -441,8 +441,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -471,8 +471,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -501,8 +501,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -531,8 +531,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -561,8 +561,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -686,8 +686,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -757,8 +757,8 @@ public class ApplicationService : IApplicationService
                     Status = a.Status.ToString(),
                     AppliedAt = a.AppliedAt,
                     AI_Score = a.AI_Score,
-                    CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                    CandidateEmail = a.Candidate.Email,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
                     Success = true,
                     Message = "Applications retrieved successfully"
                 });
@@ -901,7 +901,7 @@ public class ApplicationService : IApplicationService
         {
             try
             {
-                var candidateEmail = application.Candidate.Email;
+                var candidateEmail = application.Candidate.User.Email;
                 var jobTitle = application.Job.Title;
 
                 switch (application.Status)

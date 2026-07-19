@@ -150,7 +150,7 @@ namespace RecruitmentAPI.Services.Implementations
                     SalaryRange = job.SalaryRange,
                     Status = job.Status.ToString(),
                     PostedBy = job.RecruiterId,
-                    PostedByName = job.Recruiter != null ? $"{job.Recruiter.FirstName} {job.Recruiter.LastName}" : "Unknown",
+                    PostedByName = job.Recruiter != null ? $"{job.Recruiter.User.FirstName} {job.Recruiter.User.LastName}" : "Unknown",
                     CreatedAt = job.CreatedAt,
                     UpdatedAt = job.UpdatedAt,
                     ApplicantsCount = applicationsList.Count,
@@ -849,8 +849,8 @@ namespace RecruitmentAPI.Services.Implementations
                     .Select(a => new JobApplicationSummaryDto
                     {
                         ApplicationId = a.ApplicationId,
-                        CandidateName = $"{a.Candidate.FirstName} {a.Candidate.LastName}",
-                        CandidateEmail = a.Candidate.Email,
+                        CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                        CandidateEmail = a.Candidate.User.Email,
                         Status = a.Status.ToString(),
                         AppliedAt = a.AppliedAt,
                         AI_Score = a.AI_Score

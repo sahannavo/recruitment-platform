@@ -1,15 +1,17 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecruitmentAPI.Models;
 
 /// <summary>
-/// Candidate profile extending the base User
+/// Candidate profile — supplementary data for users whose <see cref="User.Role"/> is "Candidate".
+/// Uses a separate table with a foreign key to the base <see cref="User"/> record.
 /// </summary>
-public class Candidate : User
+public class Candidate
 {
-    [Key]
     public int CandidateId { get; set; }
+
+    /// <summary>Foreign key to the base <see cref="User"/> record.</summary>
+    public int UserId { get; set; }
 
     [StringLength(20)]
     public string? Phone { get; set; }
@@ -37,10 +39,12 @@ public class Candidate : User
     public DateTime? AvailableFrom { get; set; }
     public bool WillingToRelocate { get; set; }
     public bool WillingToWorkRemote { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     // Navigation properties
+    public User User { get; set; } = null!;
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
-    /// <summary> Documents collection for CVs and other files</summary>
+    /// <summary>Documents collection for CVs and other files</summary>
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
 }
