@@ -1,863 +1,882 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Senior Frontend Engineer</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Senior Frontend Engineer</title>
 
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Unified CSS -->
-    <link rel="stylesheet" href="../css/main.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <style>
-      /* ========================================
+  <!-- Unified CSS -->
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    /* ========================================
        JOB DETAIL STYLES
        ======================================== */
 
-      /* Fix scroll issue - ensure proper overflow handling */
-      html,
-      body {
-        height: 100%;
-        overflow-x: hidden;
-      }
+    /* Fix scroll issue - ensure proper overflow handling */
+    html,
+    body {
+      height: 100%;
+      overflow-x: hidden;
+    }
 
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        padding-top: var(--header-height);
-      }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: var(--header-height);
+    }
 
-      main {
-        flex: 1;
-        padding: 24px 0 40px;
-      }
+    main {
+      flex: 1;
+      padding: 24px 0 40px;
+    }
 
-      .container {
-        max-width: var(--max-width);
-        margin: 0 auto;
-        padding: 0 var(--container-padding);
-      }
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--container-padding);
+    }
 
-      /* Breadcrumb */
-      .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-      }
-      .breadcrumb a {
-        color: var(--text-secondary);
-        transition: color 0.2s ease;
-      }
-      .breadcrumb a:hover {
-        color: var(--primary);
-      }
-      .breadcrumb .current {
-        color: var(--text-primary);
-        font-weight: 600;
-      }
-      .breadcrumb i {
-        font-size: 10px;
-        color: var(--border);
-      }
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
 
+    .breadcrumb a {
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb .current {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .breadcrumb i {
+      font-size: 10px;
+      color: var(--border);
+    }
+
+    .job-detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* Left Column */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .job-header-detail {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .company-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .company-info .name {
+      font-weight: 600;
+    }
+
+    .company-info .location {
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .company-info .posted {
+      color: var(--text-secondary);
+      margin-left: auto;
+      font-size: 14px;
+    }
+
+    .job-title-detail {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: var(--surface-alt);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .main-content-detail {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h2 i {
+      color: var(--primary);
+    }
+
+    .section p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .section ul li {
+      padding: 8px 0;
+      display: flex;
+      gap: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .section ul li:before {
+      content: "✔";
+      color: var(--success);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .requirements li:before {
+      content: "▸";
+      color: var(--primary);
+    }
+
+    /* Right Column - Sidebar */
+    .sidebar-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: sticky;
+      top: calc(var(--header-height) + 24px);
+    }
+
+    .match-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .match-card h3 {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .match-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary) 0deg 345deg,
+          var(--border) 345deg 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .match-inner {
+      width: 110px;
+      height: 110px;
+      background: var(--surface);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+
+    .match-percentage {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .match-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .progress-item {
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .progress-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .progress-label span:last-child {
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #6366f1);
+      border-radius: var(--radius-full);
+    }
+
+    .apply-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .apply-btn:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .apply-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+
+    .save-btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--text-secondary);
+    }
+
+    .save-btn.saved {
+      border-color: var(--success);
+      color: var(--success);
+      background: var(--success-light);
+    }
+
+    .meta-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-item:last-child {
+      border-bottom: none;
+    }
+
+    .meta-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--surface-alt);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text-primary);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 90%;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    .toast i {
+      color: var(--success);
+    }
+
+    .toast.error i {
+      color: var(--danger);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
       .job-detail-layout {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 32px;
-        align-items: start;
+        grid-template-columns: 1fr;
       }
 
-      /* Left Column */
-      .left-column {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
+      .sidebar-detail {
+        position: static;
+        order: -1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .job-title-detail {
+        font-size: 24px;
       }
 
       .job-header-detail {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 32px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
-      }
-
-      .company-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-      }
-      .company-info .name {
-        font-weight: 600;
-      }
-      .company-info .location {
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .company-info .posted {
-        color: var(--text-secondary);
-        margin-left: auto;
-        font-size: 14px;
-      }
-
-      .job-title-detail {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 16px;
-        line-height: 1.2;
-      }
-
-      .tags {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-      .tag {
-        background: var(--surface-alt);
-        padding: 6px 16px;
-        border-radius: var(--radius-full);
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text-secondary);
+        padding: 20px;
       }
 
       .main-content-detail {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 32px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
+        padding: 20px;
       }
 
-      .section {
-        margin-bottom: 32px;
-      }
-      .section:last-child {
-        margin-bottom: 0;
-      }
-      .section h2 {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .section h2 i {
-        color: var(--primary);
-      }
-      .section p {
-        color: var(--text-secondary);
-        line-height: 1.7;
-      }
-      .section ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .section ul li {
-        padding: 8px 0;
-        display: flex;
-        gap: 12px;
-        color: var(--text-secondary);
-        line-height: 1.6;
-      }
-      .section ul li:before {
-        content: "✔";
-        color: var(--success);
-        font-weight: bold;
-        flex-shrink: 0;
-      }
-      .requirements li:before {
-        content: "▸";
-        color: var(--primary);
-      }
-
-      /* Right Column - Sidebar */
-      .sidebar-detail {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        position: sticky;
-        top: calc(var(--header-height) + 24px);
-      }
-
-      .match-card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 28px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
-        text-align: center;
-      }
-
-      .match-card h3 {
-        margin: 0 0 16px;
-        font-size: 18px;
-        font-weight: 700;
+      .company-info .posted {
+        margin-left: 0;
+        width: 100%;
       }
 
       .match-circle {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        background: conic-gradient(
-          var(--primary) 0deg 345deg,
-          var(--border) 345deg 360deg
-        );
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 16px;
+        width: 120px;
+        height: 120px;
       }
+
       .match-inner {
-        width: 110px;
-        height: 110px;
-        background: var(--surface);
-        border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-shadow: var(--shadow);
+        width: 90px;
+        height: 90px;
       }
+
       .match-percentage {
-        font-size: 36px;
-        font-weight: 700;
-        color: var(--primary);
-        line-height: 1;
+        font-size: 28px;
       }
-      .match-label {
-        font-size: 13px;
-        color: var(--text-secondary);
+    }
+
+    @media (max-width: 480px) {
+      .job-header-detail {
+        padding: 16px;
       }
 
-      .progress-item {
-        margin-bottom: 12px;
-        text-align: left;
-      }
-      .progress-item:last-child {
-        margin-bottom: 0;
-      }
-      .progress-label {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        margin-bottom: 4px;
-      }
-      .progress-label span:last-child {
-        font-weight: 600;
-      }
-      .progress-bar {
-        height: 6px;
-        background: var(--border);
-        border-radius: var(--radius-full);
-        overflow: hidden;
-      }
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--primary), #6366f1);
-        border-radius: var(--radius-full);
+      .main-content-detail {
+        padding: 16px;
       }
 
-      .apply-btn {
-        width: 100%;
-        padding: 14px;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: var(--radius);
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all var(--transition);
-        margin-top: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-      }
-      .apply-btn:hover:not(:disabled) {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
-      }
-      .apply-btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-
-      .save-btn {
-        width: 100%;
-        padding: 12px;
-        background: transparent;
-        border: 2px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all var(--transition);
-        margin-top: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        color: var(--text-primary);
-      }
-      .save-btn:hover {
-        background: var(--surface-alt);
-        border-color: var(--text-secondary);
-      }
-      .save-btn.saved {
-        border-color: var(--success);
-        color: var(--success);
-        background: var(--success-light);
+      .match-card {
+        padding: 20px;
       }
 
       .meta-card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
+        padding: 16px;
       }
-      .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 14px 0;
-        border-bottom: 1px solid var(--border);
+
+      .section h2 {
+        font-size: 18px;
       }
-      .meta-item:last-child {
-        border-bottom: none;
-      }
-      .meta-icon {
-        width: 44px;
-        height: 44px;
-        background: var(--surface-alt);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+
+      .job-title-detail {
         font-size: 20px;
-        color: var(--primary);
-        flex-shrink: 0;
       }
+    }
+  </style>
+</head>
 
-      /* Toast Notification */
-      .toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        background: var(--text-primary);
-        color: #fff;
-        padding: 12px 22px;
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-weight: 500;
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s ease;
-        z-index: 1100;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        max-width: 90%;
-      }
-      .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-        pointer-events: auto;
-      }
-      .toast i {
-        color: var(--success);
-      }
-      .toast.error i {
-        color: var(--danger);
-      }
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
 
-      /* Responsive */
-      @media (max-width: 1024px) {
-        .job-detail-layout {
-          grid-template-columns: 1fr;
-        }
-        .sidebar-detail {
-          position: static;
-          order: -1;
-        }
-      }
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="job-search.html" class="nav-link active" data-page="jobs">Jobs</a>
+        <a href="my-applications.html" class="nav-link" data-page="applications">Applications</a>
+        <a href="profile-management.html" class="nav-link" data-page="profile">Profile</a>
+      </nav>
 
-      @media (max-width: 768px) {
-        .job-title-detail {
-          font-size: 24px;
-        }
-        .job-header-detail {
-          padding: 20px;
-        }
-        .main-content-detail {
-          padding: 20px;
-        }
-        .company-info .posted {
-          margin-left: 0;
-          width: 100%;
-        }
-        .match-circle {
-          width: 120px;
-          height: 120px;
-        }
-        .match-inner {
-          width: 90px;
-          height: 90px;
-        }
-        .match-percentage {
-          font-size: 28px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .job-header-detail {
-          padding: 16px;
-        }
-        .main-content-detail {
-          padding: 16px;
-        }
-        .match-card {
-          padding: 20px;
-        }
-        .meta-card {
-          padding: 16px;
-        }
-        .section h2 {
-          font-size: 18px;
-        }
-        .job-title-detail {
-          font-size: 20px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a href="job-search.html" class="nav-link active" data-page="jobs"
-            >Jobs</a
-          >
-          <a
-            href="my-applications.html"
-            class="nav-link"
-            data-page="applications"
-            >Applications</a
-          >
-          <a href="profile-management.html" class="nav-link" data-page="profile"
-            >Profile</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
       </div>
-
-      <!-- Mobile Menu -->
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="job-search.html" class="mobile-link active" data-page="jobs"
-          >Jobs</a
-        >
-        <a
-          href="my-applications.html"
-          class="mobile-link"
-          data-page="applications"
-          >Applications</a
-        >
-        <a
-          href="profile-management.html"
-          class="mobile-link"
-          data-page="profile"
-          >Profile</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main>
-      <div class="container">
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="job-search.html"><i class="fas fa-home"></i> Jobs</a>
-          <i class="fas fa-chevron-right"></i>
-          <span class="current">Senior Frontend Engineer</span>
-        </nav>
-
-        <div class="job-detail-layout">
-          <!-- Left Column -->
-          <div class="left-column">
-            <!-- Job Header -->
-            <div class="job-header-detail">
-              <div class="company-info">
-                <span style="font-size: 28px">🏢</span>
-                <div>
-                  <div class="name">TechFlow Inc.</div>
-                  <div class="location">
-                    <i class="fas fa-location-dot"></i> San Francisco, CA
-                    (Hybrid)
-                  </div>
-                </div>
-                <div class="posted">
-                  <i class="fas fa-clock"></i> Posted 2 days ago
-                </div>
-              </div>
-              <h1 class="job-title-detail">Senior Frontend Engineer</h1>
-              <div class="tags">
-                <span class="tag">Engineering</span>
-                <span class="tag">Full-time</span>
-                <span class="tag">Senior Level</span>
-              </div>
-            </div>
-
-            <!-- Job Details -->
-            <div class="main-content-detail">
-              <div class="section">
-                <h2><i class="fas fa-file-lines"></i> Overview</h2>
-                <p>
-                  TechFlow Inc. is seeking a Senior Frontend Engineer to lead
-                  the development of our next-generation enterprise workflow
-                  tools. In this role, you will architect complex user
-                  interfaces, optimize application performance, and mentor
-                  junior developers.
-                </p>
-              </div>
-
-              <div class="section">
-                <h2><i class="fas fa-list-check"></i> Responsibilities</h2>
-                <ul>
-                  <li>
-                    Architect and build scalable, robust frontend applications
-                    using React and TypeScript.
-                  </li>
-                  <li>
-                    Collaborate with design teams to implement complex,
-                    responsive UI designs utilizing Tailwind CSS.
-                  </li>
-                  <li>
-                    Optimize application performance for maximum speed and
-                    scalability.
-                  </li>
-                  <li>
-                    Mentor mid-level and junior engineers, conducting code
-                    reviews and fostering best practices.
-                  </li>
-                </ul>
-              </div>
-
-              <div class="section">
-                <h2><i class="fas fa-clipboard-list"></i> Requirements</h2>
-                <ul class="requirements">
-                  <li>
-                    5+ years of professional experience in frontend development.
-                  </li>
-                  <li>
-                    Expert-level proficiency in React, TypeScript, and modern
-                    JavaScript.
-                  </li>
-                  <li>
-                    Strong experience with utility-first CSS frameworks like
-                    Tailwind CSS.
-                  </li>
-                  <li>
-                    Deep understanding of web performance optimization
-                    techniques.
-                  </li>
-                </ul>
-              </div>
-
-              <div class="section">
-                <h2><i class="fas fa-gift"></i> Benefits</h2>
-                <ul>
-                  <li>Competitive base salary + equity options.</li>
-                  <li>Comprehensive health, dental, and vision insurance.</li>
-                  <li>Flexible hybrid work model and unlimited PTO.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column - Sidebar -->
-          <div class="sidebar-detail">
-            <!-- AI Match Card -->
-            <div class="match-card">
-              <h3>
-                <span style="color: var(--primary)">🤖</span> AI Match Analysis
-              </h3>
-              <div class="match-circle">
-                <div class="match-inner">
-                  <div class="match-percentage">96</div>
-                  <div class="match-label">% Match</div>
-                </div>
-              </div>
-              <div class="progress-item">
-                <div class="progress-label">
-                  <span>Skills Match</span>
-                  <span>98%</span>
-                </div>
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 98%"></div>
-                </div>
-              </div>
-              <div class="progress-item">
-                <div class="progress-label">
-                  <span>Experience</span>
-                  <span>94%</span>
-                </div>
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 94%"></div>
-                </div>
-              </div>
-              <button class="apply-btn" id="applyBtn">
-                <i class="fas fa-paper-plane"></i> Apply Now
-              </button>
-              <button class="save-btn" id="saveBtn">
-                <i class="fas fa-bookmark"></i> Save Job
-              </button>
-            </div>
-
-            <!-- Job Meta Card -->
-            <div class="meta-card">
-              <div class="meta-item">
-                <div class="meta-icon">💰</div>
-                <div>
-                  <div style="font-size: 12px; color: var(--text-secondary)">
-                    SALARY RANGE
-                  </div>
-                  <div style="font-weight: 700; font-size: 18px">
-                    $140k — $180k
-                  </div>
-                </div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-icon">📅</div>
-                <div>
-                  <div style="font-size: 12px; color: var(--text-secondary)">
-                    JOB TYPE
-                  </div>
-                  <div style="font-weight: 600">Full-time</div>
-                </div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-icon">📊</div>
-                <div>
-                  <div style="font-size: 12px; color: var(--text-secondary)">
-                    EXPERIENCE LEVEL
-                  </div>
-                  <div style="font-weight: 600">Senior</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            />
-            <span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
-        </div>
-
-        <div class="footer-links">
-          <h4>For Candidates</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="job-search.html">Browse Jobs</a></li>
-            <li><a href="my-applications.html">My Applications</a></li>
-            <li><a href="profile-management.html">Profile</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-    </footer>
-
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast">
-      <i class="fas fa-check-circle"></i>
-      <span id="toastMessage">Done</span>
     </div>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
-    <script src="../js/main.js"></script>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="job-search.html" class="mobile-link active" data-page="jobs">Jobs</a>
+      <a href="my-applications.html" class="mobile-link" data-page="applications">Applications</a>
+      <a href="profile-management.html" class="mobile-link" data-page="profile">Profile</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
 
-    <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
-    <script>
-      (function () {
-        "use strict";
+  <!-- ===== MAIN CONTENT ===== -->
+  <main>
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="job-search.html"><i class="fas fa-home"></i> Jobs</a>
+        <i class="fas fa-chevron-right"></i>
+        <span class="current">Senior Frontend Engineer</span>
+      </nav>
 
-        // ============================================
-        // TOAST SYSTEM
-        // ============================================
-        const toast = document.getElementById("toast");
-        const toastMessage = document.getElementById("toastMessage");
-        let toastTimer = null;
+      <div class="job-detail-layout">
+        <!-- Left Column -->
+        <div class="left-column">
+          <!-- Job Header -->
+          <div class="job-header-detail">
+            <div class="company-info">
+              <span style="font-size: 28px">🏢</span>
+              <div>
+                <div class="name">TechFlow Inc.</div>
+                <div class="location">
+                  <i class="fas fa-location-dot"></i> San Francisco, CA
+                  (Hybrid)
+                </div>
+              </div>
+              <div class="posted">
+                <i class="fas fa-clock"></i> Posted 2 days ago
+              </div>
+            </div>
+            <h1 class="job-title-detail">Senior Frontend Engineer</h1>
+            <div class="tags">
+              <span class="tag">Engineering</span>
+              <span class="tag">Full-time</span>
+              <span class="tag">Senior Level</span>
+            </div>
+          </div>
 
-        function showToast(message, icon = "fa-check-circle", isError = false) {
-          toastMessage.textContent = message;
-          toast.querySelector("i").className = `fas ${icon}`;
-          toast.classList.toggle("error", isError);
-          toast.classList.add("show");
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+          <!-- Job Details -->
+          <div class="main-content-detail">
+            <div class="section">
+              <h2><i class="fas fa-file-lines"></i> Overview</h2>
+              <p>
+                TechFlow Inc. is seeking a Senior Frontend Engineer to lead
+                the development of our next-generation enterprise workflow
+                tools. In this role, you will architect complex user
+                interfaces, optimize application performance, and mentor
+                junior developers.
+              </p>
+            </div>
+
+            <div class="section">
+              <h2><i class="fas fa-list-check"></i> Responsibilities</h2>
+              <ul>
+                <li>
+                  Architect and build scalable, robust frontend applications
+                  using React and TypeScript.
+                </li>
+                <li>
+                  Collaborate with design teams to implement complex,
+                  responsive UI designs utilizing Tailwind CSS.
+                </li>
+                <li>
+                  Optimize application performance for maximum speed and
+                  scalability.
+                </li>
+                <li>
+                  Mentor mid-level and junior engineers, conducting code
+                  reviews and fostering best practices.
+                </li>
+              </ul>
+            </div>
+
+            <div class="section">
+              <h2><i class="fas fa-clipboard-list"></i> Requirements</h2>
+              <ul class="requirements">
+                <li>
+                  5+ years of professional experience in frontend development.
+                </li>
+                <li>
+                  Expert-level proficiency in React, TypeScript, and modern
+                  JavaScript.
+                </li>
+                <li>
+                  Strong experience with utility-first CSS frameworks like
+                  Tailwind CSS.
+                </li>
+                <li>
+                  Deep understanding of web performance optimization
+                  techniques.
+                </li>
+              </ul>
+            </div>
+
+            <div class="section">
+              <h2><i class="fas fa-gift"></i> Benefits</h2>
+              <ul>
+                <li>Competitive base salary + equity options.</li>
+                <li>Comprehensive health, dental, and vision insurance.</li>
+                <li>Flexible hybrid work model and unlimited PTO.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Sidebar -->
+        <div class="sidebar-detail">
+          <!-- AI Match Card -->
+          <div class="match-card">
+            <h3>
+              <span style="color: var(--primary)">🤖</span> AI Match Analysis
+            </h3>
+            <div class="match-circle">
+              <div class="match-inner">
+                <div class="match-percentage">96</div>
+                <div class="match-label">% Match</div>
+              </div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label">
+                <span>Skills Match</span>
+                <span>98%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 98%"></div>
+              </div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label">
+                <span>Experience</span>
+                <span>94%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 94%"></div>
+              </div>
+            </div>
+            <button class="apply-btn" id="applyBtn">
+              <i class="fas fa-paper-plane"></i> Apply Now
+            </button>
+            <button class="save-btn" id="saveBtn">
+              <i class="fas fa-bookmark"></i> Save Job
+            </button>
+          </div>
+
+          <!-- Job Meta Card -->
+          <div class="meta-card">
+            <div class="meta-item">
+              <div class="meta-icon">💰</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-secondary)">
+                  SALARY RANGE
+                </div>
+                <div style="font-weight: 700; font-size: 18px">
+                  $140k — $180k
+                </div>
+              </div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-icon">📅</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-secondary)">
+                  JOB TYPE
+                </div>
+                <div style="font-weight: 600">Full-time</div>
+              </div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-icon">📊</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-secondary)">
+                  EXPERIENCE LEVEL
+                </div>
+                <div style="font-weight: 600">Senior</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" />
+          <span>RecruitAI</span>
+        </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h4>For Candidates</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="job-search.html">Browse Jobs</a></li>
+          <li><a href="my-applications.html">My Applications</a></li>
+          <li><a href="profile-management.html">Profile</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">Done</span>
+  </div>
+
+  <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+
+  <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
+  <script>
+    (function () {
+      "use strict";
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
+
+      console.log('✅ Page initialized with API client');
+      // ============================================
+      // TOAST SYSTEM
+      // ============================================
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+      let toastTimer = null;
+
+      function showToast(message, icon = "fa-check-circle", isError = false) {
+        toastMessage.textContent = message;
+        toast.querySelector("i").className = `fas ${icon}`;
+        toast.classList.toggle("error", isError);
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+      }
+
+      // ============================================
+      // APPLY TO JOB
+      // ============================================
+      const applyBtn = document.getElementById("applyBtn");
+
+      applyBtn.addEventListener("click", function () {
+        const originalHTML = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+        this.disabled = true;
+
+        setTimeout(() => {
+          this.innerHTML = originalHTML;
+          this.disabled = false;
+          showToast(
+            "🎉 Application submitted successfully!",
+            "fa-check-circle",
+          );
+        }, 1500);
+      });
+
+      // ============================================
+      // SAVE JOB
+      // ============================================
+      const saveBtn = document.getElementById("saveBtn");
+      let isSaved = false;
+
+      saveBtn.addEventListener("click", function () {
+        isSaved = !isSaved;
+
+        if (isSaved) {
+          this.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+          this.classList.add("saved");
+          showToast("✅ Job saved to your bookmarks!", "fa-bookmark");
+        } else {
+          this.innerHTML = '<i class="fas fa-bookmark"></i> Save Job';
+          this.classList.remove("saved");
+          showToast("Job removed from saved.", "fa-bookmark", true);
         }
+      });
 
-        // ============================================
-        // APPLY TO JOB
-        // ============================================
-        const applyBtn = document.getElementById("applyBtn");
-
-        applyBtn.addEventListener("click", function () {
-          const originalHTML = this.innerHTML;
-          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
-          this.disabled = true;
-
-          setTimeout(() => {
-            this.innerHTML = originalHTML;
-            this.disabled = false;
-            showToast(
-              "🎉 Application submitted successfully!",
-              "fa-check-circle",
-            );
-          }, 1500);
+      // ============================================
+      // NOTIFICATIONS
+      // ============================================
+      document
+        .getElementById("notifBtn")
+        .addEventListener("click", function () {
+          showToast("🔔 You have 3 unread notifications", "fa-bell");
         });
 
-        // ============================================
-        // SAVE JOB
-        // ============================================
-        const saveBtn = document.getElementById("saveBtn");
-        let isSaved = false;
-
-        saveBtn.addEventListener("click", function () {
-          isSaved = !isSaved;
-
-          if (isSaved) {
-            this.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-            this.classList.add("saved");
-            showToast("✅ Job saved to your bookmarks!", "fa-bookmark");
-          } else {
-            this.innerHTML = '<i class="fas fa-bookmark"></i> Save Job';
-            this.classList.remove("saved");
-            showToast("Job removed from saved.", "fa-bookmark", true);
-          }
+      // ============================================
+      // USER AVATAR
+      // ============================================
+      document
+        .getElementById("userAvatar")
+        .addEventListener("click", function () {
+          window.location.href = "profile-management.html";
         });
 
-        // ============================================
-        // NOTIFICATIONS
-        // ============================================
-        document
-          .getElementById("notifBtn")
-          .addEventListener("click", function () {
-            showToast("🔔 You have 3 unread notifications", "fa-bell");
-          });
+      console.log("✅ Job Detail page loaded successfully!");
+      console.log("📋 Job: Senior Frontend Engineer at TechFlow Inc.");
+    })();
+  </script>
+</body>
 
-        // ============================================
-        // USER AVATAR
-        // ============================================
-        document
-          .getElementById("userAvatar")
-          .addEventListener("click", function () {
-            window.location.href = "profile-management.html";
-          });
-
-        console.log("✅ Job Detail page loaded successfully!");
-        console.log("📋 Job: Senior Frontend Engineer at TechFlow Inc.");
-      })();
-    </script>
-  </body>
 </html>

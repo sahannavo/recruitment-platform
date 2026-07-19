@@ -51,4 +51,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate) =>
         await _dbSet.AnyAsync(predicate);
+    /// <summary>
+    /// Gets entities by candidate ID. Override in specific repositories if needed.
+    /// </summary>
+    /// <param name="candidateId">The candidate ID.</param>
+    /// <returns>Entities belonging to the candidate.</returns>
+    /// <exception cref="NotSupportedException">Thrown if not overridden in a specific repository.</exception>
+    public virtual Task<IEnumerable<T>> GetByCandidateAsync(int candidateId)
+    {
+        throw new NotSupportedException($"GetByCandidateAsync is not supported for {typeof(T).Name}. Override in a specific repository.");
+    }
 }

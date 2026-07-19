@@ -1,876 +1,804 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Admin Settings</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Admin Settings</title>
 
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Unified CSS -->
-    <link rel="stylesheet" href="../css/main.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <style>
-      /* ========================================
+  <!-- Unified CSS -->
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    /* ========================================
        ADMIN SETTINGS SPECIFIC STYLES
        ======================================== */
 
-      .page-header {
-        margin-bottom: 24px;
-      }
-      .page-header h1 {
-        font-size: 28px;
-        font-weight: 800;
-        margin: 0 0 4px;
-      }
-      .page-header p {
-        color: var(--text-secondary);
-        font-size: 15px;
-        margin: 0;
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 4px;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin: 0;
+    }
+
+    .settings-container {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* Tabs - Mobile Dropdown */
+    .mobile-tabs {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: none;
+    }
+
+    .mobile-tabs select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--surface);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      cursor: pointer;
+    }
+
+    .mobile-tabs select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* Tabs - Desktop */
+    .desktop-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      background: var(--surface);
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 16px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: -1px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-btn i {
+      font-size: 16px;
+    }
+
+    /* Tab Panels */
+    .tab-panel {
+      display: none;
+      padding: 24px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
       }
 
-      .settings-container {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        overflow: hidden;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
 
-      /* Tabs - Mobile Dropdown */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-grid .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-group .desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-primary);
+      transition: all var(--transition);
+      width: 100%;
+      background: var(--surface);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Logo Upload */
+    .logo-upload-area {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius);
+      border: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--background);
+      overflow: hidden;
+    }
+
+    .logo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .logo-preview i {
+      font-size: 32px;
+      color: var(--text-secondary);
+    }
+
+    /* Sliders */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px;
+      background: var(--background);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-header label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .slider-value-badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2px 14px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--border);
+      outline: none;
+      transition: background 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-md);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      border: none;
+    }
+
+    /* API Key Input */
+    .api-key-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .api-key-wrapper input {
+      padding-right: 44px;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    .toggle-password:hover {
+      color: var(--primary);
+    }
+
+    /* Toggle Switch */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-info strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toggle-info span {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--border);
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .switch-slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    input:checked+.switch-slider {
+      background: var(--success);
+    }
+
+    input:checked+.switch-slider::before {
+      transform: translateX(22px);
+    }
+
+    /* Panel Actions */
+    .panel-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 24px 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .btn.is-loading {
+      color: transparent;
+    }
+
+    .btn.is-loading .spinner {
+      display: block;
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      position: absolute;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .btn-secondary.is-loading .spinner {
+      border-top-color: var(--primary);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 24px;
+      background: var(--success);
+      color: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 1100;
+      max-width: 400px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast i {
+      font-size: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
       .mobile-tabs {
-        padding: 16px;
-        border-bottom: 1px solid var(--border);
-        display: none;
-      }
-      .mobile-tabs select {
-        width: 100%;
-        padding: 10px 14px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        font-family: inherit;
-        font-weight: 500;
-        font-size: 14px;
-        color: var(--text-primary);
-        background: var(--surface);
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 14px center;
-        background-size: 16px;
-        cursor: pointer;
-      }
-      .mobile-tabs select:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-
-      /* Tabs - Desktop */
-      .desktop-tabs {
-        display: flex;
-        border-bottom: 1px solid var(--border);
-        padding: 0 24px;
-        background: var(--surface);
-        gap: 4px;
-      }
-
-      .tab-btn {
-        background: none;
-        border: none;
-        padding: 16px 20px;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        cursor: pointer;
-        border-bottom: 3px solid transparent;
-        transition: all var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: -1px;
-      }
-      .tab-btn:hover {
-        color: var(--text-primary);
-      }
-      .tab-btn.active {
-        color: var(--primary);
-        border-bottom-color: var(--primary);
-      }
-      .tab-btn i {
-        font-size: 16px;
-      }
-
-      /* Tab Panels */
-      .tab-panel {
-        display: none;
-        padding: 24px;
-        animation: fadeIn 0.3s ease;
-      }
-      .tab-panel.active {
         display: block;
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .section-title {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: var(--text-primary);
+      .desktop-tabs {
+        display: none;
       }
 
       .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-      }
-      .form-grid .full-width {
-        grid-column: 1 / -1;
+        grid-template-columns: 1fr;
       }
 
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .form-group label {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-      .form-group .desc {
-        font-size: 13px;
-        color: var(--text-secondary);
+      .tab-panel {
+        padding: 16px;
       }
 
-      .form-control {
-        padding: 10px 14px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        font-family: inherit;
-        font-size: 14px;
-        color: var(--text-primary);
-        transition: all var(--transition);
-        width: 100%;
-        background: var(--surface);
-      }
-      .form-control:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-      .form-control::placeholder {
-        color: var(--text-muted);
-      }
-
-      textarea.form-control {
-        resize: vertical;
-        min-height: 100px;
-      }
-
-      select.form-control {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 14px center;
-        background-size: 16px;
-        cursor: pointer;
-      }
-
-      /* Logo Upload */
-      .logo-upload-area {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-      }
-      .logo-preview {
-        width: 80px;
-        height: 80px;
-        border-radius: var(--radius);
-        border: 2px dashed var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--background);
-        overflow: hidden;
-      }
-      .logo-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-      }
-      .logo-preview i {
-        font-size: 32px;
-        color: var(--text-secondary);
-      }
-
-      /* Sliders */
-      .slider-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        padding: 20px;
-        background: var(--background);
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-      }
-      .slider-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .slider-header label {
-        font-weight: 600;
-        font-size: 14px;
-      }
-      .slider-value-badge {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        padding: 2px 14px;
-        border-radius: var(--radius-full);
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--primary);
-      }
-
-      input[type="range"] {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100%;
-        height: 6px;
-        border-radius: var(--radius-full);
-        background: var(--border);
-        outline: none;
-        transition: background 0.2s;
-      }
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--primary);
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: var(--shadow-md);
-      }
-      input[type="range"]::-webkit-slider-thumb:hover {
-        transform: scale(1.15);
-      }
-      input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--primary);
-        cursor: pointer;
-        border: none;
-      }
-
-      /* API Key Input */
-      .api-key-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-      }
-      .api-key-wrapper input {
-        padding-right: 44px;
-        font-family: monospace;
-        letter-spacing: 0.5px;
-      }
-      .toggle-password {
-        position: absolute;
-        right: 12px;
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        padding: 4px;
-        font-size: 16px;
-        transition: color 0.2s;
-      }
-      .toggle-password:hover {
-        color: var(--primary);
-      }
-
-      /* Toggle Switch */
-      .toggle-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 0;
-        border-bottom: 1px solid var(--border);
-      }
-      .toggle-row:last-child {
-        border-bottom: none;
-      }
-      .toggle-info strong {
-        display: block;
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .toggle-info span {
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 48px;
-        height: 26px;
-        flex-shrink: 0;
-      }
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-      .switch-slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--border);
-        transition: 0.3s;
-        border-radius: 26px;
-      }
-      .switch-slider::before {
-        position: absolute;
-        content: "";
-        height: 20px;
-        width: 20px;
-        left: 3px;
-        bottom: 3px;
-        background: #fff;
-        transition: 0.3s;
-        border-radius: 50%;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-      }
-      input:checked + .switch-slider {
-        background: var(--success);
-      }
-      input:checked + .switch-slider::before {
-        transform: translateX(22px);
-      }
-
-      /* Panel Actions */
       .panel-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        padding: 20px 24px 24px;
-        border-top: 1px solid var(--border);
+        flex-direction: column-reverse;
+        padding: 16px;
+      }
+
+      .panel-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .logo-upload-area {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .slider-group {
+        padding: 16px;
+      }
+
+      .toggle-row {
         flex-wrap: wrap;
+        gap: 8px;
       }
 
-      .btn.is-loading {
-        color: transparent;
-      }
-      .btn.is-loading .spinner {
-        display: block;
-      }
-      .spinner {
-        display: none;
-        width: 18px;
-        height: 18px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.6s linear infinite;
-        position: absolute;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .btn-secondary.is-loading .spinner {
-        border-top-color: var(--primary);
-        border-color: rgba(0, 0, 0, 0.1);
-      }
-
-      /* Toast */
       .toast {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        padding: 14px 24px;
-        background: var(--success);
-        color: #fff;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-lg);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        transform: translateY(100px);
-        opacity: 0;
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        z-index: 1100;
-        max-width: 400px;
+        left: 16px;
+        right: 16px;
+        max-width: unset;
       }
-      .toast.show {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      .toast i {
-        font-size: 20px;
-      }
+    }
+  </style>
+</head>
 
-      /* Responsive */
-      @media (max-width: 1024px) {
-        .form-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-      }
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="../admin/dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
 
-      @media (max-width: 768px) {
-        .mobile-tabs {
-          display: block;
-        }
-        .desktop-tabs {
-          display: none;
-        }
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-        .tab-panel {
-          padding: 16px;
-        }
-        .panel-actions {
-          flex-direction: column-reverse;
-          padding: 16px;
-        }
-        .panel-actions .btn {
-          width: 100%;
-          justify-content: center;
-        }
-        .logo-upload-area {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        .slider-group {
-          padding: 16px;
-        }
-        .toggle-row {
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-        .toast {
-          left: 16px;
-          right: 16px;
-          max-width: unset;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="../admin/dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
-        </a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="../admin/dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="../admin/user-management.html" class="nav-link" data-page="users">Users</a>
+        <a href="../admin/settings.html" class="nav-link active" data-page="settings">Settings</a>
+        <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a>
+      </nav>
 
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a
-            href="../admin/dashboard.html"
-            class="nav-link"
-            data-page="dashboard"
-            >Dashboard</a
-          >
-          <a
-            href="../admin/user-management.html"
-            class="nav-link"
-            data-page="users"
-            >Users</a
-          >
-          <a
-            href="../admin/settings.html"
-            class="nav-link active"
-            data-page="settings"
-            >Settings</a
-          >
-          <a
-            href="../admin/analytics-reports.html"
-            class="nav-link"
-            data-page="analytics"
-            >Analytics</a
-          >
-        </nav>
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
 
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="../admin/dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="../admin/users.html" class="mobile-link" data-page="users">Users</a>
+      <a href="../admin/settings.html" class="mobile-link active" data-page="settings">Settings</a>
+      <a href="../admin/analytics-reports.html" class="mobile-link" data-page="analytics">Analytics</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <div class="page-header">
+      <h1>Settings</h1>
+      <p>
+        Manage your account configurations, integrations, and preferences.
+      </p>
+    </div>
+
+    <div class="settings-container">
+      <!-- Mobile Tabs Dropdown -->
+      <div class="mobile-tabs">
+        <select id="mobileTabSelect" aria-label="Select Settings Section">
+          <option value="tab-general">General</option>
+          <option value="tab-ai-weights">AI Weights</option>
+          <option value="tab-integrations">Integrations</option>
+          <option value="tab-notifications">Notifications</option>
+        </select>
       </div>
 
-      <!-- Mobile Menu -->
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a
-          href="../admin/dashboard.html"
-          class="mobile-link"
-          data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="../admin/users.html" class="mobile-link" data-page="users"
-          >Users</a
-        >
-        <a
-          href="../admin/settings.html"
-          class="mobile-link active"
-          data-page="settings"
-          >Settings</a
-        >
-        <a
-          href="../admin/analytics-reports.html"
-          class="mobile-link"
-          data-page="analytics"
-          >Analytics</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-header">
-        <h1>Settings</h1>
-        <p>
-          Manage your account configurations, integrations, and preferences.
-        </p>
+      <!-- Desktop Tabs -->
+      <div class="desktop-tabs" id="desktopTabs">
+        <button class="tab-btn active" data-target="tab-general">
+          <i class="fas fa-building"></i> General
+        </button>
+        <button class="tab-btn" data-target="tab-ai-weights">
+          <i class="fas fa-sliders-h"></i> AI Weights
+        </button>
+        <button class="tab-btn" data-target="tab-integrations">
+          <i class="fas fa-link"></i> Integrations
+        </button>
+        <button class="tab-btn" data-target="tab-notifications">
+          <i class="fas fa-bell"></i> Notifications
+        </button>
       </div>
 
-      <div class="settings-container">
-        <!-- Mobile Tabs Dropdown -->
-        <div class="mobile-tabs">
-          <select id="mobileTabSelect" aria-label="Select Settings Section">
-            <option value="tab-general">General</option>
-            <option value="tab-ai-weights">AI Weights</option>
-            <option value="tab-integrations">Integrations</option>
-            <option value="tab-notifications">Notifications</option>
-          </select>
+      <!-- Form -->
+      <form id="settingsForm" novalidate>
+        <!-- ===== TAB: GENERAL ===== -->
+        <div class="tab-panel active" id="tab-general">
+          <h2 class="section-title">Company Profile</h2>
+
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>Company Logo</label>
+              <p class="desc">
+                Update your company logo for reports and invoices.
+              </p>
+              <div class="logo-upload-area" style="margin-top: 8px">
+                <div class="logo-preview" id="logoPreview">
+                  <i class="fas fa-image"></i>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-secondary"
+                    onclick="document.getElementById('logoUpload').click()" style="margin-bottom: 6px">
+                    <i class="fas fa-upload"></i> Upload Logo
+                  </button>
+                  <p class="desc">SVG, PNG, or JPG (max. 800x400px)</p>
+                  <input type="file" id="logoUpload" accept="image/*" style="display: none" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="companyName">Company Name</label>
+              <input type="text" id="companyName" class="form-control" value="Acme Corporation" />
+            </div>
+
+            <div class="form-group">
+              <label for="industry">Industry</label>
+              <select id="industry" class="form-control">
+                <option>Technology</option>
+                <option>Healthcare</option>
+                <option>Finance</option>
+                <option>Retail</option>
+                <option>Education</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="website">Website URL</label>
+              <input type="url" id="website" class="form-control" value="https://acme.inc" />
+            </div>
+          </div>
         </div>
 
-        <!-- Desktop Tabs -->
-        <div class="desktop-tabs" id="desktopTabs">
-          <button class="tab-btn active" data-target="tab-general">
-            <i class="fas fa-building"></i> General
-          </button>
-          <button class="tab-btn" data-target="tab-ai-weights">
-            <i class="fas fa-sliders-h"></i> AI Weights
-          </button>
-          <button class="tab-btn" data-target="tab-integrations">
-            <i class="fas fa-link"></i> Integrations
-          </button>
-          <button class="tab-btn" data-target="tab-notifications">
-            <i class="fas fa-bell"></i> Notifications
-          </button>
-        </div>
+        <!-- ===== TAB: AI WEIGHTS ===== -->
+        <div class="tab-panel" id="tab-ai-weights">
+          <h2 class="section-title">Model Tuning &amp; Weights</h2>
 
-        <!-- Form -->
-        <form id="settingsForm" novalidate>
-          <!-- ===== TAB: GENERAL ===== -->
-          <div class="tab-panel active" id="tab-general">
-            <h2 class="section-title">Company Profile</h2>
-
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label>Company Logo</label>
-                <p class="desc">
-                  Update your company logo for reports and invoices.
-                </p>
-                <div class="logo-upload-area" style="margin-top: 8px">
-                  <div class="logo-preview" id="logoPreview">
-                    <i class="fas fa-image"></i>
-                  </div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <div class="slider-group">
+                <div class="slider-header">
                   <div>
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      onclick="document.getElementById('logoUpload').click()"
-                      style="margin-bottom: 6px"
-                    >
-                      <i class="fas fa-upload"></i> Upload Logo
-                    </button>
-                    <p class="desc">SVG, PNG, or JPG (max. 800x400px)</p>
-                    <input
-                      type="file"
-                      id="logoUpload"
-                      accept="image/*"
-                      style="display: none"
-                    />
+                    <label>Creativity (Temperature)</label>
+                    <p class="desc" style="margin-top: 2px">
+                      Higher values make output more random, lower values more
+                      deterministic.
+                    </p>
                   </div>
+                  <span class="slider-value-badge" id="val-creativity">0.7</span>
                 </div>
+                <input type="range" class="form-control" style="padding: 0; height: 6px" id="slider-creativity" min="0"
+                  max="1" step="0.1" value="0.7" />
               </div>
+            </div>
 
-              <div class="form-group">
-                <label for="companyName">Company Name</label>
-                <input
-                  type="text"
-                  id="companyName"
-                  class="form-control"
-                  value="Acme Corporation"
-                />
+            <div class="form-group full-width">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <div>
+                    <label>Context Precision (Top P)</label>
+                    <p class="desc" style="margin-top: 2px">
+                      Controls diversity via nucleus sampling.
+                    </p>
+                  </div>
+                  <span class="slider-value-badge" id="val-precision">0.9</span>
+                </div>
+                <input type="range" class="form-control" style="padding: 0; height: 6px" id="slider-precision" min="0"
+                  max="1" step="0.05" value="0.9" />
               </div>
+            </div>
 
-              <div class="form-group">
-                <label for="industry">Industry</label>
-                <select id="industry" class="form-control">
-                  <option>Technology</option>
-                  <option>Healthcare</option>
-                  <option>Finance</option>
-                  <option>Retail</option>
-                  <option>Education</option>
-                </select>
-              </div>
-
-              <div class="form-group full-width">
-                <label for="website">Website URL</label>
-                <input
-                  type="url"
-                  id="website"
-                  class="form-control"
-                  value="https://acme.inc"
-                />
+            <div class="form-group full-width">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <div>
+                    <label>Response Length Penalty</label>
+                    <p class="desc" style="margin-top: 2px">
+                      Encourage shorter or longer responses based on context
+                      window.
+                    </p>
+                  </div>
+                  <span class="slider-value-badge" id="val-penalty">0.0</span>
+                </div>
+                <input type="range" class="form-control" style="padding: 0; height: 6px" id="slider-penalty" min="-2.0"
+                  max="2.0" step="0.1" value="0.0" />
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- ===== TAB: AI WEIGHTS ===== -->
-          <div class="tab-panel" id="tab-ai-weights">
-            <h2 class="section-title">Model Tuning &amp; Weights</h2>
+        <!-- ===== TAB: INTEGRATIONS ===== -->
+        <div class="tab-panel" id="tab-integrations">
+          <h2 class="section-title">API Keys &amp; External Services</h2>
 
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <div class="slider-group">
-                  <div class="slider-header">
-                    <div>
-                      <label>Creativity (Temperature)</label>
-                      <p class="desc" style="margin-top: 2px">
-                        Higher values make output more random, lower values more
-                        deterministic.
-                      </p>
-                    </div>
-                    <span class="slider-value-badge" id="val-creativity"
-                      >0.7</span
-                    >
-                  </div>
-                  <input
-                    type="range"
-                    class="form-control"
-                    style="padding: 0; height: 6px"
-                    id="slider-creativity"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value="0.7"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group full-width">
-                <div class="slider-group">
-                  <div class="slider-header">
-                    <div>
-                      <label>Context Precision (Top P)</label>
-                      <p class="desc" style="margin-top: 2px">
-                        Controls diversity via nucleus sampling.
-                      </p>
-                    </div>
-                    <span class="slider-value-badge" id="val-precision"
-                      >0.9</span
-                    >
-                  </div>
-                  <input
-                    type="range"
-                    class="form-control"
-                    style="padding: 0; height: 6px"
-                    id="slider-precision"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value="0.9"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group full-width">
-                <div class="slider-group">
-                  <div class="slider-header">
-                    <div>
-                      <label>Response Length Penalty</label>
-                      <p class="desc" style="margin-top: 2px">
-                        Encourage shorter or longer responses based on context
-                        window.
-                      </p>
-                    </div>
-                    <span class="slider-value-badge" id="val-penalty">0.0</span>
-                  </div>
-                  <input
-                    type="range"
-                    class="form-control"
-                    style="padding: 0; height: 6px"
-                    id="slider-penalty"
-                    min="-2.0"
-                    max="2.0"
-                    step="0.1"
-                    value="0.0"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ===== TAB: INTEGRATIONS ===== -->
-          <div class="tab-panel" id="tab-integrations">
-            <h2 class="section-title">API Keys &amp; External Services</h2>
-
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label for="openaiKey">OpenAI API Key</label>
-                <p class="desc">Used for primary LLM generation tasks.</p>
-                <div class="api-key-wrapper">
-                  <input
-                    type="password"
-                    id="openaiKey"
-                    class="form-control"
-                    value="sk-1234567890abcdefghijklmnopqrstuvwxyz"
-                  />
-                  <button
-                    type="button"
-                    class="toggle-password"
-                    data-target="openaiKey"
-                    aria-label="Toggle visibility"
-                  >
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="form-group full-width">
-                <label for="awsKey">AWS Access Key ID</label>
-                <p class="desc">
-                  Required for S3 storage and processing queues.
-                </p>
-                <div class="api-key-wrapper">
-                  <input
-                    type="password"
-                    id="awsKey"
-                    class="form-control"
-                    value="AKIAIOSFODNN7EXAMPLE"
-                  />
-                  <button
-                    type="button"
-                    class="toggle-password"
-                    data-target="awsKey"
-                    aria-label="Toggle visibility"
-                  >
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="form-group full-width" style="margin-top: 8px">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  onclick="testConnections()"
-                >
-                  <i class="fas fa-plug"></i> Test Connections
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="openaiKey">OpenAI API Key</label>
+              <p class="desc">Used for primary LLM generation tasks.</p>
+              <div class="api-key-wrapper">
+                <input type="password" id="openaiKey" class="form-control"
+                  value="sk-1234567890abcdefghijklmnopqrstuvwxyz" />
+                <button type="button" class="toggle-password" data-target="openaiKey" aria-label="Toggle visibility">
+                  <i class="fas fa-eye"></i>
                 </button>
               </div>
             </div>
-          </div>
-
-          <!-- ===== TAB: NOTIFICATIONS ===== -->
-          <div class="tab-panel" id="tab-notifications">
-            <h2 class="section-title">Notification Preferences</h2>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <strong>System Alerts</strong>
-                <span
-                  >Receive notifications for system downtime and updates.</span
-                >
-              </div>
-              <label class="switch">
-                <input type="checkbox" checked />
-                <span class="switch-slider"></span>
-              </label>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <strong>Weekly Analytics Report</strong>
-                <span>Get a summary of your usage statistics via email.</span>
-              </div>
-              <label class="switch">
-                <input type="checkbox" checked />
-                <span class="switch-slider"></span>
-              </label>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <strong>API Usage Warnings</strong>
-                <span>Alert when approaching 90% of monthly API quota.</span>
-              </div>
-              <label class="switch">
-                <input type="checkbox" />
-                <span class="switch-slider"></span>
-              </label>
-            </div>
-
-            <h2 class="section-title" style="margin-top: 24px">
-              Custom Email Template
-            </h2>
 
             <div class="form-group full-width">
-              <label for="emailTemplate"
-                >Welcome Email (Markdown supported)</label
-              >
+              <label for="awsKey">AWS Access Key ID</label>
               <p class="desc">
-                Sent to new users when they are invited to your workspace.
+                Required for S3 storage and processing queues.
               </p>
-              <textarea id="emailTemplate" class="form-control" rows="6">
+              <div class="api-key-wrapper">
+                <input type="password" id="awsKey" class="form-control" value="AKIAIOSFODNN7EXAMPLE" />
+                <button type="button" class="toggle-password" data-target="awsKey" aria-label="Toggle visibility">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group full-width" style="margin-top: 8px">
+              <button type="button" class="btn btn-secondary" onclick="testConnections()">
+                <i class="fas fa-plug"></i> Test Connections
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TAB: NOTIFICATIONS ===== -->
+        <div class="tab-panel" id="tab-notifications">
+          <h2 class="section-title">Notification Preferences</h2>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <strong>System Alerts</strong>
+              <span>Receive notifications for system downtime and updates.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <strong>Weekly Analytics Report</strong>
+              <span>Get a summary of your usage statistics via email.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <strong>API Usage Warnings</strong>
+              <span>Alert when approaching 90% of monthly API quota.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <h2 class="section-title" style="margin-top: 24px">
+            Custom Email Template
+          </h2>
+
+          <div class="form-group full-width">
+            <label for="emailTemplate">Welcome Email (Markdown supported)</label>
+            <p class="desc">
+              Sent to new users when they are invited to your workspace.
+            </p>
+            <textarea id="emailTemplate" class="form-control" rows="6">
 Hi {{first_name}},
 
 Welcome to Acme Corporation! We are excited to have you on board.
@@ -878,323 +806,329 @@ Welcome to Acme Corporation! We are excited to have you on board.
 To get started, please log in and configure your profile.
 
 Best,
-The Team</textarea
-              >
-            </div>
+The Team</textarea>
           </div>
-
-          <!-- ===== FORM ACTIONS ===== -->
-          <div class="panel-actions">
-            <button type="button" class="btn btn-secondary" id="resetBtn">
-              <i class="fas fa-undo"></i> Discard Changes
-            </button>
-            <button type="submit" class="btn btn-primary" id="saveBtn">
-              <span id="saveText"
-                ><i class="fas fa-save"></i> Save Settings</span
-              >
-              <div class="spinner"></div>
-            </button>
-          </div>
-        </form>
-      </div>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            />
-            <span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
         </div>
 
-        <div class="footer-links">
-          <h4>For Administrators</h4>
-          <ul>
-            <li><a href="../admin/dashboard.html">Dashboard</a></li>
-            <li><a href="../admin/users.html">Users</a></li>
-            <li><a href="../admin/settings.html">Settings</a></li>
-            <li><a href="../admin/analytics-reports.html">Analytics</a></li>
-          </ul>
+        <!-- ===== FORM ACTIONS ===== -->
+        <div class="panel-actions">
+          <button type="button" class="btn btn-secondary" id="resetBtn">
+            <i class="fas fa-undo"></i> Discard Changes
+          </button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">
+            <span id="saveText"><i class="fas fa-save"></i> Save Settings</span>
+            <div class="spinner"></div>
+          </button>
         </div>
+      </form>
+    </div>
+  </main>
 
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" />
+          <span>RecruitAI</span>
         </div>
-
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
 
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-links">
+        <h4>For Administrators</h4>
+        <ul>
+          <li><a href="../admin/dashboard.html">Dashboard</a></li>
+          <li><a href="../admin/users.html">Users</a></li>
+          <li><a href="../admin/settings.html">Settings</a></li>
+          <li><a href="../admin/analytics-reports.html">Analytics</a></li>
+        </ul>
       </div>
-    </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
-    <script src="../js/main.js"></script>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
 
-    <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
-    <script>
-      (function () {
-        "use strict";
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
 
-        // ============================================
-        // TAB SWITCHING
-        // ============================================
-        const desktopTabs = document.querySelectorAll(".tab-btn");
-        const mobileSelect = document.getElementById("mobileTabSelect");
-        const tabPanels = document.querySelectorAll(".tab-panel");
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-        function switchTab(targetId) {
-          // Update desktop tabs
-          desktopTabs.forEach((btn) => {
-            btn.classList.toggle("active", btn.dataset.target === targetId);
-          });
+  <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-          // Update mobile select
-          mobileSelect.value = targetId;
+  <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
+  <script>
+    (function () {
+      "use strict";
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
 
-          // Update panels
-          tabPanels.forEach((panel) => {
-            panel.classList.toggle("active", panel.id === targetId);
-          });
-        }
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
 
+      console.log('✅ Page initialized with API client');
+      // ============================================
+      // TAB SWITCHING
+      // ============================================
+      const desktopTabs = document.querySelectorAll(".tab-btn");
+      const mobileSelect = document.getElementById("mobileTabSelect");
+      const tabPanels = document.querySelectorAll(".tab-panel");
+
+      function switchTab(targetId) {
+        // Update desktop tabs
         desktopTabs.forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            switchTab(btn.dataset.target);
-          });
+          btn.classList.toggle("active", btn.dataset.target === targetId);
         });
 
-        mobileSelect.addEventListener("change", (e) => {
-          switchTab(e.target.value);
+        // Update mobile select
+        mobileSelect.value = targetId;
+
+        // Update panels
+        tabPanels.forEach((panel) => {
+          panel.classList.toggle("active", panel.id === targetId);
         });
+      }
 
-        // ============================================
-        // SLIDER VALUE SYNC
-        // ============================================
-        const sliders = [
-          { input: "slider-creativity", display: "val-creativity" },
-          { input: "slider-precision", display: "val-precision" },
-          { input: "slider-penalty", display: "val-penalty" },
-        ];
-
-        sliders.forEach((config) => {
-          const inputEl = document.getElementById(config.input);
-          const displayEl = document.getElementById(config.display);
-          if (inputEl && displayEl) {
-            inputEl.addEventListener("input", (e) => {
-              displayEl.textContent = parseFloat(e.target.value).toFixed(1);
-            });
-          }
-        });
-
-        // ============================================
-        // API KEY TOGGLE
-        // ============================================
-        document.querySelectorAll(".toggle-password").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const targetId = btn.dataset.target;
-            const inputEl = document.getElementById(targetId);
-            const iconEl = btn.querySelector("i");
-
-            if (inputEl.type === "password") {
-              inputEl.type = "text";
-              iconEl.classList.replace("fa-eye", "fa-eye-slash");
-            } else {
-              inputEl.type = "password";
-              iconEl.classList.replace("fa-eye-slash", "fa-eye");
-            }
-          });
-        });
-
-        // ============================================
-        // LOGO UPLOAD PREVIEW
-        // ============================================
-        const logoUpload = document.getElementById("logoUpload");
-        const logoPreview = document.getElementById("logoPreview");
-
-        logoUpload.addEventListener("change", function (e) {
-          if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              logoPreview.innerHTML = `<img src="${e.target.result}" alt="Company Logo">`;
-            };
-            reader.readAsDataURL(this.files[0]);
-          }
-        });
-
-        // ============================================
-        // TOAST SYSTEM
-        // ============================================
-        const toast = document.getElementById("toast");
-        let toastTimer = null;
-
-        function showToast(message, icon = "fa-check-circle", isError = false) {
-          toast.querySelector("i").className = `fas ${icon}`;
-          toast.querySelector("span").textContent = message;
-          toast.style.background = isError ? "var(--danger)" : "var(--success)";
-          toast.classList.add("show");
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
-        }
-
-        // ============================================
-        // FORM SUBMISSION
-        // ============================================
-        const form = document.getElementById("settingsForm");
-        const saveBtn = document.getElementById("saveBtn");
-        const saveText = document.getElementById("saveText");
-        const resetBtn = document.getElementById("resetBtn");
-
-        form.addEventListener("submit", function (e) {
+      desktopTabs.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
           e.preventDefault();
-
-          // Collect form data
-          const data = {
-            companyName: document.getElementById("companyName").value,
-            industry: document.getElementById("industry").value,
-            website: document.getElementById("website").value,
-            openaiKey: document.getElementById("openaiKey").value,
-            awsKey: document.getElementById("awsKey").value,
-            emailTemplate: document.getElementById("emailTemplate").value,
-            creativity: document.getElementById("slider-creativity").value,
-            precision: document.getElementById("slider-precision").value,
-            penalty: document.getElementById("slider-penalty").value,
-            notifications: {
-              systemAlerts: document.querySelector(
-                "#tab-notifications .toggle-row:first-child input",
-              ).checked,
-              weeklyReport: document.querySelector(
-                "#tab-notifications .toggle-row:nth-child(2) input",
-              ).checked,
-              apiWarnings: document.querySelector(
-                "#tab-notifications .toggle-row:nth-child(3) input",
-              ).checked,
-            },
-          };
-
-          console.log("📋 Settings Data:", data);
-
-          // Show loading state
-          saveBtn.classList.add("is-loading");
-          saveBtn.disabled = true;
-
-          // Simulate API call
-          setTimeout(() => {
-            saveBtn.classList.remove("is-loading");
-            saveBtn.disabled = false;
-            showToast(
-              "Settings saved successfully! ✅",
-              "fa-check-circle",
-              false,
-            );
-          }, 1500);
+          switchTab(btn.dataset.target);
         });
+      });
 
-        // ============================================
-        // RESET BUTTON
-        // ============================================
-        resetBtn.addEventListener("click", function () {
-          if (confirm("Discard all unsaved changes?")) {
-            // Reset all form fields to their initial values
-            document.getElementById("companyName").value = "Acme Corporation";
-            document.getElementById("industry").value = "Technology";
-            document.getElementById("website").value = "https://acme.inc";
-            document.getElementById("openaiKey").value =
-              "sk-1234567890abcdefghijklmnopqrstuvwxyz";
-            document.getElementById("awsKey").value = "AKIAIOSFODNN7EXAMPLE";
-            document.getElementById("emailTemplate").value =
-              document.getElementById("emailTemplate").dataset.default ||
-              "Hi {{first_name}},\n\nWelcome to Acme Corporation! We are excited to have you on board.\n\nTo get started, please log in and configure your profile.\n\nBest,\nThe Team";
+      mobileSelect.addEventListener("change", (e) => {
+        switchTab(e.target.value);
+      });
 
-            // Reset sliders
-            document.getElementById("slider-creativity").value = "0.7";
-            document.getElementById("val-creativity").textContent = "0.7";
-            document.getElementById("slider-precision").value = "0.9";
-            document.getElementById("val-precision").textContent = "0.9";
-            document.getElementById("slider-penalty").value = "0.0";
-            document.getElementById("val-penalty").textContent = "0.0";
+      // ============================================
+      // SLIDER VALUE SYNC
+      // ============================================
+      const sliders = [
+        { input: "slider-creativity", display: "val-creativity" },
+        { input: "slider-precision", display: "val-precision" },
+        { input: "slider-penalty", display: "val-penalty" },
+      ];
 
-            // Reset toggles
-            const toggles = document.querySelectorAll(
-              "#tab-notifications .switch input",
-            );
-            toggles.forEach((toggle, index) => {
-              toggle.checked = [true, true, false][index] || false;
-            });
+      sliders.forEach((config) => {
+        const inputEl = document.getElementById(config.input);
+        const displayEl = document.getElementById(config.display);
+        if (inputEl && displayEl) {
+          inputEl.addEventListener("input", (e) => {
+            displayEl.textContent = parseFloat(e.target.value).toFixed(1);
+          });
+        }
+      });
 
-            showToast("Settings reset to defaults ↩️", "fa-undo", false);
+      // ============================================
+      // API KEY TOGGLE
+      // ============================================
+      document.querySelectorAll(".toggle-password").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.dataset.target;
+          const inputEl = document.getElementById(targetId);
+          const iconEl = btn.querySelector("i");
+
+          if (inputEl.type === "password") {
+            inputEl.type = "text";
+            iconEl.classList.replace("fa-eye", "fa-eye-slash");
+          } else {
+            inputEl.type = "password";
+            iconEl.classList.replace("fa-eye-slash", "fa-eye");
           }
         });
+      });
 
-        // ============================================
-        // TEST CONNECTIONS
-        // ============================================
-        window.testConnections = function () {
-          const btn = document.querySelector(
-            "#tab-integrations .btn-secondary",
-          );
-          const originalText = btn.innerHTML;
-          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
-          btn.disabled = true;
+      // ============================================
+      // LOGO UPLOAD PREVIEW
+      // ============================================
+      const logoUpload = document.getElementById("logoUpload");
+      const logoPreview = document.getElementById("logoPreview");
 
-          setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            showToast("✅ All connections are healthy!", "fa-plug", false);
-          }, 2000);
+      logoUpload.addEventListener("change", function (e) {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            logoPreview.innerHTML = `<img src="${e.target.result}" alt="Company Logo">`;
+          };
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+
+      // ============================================
+      // TOAST SYSTEM
+      // ============================================
+      const toast = document.getElementById("toast");
+      let toastTimer = null;
+
+      function showToast(message, icon = "fa-check-circle", isError = false) {
+        toast.querySelector("i").className = `fas ${icon}`;
+        toast.querySelector("span").textContent = message;
+        toast.style.background = isError ? "var(--danger)" : "var(--success)";
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+      }
+
+      // ============================================
+      // FORM SUBMISSION
+      // ============================================
+      const form = document.getElementById("settingsForm");
+      const saveBtn = document.getElementById("saveBtn");
+      const saveText = document.getElementById("saveText");
+      const resetBtn = document.getElementById("resetBtn");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Collect form data
+        const data = {
+          companyName: document.getElementById("companyName").value,
+          industry: document.getElementById("industry").value,
+          website: document.getElementById("website").value,
+          openaiKey: document.getElementById("openaiKey").value,
+          awsKey: document.getElementById("awsKey").value,
+          emailTemplate: document.getElementById("emailTemplate").value,
+          creativity: document.getElementById("slider-creativity").value,
+          precision: document.getElementById("slider-precision").value,
+          penalty: document.getElementById("slider-penalty").value,
+          notifications: {
+            systemAlerts: document.querySelector(
+              "#tab-notifications .toggle-row:first-child input",
+            ).checked,
+            weeklyReport: document.querySelector(
+              "#tab-notifications .toggle-row:nth-child(2) input",
+            ).checked,
+            apiWarnings: document.querySelector(
+              "#tab-notifications .toggle-row:nth-child(3) input",
+            ).checked,
+          },
         };
 
-        // ============================================
-        // STORE DEFAULT EMAIL TEMPLATE
-        // ============================================
-        const emailTemplate = document.getElementById("emailTemplate");
-        emailTemplate.dataset.default = emailTemplate.value;
+        console.log("📋 Settings Data:", data);
 
-        console.log("✅ Admin Settings page loaded successfully!");
-        console.log(
-          "📋 4 tabs available: General, AI Weights, Integrations, Notifications",
+        // Show loading state
+        saveBtn.classList.add("is-loading");
+        saveBtn.disabled = true;
+
+        // Simulate API call
+        setTimeout(() => {
+          saveBtn.classList.remove("is-loading");
+          saveBtn.disabled = false;
+          showToast(
+            "Settings saved successfully! ✅",
+            "fa-check-circle",
+            false,
+          );
+        }, 1500);
+      });
+
+      // ============================================
+      // RESET BUTTON
+      // ============================================
+      resetBtn.addEventListener("click", function () {
+        if (confirm("Discard all unsaved changes?")) {
+          // Reset all form fields to their initial values
+          document.getElementById("companyName").value = "Acme Corporation";
+          document.getElementById("industry").value = "Technology";
+          document.getElementById("website").value = "https://acme.inc";
+          document.getElementById("openaiKey").value =
+            "sk-1234567890abcdefghijklmnopqrstuvwxyz";
+          document.getElementById("awsKey").value = "AKIAIOSFODNN7EXAMPLE";
+          document.getElementById("emailTemplate").value =
+            document.getElementById("emailTemplate").dataset.default ||
+            "Hi {{first_name}},\n\nWelcome to Acme Corporation! We are excited to have you on board.\n\nTo get started, please log in and configure your profile.\n\nBest,\nThe Team";
+
+          // Reset sliders
+          document.getElementById("slider-creativity").value = "0.7";
+          document.getElementById("val-creativity").textContent = "0.7";
+          document.getElementById("slider-precision").value = "0.9";
+          document.getElementById("val-precision").textContent = "0.9";
+          document.getElementById("slider-penalty").value = "0.0";
+          document.getElementById("val-penalty").textContent = "0.0";
+
+          // Reset toggles
+          const toggles = document.querySelectorAll(
+            "#tab-notifications .switch input",
+          );
+          toggles.forEach((toggle, index) => {
+            toggle.checked = [true, true, false][index] || false;
+          });
+
+          showToast("Settings reset to defaults ↩️", "fa-undo", false);
+        }
+      });
+
+      // ============================================
+      // TEST CONNECTIONS
+      // ============================================
+      window.testConnections = function () {
+        const btn = document.querySelector(
+          "#tab-integrations .btn-secondary",
         );
-      })();
-    </script>
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+        btn.disabled = true;
 
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast">
-      <i class="fas fa-check-circle"></i>
-      <span>Settings saved successfully!</span>
-    </div>
-  </body>
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          showToast("✅ All connections are healthy!", "fa-plug", false);
+        }, 2000);
+      };
+
+      // ============================================
+      // STORE DEFAULT EMAIL TEMPLATE
+      // ============================================
+      const emailTemplate = document.getElementById("emailTemplate");
+      emailTemplate.dataset.default = emailTemplate.value;
+
+      console.log("✅ Admin Settings page loaded successfully!");
+      console.log(
+        "📋 4 tabs available: General, AI Weights, Integrations, Notifications",
+      );
+    })();
+  </script>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span>Settings saved successfully!</span>
+  </div>
+</body>
+
 </html>

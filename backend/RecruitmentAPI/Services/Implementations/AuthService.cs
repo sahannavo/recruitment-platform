@@ -137,7 +137,53 @@ namespace RecruitmentAPI.Services.Implementations
                 LastName = user.LastName
             };
         }
+        
 
+        public async Task<bool> ValidateTokenAsync(string token)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(token))
+                    return false;
+
+                var principal = _jwtHelper.ValidateToken(token);
+                if (principal == null)
+                    return false;
+
+                // Check if token is expired
+                if (_jwtHelper.IsTokenExpired(token))
+                    return false;
+
+                // Verify user still exists and is active
+                var emailClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+                if (string.IsNullOrEmpty(emailClaim))
+                    return false;
+
+                var user = await _userRepository.GetByEmailAsync(emailClaim);
+                return user != null && user.IsActive;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating token");
+                return false;
+            }
+        }
+
+        public async Task<bool> LogoutAsync(int userId)
+        {
+            try
+            {
+                // JWT is stateless, so we don't need to do anything server-side
+                // If using refresh tokens, they would be revoked here
+                _logger.LogInformation("User {UserId} logged out", userId);
+                return await Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during logout for user {UserId}", userId);
+                return false;
+            }
+        }
         public async Task<AuthResponse> RefreshTokenAsync(string token)
         {
             var principal = _jwtHelper.ValidateToken(token);

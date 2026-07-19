@@ -1,1007 +1,1000 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - User Management</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - User Management</title>
 
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Unified CSS -->
-    <link rel="stylesheet" href="../css/main.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <style>
-      /* ========================================
+  <!-- Unified CSS -->
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    /* ========================================
        ADMIN USERS SPECIFIC STYLES
        ======================================== */
 
-      .page-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-bottom: 24px;
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 4px;
+    }
+
+    .page-header p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1 1 280px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      transition: all var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* User List */
+    .user-list {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .user-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s ease;
+    }
+
+    .user-row:last-child {
+      border-bottom: none;
+    }
+
+    .user-row:hover {
+      background: var(--background);
+    }
+
+    .user-identity {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .user-avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 15px;
+      margin: 0 0 2px;
+    }
+
+    .user-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .badge-role-admin {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .badge-role-recruiter {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .badge-role-manager {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .badge-status-active {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .badge-status-disabled {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .edit-role-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .edit-role-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .edit-role-btn i {
+      font-size: 14px;
+    }
+
+    .action-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all var(--transition);
+      color: var(--text-secondary);
+    }
+
+    .action-icon-btn:hover {
+      background: var(--background);
+      border-color: var(--text-secondary);
+    }
+
+    .action-icon-btn.danger {
+      color: var(--danger);
+    }
+
+    .action-icon-btn.danger:hover {
+      background: #fee2e2;
+      border-color: var(--danger);
+    }
+
+    .action-icon-btn.success {
+      color: var(--success);
+    }
+
+    .action-icon-btn.success:hover {
+      background: var(--success-light);
+      border-color: var(--success);
+    }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pagination-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .page-btn {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 8px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .page-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .page-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* States */
+    .state-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .state-panel.visible {
+      display: flex;
+    }
+
+    .state-panel .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 14px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
-      .page-header h1 {
-        font-size: 28px;
-        font-weight: 800;
-        margin: 0 0 4px;
-      }
-      .page-header p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 15px;
+    }
+
+    .state-panel .empty-icon {
+      font-size: 40px;
+      color: var(--border);
+      margin-bottom: 12px;
+    }
+
+    .state-panel h3 {
+      margin: 0 0 6px;
+      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .state-panel p {
+      margin: 0;
+      font-size: 14px;
+      max-width: 320px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
       }
 
-      /* Toolbar */
-      .toolbar {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
+      to {
+        opacity: 1;
       }
-      .search-wrap {
-        position: relative;
-        flex: 1 1 280px;
-      }
-      .search-wrap i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-secondary);
-      }
-      .search-input {
-        width: 100%;
-        padding: 10px 14px 10px 40px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-family: inherit;
-        background: var(--surface);
-        color: var(--text-primary);
-        transition: all var(--transition);
-      }
-      .search-input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-      .search-input::placeholder {
-        color: var(--text-muted);
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.18s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(12px);
+        opacity: 0;
       }
 
-      .toolbar-actions {
-        display: flex;
-        gap: 10px;
+      to {
+        transform: translateY(0);
+        opacity: 1;
       }
+    }
 
-      /* User List */
-      .user-list {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-      }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
 
+    .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--background);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-primary);
+      background: var(--surface);
+      transition: all var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .form-control:disabled {
+      background: var(--background);
+      cursor: not-allowed;
+    }
+
+    .form-control.invalid {
+      border-color: var(--danger);
+    }
+
+    .form-error {
+      color: var(--danger);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal.confirm .modal-body {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .modal.confirm .warn-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .modal.confirm p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .modal.confirm strong {
+      color: var(--text-primary);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text-primary);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    .toast i {
+      color: var(--success);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
       .user-row {
-        display: grid;
-        grid-template-columns: 1fr auto auto;
-        align-items: center;
-        gap: 16px;
-        padding: 18px 24px;
-        border-bottom: 1px solid var(--border);
-        transition: background 0.15s ease;
-      }
-      .user-row:last-child {
-        border-bottom: none;
-      }
-      .user-row:hover {
-        background: var(--background);
-      }
-
-      .user-identity {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        min-width: 0;
-      }
-      .user-avatar-sm {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), #818cf8);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 14px;
-        flex-shrink: 0;
-      }
-      .user-name {
-        font-weight: 700;
-        font-size: 15px;
-        margin: 0 0 2px;
-      }
-      .user-email {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        grid-template-columns: 1fr;
+        row-gap: 14px;
       }
 
       .badges {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 14px;
-        border-radius: var(--radius-full);
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        white-space: nowrap;
-      }
-      .badge-role-admin {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .badge-role-recruiter {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-      .badge-role-manager {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .badge-status-active {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .badge-status-disabled {
-        background: #fef3c7;
-        color: #92400e;
+        justify-content: flex-start;
       }
 
       .row-actions {
-        display: flex;
-        align-items: center;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .page-header .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .toolbar {
+        flex-direction: column;
+      }
+
+      .toolbar-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
       }
-      .edit-role-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--surface);
-        color: var(--primary);
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all var(--transition);
-      }
-      .edit-role-btn:hover {
-        background: var(--primary-light);
-        border-color: var(--primary);
-      }
-      .edit-role-btn i {
-        font-size: 14px;
-      }
 
-      .action-icon-btn {
-        width: 38px;
-        height: 38px;
-        border-radius: var(--radius);
-        border: 1.5px solid var(--border);
-        background: var(--surface);
-        display: flex;
-        align-items: center;
+      .toolbar-actions .btn {
         justify-content: center;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all var(--transition);
-        color: var(--text-secondary);
-      }
-      .action-icon-btn:hover {
-        background: var(--background);
-        border-color: var(--text-secondary);
-      }
-      .action-icon-btn.danger {
-        color: var(--danger);
-      }
-      .action-icon-btn.danger:hover {
-        background: #fee2e2;
-        border-color: var(--danger);
-      }
-      .action-icon-btn.success {
-        color: var(--success);
-      }
-      .action-icon-btn.success:hover {
-        background: var(--success-light);
-        border-color: var(--success);
       }
 
-      /* Pagination */
-      .pagination-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 20px;
+      .user-row {
+        padding: 16px;
+      }
+
+      .row-actions {
         flex-wrap: wrap;
-        gap: 12px;
-      }
-      .pagination-count {
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
-      .pagination {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-      .page-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 0 8px;
-        border-radius: var(--radius);
-        border: 1.5px solid var(--border);
-        background: var(--surface);
-        color: var(--text-primary);
-        font-size: 14px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all var(--transition);
-      }
-      .page-btn:hover:not(:disabled) {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-      .page-btn.active {
-        background: var(--primary);
-        color: #fff;
-        border-color: var(--primary);
-      }
-      .page-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
+        width: 100%;
       }
 
-      /* States */
-      .state-panel {
-        display: none;
+      .edit-role-btn {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .pagination-bar {
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 60px 20px;
-        text-align: center;
-        color: var(--text-secondary);
-      }
-      .state-panel.visible {
-        display: flex;
-      }
-      .state-panel .spinner {
-        width: 36px;
-        height: 36px;
-        border: 3px solid var(--border);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin-bottom: 14px;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      .state-panel .empty-icon {
-        font-size: 40px;
-        color: var(--border);
-        margin-bottom: 12px;
-      }
-      .state-panel h3 {
-        margin: 0 0 6px;
-        color: var(--text-primary);
-        font-size: 18px;
-        font-weight: 700;
-      }
-      .state-panel p {
-        margin: 0;
-        font-size: 14px;
-        max-width: 320px;
+        align-items: flex-start;
       }
 
-      /* Modal */
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(17, 24, 39, 0.5);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        z-index: 1000;
-        animation: fadeIn 0.15s ease;
-      }
-      .modal-overlay.open {
-        display: flex;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+      .pagination {
+        flex-wrap: wrap;
       }
 
       .modal {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        width: 100%;
-        max-width: 440px;
-        padding: 28px;
-        box-shadow: var(--shadow-lg);
-        animation: slideUp 0.18s ease;
+        max-width: 100%;
+        margin: 0 10px;
       }
-      @keyframes slideUp {
-        from {
-          transform: translateY(12px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-      .modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 18px;
-      }
-      .modal-header h2 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 700;
-      }
-      .modal-close {
-        background: none;
-        border: none;
-        font-size: 18px;
-        color: var(--text-secondary);
-        width: 32px;
-        height: 32px;
-        border-radius: var(--radius);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background 0.2s ease;
-      }
-      .modal-close:hover {
-        background: var(--background);
-      }
+    }
+  </style>
+</head>
 
-      .form-group {
-        margin-bottom: 16px;
-      }
-      .form-group label {
-        display: block;
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 6px;
-      }
-      .form-control {
-        width: 100%;
-        padding: 10px 14px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-family: inherit;
-        color: var(--text-primary);
-        background: var(--surface);
-        transition: all var(--transition);
-      }
-      .form-control:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-      .form-control:disabled {
-        background: var(--background);
-        cursor: not-allowed;
-      }
-      .form-control.invalid {
-        border-color: var(--danger);
-      }
-      .form-error {
-        color: var(--danger);
-        font-size: 13px;
-        margin-top: 4px;
-        display: none;
-      }
-      .form-error.visible {
-        display: block;
-      }
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="../admin/dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
 
-      .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
-      }
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="../admin/admin-dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="../admin/user-management.html" class="nav-link active" data-page="users">Users</a>
+        <a href="../admin/settings.html" class="nav-link" data-page="settings">Settings</a>
+        <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a>
+      </nav>
 
-      .modal.confirm .modal-body {
-        display: flex;
-        gap: 14px;
-        align-items: flex-start;
-      }
-      .modal.confirm .warn-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: #fee2e2;
-        color: var(--danger);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
-      }
-      .modal.confirm p {
-        margin: 0;
-        font-size: 14px;
-        color: var(--text-secondary);
-        line-height: 1.6;
-      }
-      .modal.confirm strong {
-        color: var(--text-primary);
-      }
-
-      .btn-success {
-        background: var(--success);
-        color: #fff;
-      }
-      .btn-success:hover {
-        background: #059669;
-      }
-      .btn-danger {
-        background: var(--danger);
-        color: #fff;
-      }
-      .btn-danger:hover {
-        background: #dc2626;
-      }
-
-      /* Toast */
-      .toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        background: var(--text-primary);
-        color: #fff;
-        padding: 12px 22px;
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-weight: 500;
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.25s ease;
-        z-index: 1100;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-        pointer-events: auto;
-      }
-      .toast i {
-        color: var(--success);
-      }
-
-      /* Responsive */
-      @media (max-width: 1024px) {
-        .user-row {
-          grid-template-columns: 1fr;
-          row-gap: 14px;
-        }
-        .badges {
-          justify-content: flex-start;
-        }
-        .row-actions {
-          justify-content: flex-start;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .page-header {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .page-header .btn {
-          width: 100%;
-          justify-content: center;
-        }
-        .toolbar {
-          flex-direction: column;
-        }
-        .toolbar-actions {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
-        }
-        .toolbar-actions .btn {
-          justify-content: center;
-        }
-        .user-row {
-          padding: 16px;
-        }
-        .row-actions {
-          flex-wrap: wrap;
-          width: 100%;
-        }
-        .edit-role-btn {
-          flex: 1;
-          justify-content: center;
-        }
-        .pagination-bar {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        .pagination {
-          flex-wrap: wrap;
-        }
-        .modal {
-          max-width: 100%;
-          margin: 0 10px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="../admin/dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a
-            href="../admin/admin-dashboard.html"
-            class="nav-link"
-            data-page="dashboard"
-            >Dashboard</a
-          >
-          <a
-            href="../admin/user-management.html"
-            class="nav-link active"
-            data-page="users"
-            >Users</a
-          >
-          <a href="../admin/settings.html" class="nav-link" data-page="settings"
-            >Settings</a
-          >
-          <a
-            href="../admin/analytics-reports.html"
-            class="nav-link"
-            data-page="analytics"
-            >Analytics</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a
-          href="../admin/dashboard.html"
-          class="mobile-link"
-          data-page="dashboard"
-          >Dashboard</a
-        >
-        <a
-          href="../admin/user-management.html"
-          class="mobile-link active"
-          data-page="users"
-          >Users</a
-        >
-        <a
-          href="../admin/settings.html"
-          class="mobile-link"
-          data-page="settings"
-          >Settings</a
-        >
-        <a
-          href="../admin/analytics-reports.html"
-          class="mobile-link"
-          data-page="analytics"
-          >Analytics</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <h1>User Management</h1>
-          <p>Manage team access and role permissions across the platform.</p>
-        </div>
-        <button class="btn btn-primary" id="inviteUserBtn">
-          <i class="fas fa-user-plus"></i> Invite User
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
         </button>
       </div>
+    </div>
 
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="search-wrap">
-          <i class="fas fa-search"></i>
-          <input
-            type="search"
-            class="search-input"
-            id="searchInput"
-            placeholder="Search users by name or email..."
-            aria-label="Search users"
-          />
-        </div>
-        <div class="toolbar-actions">
-          <button class="btn btn-secondary" id="filterBtn">
-            <i class="fas fa-filter"></i> Filter
-          </button>
-          <button class="btn btn-secondary" id="sortBtn">
-            <i class="fas fa-sort"></i> Sort
-          </button>
-        </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="../admin/dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="../admin/user-management.html" class="mobile-link active" data-page="users">Users</a>
+      <a href="../admin/settings.html" class="mobile-link" data-page="settings">Settings</a>
+      <a href="../admin/analytics-reports.html" class="mobile-link" data-page="analytics">Analytics</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1>User Management</h1>
+        <p>Manage team access and role permissions across the platform.</p>
       </div>
+      <button class="btn btn-primary" id="inviteUserBtn">
+        <i class="fas fa-user-plus"></i> Invite User
+      </button>
+    </div>
 
-      <!-- User List -->
-      <section class="user-list" id="userList" aria-label="User list">
-        <!-- Rows injected by JS -->
-      </section>
-
-      <!-- Loading State -->
-      <div class="state-panel" id="loadingState" aria-live="polite">
-        <div class="spinner" role="status"></div>
-        <p>Loading users…</p>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="search" class="search-input" id="searchInput" placeholder="Search users by name or email..."
+          aria-label="Search users" />
       </div>
-
-      <!-- Empty State -->
-      <div class="state-panel" id="emptyState">
-        <div class="empty-icon"><i class="fas fa-users-slash"></i></div>
-        <h3>No users found</h3>
-        <p>
-          Try a different search term, or invite a new teammate to get started.
-        </p>
+      <div class="toolbar-actions">
+        <button class="btn btn-secondary" id="filterBtn">
+          <i class="fas fa-filter"></i> Filter
+        </button>
+        <button class="btn btn-secondary" id="sortBtn">
+          <i class="fas fa-sort"></i> Sort
+        </button>
       </div>
+    </div>
 
-      <!-- Pagination -->
-      <div class="pagination-bar" id="paginationBar">
-        <span class="pagination-count" id="paginationCount"
-          >Showing 1-4 of 24 users</span
-        >
-        <ul class="pagination" id="paginationList" aria-label="Pagination"></ul>
+    <!-- User List -->
+    <section class="user-list" id="userList" aria-label="User list">
+      <!-- Rows injected by JS -->
+    </section>
+
+    <!-- Loading State -->
+    <div class="state-panel" id="loadingState" aria-live="polite">
+      <div class="spinner" role="status"></div>
+      <p>Loading users…</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="state-panel" id="emptyState">
+      <div class="empty-icon"><i class="fas fa-users-slash"></i></div>
+      <h3>No users found</h3>
+      <p>
+        Try a different search term, or invite a new teammate to get started.
+      </p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-bar" id="paginationBar">
+      <span class="pagination-count" id="paginationCount">Showing 1-4 of 24 users</span>
+      <ul class="pagination" id="paginationList" aria-label="Pagination"></ul>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- Edit Role Modal -->
+  <div class="modal-overlay" id="editRoleOverlay" role="dialog" aria-modal="true" aria-labelledby="editRoleTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="editRoleTitle">Edit Role</h2>
+        <button class="modal-close" id="editRoleClose" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-    </main>
+      <div class="form-group">
+        <label for="editRoleUser">User</label>
+        <input type="text" class="form-control" id="editRoleUser" disabled />
+      </div>
+      <div class="form-group">
+        <label for="editRoleSelect">Role</label>
+        <select class="form-control" id="editRoleSelect">
+          <option value="Admin">Admin</option>
+          <option value="Recruiter">Recruiter</option>
+          <option value="Hiring Manager">Hiring Manager</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="editRoleCancel">Cancel</button>
+        <button class="btn btn-primary" id="editRoleSave">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
 
-    <!-- ===== FOOTER ===== -->
-
-    <!-- ===== MODALS ===== -->
-
-    <!-- Edit Role Modal -->
-    <div
-      class="modal-overlay"
-      id="editRoleOverlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="editRoleTitle"
-    >
-      <div class="modal">
-        <div class="modal-header">
-          <h2 id="editRoleTitle">Edit Role</h2>
-          <button
-            class="modal-close"
-            id="editRoleClose"
-            aria-label="Close dialog"
-          >
-            <i class="fas fa-times"></i>
-          </button>
+  <!-- Invite User Modal -->
+  <div class="modal-overlay" id="inviteOverlay" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="inviteTitle">Invite User</h2>
+        <button class="modal-close" id="inviteClose" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="inviteForm" novalidate>
+        <div class="form-group">
+          <label for="inviteName">Full name</label>
+          <input type="text" class="form-control" id="inviteName" placeholder="e.g. Sam Carter" required />
+          <div class="form-error" id="inviteNameError">
+            Please enter a name.
+          </div>
         </div>
         <div class="form-group">
-          <label for="editRoleUser">User</label>
-          <input type="text" class="form-control" id="editRoleUser" disabled />
+          <label for="inviteEmail">Email address</label>
+          <input type="email" class="form-control" id="inviteEmail" placeholder="name@recruitai.com" required />
+          <div class="form-error" id="inviteEmailError">
+            Please enter a valid email address.
+          </div>
         </div>
         <div class="form-group">
-          <label for="editRoleSelect">Role</label>
-          <select class="form-control" id="editRoleSelect">
-            <option value="Admin">Admin</option>
+          <label for="inviteRole">Role</label>
+          <select class="form-control" id="inviteRole">
             <option value="Recruiter">Recruiter</option>
+            <option value="Admin">Admin</option>
             <option value="Hiring Manager">Hiring Manager</option>
           </select>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" id="editRoleCancel">Cancel</button>
-          <button class="btn btn-primary" id="editRoleSave">
-            Save Changes
+          <button type="button" class="btn btn-secondary" id="inviteCancel">
+            Cancel
           </button>
+          <button type="submit" class="btn btn-primary">Send Invite</button>
         </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal confirm">
+      <div class="modal-header">
+        <h2 id="confirmTitle">Disable user access?</h2>
+        <button class="modal-close" id="confirmClose" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="warn-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <p id="confirmMessage">
+          Are you sure you want to disable access for
+          <strong>this user</strong>? They will immediately lose access to
+          RecruitAI Admin.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmProceed">
+          Disable User
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Invite User Modal -->
-    <div
-      class="modal-overlay"
-      id="inviteOverlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="inviteTitle"
-    >
-      <div class="modal">
-        <div class="modal-header">
-          <h2 id="inviteTitle">Invite User</h2>
-          <button
-            class="modal-close"
-            id="inviteClose"
-            aria-label="Close dialog"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <form id="inviteForm" novalidate>
-          <div class="form-group">
-            <label for="inviteName">Full name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="inviteName"
-              placeholder="e.g. Sam Carter"
-              required
-            />
-            <div class="form-error" id="inviteNameError">
-              Please enter a name.
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inviteEmail">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="inviteEmail"
-              placeholder="name@recruitai.com"
-              required
-            />
-            <div class="form-error" id="inviteEmailError">
-              Please enter a valid email address.
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inviteRole">Role</label>
-            <select class="form-control" id="inviteRole">
-              <option value="Recruiter">Recruiter</option>
-              <option value="Admin">Admin</option>
-              <option value="Hiring Manager">Hiring Manager</option>
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="inviteCancel">
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary">Send Invite</button>
-          </div>
-        </form>
-      </div>
-    </div>
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastText">Done</span>
+  </div>
 
-    <!-- Confirm Modal -->
-    <div
-      class="modal-overlay"
-      id="confirmOverlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirmTitle"
-    >
-      <div class="modal confirm">
-        <div class="modal-header">
-          <h2 id="confirmTitle">Disable user access?</h2>
-          <button
-            class="modal-close"
-            id="confirmClose"
-            aria-label="Close dialog"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="warn-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <p id="confirmMessage">
-            Are you sure you want to disable access for
-            <strong>this user</strong>? They will immediately lose access to
-            RecruitAI Admin.
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
-          <button class="btn btn-danger" id="confirmProceed">
-            Disable User
-          </button>
-        </div>
-      </div>
-    </div>
+  <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast" role="status" aria-live="polite">
-      <i class="fas fa-check-circle"></i>
-      <span id="toastText">Done</span>
-    </div>
+  <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
+  <script>
+    (function () {
+      "use strict";
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
-    <script src="../js/main.js"></script>
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
 
-    <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
-    <script>
-      (function () {
-        "use strict";
+      console.log('✅ Page initialized with API client');
+      // ============================================
+      // DATA
+      // ============================================
+      const USERS = [
+        {
+          id: 1,
+          name: "Alex Rivera",
+          email: "alex.rivera@recruitai.com",
+          role: "Admin",
+          status: "Active",
+          initials: "AR",
+        },
+        {
+          id: 2,
+          name: "Jordan Smith",
+          email: "jordan.s@recruitai.com",
+          role: "Recruiter",
+          status: "Disabled",
+          initials: "JS",
+        },
+        {
+          id: 3,
+          name: "Elena Rodriguez",
+          email: "e.rodriguez@recruitai.com",
+          role: "Hiring Manager",
+          status: "Active",
+          initials: "ER",
+        },
+        {
+          id: 4,
+          name: "Chen Wei",
+          email: "c.wei@recruitai.com",
+          role: "Recruiter",
+          status: "Active",
+          initials: "CW",
+        },
+      ];
 
-        // ============================================
-        // DATA
-        // ============================================
-        const USERS = [
-          {
-            id: 1,
-            name: "Alex Rivera",
-            email: "alex.rivera@recruitai.com",
-            role: "Admin",
-            status: "Active",
-            initials: "AR",
-          },
-          {
-            id: 2,
-            name: "Jordan Smith",
-            email: "jordan.s@recruitai.com",
-            role: "Recruiter",
-            status: "Disabled",
-            initials: "JS",
-          },
-          {
-            id: 3,
-            name: "Elena Rodriguez",
-            email: "e.rodriguez@recruitai.com",
-            role: "Hiring Manager",
-            status: "Active",
-            initials: "ER",
-          },
-          {
-            id: 4,
-            name: "Chen Wei",
-            email: "c.wei@recruitai.com",
-            role: "Recruiter",
-            status: "Active",
-            initials: "CW",
-          },
-        ];
+      const TOTAL_USERS = 24;
+      const PAGE_SIZE = 4;
+      const TOTAL_PAGES = 3;
 
-        const TOTAL_USERS = 24;
-        const PAGE_SIZE = 4;
-        const TOTAL_PAGES = 3;
+      let currentPage = 1;
+      let workingUsers = USERS.map((u) => ({ ...u }));
+      let activeUserId = null;
 
-        let currentPage = 1;
-        let workingUsers = USERS.map((u) => ({ ...u }));
-        let activeUserId = null;
+      const roleBadgeClass = {
+        Admin: "badge-role-admin",
+        Recruiter: "badge-role-recruiter",
+        "Hiring Manager": "badge-role-manager",
+      };
 
-        const roleBadgeClass = {
-          Admin: "badge-role-admin",
-          Recruiter: "badge-role-recruiter",
-          "Hiring Manager": "badge-role-manager",
-        };
+      // ============================================
+      // DOM REFS
+      // ============================================
+      const userList = document.getElementById("userList");
+      const loadingState = document.getElementById("loadingState");
+      const emptyState = document.getElementById("emptyState");
+      const paginationBar = document.getElementById("paginationBar");
+      const paginationCount = document.getElementById("paginationCount");
+      const paginationList = document.getElementById("paginationList");
+      const searchInput = document.getElementById("searchInput");
 
-        // ============================================
-        // DOM REFS
-        // ============================================
-        const userList = document.getElementById("userList");
-        const loadingState = document.getElementById("loadingState");
-        const emptyState = document.getElementById("emptyState");
-        const paginationBar = document.getElementById("paginationBar");
-        const paginationCount = document.getElementById("paginationCount");
-        const paginationList = document.getElementById("paginationList");
-        const searchInput = document.getElementById("searchInput");
+      const editRoleOverlay = document.getElementById("editRoleOverlay");
+      const editRoleUser = document.getElementById("editRoleUser");
+      const editRoleSelect = document.getElementById("editRoleSelect");
 
-        const editRoleOverlay = document.getElementById("editRoleOverlay");
-        const editRoleUser = document.getElementById("editRoleUser");
-        const editRoleSelect = document.getElementById("editRoleSelect");
+      const inviteOverlay = document.getElementById("inviteOverlay");
+      const inviteForm = document.getElementById("inviteForm");
 
-        const inviteOverlay = document.getElementById("inviteOverlay");
-        const inviteForm = document.getElementById("inviteForm");
+      const confirmOverlay = document.getElementById("confirmOverlay");
+      const confirmMessage = document.getElementById("confirmMessage");
+      const confirmProceed = document.getElementById("confirmProceed");
 
-        const confirmOverlay = document.getElementById("confirmOverlay");
-        const confirmMessage = document.getElementById("confirmMessage");
-        const confirmProceed = document.getElementById("confirmProceed");
+      const toast = document.getElementById("toast");
+      const toastText = document.getElementById("toastText");
 
-        const toast = document.getElementById("toast");
-        const toastText = document.getElementById("toastText");
+      let toastTimer = null;
 
-        let toastTimer = null;
+      // ============================================
+      // RENDER FUNCTIONS
+      // ============================================
+      function renderRows(users) {
+        userList.innerHTML = "";
 
-        // ============================================
-        // RENDER FUNCTIONS
-        // ============================================
-        function renderRows(users) {
-          userList.innerHTML = "";
+        if (!users || users.length === 0) {
+          userList.style.display = "none";
+          paginationBar.style.display = "none";
+          emptyState.classList.add("visible");
+          return;
+        }
 
-          if (!users || users.length === 0) {
-            userList.style.display = "none";
-            paginationBar.style.display = "none";
-            emptyState.classList.add("visible");
-            return;
-          }
+        emptyState.classList.remove("visible");
+        userList.style.display = "block";
+        paginationBar.style.display = "flex";
 
-          emptyState.classList.remove("visible");
-          userList.style.display = "block";
-          paginationBar.style.display = "flex";
+        users.forEach((u) => {
+          const row = document.createElement("article");
+          row.className = "user-row";
+          row.dataset.userId = u.id;
 
-          users.forEach((u) => {
-            const row = document.createElement("article");
-            row.className = "user-row";
-            row.dataset.userId = u.id;
+          const isActive = u.status === "Active";
+          const statusClass = isActive
+            ? "badge-status-active"
+            : "badge-status-disabled";
 
-            const isActive = u.status === "Active";
-            const statusClass = isActive
-              ? "badge-status-active"
-              : "badge-status-disabled";
-
-            row.innerHTML = `
+          row.innerHTML = `
             <div class="user-identity">
               <div class="user-avatar-sm">${u.initials}</div>
               <div>
@@ -1024,312 +1017,313 @@
               </button>
             </div>
           `;
-            userList.appendChild(row);
-          });
-        }
+          userList.appendChild(row);
+        });
+      }
 
-        function renderPagination() {
-          const start = (currentPage - 1) * PAGE_SIZE + 1;
-          const end = Math.min(currentPage * PAGE_SIZE, TOTAL_USERS);
-          paginationCount.textContent = `Showing ${start}-${end} of ${TOTAL_USERS} users`;
+      function renderPagination() {
+        const start = (currentPage - 1) * PAGE_SIZE + 1;
+        const end = Math.min(currentPage * PAGE_SIZE, TOTAL_USERS);
+        paginationCount.textContent = `Showing ${start}-${end} of ${TOTAL_USERS} users`;
 
-          paginationList.innerHTML = "";
+        paginationList.innerHTML = "";
 
-          // Previous
-          const prevLi = document.createElement("li");
-          prevLi.innerHTML = `
+        // Previous
+        const prevLi = document.createElement("li");
+        prevLi.innerHTML = `
           <button class="page-btn" id="prevPageBtn" aria-label="Previous page" ${currentPage === 1 ? "disabled" : ""}>
             <i class="fas fa-chevron-left"></i>
           </button>
         `;
-          paginationList.appendChild(prevLi);
+        paginationList.appendChild(prevLi);
 
-          // Pages
-          for (let p = 1; p <= TOTAL_PAGES; p++) {
-            const li = document.createElement("li");
-            li.innerHTML = `
+        // Pages
+        for (let p = 1; p <= TOTAL_PAGES; p++) {
+          const li = document.createElement("li");
+          li.innerHTML = `
             <button class="page-btn ${p === currentPage ? "active" : ""}" data-page="${p}" aria-current="${p === currentPage ? "page" : "false"}">
               ${p}
             </button>
           `;
-            paginationList.appendChild(li);
-          }
+          paginationList.appendChild(li);
+        }
 
-          // Next
-          const nextLi = document.createElement("li");
-          nextLi.innerHTML = `
+        // Next
+        const nextLi = document.createElement("li");
+        nextLi.innerHTML = `
           <button class="page-btn" id="nextPageBtn" aria-label="Next page" ${currentPage === TOTAL_PAGES ? "disabled" : ""}>
             <i class="fas fa-chevron-right"></i>
           </button>
         `;
-          paginationList.appendChild(nextLi);
+        paginationList.appendChild(nextLi);
 
-          // Event listeners
-          paginationList.querySelectorAll("[data-page]").forEach((btn) => {
-            btn.addEventListener("click", () =>
-              goToPage(Number(btn.dataset.page)),
-            );
-          });
-          document
-            .getElementById("prevPageBtn")
-            .addEventListener("click", () => goToPage(currentPage - 1));
-          document
-            .getElementById("nextPageBtn")
-            .addEventListener("click", () => goToPage(currentPage + 1));
-        }
-
-        function goToPage(p) {
-          if (p < 1 || p > TOTAL_PAGES || p === currentPage) return;
-          currentPage = p;
-          simulateLoad(() => {
-            renderRows(workingUsers);
-            renderPagination();
-          });
-        }
-
-        function simulateLoad(callback) {
-          userList.style.display = "none";
-          paginationBar.style.display = "none";
-          emptyState.classList.remove("visible");
-          loadingState.classList.add("visible");
-          setTimeout(() => {
-            loadingState.classList.remove("visible");
-            callback();
-          }, 450);
-        }
-
-        // ============================================
-        // SEARCH
-        // ============================================
-        searchInput.addEventListener("input", () => {
-          const q = searchInput.value.trim().toLowerCase();
-          const filtered = q
-            ? USERS.filter(
-                (u) =>
-                  u.name.toLowerCase().includes(q) ||
-                  u.email.toLowerCase().includes(q),
-              )
-            : workingUsers;
-          renderRows(filtered);
-          if (q) paginationBar.style.display = "none";
-          else renderPagination();
-        });
-
-        // ============================================
-        // TOAST
-        // ============================================
-        function showToast(message, icon = "fa-check-circle") {
-          toastText.textContent = message;
-          toast.querySelector("i").className = `fas ${icon}`;
-          toast.classList.add("show");
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
-        }
-
-        // ============================================
-        // MODAL HELPERS
-        // ============================================
-        function openModal(overlay) {
-          overlay.classList.add("open");
-          document.body.style.overflow = "hidden";
-        }
-
-        function closeModal(overlay) {
-          overlay.classList.remove("open");
-          document.body.style.overflow = "";
-        }
-
-        // Close modals on Escape
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") {
-            [editRoleOverlay, inviteOverlay, confirmOverlay].forEach((o) => {
-              if (o.classList.contains("open")) closeModal(o);
-            });
-          }
-        });
-
-        // Close on overlay click
-        [editRoleOverlay, inviteOverlay, confirmOverlay].forEach((overlay) => {
-          overlay.addEventListener("click", (e) => {
-            if (e.target === overlay) closeModal(overlay);
-          });
-        });
-
-        // ============================================
-        // EDIT ROLE
-        // ============================================
-        document
-          .getElementById("editRoleClose")
-          .addEventListener("click", () => closeModal(editRoleOverlay));
-        document
-          .getElementById("editRoleCancel")
-          .addEventListener("click", () => closeModal(editRoleOverlay));
-
-        document
-          .getElementById("editRoleSave")
-          .addEventListener("click", () => {
-            const user = workingUsers.find((u) => u.id === activeUserId);
-            if (!user) return;
-            const newRole = editRoleSelect.value;
-            user.role = newRole;
-            renderRows(workingUsers);
-            closeModal(editRoleOverlay);
-            showToast(`${user.name}'s role updated to ${newRole}`);
-          });
-
-        // ============================================
-        // INVITE USER
-        // ============================================
-        document
-          .getElementById("inviteUserBtn")
-          .addEventListener("click", () => {
-            inviteForm.reset();
-            document
-              .getElementById("inviteNameError")
-              .classList.remove("visible");
-            document
-              .getElementById("inviteEmailError")
-              .classList.remove("visible");
-            document.getElementById("inviteName").classList.remove("invalid");
-            document.getElementById("inviteEmail").classList.remove("invalid");
-            openModal(inviteOverlay);
-          });
-
-        document
-          .getElementById("inviteClose")
-          .addEventListener("click", () => closeModal(inviteOverlay));
-        document
-          .getElementById("inviteCancel")
-          .addEventListener("click", () => closeModal(inviteOverlay));
-
-        inviteForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-
-          const name = document.getElementById("inviteName");
-          const email = document.getElementById("inviteEmail");
-          const nameError = document.getElementById("inviteNameError");
-          const emailError = document.getElementById("inviteEmailError");
-
-          name.classList.remove("invalid");
-          email.classList.remove("invalid");
-          nameError.classList.remove("visible");
-          emailError.classList.remove("visible");
-
-          let valid = true;
-
-          if (!name.value.trim()) {
-            name.classList.add("invalid");
-            nameError.classList.add("visible");
-            valid = false;
-          }
-
-          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailPattern.test(email.value.trim())) {
-            email.classList.add("invalid");
-            emailError.classList.add("visible");
-            valid = false;
-          }
-
-          if (!valid) return;
-
-          const role = document.getElementById("inviteRole").value;
-          console.log("📧 Sending invite:", {
-            name: name.value.trim(),
-            email: email.value.trim(),
-            role,
-          });
-          closeModal(inviteOverlay);
-          showToast(`Invite sent to ${email.value.trim()} 🎉`);
-        });
-
-        // ============================================
-        // ROW ACTION DELEGATION
-        // ============================================
-        userList.addEventListener("click", (e) => {
-          const editBtn = e.target.closest('[data-action="edit-role"]');
-          const toggleBtn = e.target.closest('[data-action="toggle-status"]');
-
-          if (editBtn) {
-            const id = Number(editBtn.dataset.id);
-            const user = workingUsers.find((u) => u.id === id);
-            if (!user) return;
-            activeUserId = id;
-            editRoleUser.value = user.name;
-            editRoleSelect.value = user.role;
-            openModal(editRoleOverlay);
-            return;
-          }
-
-          if (toggleBtn) {
-            const id = Number(toggleBtn.dataset.id);
-            const user = workingUsers.find((u) => u.id === id);
-            if (!user) return;
-            activeUserId = id;
-
-            const willDisable = user.status === "Active";
-            document.getElementById("confirmTitle").textContent = willDisable
-              ? "Disable user access?"
-              : "Enable user access?";
-            confirmMessage.innerHTML = willDisable
-              ? `Are you sure you want to disable access for <strong>${user.name}</strong>? They will immediately lose access to RecruitAI Admin.`
-              : `Are you sure you want to re-enable access for <strong>${user.name}</strong>? They will regain access to RecruitAI Admin.`;
-            confirmProceed.textContent = willDisable
-              ? "Disable User"
-              : "Enable User";
-            confirmProceed.className = willDisable
-              ? "btn btn-danger"
-              : "btn btn-success";
-            openModal(confirmOverlay);
-          }
-        });
-
-        // ============================================
-        // CONFIRM ACTION
-        // ============================================
-        document
-          .getElementById("confirmClose")
-          .addEventListener("click", () => closeModal(confirmOverlay));
-        document
-          .getElementById("confirmCancel")
-          .addEventListener("click", () => closeModal(confirmOverlay));
-
-        confirmProceed.addEventListener("click", () => {
-          const user = workingUsers.find((u) => u.id === activeUserId);
-          if (!user) return;
-          const willDisable = user.status === "Active";
-          user.status = willDisable ? "Disabled" : "Active";
-          renderRows(workingUsers);
-          closeModal(confirmOverlay);
-          showToast(
-            `${user.name} has been ${willDisable ? "disabled" : "enabled"}`,
+        // Event listeners
+        paginationList.querySelectorAll("[data-page]").forEach((btn) => {
+          btn.addEventListener("click", () =>
+            goToPage(Number(btn.dataset.page)),
           );
         });
+        document
+          .getElementById("prevPageBtn")
+          .addEventListener("click", () => goToPage(currentPage - 1));
+        document
+          .getElementById("nextPageBtn")
+          .addEventListener("click", () => goToPage(currentPage + 1));
+      }
 
-        // ============================================
-        // FILTER / SORT (Placeholders)
-        // ============================================
-        document.getElementById("filterBtn").addEventListener("click", () => {
-          showToast("Filter options coming soon", "fa-filter");
+      function goToPage(p) {
+        if (p < 1 || p > TOTAL_PAGES || p === currentPage) return;
+        currentPage = p;
+        simulateLoad(() => {
+          renderRows(workingUsers);
+          renderPagination();
         });
+      }
 
-        document.getElementById("sortBtn").addEventListener("click", () => {
-          showToast("Sort options coming soon", "fa-sort");
-        });
+      function simulateLoad(callback) {
+        userList.style.display = "none";
+        paginationBar.style.display = "none";
+        emptyState.classList.remove("visible");
+        loadingState.classList.add("visible");
+        setTimeout(() => {
+          loadingState.classList.remove("visible");
+          callback();
+        }, 450);
+      }
 
-        // ============================================
-        // INIT
-        // ============================================
-        function init() {
-          simulateLoad(() => {
-            renderRows(workingUsers);
-            renderPagination();
+      // ============================================
+      // SEARCH
+      // ============================================
+      searchInput.addEventListener("input", () => {
+        const q = searchInput.value.trim().toLowerCase();
+        const filtered = q
+          ? USERS.filter(
+            (u) =>
+              u.name.toLowerCase().includes(q) ||
+              u.email.toLowerCase().includes(q),
+          )
+          : workingUsers;
+        renderRows(filtered);
+        if (q) paginationBar.style.display = "none";
+        else renderPagination();
+      });
+
+      // ============================================
+      // TOAST
+      // ============================================
+      function showToast(message, icon = "fa-check-circle") {
+        toastText.textContent = message;
+        toast.querySelector("i").className = `fas ${icon}`;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+      }
+
+      // ============================================
+      // MODAL HELPERS
+      // ============================================
+      function openModal(overlay) {
+        overlay.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal(overlay) {
+        overlay.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      // Close modals on Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          [editRoleOverlay, inviteOverlay, confirmOverlay].forEach((o) => {
+            if (o.classList.contains("open")) closeModal(o);
           });
-          console.log("✅ Admin Users page loaded successfully!");
-          console.log(`👥 ${USERS.length} users loaded, ${TOTAL_USERS} total`);
+        }
+      });
+
+      // Close on overlay click
+      [editRoleOverlay, inviteOverlay, confirmOverlay].forEach((overlay) => {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) closeModal(overlay);
+        });
+      });
+
+      // ============================================
+      // EDIT ROLE
+      // ============================================
+      document
+        .getElementById("editRoleClose")
+        .addEventListener("click", () => closeModal(editRoleOverlay));
+      document
+        .getElementById("editRoleCancel")
+        .addEventListener("click", () => closeModal(editRoleOverlay));
+
+      document
+        .getElementById("editRoleSave")
+        .addEventListener("click", () => {
+          const user = workingUsers.find((u) => u.id === activeUserId);
+          if (!user) return;
+          const newRole = editRoleSelect.value;
+          user.role = newRole;
+          renderRows(workingUsers);
+          closeModal(editRoleOverlay);
+          showToast(`${user.name}'s role updated to ${newRole}`);
+        });
+
+      // ============================================
+      // INVITE USER
+      // ============================================
+      document
+        .getElementById("inviteUserBtn")
+        .addEventListener("click", () => {
+          inviteForm.reset();
+          document
+            .getElementById("inviteNameError")
+            .classList.remove("visible");
+          document
+            .getElementById("inviteEmailError")
+            .classList.remove("visible");
+          document.getElementById("inviteName").classList.remove("invalid");
+          document.getElementById("inviteEmail").classList.remove("invalid");
+          openModal(inviteOverlay);
+        });
+
+      document
+        .getElementById("inviteClose")
+        .addEventListener("click", () => closeModal(inviteOverlay));
+      document
+        .getElementById("inviteCancel")
+        .addEventListener("click", () => closeModal(inviteOverlay));
+
+      inviteForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("inviteName");
+        const email = document.getElementById("inviteEmail");
+        const nameError = document.getElementById("inviteNameError");
+        const emailError = document.getElementById("inviteEmailError");
+
+        name.classList.remove("invalid");
+        email.classList.remove("invalid");
+        nameError.classList.remove("visible");
+        emailError.classList.remove("visible");
+
+        let valid = true;
+
+        if (!name.value.trim()) {
+          name.classList.add("invalid");
+          nameError.classList.add("visible");
+          valid = false;
         }
 
-        init();
-      })();
-    </script>
-  </body>
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email.value.trim())) {
+          email.classList.add("invalid");
+          emailError.classList.add("visible");
+          valid = false;
+        }
+
+        if (!valid) return;
+
+        const role = document.getElementById("inviteRole").value;
+        console.log("📧 Sending invite:", {
+          name: name.value.trim(),
+          email: email.value.trim(),
+          role,
+        });
+        closeModal(inviteOverlay);
+        showToast(`Invite sent to ${email.value.trim()} 🎉`);
+      });
+
+      // ============================================
+      // ROW ACTION DELEGATION
+      // ============================================
+      userList.addEventListener("click", (e) => {
+        const editBtn = e.target.closest('[data-action="edit-role"]');
+        const toggleBtn = e.target.closest('[data-action="toggle-status"]');
+
+        if (editBtn) {
+          const id = Number(editBtn.dataset.id);
+          const user = workingUsers.find((u) => u.id === id);
+          if (!user) return;
+          activeUserId = id;
+          editRoleUser.value = user.name;
+          editRoleSelect.value = user.role;
+          openModal(editRoleOverlay);
+          return;
+        }
+
+        if (toggleBtn) {
+          const id = Number(toggleBtn.dataset.id);
+          const user = workingUsers.find((u) => u.id === id);
+          if (!user) return;
+          activeUserId = id;
+
+          const willDisable = user.status === "Active";
+          document.getElementById("confirmTitle").textContent = willDisable
+            ? "Disable user access?"
+            : "Enable user access?";
+          confirmMessage.innerHTML = willDisable
+            ? `Are you sure you want to disable access for <strong>${user.name}</strong>? They will immediately lose access to RecruitAI Admin.`
+            : `Are you sure you want to re-enable access for <strong>${user.name}</strong>? They will regain access to RecruitAI Admin.`;
+          confirmProceed.textContent = willDisable
+            ? "Disable User"
+            : "Enable User";
+          confirmProceed.className = willDisable
+            ? "btn btn-danger"
+            : "btn btn-success";
+          openModal(confirmOverlay);
+        }
+      });
+
+      // ============================================
+      // CONFIRM ACTION
+      // ============================================
+      document
+        .getElementById("confirmClose")
+        .addEventListener("click", () => closeModal(confirmOverlay));
+      document
+        .getElementById("confirmCancel")
+        .addEventListener("click", () => closeModal(confirmOverlay));
+
+      confirmProceed.addEventListener("click", () => {
+        const user = workingUsers.find((u) => u.id === activeUserId);
+        if (!user) return;
+        const willDisable = user.status === "Active";
+        user.status = willDisable ? "Disabled" : "Active";
+        renderRows(workingUsers);
+        closeModal(confirmOverlay);
+        showToast(
+          `${user.name} has been ${willDisable ? "disabled" : "enabled"}`,
+        );
+      });
+
+      // ============================================
+      // FILTER / SORT (Placeholders)
+      // ============================================
+      document.getElementById("filterBtn").addEventListener("click", () => {
+        showToast("Filter options coming soon", "fa-filter");
+      });
+
+      document.getElementById("sortBtn").addEventListener("click", () => {
+        showToast("Sort options coming soon", "fa-sort");
+      });
+
+      // ============================================
+      // INIT
+      // ============================================
+      function init() {
+        simulateLoad(() => {
+          renderRows(workingUsers);
+          renderPagination();
+        });
+        console.log("✅ Admin Users page loaded successfully!");
+        console.log(`👥 ${USERS.length} users loaded, ${TOTAL_USERS} total`);
+      }
+
+      init();
+    })();
+  </script>
+</body>
+
 </html>

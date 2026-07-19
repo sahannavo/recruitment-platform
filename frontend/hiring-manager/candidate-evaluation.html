@@ -1,847 +1,831 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Candidate Evaluation</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Candidate Evaluation</title>
 
-    <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    .evaluation-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .profile-card {
+      text-align: center;
+      padding: 24px;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 auto 12px;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .profile-job {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .profile-details {
+      text-align: left;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .detail-row i {
+      color: var(--text-secondary);
+      width: 18px;
+      text-align: center;
+    }
+
+    .score-display {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .score-item {
+      background: var(--surface-alt);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .score-item .value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .score-item .label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-control,
+    .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 14px;
+      background: var(--surface);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .rating-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rating-btn {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+
+    .rating-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .rating-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .rating-btn .num {
+      font-size: 18px;
+      display: block;
+    }
+
+    .rating-btn .lbl {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner i {
+      font-size: 32px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: var(--border);
+      margin-bottom: 16px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--primary);
+    }
+
+    @media (max-width: 1024px) {
       .evaluation-layout {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 24px;
-        align-items: start;
+        grid-template-columns: 1fr;
       }
+    }
 
-      .profile-card {
-        text-align: center;
-        padding: 24px;
-      }
-      .profile-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: var(--primary-light);
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        font-weight: 700;
-        margin: 0 auto 12px;
-      }
-      .profile-name {
-        font-size: 20px;
-        font-weight: 700;
-      }
-      .profile-job {
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-      .profile-details {
-        text-align: left;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .detail-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 14px;
-      }
-      .detail-row i {
-        color: var(--text-secondary);
-        width: 18px;
-        text-align: center;
-      }
-
+    @media (max-width: 768px) {
       .score-display {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-top: 16px;
-      }
-      .score-item {
-        background: var(--surface-alt);
-        border-radius: var(--radius);
-        padding: 12px;
-        text-align: center;
-      }
-      .score-item .value {
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--primary);
-      }
-      .score-item .label {
-        font-size: 12px;
-        color: var(--text-secondary);
-      }
-
-      .form-group {
-        margin-bottom: 16px;
-      }
-      .form-group label {
-        font-weight: 600;
-        font-size: 14px;
-        display: block;
-        margin-bottom: 6px;
-      }
-      .form-control,
-      .form-select {
-        width: 100%;
-        padding: 10px 14px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        font-family: inherit;
-        font-size: 14px;
-        background: var(--surface);
-      }
-      .form-control:focus,
-      .form-select:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-      textarea.form-control {
-        min-height: 100px;
-        resize: vertical;
-      }
-
-      .rating-group {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .rating-btn {
-        padding: 8px 16px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--surface);
-        cursor: pointer;
-        font-weight: 600;
-        transition: all var(--transition);
-      }
-      .rating-btn:hover {
-        border-color: var(--primary);
-      }
-      .rating-btn.selected {
-        border-color: var(--primary);
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .rating-btn .num {
-        font-size: 18px;
-        display: block;
-      }
-      .rating-btn .lbl {
-        font-size: 11px;
-        color: var(--text-secondary);
+        grid-template-columns: 1fr;
       }
 
       .form-actions {
-        display: flex;
-        gap: 12px;
-        padding-top: 16px;
-        border-top: 1px solid var(--border);
-        margin-top: 16px;
+        flex-direction: column;
       }
 
-      .loading-spinner {
-        text-align: center;
-        padding: 40px;
-        color: var(--text-secondary);
+      .form-actions .btn {
+        width: 100%;
+        justify-content: center;
       }
-      .loading-spinner i {
-        font-size: 32px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+    }
+  </style>
+</head>
 
-      .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--text-secondary);
-      }
-      .empty-state i {
-        font-size: 48px;
-        color: var(--border);
-        margin-bottom: 16px;
-      }
-
-      .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--text-secondary);
-        text-decoration: none;
-        margin-bottom: 16px;
-        font-weight: 500;
-      }
-      .back-link:hover {
-        color: var(--primary);
-      }
-
-      @media (max-width: 1024px) {
-        .evaluation-layout {
-          grid-template-columns: 1fr;
-        }
-      }
-      @media (max-width: 768px) {
-        .score-display {
-          grid-template-columns: 1fr;
-        }
-        .form-actions {
-          flex-direction: column;
-        }
-        .form-actions .btn {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a
-            href="candidate-evaluation.html"
-            class="nav-link active"
-            data-page="evaluate"
-            >Evaluate</a
-          >
-          <a
-            href="../recruiter/manage-jobs.html"
-            class="nav-link"
-            data-page="jobs"
-            >Jobs</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">HM</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
-          >Dashboard</a
-        >
-        <a
-          href="candidate-evaluation.html"
-          class="mobile-link active"
-          data-page="evaluate"
-          >Evaluate</a
-        >
-        <a
-          href="../recruiter/manage-jobs.html"
-          class="mobile-link"
-          data-page="jobs"
-          >Jobs</a
-        >
-        <a
-          href="#"
-          class="mobile-link"
-          id="logoutBtn"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <a href="dashboard.html" class="back-link">
-        <i class="fas fa-arrow-left"></i> Back to Dashboard
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
       </a>
 
-      <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 24px">
-        Candidate Evaluation
-      </h1>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="candidate-evaluation.html" class="nav-link active" data-page="evaluate">Evaluate</a>
+        <a href="../recruiter/manage-jobs.html" class="nav-link" data-page="jobs">Jobs</a>
+      </nav>
 
-      <div id="loadingState" class="loading-spinner">
-        <i class="fas fa-spinner"></i>
-        <p>Loading candidate details...</p>
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">HM</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
       </div>
+    </div>
 
-      <div id="evaluationContent" style="display: none">
-        <div class="evaluation-layout">
-          <!-- Left: Profile -->
-          <div>
-            <div class="card profile-card">
-              <div class="profile-avatar" id="profileAvatar">U</div>
-              <div class="profile-name" id="profileName">Loading...</div>
-              <div class="profile-job" id="profileJob">Position</div>
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="candidate-evaluation.html" class="mobile-link active" data-page="evaluate">Evaluate</a>
+      <a href="../recruiter/manage-jobs.html" class="mobile-link" data-page="jobs">Jobs</a>
+      <a href="#" class="mobile-link" id="logoutBtn" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
 
-              <div class="score-display">
-                <div class="score-item">
-                  <div class="value" id="aiScore">0%</div>
-                  <div class="label">AI Match</div>
-                </div>
-                <div class="score-item">
-                  <div class="value" id="avgScore">0%</div>
-                  <div class="label">Avg Feedback</div>
-                </div>
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <a href="dashboard.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 24px">
+      Candidate Evaluation
+    </h1>
+
+    <div id="loadingState" class="loading-spinner">
+      <i class="fas fa-spinner"></i>
+      <p>Loading candidate details...</p>
+    </div>
+
+    <div id="evaluationContent" style="display: none">
+      <div class="evaluation-layout">
+        <!-- Left: Profile -->
+        <div>
+          <div class="card profile-card">
+            <div class="profile-avatar" id="profileAvatar">U</div>
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-job" id="profileJob">Position</div>
+
+            <div class="score-display">
+              <div class="score-item">
+                <div class="value" id="aiScore">0%</div>
+                <div class="label">AI Match</div>
               </div>
+              <div class="score-item">
+                <div class="value" id="avgScore">0%</div>
+                <div class="label">Avg Feedback</div>
+              </div>
+            </div>
 
-              <div class="profile-details">
-                <div class="detail-row">
-                  <i class="fas fa-envelope"></i>
-                  <span id="profileEmail">email@example.com</span>
-                </div>
-                <div class="detail-row">
-                  <i class="fas fa-briefcase"></i>
-                  <span id="profileExperience">Experience</span>
-                </div>
-                <div class="detail-row">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span id="profileLocation">Location</span>
-                </div>
-                <div class="detail-row">
-                  <i class="fas fa-calendar"></i> Applied:
-                  <span id="profileApplied">Date</span>
-                </div>
+            <div class="profile-details">
+              <div class="detail-row">
+                <i class="fas fa-envelope"></i>
+                <span id="profileEmail">email@example.com</span>
+              </div>
+              <div class="detail-row">
+                <i class="fas fa-briefcase"></i>
+                <span id="profileExperience">Experience</span>
+              </div>
+              <div class="detail-row">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="profileLocation">Location</span>
+              </div>
+              <div class="detail-row">
+                <i class="fas fa-calendar"></i> Applied:
+                <span id="profileApplied">Date</span>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Right: Feedback Form -->
-          <div class="card">
-            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px">
-              <i class="fas fa-clipboard-list"></i> Interview Feedback
-            </h2>
+        <!-- Right: Feedback Form -->
+        <div class="card">
+          <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px">
+            <i class="fas fa-clipboard-list"></i> Interview Feedback
+          </h2>
 
-            <form id="feedbackForm">
-              <div class="form-group">
-                <label
-                  >Technical Skills
-                  <span style="color: var(--danger)">*</span></label
-                >
-                <div class="rating-group" id="technicalRating">
-                  <button type="button" class="rating-btn" data-value="1">
-                    <span class="num">1</span><span class="lbl">Poor</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="2">
-                    <span class="num">2</span><span class="lbl">Fair</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="3">
-                    <span class="num">3</span><span class="lbl">Good</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="4">
-                    <span class="num">4</span><span class="lbl">Very Good</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="5">
-                    <span class="num">5</span><span class="lbl">Excellent</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label
-                  >Behavioral Skills
-                  <span style="color: var(--danger)">*</span></label
-                >
-                <div class="rating-group" id="behavioralRating">
-                  <button type="button" class="rating-btn" data-value="1">
-                    <span class="num">1</span><span class="lbl">Poor</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="2">
-                    <span class="num">2</span><span class="lbl">Fair</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="3">
-                    <span class="num">3</span><span class="lbl">Good</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="4">
-                    <span class="num">4</span><span class="lbl">Very Good</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="5">
-                    <span class="num">5</span><span class="lbl">Excellent</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label
-                  >Communication
-                  <span style="color: var(--danger)">*</span></label
-                >
-                <div class="rating-group" id="communicationRating">
-                  <button type="button" class="rating-btn" data-value="1">
-                    <span class="num">1</span><span class="lbl">Poor</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="2">
-                    <span class="num">2</span><span class="lbl">Fair</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="3">
-                    <span class="num">3</span><span class="lbl">Good</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="4">
-                    <span class="num">4</span><span class="lbl">Very Good</span>
-                  </button>
-                  <button type="button" class="rating-btn" data-value="5">
-                    <span class="num">5</span><span class="lbl">Excellent</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label
-                  >Decision <span style="color: var(--danger)">*</span></label
-                >
-                <select class="form-select" id="decisionSelect" required>
-                  <option value="">Select decision...</option>
-                  <option value="Selected">
-                    ✅ Selected - Proceed to offer
-                  </option>
-                  <option value="Rejected">❌ Rejected - Not a fit</option>
-                  <option value="Pending">
-                    ⏳ Pending - Need more interviews
-                  </option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Comments / Notes</label>
-                <textarea
-                  class="form-control"
-                  id="commentsInput"
-                  placeholder="Provide detailed feedback about the candidate's performance, strengths, and areas for improvement..."
-                ></textarea>
-              </div>
-
-              <div class="form-actions">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  onclick="window.location.href = 'dashboard.html'"
-                >
-                  <i class="fas fa-times"></i> Cancel
+          <form id="feedbackForm">
+            <div class="form-group">
+              <label>Technical Skills
+                <span style="color: var(--danger)">*</span></label>
+              <div class="rating-group" id="technicalRating">
+                <button type="button" class="rating-btn" data-value="1">
+                  <span class="num">1</span><span class="lbl">Poor</span>
                 </button>
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                  <i class="fas fa-paper-plane"></i> Submit Feedback
+                <button type="button" class="rating-btn" data-value="2">
+                  <span class="num">2</span><span class="lbl">Fair</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="3">
+                  <span class="num">3</span><span class="lbl">Good</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="4">
+                  <span class="num">4</span><span class="lbl">Very Good</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="5">
+                  <span class="num">5</span><span class="lbl">Excellent</span>
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+
+            <div class="form-group">
+              <label>Behavioral Skills
+                <span style="color: var(--danger)">*</span></label>
+              <div class="rating-group" id="behavioralRating">
+                <button type="button" class="rating-btn" data-value="1">
+                  <span class="num">1</span><span class="lbl">Poor</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="2">
+                  <span class="num">2</span><span class="lbl">Fair</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="3">
+                  <span class="num">3</span><span class="lbl">Good</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="4">
+                  <span class="num">4</span><span class="lbl">Very Good</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="5">
+                  <span class="num">5</span><span class="lbl">Excellent</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Communication
+                <span style="color: var(--danger)">*</span></label>
+              <div class="rating-group" id="communicationRating">
+                <button type="button" class="rating-btn" data-value="1">
+                  <span class="num">1</span><span class="lbl">Poor</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="2">
+                  <span class="num">2</span><span class="lbl">Fair</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="3">
+                  <span class="num">3</span><span class="lbl">Good</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="4">
+                  <span class="num">4</span><span class="lbl">Very Good</span>
+                </button>
+                <button type="button" class="rating-btn" data-value="5">
+                  <span class="num">5</span><span class="lbl">Excellent</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Decision <span style="color: var(--danger)">*</span></label>
+              <select class="form-select" id="decisionSelect" required>
+                <option value="">Select decision...</option>
+                <option value="Selected">
+                  ✅ Selected - Proceed to offer
+                </option>
+                <option value="Rejected">❌ Rejected - Not a fit</option>
+                <option value="Pending">
+                  ⏳ Pending - Need more interviews
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Comments / Notes</label>
+              <textarea class="form-control" id="commentsInput"
+                placeholder="Provide detailed feedback about the candidate's performance, strengths, and areas for improvement..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" onclick="window.location.href = 'dashboard.html'">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Submit Feedback
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            /><span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" /><span>RecruitAI</span>
         </div>
-        <div class="footer-links">
-          <h4>For Hiring Managers</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="candidate-evaluation.html">Evaluate Candidates</a></li>
-            <li><a href="../recruiter/manage-jobs.html">Jobs</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-links">
+        <h4>For Hiring Managers</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="candidate-evaluation.html">Evaluate Candidates</a></li>
+          <li><a href="../recruiter/manage-jobs.html">Jobs</a></li>
+        </ul>
       </div>
-    </footer>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-    <!-- ===== SCRIPTS ===== -->
-    <script src="../js/api.js"></script>
-    <script src="../js/main.js"></script>
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-    <script>
-      let currentUser = null;
-      let applicationId = null;
-      let currentFeedback = null;
-
-      // ============================================
-      // AUTHENTICATION CHECK
-      // ============================================
-      function checkAuth() {
-        if (!window.API.isAuthenticated()) {
-          window.location.href = "/auth/login.html";
-          return false;
-        }
-        currentUser = window.API.getCurrentUser();
-        const role = currentUser?.role || currentUser?.Role || "";
-        if (!["HiringManager", "Admin"].includes(role)) {
-          alert("Access denied. Hiring Managers only.");
-          window.location.href = "/index.html";
-          return false;
-        }
-        return true;
+  <script>
+    (function () {
+      'use strict';
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
       }
-
-      // ============================================
-      // GET URL PARAMETERS
-      // ============================================
-      function getUrlParams() {
-        const params = new URLSearchParams(window.location.search);
-        return {
-          appId: params.get("appId"),
-          feedbackId: params.get("feedbackId"),
-        };
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        avatar.textContent = window.API.getUserInitials() || 'U';
       }
+      console.log('✅ Candidate Evaluation page ready');
+      // Page-specific logic should go here
+    })();
+    let currentUser = null;
+    let applicationId = null;
+    let currentFeedback = null;
 
-      // ============================================
-      // LOAD CANDIDATE
-      // ============================================
-      async function loadCandidate() {
-        const params = getUrlParams();
-        const loadingState = document.getElementById("loadingState");
-        const content = document.getElementById("evaluationContent");
+    // ============================================
+    // AUTHENTICATION CHECK
+    // ============================================
+    function checkAuth() {
+      if (!window.API.isAuthenticated()) {
+        window.location.href = "/auth/login.html";
+        return false;
+      }
+      currentUser = window.API.getCurrentUser();
+      const role = currentUser?.role || currentUser?.Role || "";
+      if (!["HiringManager", "Admin"].includes(role)) {
+        alert("Access denied. Hiring Managers only.");
+        window.location.href = "/index.html";
+        return false;
+      }
+      return true;
+    }
 
-        try {
-          let app = null;
+    // ============================================
+    // GET URL PARAMETERS
+    // ============================================
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        appId: params.get("appId"),
+        feedbackId: params.get("feedbackId"),
+      };
+    }
 
-          if (params.appId) {
-            applicationId = parseInt(params.appId);
-            app = await window.API.Application.getById(applicationId);
-          } else if (params.feedbackId) {
-            // Load feedback first, then get application
-            currentFeedback = await window.API.Feedback.getById(
-              parseInt(params.feedbackId),
+    // ============================================
+    // LOAD CANDIDATE
+    // ============================================
+    async function loadCandidate() {
+      const params = getUrlParams();
+      const loadingState = document.getElementById("loadingState");
+      const content = document.getElementById("evaluationContent");
+
+      try {
+        let app = null;
+
+        if (params.appId) {
+          applicationId = parseInt(params.appId);
+          app = await window.API.Application.getById(applicationId);
+        } else if (params.feedbackId) {
+          // Load feedback first, then get application
+          currentFeedback = await window.API.Feedback.getById(
+            parseInt(params.feedbackId),
+          );
+          if (currentFeedback) {
+            app = await window.API.Application.getById(
+              currentFeedback.applicationId,
             );
-            if (currentFeedback) {
-              app = await window.API.Application.getById(
-                currentFeedback.applicationId,
-              );
-              applicationId = app.applicationId;
-              // Pre-fill form with existing feedback
-              preFillForm(currentFeedback);
-            }
-          } else {
-            // No candidate specified, show error
-            loadingState.innerHTML = `
+            applicationId = app.applicationId;
+            // Pre-fill form with existing feedback
+            preFillForm(currentFeedback);
+          }
+        } else {
+          // No candidate specified, show error
+          loadingState.innerHTML = `
             <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
             <p style="color: var(--danger);">No candidate specified.</p>
             <a href="dashboard.html" class="btn btn-primary" style="margin-top: 12px;">Go to Dashboard</a>
           `;
-            return;
-          }
+          return;
+        }
 
-          if (!app) {
-            loadingState.innerHTML = `
+        if (!app) {
+          loadingState.innerHTML = `
             <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
             <p style="color: var(--danger);">Candidate not found.</p>
             <a href="dashboard.html" class="btn btn-primary" style="margin-top: 12px;">Go to Dashboard</a>
           `;
-            return;
-          }
+          return;
+        }
 
-          // Display candidate info
-          displayCandidate(app);
+        // Display candidate info
+        displayCandidate(app);
 
-          loadingState.style.display = "none";
-          content.style.display = "block";
-        } catch (error) {
-          console.error("Error loading candidate:", error);
-          loadingState.innerHTML = `
+        loadingState.style.display = "none";
+        content.style.display = "block";
+      } catch (error) {
+        console.error("Error loading candidate:", error);
+        loadingState.innerHTML = `
           <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
           <p style="color: var(--danger);">Failed to load candidate: ${error.message}</p>
           <a href="dashboard.html" class="btn btn-primary" style="margin-top: 12px;">Go to Dashboard</a>
         `;
-        }
       }
+    }
 
-      // ============================================
-      // DISPLAY CANDIDATE
-      // ============================================
-      function displayCandidate(app) {
-        const initials = (app.candidateName || "U")
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase();
+    // ============================================
+    // DISPLAY CANDIDATE
+    // ============================================
+    function displayCandidate(app) {
+      const initials = (app.candidateName || "U")
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
 
-        document.getElementById("profileAvatar").textContent = initials;
-        document.getElementById("profileName").textContent =
-          app.candidateName || "Unknown";
-        document.getElementById("profileJob").textContent =
-          `${app.jobTitle || "Position"} • ${app.department || ""}`;
-        document.getElementById("profileEmail").textContent =
-          app.candidateEmail || "No email";
-        document.getElementById("profileExperience").textContent =
-          app.experience || "Not specified";
-        document.getElementById("profileLocation").textContent =
-          app.location || "Not specified";
-        document.getElementById("profileApplied").textContent = formatDate(
-          app.appliedAt,
+      document.getElementById("profileAvatar").textContent = initials;
+      document.getElementById("profileName").textContent =
+        app.candidateName || "Unknown";
+      document.getElementById("profileJob").textContent =
+        `${app.jobTitle || "Position"} • ${app.department || ""}`;
+      document.getElementById("profileEmail").textContent =
+        app.candidateEmail || "No email";
+      document.getElementById("profileExperience").textContent =
+        app.experience || "Not specified";
+      document.getElementById("profileLocation").textContent =
+        app.location || "Not specified";
+      document.getElementById("profileApplied").textContent = formatDate(
+        app.appliedAt,
+      );
+
+      const aiScore =
+        app.aiScore || app.AI_Score || Math.floor(Math.random() * 30 + 65);
+      document.getElementById("aiScore").textContent = `${aiScore}%`;
+      document.getElementById("avgScore").textContent =
+        `${Math.round(aiScore * 0.9 + 5)}%`;
+
+      // Update page title
+      document.title = `Evaluate: ${app.candidateName} - RecruitAI`;
+    }
+
+    // ============================================
+    // PRE-FILL FORM WITH EXISTING FEEDBACK
+    // ============================================
+    function preFillForm(feedback) {
+      if (!feedback) return;
+
+      // Set ratings
+      setRating("technicalRating", feedback.technicalScore || 0);
+      setRating("behavioralRating", feedback.behavioralScore || 0);
+      setRating("communicationRating", feedback.communicationScore || 0);
+
+      // Set decision
+      const decisionSelect = document.getElementById("decisionSelect");
+      if (feedback.decision) {
+        const option = decisionSelect.querySelector(
+          `option[value="${feedback.decision}"]`,
         );
-
-        const aiScore =
-          app.aiScore || app.AI_Score || Math.floor(Math.random() * 30 + 65);
-        document.getElementById("aiScore").textContent = `${aiScore}%`;
-        document.getElementById("avgScore").textContent =
-          `${Math.round(aiScore * 0.9 + 5)}%`;
-
-        // Update page title
-        document.title = `Evaluate: ${app.candidateName} - RecruitAI`;
+        if (option) option.selected = true;
       }
 
-      // ============================================
-      // PRE-FILL FORM WITH EXISTING FEEDBACK
-      // ============================================
-      function preFillForm(feedback) {
-        if (!feedback) return;
-
-        // Set ratings
-        setRating("technicalRating", feedback.technicalScore || 0);
-        setRating("behavioralRating", feedback.behavioralScore || 0);
-        setRating("communicationRating", feedback.communicationScore || 0);
-
-        // Set decision
-        const decisionSelect = document.getElementById("decisionSelect");
-        if (feedback.decision) {
-          const option = decisionSelect.querySelector(
-            `option[value="${feedback.decision}"]`,
-          );
-          if (option) option.selected = true;
-        }
-
-        // Set comments
-        if (feedback.comments) {
-          document.getElementById("commentsInput").value = feedback.comments;
-        }
-
-        // Update submit button text
-        document.getElementById("submitBtn").innerHTML =
-          '<i class="fas fa-pen"></i> Update Feedback';
+      // Set comments
+      if (feedback.comments) {
+        document.getElementById("commentsInput").value = feedback.comments;
       }
 
-      function setRating(groupId, value) {
-        const buttons = document
-          .getElementById(groupId)
-          .querySelectorAll(".rating-btn");
-        buttons.forEach((btn) => {
-          btn.classList.toggle(
-            "selected",
-            parseInt(btn.dataset.value) === value,
-          );
-        });
-      }
+      // Update submit button text
+      document.getElementById("submitBtn").innerHTML =
+        '<i class="fas fa-pen"></i> Update Feedback';
+    }
 
-      // ============================================
-      // RATING BUTTONS
-      // ============================================
-      document.querySelectorAll(".rating-group").forEach((group) => {
-        group.addEventListener("click", function (e) {
-          const btn = e.target.closest(".rating-btn");
-          if (!btn) return;
-          this.querySelectorAll(".rating-btn").forEach((b) =>
-            b.classList.remove("selected"),
-          );
-          btn.classList.add("selected");
-        });
+    function setRating(groupId, value) {
+      const buttons = document
+        .getElementById(groupId)
+        .querySelectorAll(".rating-btn");
+      buttons.forEach((btn) => {
+        btn.classList.toggle(
+          "selected",
+          parseInt(btn.dataset.value) === value,
+        );
       });
+    }
 
-      // ============================================
-      // GET SELECTED RATING
-      // ============================================
-      function getSelectedRating(groupId) {
-        const selected = document.querySelector(
-          `#${groupId} .rating-btn.selected`,
+    // ============================================
+    // RATING BUTTONS
+    // ============================================
+    document.querySelectorAll(".rating-group").forEach((group) => {
+      group.addEventListener("click", function (e) {
+        const btn = e.target.closest(".rating-btn");
+        if (!btn) return;
+        this.querySelectorAll(".rating-btn").forEach((b) =>
+          b.classList.remove("selected"),
         );
-        return selected ? parseInt(selected.dataset.value) : 0;
-      }
+        btn.classList.add("selected");
+      });
+    });
 
-      // ============================================
-      // SUBMIT FEEDBACK
-      // ============================================
-      document
-        .getElementById("feedbackForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
+    // ============================================
+    // GET SELECTED RATING
+    // ============================================
+    function getSelectedRating(groupId) {
+      const selected = document.querySelector(
+        `#${groupId} .rating-btn.selected`,
+      );
+      return selected ? parseInt(selected.dataset.value) : 0;
+    }
 
-          const technical = getSelectedRating("technicalRating");
-          const behavioral = getSelectedRating("behavioralRating");
-          const communication = getSelectedRating("communicationRating");
-          const decision = document.getElementById("decisionSelect").value;
-          const comments = document
-            .getElementById("commentsInput")
-            .value.trim();
+    // ============================================
+    // SUBMIT FEEDBACK
+    // ============================================
+    document
+      .getElementById("feedbackForm")
+      .addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-          // Validate
-          if (!technical || !behavioral || !communication) {
-            showToast(
-              "Please rate all skills (Technical, Behavioral, Communication)",
-              "error",
+        const technical = getSelectedRating("technicalRating");
+        const behavioral = getSelectedRating("behavioralRating");
+        const communication = getSelectedRating("communicationRating");
+        const decision = document.getElementById("decisionSelect").value;
+        const comments = document
+          .getElementById("commentsInput")
+          .value.trim();
+
+        // Validate
+        if (!technical || !behavioral || !communication) {
+          showToast(
+            "Please rate all skills (Technical, Behavioral, Communication)",
+            "error",
+          );
+          return;
+        }
+        if (!decision) {
+          showToast("Please select a decision", "error");
+          return;
+        }
+
+        const feedbackData = {
+          interviewId: currentFeedback?.interviewId || 1, // Placeholder - would need interview ID
+          technicalScore: technical,
+          behavioralScore: behavioral,
+          communicationScore: communication,
+          decision: decision,
+          comments: comments,
+        };
+
+        const btn = document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+        try {
+          let result;
+          if (currentFeedback?.feedbackId) {
+            // Update existing feedback
+            result = await window.API.Feedback.update(
+              currentFeedback.feedbackId,
+              feedbackData,
             );
-            return;
+            showToast("✅ Feedback updated successfully!", "success");
+          } else {
+            // Submit new feedback
+            result = await window.API.Feedback.submit(feedbackData);
+            showToast("✅ Feedback submitted successfully!", "success");
           }
-          if (!decision) {
-            showToast("Please select a decision", "error");
-            return;
-          }
 
-          const feedbackData = {
-            interviewId: currentFeedback?.interviewId || 1, // Placeholder - would need interview ID
-            technicalScore: technical,
-            behavioralScore: behavioral,
-            communicationScore: communication,
-            decision: decision,
-            comments: comments,
-          };
-
-          const btn = document.getElementById("submitBtn");
-          btn.disabled = true;
-          btn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-
-          try {
-            let result;
-            if (currentFeedback?.feedbackId) {
-              // Update existing feedback
-              result = await window.API.Feedback.update(
-                currentFeedback.feedbackId,
-                feedbackData,
-              );
-              showToast("✅ Feedback updated successfully!", "success");
-            } else {
-              // Submit new feedback
-              result = await window.API.Feedback.submit(feedbackData);
-              showToast("✅ Feedback submitted successfully!", "success");
-            }
-
-            setTimeout(() => {
-              window.location.href = "dashboard.html";
-            }, 1500);
-          } catch (error) {
-            console.error("Error submitting feedback:", error);
-            showToast(error.message || "Failed to submit feedback", "error");
-            btn.disabled = false;
-            btn.innerHTML = currentFeedback?.feedbackId
-              ? '<i class="fas fa-pen"></i> Update Feedback'
-              : '<i class="fas fa-paper-plane"></i> Submit Feedback';
-          }
-        });
-
-      // ============================================
-      // HELPERS
-      // ============================================
-      function formatDate(dateString) {
-        if (!dateString) return "N/A";
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-      }
-
-      function showToast(message, type = "info") {
-        if (typeof window.showToast === "function") {
-          window.showToast(message, type);
-        } else {
-          alert(message);
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1500);
+        } catch (error) {
+          console.error("Error submitting feedback:", error);
+          showToast(error.message || "Failed to submit feedback", "error");
+          btn.disabled = false;
+          btn.innerHTML = currentFeedback?.feedbackId
+            ? '<i class="fas fa-pen"></i> Update Feedback'
+            : '<i class="fas fa-paper-plane"></i> Submit Feedback';
         }
-      }
-
-      // ============================================
-      // LOGOUT
-      // ============================================
-      function logout() {
-        window.API.Auth.logout();
-      }
-
-      // ============================================
-      // INIT
-      // ============================================
-      document.addEventListener("DOMContentLoaded", function () {
-        if (!checkAuth()) return;
-
-        // Update avatar
-        const avatar = document.getElementById("userAvatar");
-        if (avatar) {
-          const initials = window.API.getUserInitials();
-          avatar.textContent = initials || "HM";
-        }
-
-        // Load candidate
-        loadCandidate();
-
-        // Setup logout
-        document
-          .getElementById("logoutBtn")
-          .addEventListener("click", function (e) {
-            e.preventDefault();
-            logout();
-          });
       });
-    </script>
-  </body>
+
+    // ============================================
+    // HELPERS
+    // ============================================
+    function formatDate(dateString) {
+      if (!dateString) return "N/A";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+
+    function showToast(message, type = "info") {
+      if (typeof window.showToast === "function") {
+        window.showToast(message, type);
+      } else {
+        alert(message);
+      }
+    }
+
+    // ============================================
+    // LOGOUT
+    // ============================================
+    function logout() {
+      window.API.Auth.logout();
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!checkAuth()) return;
+
+      // Update avatar
+      const avatar = document.getElementById("userAvatar");
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || "HM";
+      }
+
+      // Load candidate
+      loadCandidate();
+
+      // Setup logout
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          logout();
+        });
+    });
+  </script>
+</body>
+
 </html>

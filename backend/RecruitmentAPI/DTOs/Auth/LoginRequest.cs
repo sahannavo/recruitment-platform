@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace RecruitmentAPI.DTOs.Auth
 {
     public class LoginRequest

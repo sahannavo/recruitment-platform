@@ -1,417 +1,401 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - RecruitAI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/styles.css" />
-    <style>
-      /* Login specific styles */
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #eef2ff 0%, #f9fafb 100%);
-      }
 
-      .login-container {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem 1rem;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - RecruitAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    /* Login specific styles */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #eef2ff 0%, #f9fafb 100%);
+    }
 
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .login-card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 420px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header .logo span {
+      color: var(--text-primary);
+    }
+
+    .login-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .login-header p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .form-utilities {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: var(--primary);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: var(--primary-hover);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .register-link a {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      color: var(--primary-hover);
+    }
+
+    .btn-loading {
+      color: transparent !important;
+      position: relative;
+    }
+
+    .btn-loading .spinner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Header for login page */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .header .logo span {
+      color: var(--text-primary);
+    }
+
+    .header .logo img {
+      height: 40px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
       .login-card {
-        background: var(--surface);
-        width: 100%;
-        max-width: 420px;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-lg);
-        padding: 2.5rem;
+        padding: 1.5rem;
+        box-shadow: none;
         border: 1px solid var(--border);
       }
 
-      .login-header {
-        text-align: center;
-        margin-bottom: 2rem;
+      .login-container {
+        padding: 1rem;
+        align-items: flex-start;
       }
 
-      .login-header .logo {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
-      }
-
-      .login-header .logo span {
-        color: var(--text-primary);
-      }
-
-      .login-header h1 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-      }
-
-      .login-header p {
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-      }
-
-      .form-utilities {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1.5rem;
-        font-size: 0.875rem;
-      }
-
-      .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-      }
-
-      .checkbox-group input[type="checkbox"] {
-        width: 1rem;
-        height: 1rem;
-        accent-color: var(--primary);
-        cursor: pointer;
-      }
-
-      .forgot-link {
-        color: var(--primary);
-        font-weight: 500;
-        transition: color 0.2s;
-      }
-
-      .forgot-link:hover {
-        color: var(--primary-hover);
-      }
-
-      .register-link {
-        text-align: center;
-        margin-top: 1.5rem;
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-      }
-
-      .register-link a {
-        color: var(--primary);
-        font-weight: 600;
-      }
-
-      .register-link a:hover {
-        color: var(--primary-hover);
-      }
-
-      .btn-loading {
-        color: transparent !important;
-        position: relative;
-      }
-
-      .btn-loading .spinner {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      /* Header for login page */
       .header {
-        background: var(--surface);
-        border-bottom: 1px solid var(--border);
-        padding: 0 2rem;
-        height: var(--header-height);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        padding: 0 1rem;
       }
+    }
+  </style>
+</head>
 
-      .header .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-      }
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="/index.html" class="logo">
+      <img src="../assets/images/Logo.png" alt="RecruitAI Logo" style="height: 40px"
+        onerror="this.style.display = 'none'" />
+    </a>
+    <div class="header-actions">
+      <a href="register.html" class="btn btn-outline-primary btn-sm">Register</a>
+    </div>
+  </header>
 
-      .header .logo span {
-        color: var(--text-primary);
-      }
-
-      .header .logo img {
-        height: 40px;
-      }
-
-      .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      @media (max-width: 768px) {
-        .login-card {
-          padding: 1.5rem;
-          box-shadow: none;
-          border: 1px solid var(--border);
-        }
-
-        .login-container {
-          padding: 1rem;
-          align-items: flex-start;
-        }
-
-        .header {
-          padding: 0 1rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Header -->
-    <header class="header">
-      <a href="/index.html" class="logo">
-        <img
-          src="../assets/images/Logo.png"
-          alt="RecruitAI Logo"
-          style="height: 40px"
-          onerror="this.style.display = 'none'"
-        />
-      </a>
-      <div class="header-actions">
-        <a href="register.html" class="btn btn-outline-primary btn-sm"
-          >Register</a
-        >
+  <!-- Login Form -->
+  <main class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 200px" />
+        </div>
+        <h1>Welcome back</h1>
+        <p>Please enter your details to sign in.</p>
       </div>
-    </header>
 
-    <!-- Login Form -->
-    <main class="login-container">
-      <div class="login-card">
-        <div class="login-header">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 200px"
-            />
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">Email Address <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-envelope"></i>
+            <input type="email" id="email" class="form-control" placeholder="Enter your email" required
+              autocomplete="email" />
           </div>
-          <h1>Welcome back</h1>
-          <p>Please enter your details to sign in.</p>
+          <div class="error-message" id="emailError">
+            Please enter a valid email address.
+          </div>
         </div>
 
-        <form id="loginForm" novalidate>
-          <div class="form-group">
-            <label for="email"
-              >Email Address <span class="required">*</span></label
-            >
-            <div class="input-wrapper">
-              <i class="fa-regular fa-envelope"></i>
-              <input
-                type="email"
-                id="email"
-                class="form-control"
-                placeholder="Enter your email"
-                required
-                autocomplete="email"
-              />
-            </div>
-            <div class="error-message" id="emailError">
-              Please enter a valid email address.
-            </div>
+        <div class="form-group">
+          <label for="password">Password <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password" class="form-control" placeholder="Enter your password" required
+              autocomplete="current-password" minlength="6" />
           </div>
-
-          <div class="form-group">
-            <label for="password"
-              >Password <span class="required">*</span></label
-            >
-            <div class="input-wrapper">
-              <i class="fa-solid fa-lock"></i>
-              <input
-                type="password"
-                id="password"
-                class="form-control"
-                placeholder="Enter your password"
-                required
-                autocomplete="current-password"
-                minlength="6"
-              />
-            </div>
-            <div class="error-message" id="passwordError">
-              Password must be at least 6 characters.
-            </div>
+          <div class="error-message" id="passwordError">
+            Password must be at least 6 characters.
           </div>
+        </div>
 
-          <div class="form-utilities">
-            <label class="checkbox-group">
-              <input type="checkbox" id="rememberMe" />
-              <span>Remember me</span>
-            </label>
-            <a
-              href="#"
-              class="forgot-link"
-              onclick="
+        <div class="form-utilities">
+          <label class="checkbox-group">
+            <input type="checkbox" id="rememberMe" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link" onclick="
                 showToast('Password reset link sent to your email.', 'info');
                 return false;
-              "
-            >
-              Forgot Password?
-            </a>
-          </div>
+              ">
+            Forgot Password?
+          </a>
+        </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary btn-block btn-lg"
-            id="loginBtn"
-          >
-            <i class="fas fa-sign-in-alt"></i>
-            <span>Sign In</span>
-          </button>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Sign In</span>
+        </button>
 
-          <p class="register-link">
-            Don't have an account? <a href="register.html">Register</a>
-          </p>
-        </form>
-      </div>
-    </main>
+        <p class="register-link">
+          Don't have an account? <a href="register.html">Register</a>
+        </p>
+      </form>
+    </div>
+  </main>
 
-    <!-- Scripts -->
-    <script src="/js/api.js"></script>
-    <script src="/js/toast.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Check if already logged in
-        if (window.API.isAuthenticated()) {
-          const user = window.API.getCurrentUser();
-          const roleMap = {
-            Candidate: "/candidate/dashboard.html",
-            Recruiter: "/recruiter/dashboard.html",
-            HiringManager: "/hiring-manager/dashboard.html",
-            Admin: "/admin/dashboard.html",
-          };
-          window.location.href = roleMap[user?.role] || "/index.html";
-          return;
+  <!-- Scripts -->
+  <script src="../js/api.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    // Login controller
+    (function () {
+      "use strict";
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
+
+      console.log('✅ Page initialized with API client');
+
+      // Add page-specific logic below
+
+    })();
+    document.addEventListener("DOMContentLoaded", function () {
+      // Check if already logged in
+      if (window.API.isAuthenticated()) {
+        const user = window.API.getCurrentUser();
+        const roleMap = {
+          Candidate: "/candidate/dashboard.html",
+          Recruiter: "/recruiter/dashboard.html",
+          HiringManager: "/hiring-manager/dashboard.html",
+          Admin: "/admin/dashboard.html",
+        };
+        window.location.href = roleMap[user?.role] || "/index.html";
+        return;
+      }
+
+      const form = document.getElementById("loginForm");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const loginBtn = document.getElementById("loginBtn");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        let isValid = true;
+
+        // Reset errors
+        emailInput.classList.remove("is-invalid");
+        emailError.style.display = "none";
+        passwordInput.classList.remove("is-invalid");
+        passwordError.style.display = "none";
+
+        // Validate Email
+        if (!emailRegex.test(emailInput.value.trim())) {
+          emailInput.classList.add("is-invalid");
+          emailError.style.display = "block";
+          isValid = false;
         }
 
-        const form = document.getElementById("loginForm");
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const loginBtn = document.getElementById("loginBtn");
-        const emailError = document.getElementById("emailError");
-        const passwordError = document.getElementById("passwordError");
+        // Validate Password
+        if (passwordInput.value.trim().length < 6) {
+          passwordInput.classList.add("is-invalid");
+          passwordError.style.display = "block";
+          isValid = false;
+        }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!isValid) return;
 
-        form.addEventListener("submit", async function (e) {
-          e.preventDefault();
+        // Show loading state
+        loginBtn.disabled = true;
+        loginBtn.classList.add("btn-loading");
+        loginBtn.innerHTML =
+          '<span class="spinner spinner-white"></span> Signing in...';
 
-          let isValid = true;
+        try {
+          const response = await window.API.Auth.login(
+            emailInput.value.trim(),
+            passwordInput.value.trim(),
+          );
 
-          // Reset errors
-          emailInput.classList.remove("is-invalid");
-          emailError.style.display = "none";
-          passwordInput.classList.remove("is-invalid");
-          passwordError.style.display = "none";
-
-          // Validate Email
-          if (!emailRegex.test(emailInput.value.trim())) {
-            emailInput.classList.add("is-invalid");
-            emailError.style.display = "block";
-            isValid = false;
-          }
-
-          // Validate Password
-          if (passwordInput.value.trim().length < 6) {
-            passwordInput.classList.add("is-invalid");
-            passwordError.style.display = "block";
-            isValid = false;
-          }
-
-          if (!isValid) return;
-
-          // Show loading state
-          loginBtn.disabled = true;
-          loginBtn.classList.add("btn-loading");
-          loginBtn.innerHTML =
-            '<span class="spinner spinner-white"></span> Signing in...';
-
-          try {
-            const response = await window.API.Auth.login(
-              emailInput.value.trim(),
-              passwordInput.value.trim(),
-            );
-
-            if (response && response.token) {
-              const user = window.API.getCurrentUser();
-              showToast(
-                "✅ Welcome back, " + (user?.firstName || "User") + "!",
-                "success",
-              );
-
-              // Redirect based on role
-              const roleMap = {
-                Candidate: "/candidate/dashboard.html",
-                Recruiter: "/recruiter/dashboard.html",
-                HiringManager: "/hiring-manager/dashboard.html",
-                Admin: "/admin/dashboard.html",
-              };
-
-              setTimeout(() => {
-                window.location.href = roleMap[user?.role] || "/index.html";
-              }, 500);
-            }
-          } catch (error) {
-            // Reset button
-            loginBtn.disabled = false;
-            loginBtn.classList.remove("btn-loading");
-            loginBtn.innerHTML =
-              '<i class="fas fa-sign-in-alt"></i> <span>Sign In</span>';
-
-            // Show error
+          if (response && response.token) {
+            const user = window.API.getCurrentUser();
             showToast(
-              error.message || "Login failed. Please check your credentials.",
-              "error",
+              "✅ Welcome back, " + (user?.firstName || "User") + "!",
+              "success",
             );
-            console.error("Login error:", error);
+
+            // Redirect based on role
+            const roleMap = {
+              Candidate: "/candidate/dashboard.html",
+              Recruiter: "/recruiter/dashboard.html",
+              HiringManager: "/hiring-manager/dashboard.html",
+              Admin: "/admin/dashboard.html",
+            };
+
+            setTimeout(() => {
+              window.location.href = roleMap[user?.role] || "/index.html";
+            }, 500);
           }
-        });
+        } catch (error) {
+          // Reset button
+          loginBtn.disabled = false;
+          loginBtn.classList.remove("btn-loading");
+          loginBtn.innerHTML =
+            '<i class="fas fa-sign-in-alt"></i> <span>Sign In</span>';
 
-        // Clear errors on input
-        emailInput.addEventListener("input", () => {
-          emailInput.classList.remove("is-invalid");
-          emailError.style.display = "none";
-        });
-
-        passwordInput.addEventListener("input", () => {
-          passwordInput.classList.remove("is-invalid");
-          passwordError.style.display = "none";
-        });
-
-        // Enter key support
-        passwordInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            form.dispatchEvent(new Event("submit"));
-          }
-        });
+          // Show error
+          showToast(
+            error.message || "Login failed. Please check your credentials.",
+            "error",
+          );
+          console.error("Login error:", error);
+        }
       });
-    </script>
-  </body>
+
+      // Clear errors on input
+      emailInput.addEventListener("input", () => {
+        emailInput.classList.remove("is-invalid");
+        emailError.style.display = "none";
+      });
+
+      passwordInput.addEventListener("input", () => {
+        passwordInput.classList.remove("is-invalid");
+        passwordError.style.display = "none";
+      });
+
+      // Enter key support
+      passwordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          form.dispatchEvent(new Event("submit"));
+        }
+      });
+    });
+  </script>
+
+</body>
+
 </html>

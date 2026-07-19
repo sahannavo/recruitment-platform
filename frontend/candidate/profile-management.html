@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RecruitAI - Profile Management</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../css/main.css" />
-  
+
   <style>
     .profile-layout {
       display: grid;
       grid-template-columns: 260px 1fr;
       gap: 24px;
     }
-    
+
     .profile-sidebar {
       background: var(--surface);
       border-radius: var(--radius-lg);
@@ -27,7 +28,7 @@
       position: sticky;
       top: calc(var(--header-height) + 24px);
     }
-    
+
     .profile-avatar-large {
       width: 100px;
       height: 100px;
@@ -45,20 +46,22 @@
       border: 3px solid var(--surface);
       box-shadow: var(--shadow-md);
     }
+
     .profile-avatar-large:hover {
       transform: scale(1.05);
       box-shadow: var(--shadow-lg);
     }
-    
+
     .profile-sidebar h3 {
       font-size: 18px;
       font-weight: 700;
     }
+
     .profile-sidebar p {
       color: var(--text-secondary);
       font-size: 14px;
     }
-    
+
     .sidebar-nav-mini {
       margin-top: 16px;
       padding-top: 16px;
@@ -68,6 +71,7 @@
       gap: 4px;
       text-align: left;
     }
+
     .sidebar-nav-mini a {
       padding: 10px 14px;
       border-radius: var(--radius);
@@ -78,45 +82,49 @@
       align-items: center;
       gap: 10px;
     }
+
     .sidebar-nav-mini a:hover {
       background: var(--surface-alt);
       color: var(--text-primary);
     }
+
     .sidebar-nav-mini a.active {
       background: var(--primary-light);
       color: var(--primary);
     }
-    
+
     .profile-content {
       background: var(--surface);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
       padding: 32px;
     }
-    
+
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
-    
+
     .form-group {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
+
     .form-group.full-width {
       grid-column: 1 / -1;
     }
-    
+
     .form-group label {
       font-size: 13px;
       font-weight: 600;
     }
+
     .form-group label .required {
       color: var(--danger);
     }
-    
+
     .form-group input,
     .form-group select,
     .form-group textarea {
@@ -128,6 +136,7 @@
       transition: all var(--transition);
       background: var(--surface);
     }
+
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
@@ -135,7 +144,7 @@
       border-color: var(--primary);
       box-shadow: 0 0 0 3px var(--primary-light);
     }
-    
+
     .resume-upload {
       grid-column: 1 / -1;
       padding: 24px;
@@ -143,29 +152,33 @@
       border-radius: var(--radius);
       border: 2px dashed var(--border);
     }
+
     .resume-upload.drag-over {
       border-color: var(--primary);
       background: var(--primary-light);
     }
-    
+
     .upload-zone {
       text-align: center;
       padding: 32px;
       cursor: pointer;
     }
+
     .upload-zone i {
       font-size: 40px;
       color: var(--text-secondary);
       margin-bottom: 8px;
     }
+
     .upload-zone p {
       color: var(--text-secondary);
     }
+
     .upload-zone .highlight {
       color: var(--primary);
       font-weight: 600;
     }
-    
+
     .current-resume {
       display: flex;
       align-items: center;
@@ -176,21 +189,25 @@
       border: 1px solid var(--border);
       margin-top: 12px;
     }
+
     .current-resume i {
       font-size: 24px;
       color: var(--danger);
     }
+
     .current-resume .info {
       flex: 1;
     }
+
     .current-resume .info .name {
       font-weight: 600;
     }
+
     .current-resume .info .meta {
       font-size: 12px;
       color: var(--text-secondary);
     }
-    
+
     .form-actions {
       grid-column: 1 / -1;
       display: flex;
@@ -199,7 +216,7 @@
       border-top: 1px solid var(--border);
       margin-top: 8px;
     }
-    
+
     .toast {
       position: fixed;
       bottom: 24px;
@@ -217,15 +234,17 @@
       transition: all 0.3s ease;
       z-index: 9999;
     }
+
     .toast.show {
       transform: translateY(0);
       opacity: 1;
     }
-    
+
     @media (max-width: 1024px) {
       .profile-layout {
         grid-template-columns: 1fr;
       }
+
       .profile-sidebar {
         position: static;
         display: flex;
@@ -233,12 +252,14 @@
         gap: 20px;
         text-align: left;
       }
+
       .profile-avatar-large {
         margin: 0;
         width: 80px;
         height: 80px;
         font-size: 32px;
       }
+
       .sidebar-nav-mini {
         flex-direction: row;
         flex-wrap: wrap;
@@ -247,22 +268,26 @@
         margin-top: 0;
       }
     }
-    
+
     @media (max-width: 768px) {
       .form-grid {
         grid-template-columns: 1fr;
       }
+
       .profile-content {
         padding: 20px;
       }
+
       .profile-sidebar {
         flex-wrap: wrap;
         justify-content: center;
         text-align: center;
       }
+
       .form-actions {
         flex-direction: column;
       }
+
       .form-actions .btn {
         width: 100%;
         justify-content: center;
@@ -270,8 +295,9 @@
     }
   </style>
 </head>
+
 <body>
-  
+
   <!-- ===== HEADER ===== -->
   <header class="app-header">
     <div class="header-inner">
@@ -279,14 +305,14 @@
         <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
         <span>RecruitAI</span>
       </a>
-  
+
       <nav class="main-nav" aria-label="Primary navigation">
         <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
         <a href="job-search.html" class="nav-link" data-page="jobs">Jobs</a>
         <a href="my-applications.html" class="nav-link" data-page="applications">Applications</a>
         <a href="profile-management.html" class="nav-link active" data-page="profile">Profile</a>
       </nav>
-  
+
       <div class="header-actions">
         <button class="icon-btn" id="notifBtn" aria-label="Notifications">
           <i class="fas fa-bell"></i>
@@ -298,7 +324,7 @@
         </button>
       </div>
     </div>
-  
+
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay" id="mobileOverlay"></div>
     <div class="mobile-menu" id="mobileMenu">
@@ -330,7 +356,8 @@
 
       <!-- Content -->
       <section class="profile-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Profile Management</h1>
             <p style="color: var(--text-secondary);">Update your personal information and resume</p>
@@ -364,7 +391,8 @@
             </div>
             <div class="form-group full-width">
               <label>Professional Summary</label>
-              <textarea rows="3">Senior Software Engineer with 7+ years of experience in full-stack development, specializing in React, Node.js, and cloud architecture.</textarea>
+              <textarea
+                rows="3">Senior Software Engineer with 7+ years of experience in full-stack development, specializing in React, Node.js, and cloud architecture.</textarea>
             </div>
             <div class="form-group full-width">
               <label>Skills <span class="required">*</span></label>
@@ -387,7 +415,8 @@
                   <div class="meta">Uploaded on Jan 15, 2026 • 2.4 MB</div>
                 </div>
                 <button class="btn btn-secondary btn-sm" onclick="viewResume()"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-danger-outline btn-sm" onclick="removeResume()"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-danger-outline btn-sm" onclick="removeResume()"><i
+                    class="fas fa-trash"></i></button>
               </div>
             </div>
 
@@ -459,39 +488,61 @@
   </footer>
 
   <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
-  
+
   <!-- Page-specific JavaScript -->
   <script>
+    (function () {
+      'use strict';
+
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
+
+      console.log('✅ Page initialized with API client');
+
+      // Add page-specific logic below
+
+    })();
     function saveProfile() {
       alert('✅ Profile saved successfully!');
     }
-    
+
     function resetForm() {
       if (confirm('Reset all changes?')) {
         alert('🔄 Form reset to saved values.');
       }
     }
-    
+
     function editPhoto() {
       alert('📸 Click to upload profile photo (coming soon)');
     }
-    
+
     function viewResume() {
       alert('📄 Opening resume...');
     }
-    
+
     function removeResume() {
       if (confirm('Remove uploaded resume?')) {
         document.getElementById('currentResume').style.display = 'none';
         alert('🗑️ Resume removed.');
       }
     }
-    
+
     // File upload
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
-    
+
     uploadZone.addEventListener('click', () => fileInput.click());
     uploadZone.addEventListener('dragover', e => {
       e.preventDefault();
@@ -509,7 +560,7 @@
     fileInput.addEventListener('change', e => {
       if (e.target.files[0]) handleFile(e.target.files[0]);
     });
-    
+
     function handleFile(file) {
       if (file.size > 10 * 1024 * 1024) {
         alert('❌ File exceeds 10MB limit.');
@@ -520,4 +571,5 @@
     }
   </script>
 </body>
+
 </html>

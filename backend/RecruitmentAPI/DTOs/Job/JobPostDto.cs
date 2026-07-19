@@ -1,4 +1,6 @@
-// DTOs/Job/JobPostingDto.cs
+using System.ComponentModel.DataAnnotations;
+using RecruitmentAPI.Models;
+
 namespace RecruitmentAPI.DTOs.Job
 {
     public class JobPostingDto
@@ -19,8 +21,6 @@ namespace RecruitmentAPI.DTOs.Job
         public DateTime CreatedAt { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public int ApplicationCount { get; set; }
-
-        // Recruiter info
         public int RecruiterId { get; set; }
         public string RecruiterName { get; set; } = string.Empty;
     }

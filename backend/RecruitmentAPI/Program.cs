@@ -126,6 +126,8 @@ namespace RecruitmentAPI
             builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+            builder.Services.AddScoped<IRecruiterRepository, RecruiterRepository>();  
+            builder.Services.AddScoped<IHiringManagerRepository, HiringManagerRepository>();  
 
             // ─────────────────────────────────────────────────────────────────────────────
             // Service layer - ALL services registered

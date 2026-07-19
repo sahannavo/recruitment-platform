@@ -1,683 +1,692 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Manage Jobs</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Manage Jobs</title>
 
-    <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    .toolbar {
+      padding: 20px 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1 1 260px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--background);
+    }
+
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .filter-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--background);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th {
+      text-align: left;
+      padding: 14px 20px;
+      background: var(--background);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: var(--background);
+    }
+
+    .job-title-cell {
+      font-weight: 600;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-active {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .badge-draft {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-closed {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      background: none;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: var(--background);
+      color: var(--primary);
+    }
+
+    .action-btn.danger:hover {
+      color: var(--danger);
+      background: #fee2e2;
+    }
+
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-footer p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .pagination {
+      display: flex;
+      gap: 6px;
+    }
+
+    .page-btn {
+      min-width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .page-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .page-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .insights {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .ai-card {
+      background: var(--primary-light);
+      border: 1px solid #c7d2fe;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .ai-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    .ai-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .ai-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .ai-card .highlight {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .pipeline-card {
+      background: linear-gradient(135deg,
+          var(--primary),
+          var(--primary-hover));
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .pipeline-card .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.85;
+      font-weight: 600;
+    }
+
+    .pipeline-card .value {
+      font-size: 40px;
+      font-weight: 800;
+      margin: 8px 0 12px;
+    }
+
+    .pipeline-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      max-width: 420px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+      animation: modalPop 0.2s ease;
+    }
+
+    @keyframes modalPop {
+      from {
+        transform: scale(0.95);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .modal h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .modal p {
+      margin: 0 0 22px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .empty-state i {
+      font-size: 40px;
+      color: var(--border);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      margin: 0 0 20px;
+    }
+
+    @media (max-width: 768px) {
       .toolbar {
-        padding: 20px 24px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .search-wrap {
-        position: relative;
-        flex: 1 1 260px;
-      }
-      .search-wrap i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-secondary);
-      }
-      .search-wrap input {
-        width: 100%;
-        padding: 10px 14px 10px 38px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-family: inherit;
-        background: var(--background);
-      }
-      .search-wrap input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
+        flex-direction: column;
+        align-items: stretch;
       }
 
       .filter-select {
-        padding: 10px 14px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--background);
-        font-family: inherit;
-        font-size: 14px;
-      }
-      .filter-select:focus {
-        outline: none;
-        border-color: var(--primary);
-      }
-
-      .table-scroll {
-        overflow-x: auto;
-      }
-
-      table {
         width: 100%;
-        border-collapse: collapse;
-        min-width: 700px;
-      }
-
-      th {
-        text-align: left;
-        padding: 14px 20px;
-        background: var(--background);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-secondary);
-        font-weight: 600;
-      }
-
-      td {
-        padding: 16px 20px;
-        border-top: 1px solid var(--border);
-        font-size: 14px;
-        vertical-align: middle;
-      }
-
-      tbody tr {
-        transition: background 0.15s ease;
-      }
-      tbody tr:hover {
-        background: var(--background);
-      }
-
-      .job-title-cell {
-        font-weight: 600;
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 14px;
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 600;
-      }
-      .badge-active {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .badge-draft {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .badge-closed {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-
-      .actions-cell {
-        display: flex;
-        gap: 6px;
-        justify-content: flex-end;
-      }
-
-      .action-btn {
-        width: 34px;
-        height: 34px;
-        border: none;
-        background: none;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-secondary);
-        transition: all 0.2s ease;
-        cursor: pointer;
-      }
-      .action-btn:hover {
-        background: var(--background);
-        color: var(--primary);
-      }
-      .action-btn.danger:hover {
-        color: var(--danger);
-        background: #fee2e2;
-      }
-
-      .table-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 24px;
-        border-top: 1px solid var(--border);
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      .table-footer p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-
-      .pagination {
-        display: flex;
-        gap: 6px;
-      }
-      .page-btn {
-        min-width: 36px;
-        height: 36px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        border-radius: var(--radius);
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .page-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-      .page-btn.active {
-        background: var(--primary);
-        color: #fff;
-        border-color: var(--primary);
       }
 
       .insights {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 20px;
-        margin-top: 24px;
+        grid-template-columns: 1fr;
       }
 
-      .ai-card {
-        background: var(--primary-light);
-        border: 1px solid #c7d2fe;
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        display: flex;
-        gap: 16px;
-      }
-      .ai-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        background: var(--primary);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 20px;
-      }
-      .ai-card h2 {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0 0 8px;
-      }
-      .ai-card p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 14px;
-        line-height: 1.6;
-      }
-      .ai-card .highlight {
-        color: var(--primary);
-        font-weight: 600;
-      }
-
-      .pipeline-card {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-hover)
-        );
-        color: #fff;
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      .pipeline-card .label {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        opacity: 0.85;
-        font-weight: 600;
-      }
-      .pipeline-card .value {
-        font-size: 40px;
-        font-weight: 800;
-        margin: 8px 0 12px;
-      }
-      .pipeline-trend {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255, 255, 255, 0.18);
-        padding: 4px 14px;
-        border-radius: var(--radius-full);
+      td,
+      th {
+        padding: 12px 16px;
         font-size: 13px;
-        font-weight: 600;
-        width: fit-content;
       }
+    }
+  </style>
+</head>
 
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(17, 24, 39, 0.5);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        z-index: 1000;
-      }
-      .modal-overlay.open {
-        display: flex;
-      }
-      .modal {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        max-width: 420px;
-        width: 100%;
-        padding: 28px;
-        box-shadow: var(--shadow-lg);
-        animation: modalPop 0.2s ease;
-      }
-      @keyframes modalPop {
-        from {
-          transform: scale(0.95);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-      .modal-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background: #fee2e2;
-        color: var(--danger);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        margin-bottom: 16px;
-      }
-      .modal h2 {
-        margin: 0 0 8px;
-        font-size: 18px;
-      }
-      .modal p {
-        margin: 0 0 22px;
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-      .modal-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-      }
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
 
-      .empty-state {
-        padding: 60px 20px;
-        text-align: center;
-      }
-      .empty-state i {
-        font-size: 40px;
-        color: var(--border);
-        margin-bottom: 16px;
-      }
-      .empty-state h3 {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0 0 8px;
-      }
-      .empty-state p {
-        color: var(--text-secondary);
-        margin: 0 0 20px;
-      }
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="manage-jobs.html" class="nav-link active" data-page="jobs">Jobs</a>
+        <a href="candidates.html" class="nav-link" data-page="candidates">Candidates</a>
+        <a href="schedule-interview.html" class="nav-link" data-page="interviews">Interviews</a>
+      </nav>
 
-      @media (max-width: 768px) {
-        .toolbar {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .filter-select {
-          width: 100%;
-        }
-        .insights {
-          grid-template-columns: 1fr;
-        }
-        td,
-        th {
-          padding: 12px 16px;
-          font-size: 13px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a href="manage-jobs.html" class="nav-link active" data-page="jobs"
-            >Jobs</a
-          >
-          <a href="candidates.html" class="nav-link" data-page="candidates"
-            >Candidates</a
-          >
-          <a
-            href="schedule-interview.html"
-            class="nav-link"
-            data-page="interviews"
-            >Interviews</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="manage-jobs.html" class="mobile-link active" data-page="jobs"
-          >Jobs</a
-        >
-        <a href="candidates.html" class="mobile-link" data-page="candidates"
-          >Candidates</a
-        >
-        <a
-          href="schedule-interview.html"
-          class="mobile-link"
-          data-page="interviews"
-          >Interviews</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-header">
-        <div>
-          <h1 style="font-size: 28px; font-weight: 700">Manage Jobs</h1>
-          <p style="color: var(--text-secondary)">
-            Review, edit, and organize your current job openings.
-          </p>
-        </div>
-        <button class="btn btn-primary" onclick="createNewJob()">
-          <i class="fas fa-plus"></i> Create New Job
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
         </button>
       </div>
+    </div>
 
-      <!-- Jobs Table -->
-      <div class="card">
-        <div class="toolbar">
-          <div class="search-wrap">
-            <i class="fas fa-search" aria-hidden="true"></i>
-            <input
-              type="search"
-              id="jobSearch"
-              placeholder="Search jobs by title or keyword…"
-              onkeyup="filterJobs()"
-            />
-          </div>
-          <select class="filter-select" id="deptFilter" onchange="filterJobs()">
-            <option value="all">Department: All</option>
-            <option value="Design">Design</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Marketing">Marketing</option>
-            <option value="HR">Human Resources</option>
-          </select>
-          <select
-            class="filter-select"
-            id="statusFilter"
-            onchange="filterJobs()"
-          >
-            <option value="all">Status: All</option>
-            <option value="Active">Active</option>
-            <option value="Draft">Draft</option>
-            <option value="Closed">Closed</option>
-          </select>
-        </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="manage-jobs.html" class="mobile-link active" data-page="jobs">Jobs</a>
+      <a href="candidates.html" class="mobile-link" data-page="candidates">Candidates</a>
+      <a href="schedule-interview.html" class="mobile-link" data-page="interviews">Interviews</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
 
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Job Title</th>
-                <th>Department</th>
-                <th>Applicants</th>
-                <th>Status</th>
-                <th>Date Posted</th>
-                <th style="text-align: right">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="jobsTableBody">
-              <!-- Rows injected by JS -->
-            </tbody>
-          </table>
-        </div>
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <div class="page-header">
+      <div>
+        <h1 style="font-size: 28px; font-weight: 700">Manage Jobs</h1>
+        <p style="color: var(--text-secondary)">
+          Review, edit, and organize your current job openings.
+        </p>
+      </div>
+      <button class="btn btn-primary" onclick="createNewJob()">
+        <i class="fas fa-plus"></i> Create New Job
+      </button>
+    </div>
 
-        <div class="table-footer">
-          <p id="resultsSummary">
-            Showing <strong>4</strong> of <strong>12</strong> jobs
-          </p>
-          <div class="pagination" id="pagination">
-            <button class="page-btn" onclick="prevPage()">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn" onclick="goToPage(2)">2</button>
-            <button class="page-btn" onclick="goToPage(3)">3</button>
-            <button class="page-btn" onclick="nextPage()">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
+    <!-- Jobs Table -->
+    <div class="card">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <input type="search" id="jobSearch" placeholder="Search jobs by title or keyword…" onkeyup="filterJobs()" />
         </div>
+        <select class="filter-select" id="deptFilter" onchange="filterJobs()">
+          <option value="all">Department: All</option>
+          <option value="Design">Design</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Marketing">Marketing</option>
+          <option value="HR">Human Resources</option>
+        </select>
+        <select class="filter-select" id="statusFilter" onchange="filterJobs()">
+          <option value="all">Status: All</option>
+          <option value="Active">Active</option>
+          <option value="Draft">Draft</option>
+          <option value="Closed">Closed</option>
+        </select>
       </div>
 
-      <!-- Insights -->
-      <section class="insights" aria-label="Insights">
-        <div class="ai-card">
-          <div class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
-          <div>
-            <h2>AI Match Analysis</h2>
-            <p>
-              Our AI has flagged
-              <span class="highlight">12 new applicants</span> for the "Senior
-              Product Designer" role who match 90% of your required skill
-              profile. Review them now to speed up your hiring cycle.
-            </p>
-          </div>
-        </div>
-        <div class="pipeline-card">
-          <div>
-            <span class="label">Total Pipeline</span>
-            <div class="value">124</div>
-          </div>
-          <span class="pipeline-trend">
-            <i class="fas fa-arrow-trend-up"></i> 12% from last week
-          </span>
-        </div>
-      </section>
-    </main>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Department</th>
+              <th>Applicants</th>
+              <th>Status</th>
+              <th>Date Posted</th>
+              <th style="text-align: right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="jobsTableBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            />
-            <span>RecruitAI</span>
-          </div>
+      <div class="table-footer">
+        <p id="resultsSummary">
+          Showing <strong>4</strong> of <strong>12</strong> jobs
+        </p>
+        <div class="pagination" id="pagination">
+          <button class="page-btn" onclick="prevPage()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn" onclick="goToPage(2)">2</button>
+          <button class="page-btn" onclick="goToPage(3)">3</button>
+          <button class="page-btn" onclick="nextPage()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <section class="insights" aria-label="Insights">
+      <div class="ai-card">
+        <div class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div>
+          <h2>AI Match Analysis</h2>
           <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
+            Our AI has flagged
+            <span class="highlight">12 new applicants</span> for the "Senior
+            Product Designer" role who match 90% of your required skill
+            profile. Review them now to speed up your hiring cycle.
           </p>
         </div>
-
-        <div class="footer-links">
-          <h4>For Recruiters</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="manage-jobs.html">Manage Jobs</a></li>
-            <li><a href="candidates.html">Candidates</a></li>
-            <li><a href="schedule-interview.html">Interviews</a></li>
-          </ul>
+      </div>
+      <div class="pipeline-card">
+        <div>
+          <span class="label">Total Pipeline</span>
+          <div class="value">124</div>
         </div>
+        <span class="pipeline-trend">
+          <i class="fas fa-arrow-trend-up"></i> 12% from last week
+        </span>
+      </div>
+    </section>
+  </main>
 
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" />
+          <span>RecruitAI</span>
         </div>
-
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
 
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-links">
+        <h4>For Recruiters</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="manage-jobs.html">Manage Jobs</a></li>
+          <li><a href="candidates.html">Candidates</a></li>
+          <li><a href="schedule-interview.html">Interviews</a></li>
+        </ul>
       </div>
-    </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
-    <script src="../js/main.js"></script>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
 
-    <!-- Page-specific JavaScript -->
-    <script>
-      // Sample data
-      let jobs = [
-        {
-          id: 1,
-          title: "Senior Product Designer",
-          department: "Design",
-          applicants: 24,
-          status: "Active",
-          date: "Oct 12, 2023",
-        },
-        {
-          id: 2,
-          title: "Full-Stack Engineer",
-          department: "Engineering",
-          applicants: 48,
-          status: "Draft",
-          date: "Oct 14, 2023",
-        },
-        {
-          id: 3,
-          title: "Marketing Manager",
-          department: "Marketing",
-          applicants: 12,
-          status: "Closed",
-          date: "Sep 28, 2023",
-        },
-        {
-          id: 4,
-          title: "HR Specialist",
-          department: "HR",
-          applicants: 8,
-          status: "Active",
-          date: "Oct 05, 2023",
-        },
-      ];
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
 
-      const statusClass = {
-        Active: "badge-active",
-        Draft: "badge-draft",
-        Closed: "badge-closed",
-      };
-      const statusIcon = {
-        Active: "fa-circle-check",
-        Draft: "fa-pen",
-        Closed: "fa-circle-xmark",
-      };
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-      function renderJobs() {
-        const searchTerm = document
-          .getElementById("jobSearch")
-          .value.toLowerCase()
-          .trim();
-        const dept = document.getElementById("deptFilter").value;
-        const status = document.getElementById("statusFilter").value;
+  <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-        let filtered = jobs.filter((job) => {
-          const matchSearch = job.title.toLowerCase().includes(searchTerm);
-          const matchDept = dept === "all" || job.department === dept;
-          const matchStatus = status === "all" || job.status === status;
-          return matchSearch && matchDept && matchStatus;
-        });
+  <!-- Page-specific JavaScript -->
+  <script>
+    (function () {
+      'use strict';
 
-        const tbody = document.getElementById("jobsTableBody");
-        tbody.innerHTML = "";
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
 
-        if (filtered.length === 0) {
-          tbody.innerHTML = `
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
+
+      console.log('✅ Page initialized with API client');
+
+      // Add page-specific logic below
+
+    })();
+    // Sample data
+    let jobs = [
+      {
+        id: 1,
+        title: "Senior Product Designer",
+        department: "Design",
+        applicants: 24,
+        status: "Active",
+        date: "Oct 12, 2023",
+      },
+      {
+        id: 2,
+        title: "Full-Stack Engineer",
+        department: "Engineering",
+        applicants: 48,
+        status: "Draft",
+        date: "Oct 14, 2023",
+      },
+      {
+        id: 3,
+        title: "Marketing Manager",
+        department: "Marketing",
+        applicants: 12,
+        status: "Closed",
+        date: "Sep 28, 2023",
+      },
+      {
+        id: 4,
+        title: "HR Specialist",
+        department: "HR",
+        applicants: 8,
+        status: "Active",
+        date: "Oct 05, 2023",
+      },
+    ];
+
+    const statusClass = {
+      Active: "badge-active",
+      Draft: "badge-draft",
+      Closed: "badge-closed",
+    };
+    const statusIcon = {
+      Active: "fa-circle-check",
+      Draft: "fa-pen",
+      Closed: "fa-circle-xmark",
+    };
+
+    function renderJobs() {
+      const searchTerm = document
+        .getElementById("jobSearch")
+        .value.toLowerCase()
+        .trim();
+      const dept = document.getElementById("deptFilter").value;
+      const status = document.getElementById("statusFilter").value;
+
+      let filtered = jobs.filter((job) => {
+        const matchSearch = job.title.toLowerCase().includes(searchTerm);
+        const matchDept = dept === "all" || job.department === dept;
+        const matchStatus = status === "all" || job.status === status;
+        return matchSearch && matchDept && matchStatus;
+      });
+
+      const tbody = document.getElementById("jobsTableBody");
+      tbody.innerHTML = "";
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
           <tr>
             <td colspan="6">
               <div class="empty-state">
@@ -691,14 +700,14 @@
             </td>
           </tr>
         `;
-          document.getElementById("resultsSummary").innerHTML =
-            `Showing <strong>0</strong> of <strong>${jobs.length}</strong> jobs`;
-          return;
-        }
+        document.getElementById("resultsSummary").innerHTML =
+          `Showing <strong>0</strong> of <strong>${jobs.length}</strong> jobs`;
+        return;
+      }
 
-        filtered.forEach((job) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
+      filtered.forEach((job) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
           <td class="job-title-cell">${job.title}</td>
           <td style="color: var(--text-secondary);">${job.department}</td>
           <td style="color: var(--text-secondary);">${job.applicants} Candidates</td>
@@ -716,59 +725,60 @@
             </div>
           </td>
         `;
-          tbody.appendChild(tr);
-        });
+        tbody.appendChild(tr);
+      });
 
-        document.getElementById("resultsSummary").innerHTML =
-          `Showing <strong>${filtered.length}</strong> of <strong>${jobs.length}</strong> jobs`;
-      }
+      document.getElementById("resultsSummary").innerHTML =
+        `Showing <strong>${filtered.length}</strong> of <strong>${jobs.length}</strong> jobs`;
+    }
 
-      function filterJobs() {
-        renderJobs();
-      }
-
-      function createNewJob() {
-        window.location.href = "post-job.html";
-      }
-
-      function viewJob(id) {
-        const job = jobs.find((j) => j.id === id);
-        alert(
-          `📋 Viewing: ${job.title}\n\nDepartment: ${job.department}\nApplicants: ${job.applicants}\nStatus: ${job.status}\nPosted: ${job.date}`,
-        );
-      }
-
-      function editJob(id) {
-        const job = jobs.find((j) => j.id === id);
-        alert(`✏️ Editing: ${job.title}`);
-      }
-
-      function deleteJob(id) {
-        if (confirm(`🗑️ Are you sure you want to delete this job?`)) {
-          jobs = jobs.filter((j) => j.id !== id);
-          renderJobs();
-          alert("✅ Job deleted successfully!");
-        }
-      }
-
-      function goToPage(page) {
-        document
-          .querySelectorAll(".page-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        document
-          .querySelector(`.page-btn[onclick*="${page}"]`)
-          ?.classList.add("active");
-      }
-
-      function prevPage() {
-        alert("← Previous page");
-      }
-      function nextPage() {
-        alert("→ Next page");
-      }
-
-      // Initial render
+    function filterJobs() {
       renderJobs();
-    </script>
-  </body>
+    }
+
+    function createNewJob() {
+      window.location.href = "post-job.html";
+    }
+
+    function viewJob(id) {
+      const job = jobs.find((j) => j.id === id);
+      alert(
+        `📋 Viewing: ${job.title}\n\nDepartment: ${job.department}\nApplicants: ${job.applicants}\nStatus: ${job.status}\nPosted: ${job.date}`,
+      );
+    }
+
+    function editJob(id) {
+      const job = jobs.find((j) => j.id === id);
+      alert(`✏️ Editing: ${job.title}`);
+    }
+
+    function deleteJob(id) {
+      if (confirm(`🗑️ Are you sure you want to delete this job?`)) {
+        jobs = jobs.filter((j) => j.id !== id);
+        renderJobs();
+        alert("✅ Job deleted successfully!");
+      }
+    }
+
+    function goToPage(page) {
+      document
+        .querySelectorAll(".page-btn")
+        .forEach((btn) => btn.classList.remove("active"));
+      document
+        .querySelector(`.page-btn[onclick*="${page}"]`)
+        ?.classList.add("active");
+    }
+
+    function prevPage() {
+      alert("← Previous page");
+    }
+    function nextPage() {
+      alert("→ Next page");
+    }
+
+    // Initial render
+    renderJobs();
+  </script>
+</body>
+
 </html>

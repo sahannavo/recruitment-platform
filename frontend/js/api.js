@@ -146,54 +146,9 @@ async function apiRequest(
 }
 
 // ============================================
-// AUTH API
+// AUTH API (FIXED)
 // ============================================
 
-// Check if user is authenticated
-function isAuthenticated() {
-  const token = getToken();
-  if (!token) return false;
-
-  // Check if token is expired
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    const exp = payload.exp * 1000; // Convert to milliseconds
-    return Date.now() < exp;
-  } catch {
-    return false;
-  }
-}
-// Get user role
-function getUserRole() {
-  const user = getCurrentUser();
-  return user?.role || user?.Role || "Candidate";
-}
-// Get user initials for avatar
-function getUserInitials() {
-  const user = getCurrentUser();
-  if (!user) return "?";
-
-  const firstName = user.firstName || user.FirstName || "";
-  const lastName = user.lastName || user.LastName || "";
-
-  if (firstName && lastName) {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase();
-  }
-  return firstName[0]?.toUpperCase() || "?";
-}
-// Get full name
-function getUserFullName() {
-  const user = getCurrentUser();
-  if (!user) return "User";
-
-  const firstName = user.firstName || user.FirstName || "";
-  const lastName = user.lastName || user.LastName || "";
-
-  if (firstName && lastName) {
-    return `${firstName} ${lastName}`;
-  }
-  return firstName || "User";
-}
 const AuthAPI = {
   login: async (email, password) => {
     const response = await apiRequest(
@@ -204,7 +159,18 @@ const AuthAPI = {
     );
     if (response && response.token) {
       setToken(response.token);
-      setCurrentUser(response.user);
+
+      // ✅ FIX: Transform backend flat response to frontend user object
+      const user = {
+        userId: response.userId || response.UserId,
+        email: response.email || response.Email,
+        firstName: response.firstName || response.FirstName || "",
+        lastName: response.lastName || response.LastName || "",
+        role: response.role || response.Role || "Candidate",
+        expiresAt: response.expiresAt || response.ExpiresAt,
+      };
+
+      setCurrentUser(user);
       return response;
     }
     return null;
@@ -222,66 +188,35 @@ const AuthAPI = {
   getMe: async () => {
     return await apiRequest("/api/auth/me", "GET", null, true);
   },
+
+  // ✅ FIX: Expose auth check functions
+  isAuthenticated: isAuthenticated,
+  getUserRole: getUserRole,
+  getUserInitials: getUserInitials,
+  getUserFullName: getUserFullName,
 };
 
 // ============================================
-// CANDIDATE API (FULLY FIXED)
+// UPDATE EXPOSED API
 // ============================================
-const CandidateAPI = {
-  getProfile: async () => {
-    return await apiRequest("/api/candidates/profile", "GET", null, true);
-  },
-
-  updateProfile: async (profileData) => {
-    return await apiRequest(
-      "/api/candidates/profile",
-      "PUT",
-      profileData,
-      true,
-    );
-  },
-
-  uploadCV: async (file) => {
-    const token = getToken();
-    const formData = new FormData();
-    formData.append("file", file);
-
-    // Setup AbortController for timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/candidates/upload-cv`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const error = await response.json();
-        // ✅ FIXED: Check for 'detail' first
-        throw new Error(error.detail || error.message || "Upload failed");
-      }
-
-      return await response.json();
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (error.name === "AbortError") {
-        throw new Error(
-          `Upload timed out after ${REQUEST_TIMEOUT / 1000} seconds`,
-        );
-      }
-      console.error("Upload Error:", error);
-      throw error;
-    }
-  },
+window.API = {
+  Auth: AuthAPI,
+  Candidate: CandidateAPI,
+  Job: JobAPI,
+  Application: ApplicationAPI,
+  Interview: InterviewAPI,
+  Feedback: FeedbackAPI,
+  Admin: AdminAPI,
+  getToken,
+  setToken,
+  removeToken,
+  getCurrentUser,
+  setCurrentUser,
+  isAuthenticated,
+  getUserRole,
+  getUserInitials,
+  getUserFullName,
 };
-
 // ============================================
 // JOB API
 // ============================================
@@ -400,20 +335,7 @@ const AdminAPI = {
 // ============================================
 // EXPOSE TO GLOBAL SCOPE
 // ============================================
-window.API = {
-  Auth: AuthAPI,
-  Candidate: CandidateAPI,
-  Job: JobAPI,
-  Application: ApplicationAPI,
-  Interview: InterviewAPI,
-  Feedback: FeedbackAPI,
-  Admin: AdminAPI,
-  getToken,
-  setToken,
-  removeToken,
-  getCurrentUser,
-  setCurrentUser,
-};
+
 
 console.log("✅ API Client Loaded Successfully!");
 console.log("📍 API Base URL:", API_BASE_URL);

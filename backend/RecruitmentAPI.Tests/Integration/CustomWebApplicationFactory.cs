@@ -18,19 +18,36 @@ namespace RecruitmentAPI.Tests.Integration
             builder.ConfigureServices(services =>
             {
                 // Remove existing ApplicationDbContext registration
-                var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(ApplicationDbContext));
+                var descriptor = services.FirstOrDefault(d =>
+                    d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+
                 if (descriptor != null)
                 {
                     services.Remove(descriptor);
                 }
 
+                // Also remove any ApplicationDbContext registration
+                var dbContextDescriptor = services.FirstOrDefault(d =>
+                    d.ServiceType == typeof(ApplicationDbContext));
+
+                if (dbContextDescriptor != null)
+                {
+                    services.Remove(dbContextDescriptor);
+                }
+
                 // Add in-memory database
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("TestDb"));
+                    options.UseInMemoryDatabase($"TestDb_{Guid.NewGuid()}"));
 
-                // Resolve logger for debugging
-                var logger = services.BuildServiceProvider().GetRequiredService<ILogger<CustomWebApplicationFactory>>();
+                // Build service provider and log
+                var sp = services.BuildServiceProvider();
+                using var scope = sp.CreateScope();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
                 logger.LogInformation("Using in-memory database for integration tests");
+
+                // Ensure database is created
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.EnsureCreated();
             });
         }
     }

@@ -1,649 +1,616 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Post New Job</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Post New Job</title>
 
-    <style>
-      .form-card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        padding: 32px;
-        box-shadow: var(--shadow);
-        max-width: 900px;
-        margin: 0 auto;
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    .form-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .form-group label .required {
+      color: var(--danger);
+    }
+
+    .form-control,
+    .form-select {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .form-control.is-invalid {
+      border-color: var(--danger);
+    }
+
+    .error-message {
+      display: none;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .char-counter.limit {
+      color: var(--danger);
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      min-height: 42px;
+      cursor: text;
+      transition: all 0.2s ease;
+    }
+
+    .tags-container:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .tags-container.is-invalid {
+      border-color: var(--danger);
+    }
+
+    .tag-chip {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-chip button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      opacity: 0.6;
+    }
+
+    .tag-chip button:hover {
+      opacity: 1;
+    }
+
+    .tags-input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 120px;
+      font-family: inherit;
+      font-size: 14px;
+      background: transparent;
+      padding: 4px 0;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .btn.is-loading {
+      color: transparent;
+    }
+
+    .btn.is-loading .spinner {
+      display: block;
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      position: absolute;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
+    }
 
+    @media (max-width: 768px) {
       .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        grid-template-columns: 1fr;
       }
 
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .form-group.full-width {
-        grid-column: 1 / -1;
-      }
-
-      .form-group label {
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .form-group label .required {
-        color: var(--danger);
-      }
-
-      .form-control,
-      .form-select {
-        padding: 10px 14px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        font-family: inherit;
-        font-size: 14px;
-        transition: all 0.2s ease;
-        background: var(--surface);
-        color: var(--text-primary);
-      }
-      .form-control:focus,
-      .form-select:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-      .form-control.is-invalid {
-        border-color: var(--danger);
-      }
-      .error-message {
-        display: none;
-        color: var(--danger);
-        font-size: 13px;
-        font-weight: 500;
-      }
-      .error-message.show {
-        display: block;
-      }
-
-      textarea.form-control {
-        resize: vertical;
-        min-height: 120px;
-      }
-
-      .char-counter {
-        text-align: right;
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-      }
-      .char-counter.limit {
-        color: var(--danger);
-      }
-
-      .tags-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        min-height: 42px;
-        cursor: text;
-        transition: all 0.2s ease;
-      }
-      .tags-container:focus-within {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-      }
-      .tags-container.is-invalid {
-        border-color: var(--danger);
-      }
-
-      .tag-chip {
-        background: var(--primary-light);
-        color: var(--primary);
-        padding: 4px 12px;
-        border-radius: var(--radius-full);
-        font-size: 13px;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .tag-chip button {
-        background: none;
-        border: none;
-        color: var(--primary);
-        cursor: pointer;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        opacity: 0.6;
-      }
-      .tag-chip button:hover {
-        opacity: 1;
-      }
-
-      .tags-input {
-        border: none;
-        outline: none;
-        flex: 1;
-        min-width: 120px;
-        font-family: inherit;
-        font-size: 14px;
-        background: transparent;
-        padding: 4px 0;
+      .form-card {
+        padding: 20px;
       }
 
       .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        padding-top: 20px;
-        border-top: 1px solid var(--border);
-        margin-top: 8px;
+        flex-direction: column-reverse;
       }
 
-      .btn.is-loading {
-        color: transparent;
+      .form-actions .btn {
+        width: 100%;
+        justify-content: center;
       }
-      .btn.is-loading .spinner {
-        display: block;
-      }
-      .spinner {
-        display: none;
-        width: 18px;
-        height: 18px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        position: absolute;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+    }
+  </style>
+</head>
 
-      @media (max-width: 768px) {
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-        .form-card {
-          padding: 20px;
-        }
-        .form-actions {
-          flex-direction: column-reverse;
-        }
-        .form-actions .btn {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="manage-jobs.html" class="nav-link active" data-page="jobs">Jobs</a>
+        <a href="candidates.html" class="nav-link" data-page="candidates">Candidates</a>
+        <a href="schedule-interview.html" class="nav-link" data-page="interviews">Interviews</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="manage-jobs.html" class="mobile-link active" data-page="jobs">Jobs</a>
+      <a href="candidates.html" class="mobile-link" data-page="candidates">Candidates</a>
+      <a href="schedule-interview.html" class="mobile-link" data-page="interviews">Interviews</a>
+      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <div class="page-header" style="max-width: 900px; margin: 0 auto 24px">
+      <div>
+        <h1 style="font-size: 28px; font-weight: 700">Post a New Job</h1>
+        <p style="color: var(--text-secondary)">
+          Fill out the details below to publish a new job opening.
+        </p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <form id="postJobForm" novalidate>
+        <div class="form-grid">
+          <!-- Job Title -->
+          <div class="form-group full-width">
+            <label for="jobTitle">Job Title <span class="required">*</span></label>
+            <input type="text" id="jobTitle" class="form-control" placeholder="e.g. Senior Product Designer" required />
+            <div class="error-message">Please provide a job title.</div>
+          </div>
+
+          <!-- Department -->
+          <div class="form-group">
+            <label for="department">Department <span class="required">*</span></label>
+            <select id="department" class="form-select" required>
+              <option value="">Select a department</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Design">Design</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Sales">Sales</option>
+              <option value="HR">Human Resources</option>
+            </select>
+            <div class="error-message">Please select a department.</div>
+          </div>
+
+          <!-- Employment Type -->
+          <div class="form-group">
+            <label for="employmentType">Employment Type <span class="required">*</span></label>
+            <select id="employmentType" class="form-select" required>
+              <option value="">Select type</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contract">Contract</option>
+              <option value="Internship">Internship</option>
+            </select>
+            <div class="error-message">Please select an employment type.</div>
+          </div>
+
+          <!-- Location -->
+          <div class="form-group full-width">
+            <label for="location">Location <span class="required">*</span></label>
+            <input type="text" id="location" class="form-control" placeholder="e.g. New York, NY or Remote" required />
+            <div class="error-message">Please specify a location.</div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group full-width">
+            <label for="description">Job Description <span class="required">*</span></label>
+            <textarea id="description" class="form-control"
+              placeholder="Describe the role, responsibilities, and requirements..." required
+              maxlength="2000"></textarea>
+            <div class="char-counter" id="charCounter">
+              0 / 2000 characters
+            </div>
+            <div class="error-message">Please provide a job description.</div>
+          </div>
+
+          <!-- Skills -->
+          <div class="form-group full-width">
+            <label for="skillsInput">Required Skills</label>
+            <div class="tags-container" id="tagsContainer">
+              <div class="tag-chip">
+                React
+                <button type="button" onclick="removeTag(this)">
+                  <i class="fas fa-xmark"></i>
+                </button>
+              </div>
+              <div class="tag-chip">
+                TypeScript
+                <button type="button" onclick="removeTag(this)">
+                  <i class="fas fa-xmark"></i>
+                </button>
+              </div>
+              <input type="text" id="skillsInput" class="tags-input" placeholder="Type a skill and press Enter..." />
+            </div>
+            <div class="error-message">Please add at least one skill.</div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+            <span class="btn-text">Save Draft</span>
+            <div class="spinner"></div>
+          </button>
+          <button type="submit" class="btn btn-primary" id="publishBtn">
+            <span class="btn-text"><i class="fas fa-paper-plane"></i> Publish Job</span>
+            <div class="spinner"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" />
           <span>RecruitAI</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a href="manage-jobs.html" class="nav-link active" data-page="jobs"
-            >Jobs</a
-          >
-          <a href="candidates.html" class="nav-link" data-page="candidates"
-            >Candidates</a
-          >
-          <a
-            href="schedule-interview.html"
-            class="nav-link"
-            data-page="interviews"
-            >Interviews</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
         </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
 
-      <!-- Mobile Menu -->
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="manage-jobs.html" class="mobile-link active" data-page="jobs"
-          >Jobs</a
-        >
-        <a href="candidates.html" class="mobile-link" data-page="candidates"
-          >Candidates</a
-        >
-        <a
-          href="schedule-interview.html"
-          class="mobile-link"
-          data-page="interviews"
-          >Interviews</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-header" style="max-width: 900px; margin: 0 auto 24px">
-        <div>
-          <h1 style="font-size: 28px; font-weight: 700">Post a New Job</h1>
-          <p style="color: var(--text-secondary)">
-            Fill out the details below to publish a new job opening.
-          </p>
-        </div>
+      <div class="footer-links">
+        <h4>For Recruiters</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="manage-jobs.html">Manage Jobs</a></li>
+          <li><a href="candidates.html">Candidates</a></li>
+          <li><a href="schedule-interview.html">Interviews</a></li>
+        </ul>
       </div>
 
-      <div class="form-card">
-        <form id="postJobForm" novalidate>
-          <div class="form-grid">
-            <!-- Job Title -->
-            <div class="form-group full-width">
-              <label for="jobTitle"
-                >Job Title <span class="required">*</span></label
-              >
-              <input
-                type="text"
-                id="jobTitle"
-                class="form-control"
-                placeholder="e.g. Senior Product Designer"
-                required
-              />
-              <div class="error-message">Please provide a job title.</div>
-            </div>
-
-            <!-- Department -->
-            <div class="form-group">
-              <label for="department"
-                >Department <span class="required">*</span></label
-              >
-              <select id="department" class="form-select" required>
-                <option value="">Select a department</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Design">Design</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Sales">Sales</option>
-                <option value="HR">Human Resources</option>
-              </select>
-              <div class="error-message">Please select a department.</div>
-            </div>
-
-            <!-- Employment Type -->
-            <div class="form-group">
-              <label for="employmentType"
-                >Employment Type <span class="required">*</span></label
-              >
-              <select id="employmentType" class="form-select" required>
-                <option value="">Select type</option>
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
-                <option value="Contract">Contract</option>
-                <option value="Internship">Internship</option>
-              </select>
-              <div class="error-message">Please select an employment type.</div>
-            </div>
-
-            <!-- Location -->
-            <div class="form-group full-width">
-              <label for="location"
-                >Location <span class="required">*</span></label
-              >
-              <input
-                type="text"
-                id="location"
-                class="form-control"
-                placeholder="e.g. New York, NY or Remote"
-                required
-              />
-              <div class="error-message">Please specify a location.</div>
-            </div>
-
-            <!-- Description -->
-            <div class="form-group full-width">
-              <label for="description"
-                >Job Description <span class="required">*</span></label
-              >
-              <textarea
-                id="description"
-                class="form-control"
-                placeholder="Describe the role, responsibilities, and requirements..."
-                required
-                maxlength="2000"
-              ></textarea>
-              <div class="char-counter" id="charCounter">
-                0 / 2000 characters
-              </div>
-              <div class="error-message">Please provide a job description.</div>
-            </div>
-
-            <!-- Skills -->
-            <div class="form-group full-width">
-              <label for="skillsInput">Required Skills</label>
-              <div class="tags-container" id="tagsContainer">
-                <div class="tag-chip">
-                  React
-                  <button type="button" onclick="removeTag(this)">
-                    <i class="fas fa-xmark"></i>
-                  </button>
-                </div>
-                <div class="tag-chip">
-                  TypeScript
-                  <button type="button" onclick="removeTag(this)">
-                    <i class="fas fa-xmark"></i>
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  id="skillsInput"
-                  class="tags-input"
-                  placeholder="Type a skill and press Enter..."
-                />
-              </div>
-              <div class="error-message">Please add at least one skill.</div>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              onclick="saveDraft()"
-            >
-              <span class="btn-text">Save Draft</span>
-              <div class="spinner"></div>
-            </button>
-            <button type="submit" class="btn btn-primary" id="publishBtn">
-              <span class="btn-text"
-                ><i class="fas fa-paper-plane"></i> Publish Job</span
-              >
-              <div class="spinner"></div>
-            </button>
-          </div>
-        </form>
-      </div>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            />
-            <span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
-        </div>
-
-        <div class="footer-links">
-          <h4>For Recruiters</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="manage-jobs.html">Manage Jobs</a></li>
-            <li><a href="candidates.html">Candidates</a></li>
-            <li><a href="schedule-interview.html">Interviews</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
       </div>
 
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
       </div>
-    </footer>
+    </div>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
-    <script src="../js/main.js"></script>
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-    <!-- Page-specific JavaScript -->
-    <script>
-      // Character counter
-      const description = document.getElementById("description");
-      const charCounter = document.getElementById("charCounter");
+  <!-- ===== UNIFIED JAVASCRIPT ===== -->
+  <script src="../js/main.js"></script>
+  <script src="../js/api.js"></script>
 
-      description.addEventListener("input", function () {
-        const count = this.value.length;
-        charCounter.textContent = `${count} / 2000 characters`;
-        charCounter.classList.toggle("limit", count >= 2000);
-      });
 
-      // Tags input
-      const skillsInput = document.getElementById("skillsInput");
-      const tagsContainer = document.getElementById("tagsContainer");
-      let tags = ["React", "TypeScript"];
+  <!-- Page-specific JavaScript -->
+  <script>
+    (function () {
+      'use strict';
 
-      function renderTags() {
-        // Remove existing tag chips (keep input)
-        const chips = tagsContainer.querySelectorAll(".tag-chip");
-        chips.forEach((chip) => chip.remove());
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
 
-        tags.forEach((tag) => {
-          const chip = document.createElement("div");
-          chip.className = "tag-chip";
-          chip.innerHTML = `
+      // Update user avatar
+      const avatar = document.getElementById('userAvatar');
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || 'U';
+      }
+
+      console.log('✅ Page initialized with API client');
+
+      // Add page-specific logic below
+
+    })();
+    // Character counter
+    const description = document.getElementById("description");
+    const charCounter = document.getElementById("charCounter");
+
+    description.addEventListener("input", function () {
+      const count = this.value.length;
+      charCounter.textContent = `${count} / 2000 characters`;
+      charCounter.classList.toggle("limit", count >= 2000);
+    });
+
+    // Tags input
+    const skillsInput = document.getElementById("skillsInput");
+    const tagsContainer = document.getElementById("tagsContainer");
+    let tags = ["React", "TypeScript"];
+
+    function renderTags() {
+      // Remove existing tag chips (keep input)
+      const chips = tagsContainer.querySelectorAll(".tag-chip");
+      chips.forEach((chip) => chip.remove());
+
+      tags.forEach((tag) => {
+        const chip = document.createElement("div");
+        chip.className = "tag-chip";
+        chip.innerHTML = `
           ${tag}
           <button type="button" onclick="removeTag(this)"><i class="fas fa-xmark"></i></button>
         `;
-          tagsContainer.insertBefore(chip, skillsInput);
-        });
-      }
-
-      function removeTag(btn) {
-        const chip = btn.closest(".tag-chip");
-        const tagText = chip.textContent.trim();
-        tags = tags.filter((t) => t !== tagText);
-        chip.remove();
-        validateTags();
-      }
-
-      skillsInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === ",") {
-          e.preventDefault();
-          const newTag = this.value.trim().replace(/,/g, "");
-          if (newTag && !tags.includes(newTag)) {
-            tags.push(newTag);
-            this.value = "";
-            renderTags();
-            validateTags();
-          }
-        }
+        tagsContainer.insertBefore(chip, skillsInput);
       });
+    }
 
-      function validateTags() {
-        const container = document.getElementById("tagsContainer");
-        const error = container.nextElementSibling;
-        if (tags.length === 0) {
-          container.classList.add("is-invalid");
-          error.classList.add("show");
-          return false;
-        } else {
-          container.classList.remove("is-invalid");
-          error.classList.remove("show");
-          return true;
+    function removeTag(btn) {
+      const chip = btn.closest(".tag-chip");
+      const tagText = chip.textContent.trim();
+      tags = tags.filter((t) => t !== tagText);
+      chip.remove();
+      validateTags();
+    }
+
+    skillsInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === ",") {
+        e.preventDefault();
+        const newTag = this.value.trim().replace(/,/g, "");
+        if (newTag && !tags.includes(newTag)) {
+          tags.push(newTag);
+          this.value = "";
+          renderTags();
+          validateTags();
         }
       }
+    });
 
-      // Form submission
-      document
-        .getElementById("postJobForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+    function validateTags() {
+      const container = document.getElementById("tagsContainer");
+      const error = container.nextElementSibling;
+      if (tags.length === 0) {
+        container.classList.add("is-invalid");
+        error.classList.add("show");
+        return false;
+      } else {
+        container.classList.remove("is-invalid");
+        error.classList.remove("show");
+        return true;
+      }
+    }
 
-          // Validate required fields
-          let isValid = true;
-          const requiredFields = this.querySelectorAll("[required]");
-          requiredFields.forEach((field) => {
-            if (!field.value.trim()) {
-              field.classList.add("is-invalid");
-              field.nextElementSibling.classList.add("show");
-              isValid = false;
-            } else {
-              field.classList.remove("is-invalid");
-              field.nextElementSibling.classList.remove("show");
-            }
-          });
+    // Form submission
+    document
+      .getElementById("postJobForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
 
-          // Validate tags
-          if (!validateTags()) isValid = false;
+        // Validate required fields
+        let isValid = true;
+        const requiredFields = this.querySelectorAll("[required]");
+        requiredFields.forEach((field) => {
+          if (!field.value.trim()) {
+            field.classList.add("is-invalid");
+            field.nextElementSibling.classList.add("show");
+            isValid = false;
+          } else {
+            field.classList.remove("is-invalid");
+            field.nextElementSibling.classList.remove("show");
+          }
+        });
 
-          if (isValid) {
-            const btn = document.getElementById("publishBtn");
-            btn.classList.add("is-loading");
-            btn.disabled = true;
+        // Validate tags
+        if (!validateTags()) isValid = false;
+
+        if (isValid) {
+          const btn = document.getElementById("publishBtn");
+          btn.classList.add("is-loading");
+          btn.disabled = true;
+
+          setTimeout(() => {
+            btn.classList.remove("is-loading");
+            btn.disabled = false;
+            btn.querySelector(".btn-text").innerHTML =
+              '<i class="fas fa-check"></i> Published!';
+            btn.style.background = "var(--success)";
 
             setTimeout(() => {
-              btn.classList.remove("is-loading");
-              btn.disabled = false;
               btn.querySelector(".btn-text").innerHTML =
-                '<i class="fas fa-check"></i> Published!';
-              btn.style.background = "var(--success)";
-
-              setTimeout(() => {
-                btn.querySelector(".btn-text").innerHTML =
-                  '<i class="fas fa-paper-plane"></i> Publish Job';
-                btn.style.background = "";
-                alert("✅ Job published successfully!");
-                window.location.href = "manage-jobs.html";
-              }, 1500);
+                '<i class="fas fa-paper-plane"></i> Publish Job';
+              btn.style.background = "";
+              alert("✅ Job published successfully!");
+              window.location.href = "manage-jobs.html";
             }, 1500);
-          }
-        });
+          }, 1500);
+        }
+      });
 
-      function saveDraft() {
-        const btn = document.querySelector(".btn-secondary");
-        btn.classList.add("is-loading");
+    function saveDraft() {
+      const btn = document.querySelector(".btn-secondary");
+      btn.classList.add("is-loading");
 
+      setTimeout(() => {
+        btn.classList.remove("is-loading");
+        btn.querySelector(".btn-text").textContent = "✓ Draft Saved";
         setTimeout(() => {
-          btn.classList.remove("is-loading");
-          btn.querySelector(".btn-text").textContent = "✓ Draft Saved";
-          setTimeout(() => {
-            btn.querySelector(".btn-text").textContent = "Save Draft";
-          }, 2000);
-          alert("📝 Draft saved successfully!");
-        }, 1000);
+          btn.querySelector(".btn-text").textContent = "Save Draft";
+        }, 2000);
+        alert("📝 Draft saved successfully!");
+      }, 1000);
+    }
+
+    // Initial render
+    renderTags();
+
+    document.addEventListener("DOMContentLoaded", async function () {
+      // Check authentication
+      if (!window.API.isAuthenticated()) {
+        window.location.href = "/auth/login.html";
+        return;
       }
 
-      // Initial render
-      renderTags();
+      const user = window.API.getCurrentUser();
+      if (user?.role !== "Recruiter" && user?.role !== "Admin") {
+        alert("Only recruiters can post jobs.");
+        window.location.href = "dashboard.html";
+        return;
+      }
 
-      document.addEventListener("DOMContentLoaded", async function () {
-        // Check authentication
-        if (!window.API.isAuthenticated()) {
-          window.location.href = "/auth/login.html";
-          return;
-        }
+      // Setup form submit
+      document
+        .getElementById("postJobForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          // ... validate ...
 
-        const user = window.API.getCurrentUser();
-        if (user?.role !== "Recruiter" && user?.role !== "Admin") {
-          alert("Only recruiters can post jobs.");
-          window.location.href = "dashboard.html";
-          return;
-        }
+          const jobData = {
+            title: document.getElementById("jobTitle").value,
+            department: document.getElementById("department").value,
+            employmentType: document.getElementById("employmentType").value,
+            location: document.getElementById("location").value,
+            description: document.getElementById("description").value,
+            requiredSkills: tags.join(","),
+            status: "Published",
+          };
 
-        // Setup form submit
-        document
-          .getElementById("postJobForm")
-          .addEventListener("submit", async function (e) {
-            e.preventDefault();
-            // ... validate ...
+          try {
+            const result = await window.API.Job.create(jobData);
+            showToast("✅ Job published successfully!", "success");
+            setTimeout(
+              () => (window.location.href = "manage-jobs.html"),
+              1500,
+            );
+          } catch (error) {
+            showToast(error.message || "Failed to publish job", "error");
+          }
+        });
+    });
+  </script>
+</body>
 
-            const jobData = {
-              title: document.getElementById("jobTitle").value,
-              department: document.getElementById("department").value,
-              employmentType: document.getElementById("employmentType").value,
-              location: document.getElementById("location").value,
-              description: document.getElementById("description").value,
-              requiredSkills: tags.join(","),
-              status: "Published",
-            };
-
-            try {
-              const result = await window.API.Job.create(jobData);
-              showToast("✅ Job published successfully!", "success");
-              setTimeout(
-                () => (window.location.href = "manage-jobs.html"),
-                1500,
-              );
-            } catch (error) {
-              showToast(error.message || "Failed to publish job", "error");
-            }
-          });
-      });
-    </script>
-  </body>
 </html>
