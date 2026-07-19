@@ -11,13 +11,16 @@ namespace RecruitmentAPI.Repository.Implementations
     {
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction? _transaction;
+        private bool _disposed;
 
+        // Repository instances (lazy loaded)
         private IUserRepository? _users;
         private IGenericRepository<Admin>? _admins;
         private IGenericRepository<RecruitmentAnalytic>? _analytics;
         private IGenericRepository<Notification>? _notifications;
         private IGenericRepository<Recruiter>? _recruiters;
         private IGenericRepository<Document>? _documents;
+        private IGenericRepository<HiringManager>? _hiringManagers;
         private IAdminRepository? _adminRepository;
         private IAnalyticsRepository? _analyticsRepository;
         private IJobRepository? _jobs;
@@ -37,6 +40,7 @@ namespace RecruitmentAPI.Repository.Implementations
         public IGenericRepository<Notification> Notifications => _notifications ??= new GenericRepository<Notification>(_context);
         public IGenericRepository<Recruiter> Recruiters => _recruiters ??= new GenericRepository<Recruiter>(_context);
         public IGenericRepository<Document> Documents => _documents ??= new GenericRepository<Document>(_context);
+        public IGenericRepository<HiringManager> HiringManagers => _hiringManagers ??= new GenericRepository<HiringManager>(_context);
 
         public IAdminRepository AdminRepository => _adminRepository ??= new AdminRepository(_context);
         public IAnalyticsRepository AnalyticsRepository => _analyticsRepository ??= new AnalyticsRepository(_context);
@@ -48,7 +52,8 @@ namespace RecruitmentAPI.Repository.Implementations
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
 
-        public async Task BeginTransactionAsync() => _transaction = await _context.Database.BeginTransactionAsync();
+        public async Task BeginTransactionAsync() =>
+            _transaction = await _context.Database.BeginTransactionAsync();
 
         public async Task CommitTransactionAsync()
         {
@@ -70,10 +75,22 @@ namespace RecruitmentAPI.Repository.Implementations
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _transaction?.Dispose();
+                    _context.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            _transaction?.Dispose();
-            _context.Dispose();
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
     }

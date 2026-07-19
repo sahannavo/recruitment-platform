@@ -5,272 +5,242 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RecruitAI - Recruiter Dashboard</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- Unified CSS -->
     <link rel="stylesheet" href="../css/main.css" />
 
     <style>
-      /* Dashboard specific styles */
-      .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        margin-bottom: 32px;
-      }
-
-      .kpi-card {
+      .greeting {
         background: var(--surface);
         border-radius: var(--radius-lg);
-        padding: 24px;
-        border: 1px solid var(--border);
+        padding: 32px;
         box-shadow: var(--shadow);
-      }
-
-      .kpi-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .greeting h1 {
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .greeting p {
         color: var(--text-secondary);
       }
 
-      .kpi-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: var(--radius);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-      }
-      .kpi-icon.blue {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .kpi-icon.green {
-        background: var(--success-light);
-        color: var(--success);
-      }
-      .kpi-icon.yellow {
-        background: #fef3c7;
-        color: var(--warning);
-      }
-      .kpi-icon.purple {
-        background: #f3e8ff;
-        color: #9333ea;
-      }
-
-      .kpi-value {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-
-      .kpi-trend {
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-      .trend-up {
-        color: var(--success);
-      }
-      .trend-down {
-        color: var(--danger);
-      }
-
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 24px;
-      }
-
-      .card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-
-      .card-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border);
+      .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 20px;
       }
-      .card-header h2 {
-        font-size: 18px;
+      .section-header h2 {
+        font-size: 20px;
         font-weight: 700;
       }
 
-      .table-responsive {
-        overflow-x: auto;
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .stat-number {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .stat-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        margin-top: 4px;
+      }
+      .stat-change {
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 4px;
+      }
+      .stat-change.positive {
+        color: var(--success);
+      }
+      .stat-change.negative {
+        color: var(--danger);
+      }
+
+      .job-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .job-item {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        border: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        transition: all var(--transition);
+        cursor: pointer;
+      }
+      .job-item:hover {
+        border-color: var(--primary-light);
+        box-shadow: var(--shadow);
+      }
+      .job-title {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .job-meta {
+        font-size: 13px;
+        color: var(--text-secondary);
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .job-meta i {
+        width: 14px;
+      }
+
+      .status-badge {
+        padding: 3px 12px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .status-open {
+        background: var(--success-light);
+        color: #065f46;
+      }
+      .status-closed {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .status-draft {
+        background: var(--surface-alt);
+        color: var(--text-secondary);
+      }
+
+      .recent-applications {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
       }
-
       th {
         text-align: left;
-        padding: 12px 24px;
-        background: var(--background);
+        padding: 12px 0;
+        font-weight: 600;
+        color: var(--text-secondary);
         font-size: 12px;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-secondary);
-        font-weight: 600;
+        letter-spacing: 0.5px;
       }
-
       td {
-        padding: 16px 24px;
-        border-bottom: 1px solid var(--border);
+        padding: 14px 0;
+        border-top: 1px solid var(--border);
         font-size: 14px;
       }
 
-      tbody tr {
-        cursor: pointer;
-        transition: background 0.15s ease;
-      }
-      tbody tr:hover {
-        background: var(--background);
-      }
-
-      .candidate-cell {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .candidate-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), #818cf8);
-        background-size: cover;
-        background-position: center;
-      }
-
-      .badge {
-        display: inline-flex;
+      .status {
         padding: 4px 14px;
         border-radius: var(--radius-full);
         font-size: 12px;
         font-weight: 600;
+        display: inline-block;
       }
-      .badge-review {
+      .status-pending {
         background: #fef3c7;
         color: #92400e;
       }
-      .badge-interview {
-        background: var(--primary-light);
-        color: var(--primary);
+      .status-shortlisted {
+        background: #dbeafe;
+        color: #1e40af;
       }
-      .badge-hired {
+      .status-hired {
         background: var(--success-light);
         color: #065f46;
       }
-      .badge-rejected {
+      .status-rejected {
         background: #fee2e2;
         color: #991b1b;
       }
-
-      .job-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+      .status-interview {
+        background: #dbeafe;
+        color: #1e40af;
       }
 
-      .job-item {
-        padding: 16px 24px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        transition: background 0.15s ease;
-      }
-      .job-item:hover {
-        background: var(--background);
-      }
-      .job-item:last-child {
-        border-bottom: none;
-      }
-
-      .job-title {
-        font-weight: 600;
-      }
-      .job-meta {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-        display: flex;
-        gap: 12px;
-      }
-      .job-stats {
-        text-align: right;
-      }
-      .job-count {
-        font-weight: 700;
-        color: var(--primary);
-        font-size: 18px;
-      }
-      .job-count-label {
-        font-size: 12px;
+      .loading-spinner {
+        text-align: center;
+        padding: 40px;
         color: var(--text-secondary);
       }
-
-      .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        flex-wrap: wrap;
-        gap: 16px;
+      .loading-spinner i {
+        font-size: 32px;
+        animation: spin 1s linear infinite;
       }
-      .page-header h1 {
-        font-size: 24px;
-        font-weight: 700;
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-secondary);
+      }
+      .empty-state i {
+        font-size: 48px;
+        color: var(--border);
+        margin-bottom: 16px;
       }
 
       @media (max-width: 1024px) {
-        .kpi-grid {
+        .stats-grid {
           grid-template-columns: repeat(2, 1fr);
         }
-        .dashboard-grid {
+      }
+      @media (max-width: 768px) {
+        .greeting {
+          flex-direction: column;
+          text-align: center;
+        }
+        .stats-grid {
           grid-template-columns: 1fr;
         }
-      }
-
-      @media (max-width: 768px) {
-        .kpi-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-        .kpi-card {
-          padding: 16px;
-        }
-        .kpi-value {
-          font-size: 22px;
+        table {
+          font-size: 13px;
         }
         td,
         th {
-          padding: 12px 16px;
+          padding: 10px 8px;
         }
       }
     </style>
@@ -303,7 +273,7 @@
         <div class="header-actions">
           <button class="icon-btn" id="notifBtn" aria-label="Notifications">
             <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
+            <span class="notification-dot" id="notifDot"></span>
           </button>
           <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
@@ -312,7 +282,6 @@
         </div>
       </div>
 
-      <!-- Mobile Menu -->
       <div class="mobile-menu-overlay" id="mobileOverlay"></div>
       <div class="mobile-menu" id="mobileMenu">
         <a
@@ -332,8 +301,9 @@
           >Interviews</a
         >
         <a
-          href="../auth/login.html"
+          href="#"
           class="mobile-link"
+          id="logoutBtn"
           style="color: var(--danger); border-bottom: none"
           >Sign Out</a
         >
@@ -342,253 +312,72 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-header">
+      <!-- Greeting -->
+      <div class="greeting">
         <div>
-          <h1>Recruitment Overview</h1>
-          <p style="color: var(--text-secondary)">
-            Track your hiring progress and manage candidates
-          </p>
+          <h1 id="greetingText">Welcome! 👋</h1>
+          <p id="greetingSubtext">Loading your recruiter dashboard...</p>
         </div>
-        <button class="btn btn-primary" onclick="postNewJob()">
+        <a href="post-job.html" class="btn btn-primary">
           <i class="fas fa-plus"></i> Post New Job
-        </button>
+        </a>
       </div>
 
-      <!-- KPI Cards -->
-      <section class="kpi-grid" aria-label="Key Performance Indicators">
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="font-medium">Open Jobs</span>
-            <div class="kpi-icon blue"><i class="fas fa-briefcase"></i></div>
-          </div>
-          <div class="kpi-value">12</div>
-          <div class="kpi-trend trend-up">
-            <i class="fas fa-arrow-trend-up"></i> +2 this week
+      <!-- Statistics -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-number" id="totalJobs">0</div>
+          <div class="stat-label">Total Jobs</div>
+          <div class="stat-change positive" id="jobsChange">+0% this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="activeJobs">0</div>
+          <div class="stat-label">Active Jobs</div>
+          <div class="stat-change positive" id="activeChange">
+            +0% this month
           </div>
         </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalApplications">0</div>
+          <div class="stat-label">Total Applications</div>
+          <div class="stat-change positive" id="appsChange">+0% this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="pendingReviews">0</div>
+          <div class="stat-label">Pending Reviews</div>
+          <div class="stat-change" id="pendingChange">0 new</div>
+        </div>
+      </div>
 
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="font-medium">Total Applicants</span>
-            <div class="kpi-icon purple"><i class="fas fa-users"></i></div>
-          </div>
-          <div class="kpi-value">248</div>
-          <div class="kpi-trend trend-up">
-            <i class="fas fa-arrow-trend-up"></i> +18% vs last month
-          </div>
+      <!-- Recent Jobs -->
+      <div style="margin-bottom: 32px">
+        <div class="section-header">
+          <h2><i class="fas fa-briefcase"></i> Your Recent Jobs</h2>
+          <a
+            href="manage-jobs.html"
+            style="color: var(--primary); font-weight: 500"
+            >View all →</a
+          >
         </div>
+        <div class="job-list" id="jobsList">
+          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+        </div>
+      </div>
 
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="font-medium">Interviews Scheduled</span>
-            <div class="kpi-icon yellow">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-          </div>
-          <div class="kpi-value">34</div>
-          <div class="kpi-trend trend-down">
-            <i class="fas fa-arrow-trend-down"></i> -5% vs last month
-          </div>
+      <!-- Recent Applications -->
+      <div class="recent-applications">
+        <div class="section-header">
+          <h2><i class="fas fa-file-alt"></i> Recent Applications</h2>
+          <a
+            href="review-applications.html"
+            style="color: var(--primary); font-weight: 500"
+            >Review all →</a
+          >
         </div>
-
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="font-medium">Hired Candidates</span>
-            <div class="kpi-icon green"><i class="fas fa-user-check"></i></div>
-          </div>
-          <div class="kpi-value">8</div>
-          <div class="kpi-trend trend-up">
-            <i class="fas fa-arrow-trend-up"></i> +2 this month
-          </div>
+        <div id="applicationsContainer">
+          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
         </div>
-      </section>
-
-      <!-- Dashboard Grid -->
-      <section class="dashboard-grid">
-        <!-- Recent Applications -->
-        <div class="card">
-          <div class="card-header">
-            <h2>Recent Applications</h2>
-            <a
-              href="candidates.html"
-              style="color: var(--primary); font-weight: 600; font-size: 14px"
-              >View All →</a
-            >
-          </div>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Candidate</th>
-                  <th>Role</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr onclick="viewCandidate('Sarah Jenkins')">
-                  <td>
-                    <div class="candidate-cell">
-                      <div
-                        class="candidate-avatar"
-                        style="
-                          background-image: url(&quot;https://i.pravatar.cc/80?img=32&quot;);
-                        "
-                      ></div>
-                      <div>
-                        <div style="font-weight: 600">Sarah Jenkins</div>
-                        <div
-                          style="font-size: 13px; color: var(--text-secondary)"
-                        >
-                          sarah.j@example.com
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Senior Frontend Developer</td>
-                  <td style="color: var(--text-secondary)">Oct 24, 2023</td>
-                  <td><span class="badge badge-review">In Review</span></td>
-                </tr>
-                <tr onclick="viewCandidate('Marcus Rodriguez')">
-                  <td>
-                    <div class="candidate-cell">
-                      <div
-                        class="candidate-avatar"
-                        style="
-                          background-image: url(&quot;https://i.pravatar.cc/80?img=51&quot;);
-                        "
-                      ></div>
-                      <div>
-                        <div style="font-weight: 600">Marcus Rodriguez</div>
-                        <div
-                          style="font-size: 13px; color: var(--text-secondary)"
-                        >
-                          m.rodriguez@example.com
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Product Designer</td>
-                  <td style="color: var(--text-secondary)">Oct 23, 2023</td>
-                  <td><span class="badge badge-interview">Interview</span></td>
-                </tr>
-                <tr onclick="viewCandidate('Emily Chen')">
-                  <td>
-                    <div class="candidate-cell">
-                      <div
-                        class="candidate-avatar"
-                        style="
-                          background-image: url(&quot;https://i.pravatar.cc/80?img=25&quot;);
-                        "
-                      ></div>
-                      <div>
-                        <div style="font-weight: 600">Emily Chen</div>
-                        <div
-                          style="font-size: 13px; color: var(--text-secondary)"
-                        >
-                          emily.chen@example.com
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Marketing Manager</td>
-                  <td style="color: var(--text-secondary)">Oct 21, 2023</td>
-                  <td><span class="badge badge-hired">Hired</span></td>
-                </tr>
-                <tr onclick="viewCandidate('David Kim')">
-                  <td>
-                    <div class="candidate-cell">
-                      <div
-                        class="candidate-avatar"
-                        style="
-                          background-image: url(&quot;https://i.pravatar.cc/80?img=68&quot;);
-                        "
-                      ></div>
-                      <div>
-                        <div style="font-weight: 600">David Kim</div>
-                        <div
-                          style="font-size: 13px; color: var(--text-secondary)"
-                        >
-                          dkim88@example.com
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Backend Engineer</td>
-                  <td style="color: var(--text-secondary)">Oct 20, 2023</td>
-                  <td><span class="badge badge-rejected">Rejected</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Active Jobs -->
-        <div class="card">
-          <div class="card-header">
-            <h2>Active Jobs</h2>
-            <a
-              href="manage-jobs.html"
-              style="color: var(--primary); font-weight: 600; font-size: 14px"
-              >Manage →</a
-            >
-          </div>
-          <ul class="job-list">
-            <li class="job-item" onclick="viewJob('Senior Frontend Developer')">
-              <div>
-                <div class="job-title">Senior Frontend Developer</div>
-                <div class="job-meta">
-                  <span><i class="fas fa-location-dot"></i> Remote</span>
-                  <span><i class="fas fa-clock"></i> 14 days active</span>
-                </div>
-              </div>
-              <div class="job-stats">
-                <div class="job-count">45</div>
-                <div class="job-count-label">Applicants</div>
-              </div>
-            </li>
-            <li class="job-item" onclick="viewJob('Product Designer')">
-              <div>
-                <div class="job-title">Product Designer</div>
-                <div class="job-meta">
-                  <span><i class="fas fa-location-dot"></i> New York, NY</span>
-                  <span><i class="fas fa-clock"></i> 5 days active</span>
-                </div>
-              </div>
-              <div class="job-stats">
-                <div class="job-count">28</div>
-                <div class="job-count-label">Applicants</div>
-              </div>
-            </li>
-            <li class="job-item" onclick="viewJob('Marketing Manager')">
-              <div>
-                <div class="job-title">Marketing Manager</div>
-                <div class="job-meta">
-                  <span><i class="fas fa-location-dot"></i> London, UK</span>
-                  <span><i class="fas fa-clock"></i> 21 days active</span>
-                </div>
-              </div>
-              <div class="job-stats">
-                <div class="job-count">112</div>
-                <div class="job-count-label">Applicants</div>
-              </div>
-            </li>
-            <li class="job-item" onclick="viewJob('DevOps Engineer')">
-              <div>
-                <div class="job-title">DevOps Engineer</div>
-                <div class="job-meta">
-                  <span><i class="fas fa-location-dot"></i> Remote</span>
-                  <span><i class="fas fa-clock"></i> 2 days active</span>
-                </div>
-              </div>
-              <div class="job-stats">
-                <div class="job-count">14</div>
-                <div class="job-count-label">Applicants</div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </div>
     </main>
 
     <!-- ===== FOOTER ===== -->
@@ -608,7 +397,6 @@
             companies.
           </p>
         </div>
-
         <div class="footer-links">
           <h4>For Recruiters</h4>
           <ul>
@@ -618,7 +406,6 @@
             <li><a href="schedule-interview.html">Interviews</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Company</h4>
           <ul>
@@ -628,7 +415,6 @@
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Support</h4>
           <ul>
@@ -639,7 +425,6 @@
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
         <span>&copy; 2026 RecruitAI. All rights reserved.</span>
         <div class="footer-social">
@@ -653,22 +438,282 @@
       </div>
     </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../js/api.js"></script>
     <script src="../js/main.js"></script>
 
-    <!-- Page-specific JavaScript -->
     <script>
-      function postNewJob() {
-        window.location.href = "post-job.html";
+      let currentUser = null;
+
+      // ============================================
+      // AUTHENTICATION CHECK
+      // ============================================
+      function checkAuth() {
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "/auth/login.html";
+          return false;
+        }
+        currentUser = window.API.getCurrentUser();
+        // Verify recruiter role
+        const role = currentUser?.role || currentUser?.Role || "";
+        if (!["Recruiter", "Admin"].includes(role)) {
+          alert("Access denied. Recruiters only.");
+          window.location.href = "/index.html";
+          return false;
+        }
+        return true;
       }
 
-      function viewCandidate(name) {
-        alert(`👤 Viewing candidate: ${name}`);
+      // ============================================
+      // LOAD DASHBOARD
+      // ============================================
+      async function loadDashboard() {
+        try {
+          updateGreeting();
+          await Promise.all([
+            loadStats(),
+            loadRecentJobs(),
+            loadRecentApplications(),
+          ]);
+        } catch (error) {
+          console.error("Error loading dashboard:", error);
+          showToast("Error loading dashboard data", "error");
+        }
       }
 
-      function viewJob(title) {
-        alert(`📋 Viewing job: ${title}`);
+      // ============================================
+      // UPDATE GREETING
+      // ============================================
+      function updateGreeting() {
+        const greetingEl = document.getElementById("greetingText");
+        const subtextEl = document.getElementById("greetingSubtext");
+        if (currentUser) {
+          const firstName =
+            currentUser.firstName || currentUser.FirstName || "Recruiter";
+          greetingEl.textContent = `Good ${getTimeOfDay()}, ${firstName}! 👋`;
+          subtextEl.textContent = "Here's your recruitment overview.";
+          const avatar = document.getElementById("userAvatar");
+          if (avatar) avatar.textContent = window.API.getUserInitials() || "R";
+        }
       }
+
+      function getTimeOfDay() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "morning";
+        if (hour < 18) return "afternoon";
+        return "evening";
+      }
+
+      // ============================================
+      // LOAD STATISTICS
+      // ============================================
+      async function loadStats() {
+        try {
+          // Get job statistics
+          const jobStats = await window.API.Job.getStatistics();
+          if (jobStats) {
+            document.getElementById("totalJobs").textContent =
+              jobStats.totalJobs || 0;
+            document.getElementById("activeJobs").textContent =
+              jobStats.activeJobs || 0;
+          }
+
+          // Get application statistics
+          const appStats = await window.API.Application.getStatistics();
+          if (appStats) {
+            document.getElementById("totalApplications").textContent =
+              appStats.totalApplications || 0;
+            document.getElementById("pendingReviews").textContent =
+              appStats.pendingReview || 0;
+          }
+        } catch (error) {
+          console.error("Error loading stats:", error);
+        }
+      }
+
+      // ============================================
+      // LOAD RECENT JOBS
+      // ============================================
+      async function loadRecentJobs() {
+        const container = document.getElementById("jobsList");
+        try {
+          const response = await window.API.Job.getAll({ pageSize: 5 });
+          const jobs = response.jobs || response || [];
+
+          if (!jobs || jobs.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-briefcase"></i>
+                <p>No jobs posted yet.</p>
+                <a href="post-job.html" class="btn btn-primary" style="margin-top: 12px;">Post Your First Job</a>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = jobs
+            .map(
+              (job) => `
+            <div class="job-item" onclick="window.location.href='manage-jobs.html?jobId=${job.jobId}'">
+              <div>
+                <div class="job-title">${job.title || "Untitled"}</div>
+                <div class="job-meta">
+                  <span><i class="fas fa-map-marker-alt"></i> ${job.location || "Remote"}</span>
+                  <span><i class="fas fa-users"></i> ${job.applicantsCount || 0} applicants</span>
+                  <span><i class="fas fa-clock"></i> ${formatDate(job.createdAt)}</span>
+                </div>
+              </div>
+              <div>
+                <span class="status-badge ${getJobStatusClass(job.status)}">${job.status || "Draft"}</span>
+              </div>
+            </div>
+          `,
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error loading jobs:", error);
+          container.innerHTML = `
+            <div class="empty-state" style="color: var(--danger);">
+              <i class="fas fa-exclamation-circle"></i>
+              <p>Unable to load jobs. Please try again.</p>
+            </div>
+          `;
+        }
+      }
+
+      function getJobStatusClass(status) {
+        const map = {
+          Open: "status-open",
+          Published: "status-open",
+          Closed: "status-closed",
+          Filled: "status-closed",
+          Draft: "status-draft",
+          Archived: "status-closed",
+        };
+        return map[status] || "status-draft";
+      }
+
+      // ============================================
+      // LOAD RECENT APPLICATIONS
+      // ============================================
+      async function loadRecentApplications() {
+        const container = document.getElementById("applicationsContainer");
+        try {
+          // Get applications for recruiter's jobs
+          const response = await window.API.Application.getMyApplications();
+          const apps = Array.isArray(response) ? response : response.data || [];
+
+          if (!apps || apps.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-file-alt"></i>
+                <p>No applications yet.</p>
+                <p style="font-size: 14px;">Applications will appear here once candidates start applying.</p>
+              </div>
+            `;
+            return;
+          }
+
+          const recent = apps.slice(0, 5);
+          container.innerHTML = `
+            <table>
+              <thead>
+                <tr>
+                  <th>Candidate</th>
+                  <th>Job</th>
+                  <th>Applied</th>
+                  <th>Status</th>
+                  <th>AI Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recent
+                  .map(
+                    (app) => `
+                  <tr onclick="window.location.href='review-applications.html?appId=${app.applicationId}'" style="cursor: pointer;">
+                    <td><strong>${app.candidateName || "Unknown"}</strong></td>
+                    <td>${app.jobTitle || "Position"}</td>
+                    <td>${formatDate(app.appliedAt)}</td>
+                    <td><span class="status ${getAppStatusClass(app.status)}">${app.status || "Pending"}</span></td>
+                    <td>${app.aiScore || app.AI_Score || "-"}</td>
+                  </tr>
+                `,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          `;
+        } catch (error) {
+          console.error("Error loading applications:", error);
+          container.innerHTML = `
+            <div class="empty-state" style="color: var(--danger);">
+              <i class="fas fa-exclamation-circle"></i>
+              <p>Unable to load applications.</p>
+            </div>
+          `;
+        }
+      }
+
+      function getAppStatusClass(status) {
+        const map = {
+          Submitted: "status-pending",
+          Pending: "status-pending",
+          UnderReview: "status-pending",
+          Shortlisted: "status-shortlisted",
+          InterviewScheduled: "status-interview",
+          Interviewed: "status-interview",
+          Hired: "status-hired",
+          Rejected: "status-rejected",
+          Withdrawn: "status-rejected",
+        };
+        return map[status] || "status-pending";
+      }
+
+      // ============================================
+      // FORMAT DATE
+      // ============================================
+      function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+
+      // ============================================
+      // TOAST
+      // ============================================
+      function showToast(message, type = "info") {
+        if (typeof window.showToast === "function") {
+          window.showToast(message, type);
+        } else {
+          alert(message);
+        }
+      }
+
+      // ============================================
+      // LOGOUT
+      // ============================================
+      function logout() {
+        window.API.Auth.logout();
+      }
+
+      // ============================================
+      // INIT
+      // ============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!checkAuth()) return;
+        loadDashboard();
+
+        document
+          .getElementById("logoutBtn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            logout();
+          });
+      });
     </script>
   </body>
 </html>

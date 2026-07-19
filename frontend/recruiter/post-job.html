@@ -600,6 +600,50 @@
 
       // Initial render
       renderTags();
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Check authentication
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "/auth/login.html";
+          return;
+        }
+
+        const user = window.API.getCurrentUser();
+        if (user?.role !== "Recruiter" && user?.role !== "Admin") {
+          alert("Only recruiters can post jobs.");
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        // Setup form submit
+        document
+          .getElementById("postJobForm")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+            // ... validate ...
+
+            const jobData = {
+              title: document.getElementById("jobTitle").value,
+              department: document.getElementById("department").value,
+              employmentType: document.getElementById("employmentType").value,
+              location: document.getElementById("location").value,
+              description: document.getElementById("description").value,
+              requiredSkills: tags.join(","),
+              status: "Published",
+            };
+
+            try {
+              const result = await window.API.Job.create(jobData);
+              showToast("✅ Job published successfully!", "success");
+              setTimeout(
+                () => (window.location.href = "manage-jobs.html"),
+                1500,
+              );
+            } catch (error) {
+              showToast(error.message || "Failed to publish job", "error");
+            }
+          });
+      });
     </script>
   </body>
 </html>

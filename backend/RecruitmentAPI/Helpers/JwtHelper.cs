@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using RecruitmentAPI.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +15,7 @@ namespace RecruitmentAPI.Helpers
         ClaimsPrincipal? ValidateToken(string token);
         string GenerateRefreshToken();
         bool IsTokenExpired(string token);
+        int? GetUserIdFromToken(string token);
     }
 
     /// <summary>
@@ -28,8 +31,6 @@ namespace RecruitmentAPI.Helpers
         {
             _configuration = configuration;
             _logger = logger;
-
-            // ✅ FIX: Load and validate JWT settings
             _jwtSettings = LoadJwtSettings();
         }
 
@@ -37,10 +38,8 @@ namespace RecruitmentAPI.Helpers
         {
             var settings = new JwtSettings();
 
-            // Get JWT section
             var jwtSection = _configuration.GetSection("Jwt");
 
-            // ✅ FIX: Validate all required fields exist
             settings.Key = jwtSection["Key"] ??
                 throw new InvalidOperationException("JWT:Key is not configured in appsettings");
 
@@ -50,7 +49,6 @@ namespace RecruitmentAPI.Helpers
             settings.Audience = jwtSection["Audience"] ??
                 throw new InvalidOperationException("JWT:Audience is not configured in appsettings");
 
-            // Parse ExpiryMinutes with fallback
             if (!double.TryParse(jwtSection["ExpiryMinutes"] ?? "60", out var expiryMinutes))
             {
                 _logger.LogWarning("Invalid JWT ExpiryMinutes, using default of 60 minutes");
@@ -58,7 +56,6 @@ namespace RecruitmentAPI.Helpers
             }
             settings.ExpiryMinutes = expiryMinutes;
 
-            // ✅ FIX: Validate key length (minimum 32 characters for HS256)
             if (settings.Key.Length < 32)
             {
                 _logger.LogWarning("JWT key is less than 32 characters. This is a security risk.");
@@ -67,9 +64,6 @@ namespace RecruitmentAPI.Helpers
             return settings;
         }
 
-        /// <summary>
-        /// Generates a JWT for an authenticated user.
-        /// </summary>
         public string GenerateToken(User user, string role)
         {
             try
@@ -86,11 +80,10 @@ namespace RecruitmentAPI.Helpers
                         DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
                         ClaimValueTypes.Integer64),
                     new Claim(ClaimTypes.Role, role),
-                    new Claim(ClaimTypes.Name, user.FullName ?? user.Email), // Add full name if available
-                    new Claim("userId", user.UserId.ToString()) // Additional user ID claim
+                    new Claim(ClaimTypes.Name, user.FullName ?? user.Email),
+                    new Claim("userId", user.UserId.ToString())
                 };
 
-                // Add phone number if available
                 if (!string.IsNullOrEmpty(user.PhoneNumber))
                 {
                     claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
@@ -115,9 +108,6 @@ namespace RecruitmentAPI.Helpers
             }
         }
 
-        /// <summary>
-        /// Manually validates a token and extracts the claims.
-        /// </summary>
         public ClaimsPrincipal? ValidateToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
@@ -130,7 +120,6 @@ namespace RecruitmentAPI.Helpers
 
             try
             {
-                // ✅ FIX: Add proper validation parameters
                 var validationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -140,21 +129,19 @@ namespace RecruitmentAPI.Helpers
                     ValidateAudience = true,
                     ValidAudience = _jwtSettings.Audience,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero, // Strictly adhere to expiration
+                    ClockSkew = TimeSpan.Zero,
                     RequireExpirationTime = true,
                     RequireSignedTokens = true
                 };
 
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
 
-                // ✅ FIX: Ensure it's a JWT token
                 if (validatedToken is not JwtSecurityToken jwtToken)
                 {
                     _logger.LogWarning("Validated token is not a JWT token");
                     return null;
                 }
 
-                // ✅ FIX: Validate algorithm
                 if (!jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.Ordinal))
                 {
                     _logger.LogWarning("Token uses an insecure algorithm: {Algorithm}", jwtToken.Header.Alg);
@@ -191,16 +178,12 @@ namespace RecruitmentAPI.Helpers
             }
         }
 
-        /// <summary>
-        /// Generates a secure refresh token.
-        /// </summary>
         public string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
 
-            // ✅ FIX: Use URL-safe base64 encoding
             var refreshToken = Convert.ToBase64String(randomNumber)
                 .Replace('+', '-')
                 .Replace('/', '_')
@@ -210,16 +193,15 @@ namespace RecruitmentAPI.Helpers
             return refreshToken;
         }
 
-        /// <summary>
-        /// Checks if a token is expired without validating signature.
-        /// </summary>
         public bool IsTokenExpired(string token)
         {
+            if (string.IsNullOrWhiteSpace(token))
+                return true;
+
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var jwtToken = tokenHandler.ReadJwtToken(token);
-
                 return jwtToken.ValidTo < DateTime.UtcNow;
             }
             catch
@@ -228,11 +210,11 @@ namespace RecruitmentAPI.Helpers
             }
         }
 
-        /// <summary>
-        /// Gets the user ID from a token without full validation.
-        /// </summary>
         public int? GetUserIdFromToken(string token)
         {
+            if (string.IsNullOrWhiteSpace(token))
+                return null;
+
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();

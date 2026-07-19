@@ -3,248 +3,121 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Settings - Profile Management</title>
+    <title>RecruitAI - Admin Settings</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- Unified CSS -->
+    <link rel="stylesheet" href="../css/main.css" />
+
     <style>
-      /* ===== CSS VARIABLES ===== */
-      :root {
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --background: #f9fafb;
-        --surface: #ffffff;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --border: #e5e7eb;
-        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        --radius: 8px;
-        --transition-speed: 0.2s;
-      }
-
-      /* ===== RESET & BASE STYLES ===== */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family:
-          "Inter",
-          system-ui,
-          -apple-system,
-          sans-serif;
-        background-color: var(--background);
-        color: var(--text-primary);
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-
-      ul {
-        list-style: none;
-      }
-
-      /* ===== NAVIGATION ===== */
-      .navbar {
-        background-color: var(--surface);
-        border-bottom: 1px solid var(--border);
-        padding: 1rem 1.5rem;
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        box-shadow: var(--shadow);
-      }
-
-      .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .logo {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .nav-links {
-        display: none;
-        gap: 1.5rem;
-      }
-
-      .nav-links a {
-        font-weight: 500;
-        color: var(--text-secondary);
-        transition: color var(--transition-speed);
-      }
-
-      .nav-links a:hover,
-      .nav-links a.active {
-        color: var(--primary);
-      }
-
-      .user-menu {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      .header-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--border);
-      }
-
-      .hamburger {
-        display: block;
-        background: none;
-        border: none;
-        font-size: 1.25rem;
-        color: var(--text-secondary);
-        cursor: pointer;
-      }
-
-      .mobile-menu {
-        display: none;
-        background-color: var(--surface);
-        border-bottom: 1px solid var(--border);
-        padding: 1rem;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        box-shadow: var(--shadow);
-      }
-
-      .mobile-menu.active {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      /* ===== MAIN CONTENT & LAYOUT ===== */
-      .main-content {
-        max-width: 1000px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-      }
+      /* ========================================
+       ADMIN SETTINGS SPECIFIC STYLES
+       ======================================== */
 
       .page-header {
-        margin-bottom: 2rem;
+        margin-bottom: 24px;
       }
-
       .page-header h1 {
-        font-size: 1.875rem;
-        font-weight: 700;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 4px;
       }
-
       .page-header p {
         color: var(--text-secondary);
-        margin-top: 0.25rem;
+        font-size: 15px;
+        margin: 0;
       }
 
       .settings-container {
         background: var(--surface);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
+        border-radius: var(--radius-lg);
         border: 1px solid var(--border);
+        box-shadow: var(--shadow);
         overflow: hidden;
       }
 
-      /* ===== TABS ===== */
-      /* Mobile Dropdown Tab Selector */
+      /* Tabs - Mobile Dropdown */
       .mobile-tabs {
-        padding: 1rem;
+        padding: 16px;
         border-bottom: 1px solid var(--border);
-        background: var(--surface);
-        display: block;
+        display: none;
       }
-
       .mobile-tabs select {
         width: 100%;
-        padding: 0.75rem 1rem;
+        padding: 10px 14px;
         border: 1px solid var(--border);
         border-radius: var(--radius);
         font-family: inherit;
         font-weight: 500;
+        font-size: 14px;
         color: var(--text-primary);
-        background-color: var(--surface);
+        background: var(--surface);
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1em;
+        background-position: right 14px center;
+        background-size: 16px;
+        cursor: pointer;
       }
-
       .mobile-tabs select:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        box-shadow: 0 0 0 3px var(--primary-light);
       }
 
-      /* Desktop Tabs */
+      /* Tabs - Desktop */
       .desktop-tabs {
-        display: none;
+        display: flex;
         border-bottom: 1px solid var(--border);
-        padding: 0 1.5rem;
-        background-color: var(--surface);
+        padding: 0 24px;
+        background: var(--surface);
+        gap: 4px;
       }
 
       .tab-btn {
         background: none;
         border: none;
-        padding: 1.25rem 1rem;
-        font-size: 0.875rem;
+        padding: 16px 20px;
+        font-size: 14px;
         font-weight: 500;
         color: var(--text-secondary);
         cursor: pointer;
-        border-bottom: 2px solid transparent;
-        transition: all var(--transition-speed);
+        border-bottom: 3px solid transparent;
+        transition: all var(--transition);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 8px;
         margin-bottom: -1px;
       }
-
       .tab-btn:hover {
         color: var(--text-primary);
-        border-bottom-color: var(--border);
       }
-
       .tab-btn.active {
         color: var(--primary);
         border-bottom-color: var(--primary);
+      }
+      .tab-btn i {
+        font-size: 16px;
       }
 
       /* Tab Panels */
       .tab-panel {
         display: none;
-        padding: 2rem 1.5rem;
+        padding: 24px;
         animation: fadeIn 0.3s ease;
       }
-
       .tab-panel.active {
         display: block;
       }
@@ -252,7 +125,7 @@
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(5px);
+          transform: translateY(8px);
         }
         to {
           opacity: 1;
@@ -260,65 +133,55 @@
         }
       }
 
-      /* ===== FORM ELEMENTS ===== */
-      .settings-section {
-        margin-bottom: 2rem;
-      }
-
-      .settings-section:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: none;
-      }
-
       .section-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
         color: var(--text-primary);
       }
 
       .form-grid {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .form-grid .full-width {
+        grid-column: 1 / -1;
       }
 
       .form-group {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 6px;
       }
-
       .form-group label {
-        font-size: 0.875rem;
-        font-weight: 500;
+        font-size: 14px;
+        font-weight: 600;
         color: var(--text-primary);
       }
-
-      .form-group p.desc {
-        font-size: 0.75rem;
+      .form-group .desc {
+        font-size: 13px;
         color: var(--text-secondary);
-        margin-top: -0.25rem;
       }
 
       .form-control {
-        padding: 0.625rem 0.875rem;
-        border: 1px solid var(--border);
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
         border-radius: var(--radius);
         font-family: inherit;
-        font-size: 0.875rem;
+        font-size: 14px;
         color: var(--text-primary);
-        transition:
-          border-color var(--transition-speed),
-          box-shadow var(--transition-speed);
+        transition: all var(--transition);
         width: 100%;
+        background: var(--surface);
       }
-
       .form-control:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .form-control::placeholder {
+        color: var(--text-muted);
       }
 
       textarea.form-control {
@@ -326,172 +189,22 @@
         min-height: 100px;
       }
 
-      /* Range Slider */
-      .slider-group {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1.5rem;
-        background: var(--background);
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-      }
-
-      .slider-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .slider-value-badge {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        padding: 0.25rem 0.75rem;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--primary);
-      }
-
-      .range-slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 6px;
-        background: #e5e7eb;
-        border-radius: 3px;
-        outline: none;
-      }
-
-      .range-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
+      select.form-control {
         appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: var(--primary);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 16px;
         cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        transition: transform 0.1s;
-      }
-
-      .range-slider::-webkit-slider-thumb:hover {
-        transform: scale(1.1);
-      }
-
-      /* API Key Input */
-      .api-key-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-      }
-
-      .api-key-wrapper input {
-        padding-right: 3rem;
-        font-family: monospace;
-        letter-spacing: 1px;
-      }
-
-      .api-key-wrapper input[type="text"] {
-        letter-spacing: normal;
-      }
-
-      .toggle-password {
-        position: absolute;
-        right: 0.75rem;
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        padding: 0.25rem;
-        font-size: 1rem;
-        transition: color 0.2s;
-      }
-
-      .toggle-password:hover {
-        color: var(--primary);
-      }
-
-      /* Toggle Switch */
-      .toggle-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .toggle-row:last-child {
-        border-bottom: none;
-      }
-
-      .toggle-info strong {
-        display: block;
-        font-size: 0.875rem;
-        color: var(--text-primary);
-      }
-
-      .toggle-info span {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-      }
-
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 44px;
-        height: 24px;
-      }
-
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-
-      .switch-slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: var(--border);
-        transition: 0.3s;
-        border-radius: 24px;
-      }
-
-      .switch-slider:before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: 0.3s;
-        border-radius: 50%;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-      }
-
-      input:checked + .switch-slider {
-        background-color: var(--success);
-      }
-
-      input:focus + .switch-slider {
-        box-shadow: 0 0 1px var(--success);
-      }
-
-      input:checked + .switch-slider:before {
-        transform: translateX(20px);
       }
 
       /* Logo Upload */
       .logo-upload-area {
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        gap: 20px;
+        flex-wrap: wrap;
       }
-
       .logo-preview {
         width: 80px;
         height: 80px;
@@ -503,189 +216,370 @@
         background: var(--background);
         overflow: hidden;
       }
-
       .logo-preview img {
         width: 100%;
         height: 100%;
         object-fit: contain;
       }
-
       .logo-preview i {
-        font-size: 2rem;
+        font-size: 32px;
         color: var(--text-secondary);
       }
 
-      /* Actions / Buttons */
+      /* Sliders */
+      .slider-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        background: var(--background);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+      }
+      .slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .slider-header label {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .slider-value-badge {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 2px 14px;
+        border-radius: var(--radius-full);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: var(--radius-full);
+        background: var(--border);
+        outline: none;
+        transition: background 0.2s;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-md);
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.15);
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        border: none;
+      }
+
+      /* API Key Input */
+      .api-key-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .api-key-wrapper input {
+        padding-right: 44px;
+        font-family: monospace;
+        letter-spacing: 0.5px;
+      }
+      .toggle-password {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 4px;
+        font-size: 16px;
+        transition: color 0.2s;
+      }
+      .toggle-password:hover {
+        color: var(--primary);
+      }
+
+      /* Toggle Switch */
+      .toggle-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .toggle-row:last-child {
+        border-bottom: none;
+      }
+      .toggle-info strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .toggle-info span {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 26px;
+        flex-shrink: 0;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .switch-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--border);
+        transition: 0.3s;
+        border-radius: 26px;
+      }
+      .switch-slider::before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background: #fff;
+        transition: 0.3s;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      input:checked + .switch-slider {
+        background: var(--success);
+      }
+      input:checked + .switch-slider::before {
+        transform: translateX(22px);
+      }
+
+      /* Panel Actions */
       .panel-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding-top: 1.5rem;
+        gap: 12px;
+        padding: 20px 24px 24px;
         border-top: 1px solid var(--border);
+        flex-wrap: wrap;
       }
 
-      .btn {
-        padding: 0.625rem 1.25rem;
-        border-radius: var(--radius);
-        font-weight: 500;
-        font-size: 0.875rem;
-        font-family: inherit;
-        cursor: pointer;
-        transition: all var(--transition-speed);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        border: 1px solid transparent;
+      .btn.is-loading {
+        color: transparent;
       }
-
-      .btn-outline {
-        background-color: transparent;
-        border-color: var(--border);
-        color: var(--text-primary);
+      .btn.is-loading .spinner {
+        display: block;
       }
-
-      .btn-outline:hover {
-        background-color: var(--background);
-      }
-
-      .btn-primary {
-        background-color: var(--primary);
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background-color: var(--primary-hover);
-      }
-
-      .btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-
       .spinner {
         display: none;
-        width: 1rem;
-        height: 1rem;
+        width: 18px;
+        height: 18px;
         border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
         border-radius: 50%;
-        border-top-color: white;
-        animation: spin 1s ease-in-out infinite;
+        animation: spin 0.6s linear infinite;
+        position: absolute;
       }
-
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
 
-      /* Toast Notification */
-      .toast {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: var(--success);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-md);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        transform: translateY(150%);
-        opacity: 0;
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        z-index: 100;
+      .btn-secondary.is-loading .spinner {
+        border-top-color: var(--primary);
+        border-color: rgba(0, 0, 0, 0.1);
       }
 
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        padding: 14px 24px;
+        background: var(--success);
+        color: #fff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        z-index: 1100;
+        max-width: 400px;
+      }
       .toast.show {
         transform: translateY(0);
         opacity: 1;
       }
+      .toast i {
+        font-size: 20px;
+      }
 
-      /* ===== RESPONSIVE BREAKPOINTS ===== */
-
-      /* Tablet: 768px and up */
-      @media (min-width: 768px) {
-        .hamburger {
-          display: none;
-        }
-        .nav-links {
-          display: flex;
-        }
-        .mobile-menu {
-          display: none !important;
-        }
-
-        .mobile-tabs {
-          display: none;
-        }
-        .desktop-tabs {
-          display: flex;
-        }
-
+      /* Responsive */
+      @media (max-width: 1024px) {
         .form-grid {
           grid-template-columns: 1fr 1fr;
         }
+      }
 
-        .full-width {
-          grid-column: 1 / -1;
+      @media (max-width: 768px) {
+        .mobile-tabs {
+          display: block;
         }
-
+        .desktop-tabs {
+          display: none;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
         .tab-panel {
-          padding: 2.5rem 2rem;
+          padding: 16px;
+        }
+        .panel-actions {
+          flex-direction: column-reverse;
+          padding: 16px;
+        }
+        .panel-actions .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .logo-upload-area {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .slider-group {
+          padding: 16px;
+        }
+        .toggle-row {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .toast {
+          left: 16px;
+          right: 16px;
+          max-width: unset;
         }
       }
     </style>
   </head>
   <body>
-    <header class="navbar">
-      <div class="nav-container">
-        <a href="#" class="logo">
-          <img
-            src="../assets/images/logo.png"
-            alt="Recruiter Logo"
-            class="logo-svg"
-            style="height: 50px"
-            width="50"
-          />
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../admin/dashboard.html" class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+          <span>RecruitAI</span>
         </a>
 
-        <nav class="nav-links">
-          <a href="#">Dashboard</a>
-          <a href="#">Profile</a>
-          <a href="settings.html" class="active">Settings</a>
+        <nav class="main-nav" aria-label="Primary navigation">
+          <a
+            href="../admin/dashboard.html"
+            class="nav-link"
+            data-page="dashboard"
+            >Dashboard</a
+          >
+          <a
+            href="../admin/user-management.html"
+            class="nav-link"
+            data-page="users"
+            >Users</a
+          >
+          <a
+            href="../admin/settings.html"
+            class="nav-link active"
+            data-page="settings"
+            >Settings</a
+          >
+          <a
+            href="../admin/analytics-reports.html"
+            class="nav-link"
+            data-page="analytics"
+            >Analytics</a
+          >
         </nav>
 
-        <div class="user-menu">
-          <img
-            src="https://i.pravatar.cc/150?img=68"
-            alt="User Avatar"
-            class="header-avatar"
-          />
+        <div class="header-actions">
+          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-dot"></span>
+          </button>
+          <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fa-solid fa-bars"></i>
+            <i class="fas fa-bars"></i>
           </button>
         </div>
       </div>
 
-      <nav class="mobile-menu" id="mobileMenu">
-        <a href="#">Dashboard</a>
-        <a href="#">Profile</a>
-        <a href="#" style="color: var(--primary); font-weight: 600">Settings</a>
-      </nav>
+      <!-- Mobile Menu -->
+      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a
+          href="../admin/dashboard.html"
+          class="mobile-link"
+          data-page="dashboard"
+          >Dashboard</a
+        >
+        <a href="../admin/users.html" class="mobile-link" data-page="users"
+          >Users</a
+        >
+        <a
+          href="../admin/settings.html"
+          class="mobile-link active"
+          data-page="settings"
+          >Settings</a
+        >
+        <a
+          href="../admin/analytics-reports.html"
+          class="mobile-link"
+          data-page="analytics"
+          >Analytics</a
+        >
+        <a
+          href="../auth/login.html"
+          class="mobile-link"
+          style="color: var(--danger); border-bottom: none"
+          >Sign Out</a
+        >
+      </div>
     </header>
 
-    <main class="main-content">
-      <header class="page-header">
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+      <div class="page-header">
         <h1>Settings</h1>
         <p>
           Manage your account configurations, integrations, and preferences.
         </p>
-      </header>
+      </div>
 
       <div class="settings-container">
+        <!-- Mobile Tabs Dropdown -->
         <div class="mobile-tabs">
           <select id="mobileTabSelect" aria-label="Select Settings Section">
             <option value="tab-general">General</option>
@@ -695,22 +589,25 @@
           </select>
         </div>
 
+        <!-- Desktop Tabs -->
         <div class="desktop-tabs" id="desktopTabs">
           <button class="tab-btn active" data-target="tab-general">
-            <i class="fa-regular fa-building"></i> General
+            <i class="fas fa-building"></i> General
           </button>
           <button class="tab-btn" data-target="tab-ai-weights">
-            <i class="fa-solid fa-sliders"></i> AI Weights
+            <i class="fas fa-sliders-h"></i> AI Weights
           </button>
           <button class="tab-btn" data-target="tab-integrations">
-            <i class="fa-solid fa-link"></i> Integrations
+            <i class="fas fa-link"></i> Integrations
           </button>
           <button class="tab-btn" data-target="tab-notifications">
-            <i class="fa-regular fa-bell"></i> Notifications
+            <i class="fas fa-bell"></i> Notifications
           </button>
         </div>
 
-        <form id="settingsForm">
+        <!-- Form -->
+        <form id="settingsForm" novalidate>
+          <!-- ===== TAB: GENERAL ===== -->
           <div class="tab-panel active" id="tab-general">
             <h2 class="section-title">Company Profile</h2>
 
@@ -720,18 +617,18 @@
                 <p class="desc">
                   Update your company logo for reports and invoices.
                 </p>
-                <div class="logo-upload-area" style="margin-top: 0.5rem">
-                  <div class="logo-preview">
-                    <i class="fa-regular fa-image"></i>
+                <div class="logo-upload-area" style="margin-top: 8px">
+                  <div class="logo-preview" id="logoPreview">
+                    <i class="fas fa-image"></i>
                   </div>
                   <div>
                     <button
                       type="button"
-                      class="btn btn-outline"
-                      style="margin-bottom: 0.5rem"
+                      class="btn btn-secondary"
                       onclick="document.getElementById('logoUpload').click()"
+                      style="margin-bottom: 6px"
                     >
-                      <i class="fa-solid fa-upload"></i> Upload Logo
+                      <i class="fas fa-upload"></i> Upload Logo
                     </button>
                     <p class="desc">SVG, PNG, or JPG (max. 800x400px)</p>
                     <input
@@ -761,6 +658,7 @@
                   <option>Healthcare</option>
                   <option>Finance</option>
                   <option>Retail</option>
+                  <option>Education</option>
                 </select>
               </div>
 
@@ -776,8 +674,9 @@
             </div>
           </div>
 
+          <!-- ===== TAB: AI WEIGHTS ===== -->
           <div class="tab-panel" id="tab-ai-weights">
-            <h2 class="section-title">Model Tuning & Weights</h2>
+            <h2 class="section-title">Model Tuning &amp; Weights</h2>
 
             <div class="form-grid">
               <div class="form-group full-width">
@@ -785,7 +684,7 @@
                   <div class="slider-header">
                     <div>
                       <label>Creativity (Temperature)</label>
-                      <p class="desc">
+                      <p class="desc" style="margin-top: 2px">
                         Higher values make output more random, lower values more
                         deterministic.
                       </p>
@@ -796,7 +695,8 @@
                   </div>
                   <input
                     type="range"
-                    class="range-slider"
+                    class="form-control"
+                    style="padding: 0; height: 6px"
                     id="slider-creativity"
                     min="0"
                     max="1"
@@ -811,7 +711,7 @@
                   <div class="slider-header">
                     <div>
                       <label>Context Precision (Top P)</label>
-                      <p class="desc">
+                      <p class="desc" style="margin-top: 2px">
                         Controls diversity via nucleus sampling.
                       </p>
                     </div>
@@ -821,7 +721,8 @@
                   </div>
                   <input
                     type="range"
-                    class="range-slider"
+                    class="form-control"
+                    style="padding: 0; height: 6px"
                     id="slider-precision"
                     min="0"
                     max="1"
@@ -836,7 +737,7 @@
                   <div class="slider-header">
                     <div>
                       <label>Response Length Penalty</label>
-                      <p class="desc">
+                      <p class="desc" style="margin-top: 2px">
                         Encourage shorter or longer responses based on context
                         window.
                       </p>
@@ -845,7 +746,8 @@
                   </div>
                   <input
                     type="range"
-                    class="range-slider"
+                    class="form-control"
+                    style="padding: 0; height: 6px"
                     id="slider-penalty"
                     min="-2.0"
                     max="2.0"
@@ -857,8 +759,9 @@
             </div>
           </div>
 
+          <!-- ===== TAB: INTEGRATIONS ===== -->
           <div class="tab-panel" id="tab-integrations">
-            <h2 class="section-title">API Keys & External Services</h2>
+            <h2 class="section-title">API Keys &amp; External Services</h2>
 
             <div class="form-grid">
               <div class="form-group full-width">
@@ -877,7 +780,7 @@
                     data-target="openaiKey"
                     aria-label="Toggle visibility"
                   >
-                    <i class="fa-solid fa-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                 </div>
               </div>
@@ -900,67 +803,66 @@
                     data-target="awsKey"
                     aria-label="Toggle visibility"
                   >
-                    <i class="fa-solid fa-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                 </div>
               </div>
 
-              <div class="form-group full-width" style="margin-top: 1rem">
+              <div class="form-group full-width" style="margin-top: 8px">
                 <button
                   type="button"
-                  class="btn btn-outline"
-                  onclick="console.log('Testing Connections...')"
+                  class="btn btn-secondary"
+                  onclick="testConnections()"
                 >
-                  <i class="fa-solid fa-plug"></i> Test Connections
+                  <i class="fas fa-plug"></i> Test Connections
                 </button>
               </div>
             </div>
           </div>
 
+          <!-- ===== TAB: NOTIFICATIONS ===== -->
           <div class="tab-panel" id="tab-notifications">
             <h2 class="section-title">Notification Preferences</h2>
 
-            <div class="settings-section">
-              <div class="toggle-row">
-                <div class="toggle-info">
-                  <strong>System Alerts</strong>
-                  <span
-                    >Receive notifications for system downtime and
-                    updates.</span
-                  >
-                </div>
-                <label class="switch">
-                  <input type="checkbox" checked />
-                  <span class="switch-slider"></span>
-                </label>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>System Alerts</strong>
+                <span
+                  >Receive notifications for system downtime and updates.</span
+                >
               </div>
-
-              <div class="toggle-row">
-                <div class="toggle-info">
-                  <strong>Weekly Analytics Report</strong>
-                  <span>Get a summary of your usage statistics via email.</span>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" checked />
-                  <span class="switch-slider"></span>
-                </label>
-              </div>
-
-              <div class="toggle-row">
-                <div class="toggle-info">
-                  <strong>API Usage Warnings</strong>
-                  <span>Alert when approaching 90% of monthly API quota.</span>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" />
-                  <span class="switch-slider"></span>
-                </label>
-              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="switch-slider"></span>
+              </label>
             </div>
 
-            <h2 class="section-title" style="margin-top: 2rem">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>Weekly Analytics Report</strong>
+                <span>Get a summary of your usage statistics via email.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <strong>API Usage Warnings</strong>
+                <span>Alert when approaching 90% of monthly API quota.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 24px">
               Custom Email Template
             </h2>
+
             <div class="form-group full-width">
               <label for="emailTemplate"
                 >Welcome Email (Markdown supported)</label
@@ -968,7 +870,7 @@
               <p class="desc">
                 Sent to new users when they are invited to your workspace.
               </p>
-              <textarea id="emailTemplate" class="form-control">
+              <textarea id="emailTemplate" class="form-control" rows="6">
 Hi {{first_name}},
 
 Welcome to Acme Corporation! We are excited to have you on board.
@@ -981,82 +883,128 @@ The Team</textarea
             </div>
           </div>
 
-          <div class="panel-actions" style="margin: 0 1.5rem 1.5rem 1.5rem">
-            <button type="button" class="btn btn-outline" id="resetBtn">
-              Discard Changes
+          <!-- ===== FORM ACTIONS ===== -->
+          <div class="panel-actions">
+            <button type="button" class="btn btn-secondary" id="resetBtn">
+              <i class="fas fa-undo"></i> Discard Changes
             </button>
             <button type="submit" class="btn btn-primary" id="saveBtn">
-              <span id="saveText">Save Settings</span>
-              <div class="spinner" id="saveSpinner"></div>
+              <span id="saveText"
+                ><i class="fas fa-save"></i> Save Settings</span
+              >
+              <div class="spinner"></div>
             </button>
           </div>
         </form>
       </div>
     </main>
 
-    <div class="toast" id="toast">
-      <i class="fa-solid fa-circle-check"></i>
-      <span>Settings saved successfully!</span>
-    </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <img
+              src="../assets/images/logo.png"
+              alt="RecruitAI Logo"
+              style="height: 36px"
+            />
+            <span>RecruitAI</span>
+          </div>
+          <p>
+            AI-powered recruitment platform connecting top talent with great
+            companies.
+          </p>
+        </div>
 
+        <div class="footer-links">
+          <h4>For Administrators</h4>
+          <ul>
+            <li><a href="../admin/dashboard.html">Dashboard</a></li>
+            <li><a href="../admin/users.html">Users</a></li>
+            <li><a href="../admin/settings.html">Settings</a></li>
+            <li><a href="../admin/analytics-reports.html">Analytics</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+        <div class="footer-social">
+          <a href="#" aria-label="LinkedIn"
+            ><i class="fab fa-linkedin-in"></i
+          ></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <script src="../js/main.js"></script>
+
+    <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- Mobile Menu Toggle ---
-        const hamburgerBtn = document.getElementById("hamburgerBtn");
-        const mobileMenu = document.getElementById("mobileMenu");
+      (function () {
+        "use strict";
 
-        hamburgerBtn.addEventListener("click", () => {
-          mobileMenu.classList.toggle("active");
-          const icon = hamburgerBtn.querySelector("i");
-          if (mobileMenu.classList.contains("active")) {
-            icon.classList.replace("fa-bars", "fa-xmark");
-          } else {
-            icon.classList.replace("fa-xmark", "fa-bars");
-          }
-        });
-
-        // --- Tab Switching Logic ---
+        // ============================================
+        // TAB SWITCHING
+        // ============================================
         const desktopTabs = document.querySelectorAll(".tab-btn");
         const mobileSelect = document.getElementById("mobileTabSelect");
         const tabPanels = document.querySelectorAll(".tab-panel");
 
         function switchTab(targetId) {
-          // Update Desktop Tabs UI
+          // Update desktop tabs
           desktopTabs.forEach((btn) => {
-            if (btn.getAttribute("data-target") === targetId) {
-              btn.classList.add("active");
-            } else {
-              btn.classList.remove("active");
-            }
+            btn.classList.toggle("active", btn.dataset.target === targetId);
           });
 
-          // Update Mobile Select UI
+          // Update mobile select
           mobileSelect.value = targetId;
 
-          // Update Panels
+          // Update panels
           tabPanels.forEach((panel) => {
-            if (panel.id === targetId) {
-              panel.classList.add("active");
-            } else {
-              panel.classList.remove("active");
-            }
+            panel.classList.toggle("active", panel.id === targetId);
           });
         }
 
-        // Desktop click events
         desktopTabs.forEach((btn) => {
           btn.addEventListener("click", (e) => {
             e.preventDefault();
-            switchTab(btn.getAttribute("data-target"));
+            switchTab(btn.dataset.target);
           });
         });
 
-        // Mobile select event
         mobileSelect.addEventListener("change", (e) => {
           switchTab(e.target.value);
         });
 
-        // --- Slider Value Synchronization ---
+        // ============================================
+        // SLIDER VALUE SYNC
+        // ============================================
         const sliders = [
           { input: "slider-creativity", display: "val-creativity" },
           { input: "slider-precision", display: "val-precision" },
@@ -1066,21 +1014,19 @@ The Team</textarea
         sliders.forEach((config) => {
           const inputEl = document.getElementById(config.input);
           const displayEl = document.getElementById(config.display);
-
           if (inputEl && displayEl) {
             inputEl.addEventListener("input", (e) => {
-              // Format specifically for exact floats like 0.0 or 1.0
               displayEl.textContent = parseFloat(e.target.value).toFixed(1);
             });
           }
         });
 
-        // --- API Key Reveal Toggle ---
-        const toggleBtns = document.querySelectorAll(".toggle-password");
-
-        toggleBtns.forEach((btn) => {
+        // ============================================
+        // API KEY TOGGLE
+        // ============================================
+        document.querySelectorAll(".toggle-password").forEach((btn) => {
           btn.addEventListener("click", () => {
-            const targetId = btn.getAttribute("data-target");
+            const targetId = btn.dataset.target;
             const inputEl = document.getElementById(targetId);
             const iconEl = btn.querySelector("i");
 
@@ -1094,59 +1040,11 @@ The Team</textarea
           });
         });
 
-        // --- Form Submission & Save Handler ---
-        const settingsForm = document.getElementById("settingsForm");
-        const saveBtn = document.getElementById("saveBtn");
-        const saveText = document.getElementById("saveText");
-        const saveSpinner = document.getElementById("saveSpinner");
-        const toast = document.getElementById("toast");
-        const resetBtn = document.getElementById("resetBtn");
-
-        settingsForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-
-          console.log("Initiating save process for settings...");
-
-          // UI Loading State
-          saveBtn.disabled = true;
-          resetBtn.disabled = true;
-          saveText.textContent = "Saving...";
-          saveSpinner.style.display = "block";
-
-          // Fake network delay (1.5 seconds)
-          setTimeout(() => {
-            console.log("Settings saved successfully.");
-
-            // Reset UI State
-            saveBtn.disabled = false;
-            resetBtn.disabled = false;
-            saveText.textContent = "Save Settings";
-            saveSpinner.style.display = "none";
-
-            // Show Success Toast
-            toast.classList.add("show");
-            setTimeout(() => {
-              toast.classList.remove("show");
-            }, 3000);
-          }, 1500);
-        });
-
-        resetBtn.addEventListener("click", () => {
-          console.log("Settings reset to last saved state.");
-          settingsForm.reset();
-          // manually trigger slider updates after form reset
-          sliders.forEach((config) => {
-            const inputEl = document.getElementById(config.input);
-            const displayEl = document.getElementById(config.display);
-            if (inputEl && displayEl) {
-              displayEl.textContent = parseFloat(inputEl.value).toFixed(1);
-            }
-          });
-        });
-
-        // --- Basic Logo Upload Preview Simulation ---
+        // ============================================
+        // LOGO UPLOAD PREVIEW
+        // ============================================
         const logoUpload = document.getElementById("logoUpload");
-        const logoPreview = document.querySelector(".logo-preview");
+        const logoPreview = document.getElementById("logoPreview");
 
         logoUpload.addEventListener("change", function (e) {
           if (this.files && this.files[0]) {
@@ -1157,7 +1055,146 @@ The Team</textarea
             reader.readAsDataURL(this.files[0]);
           }
         });
-      });
+
+        // ============================================
+        // TOAST SYSTEM
+        // ============================================
+        const toast = document.getElementById("toast");
+        let toastTimer = null;
+
+        function showToast(message, icon = "fa-check-circle", isError = false) {
+          toast.querySelector("i").className = `fas ${icon}`;
+          toast.querySelector("span").textContent = message;
+          toast.style.background = isError ? "var(--danger)" : "var(--success)";
+          toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+        }
+
+        // ============================================
+        // FORM SUBMISSION
+        // ============================================
+        const form = document.getElementById("settingsForm");
+        const saveBtn = document.getElementById("saveBtn");
+        const saveText = document.getElementById("saveText");
+        const resetBtn = document.getElementById("resetBtn");
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Collect form data
+          const data = {
+            companyName: document.getElementById("companyName").value,
+            industry: document.getElementById("industry").value,
+            website: document.getElementById("website").value,
+            openaiKey: document.getElementById("openaiKey").value,
+            awsKey: document.getElementById("awsKey").value,
+            emailTemplate: document.getElementById("emailTemplate").value,
+            creativity: document.getElementById("slider-creativity").value,
+            precision: document.getElementById("slider-precision").value,
+            penalty: document.getElementById("slider-penalty").value,
+            notifications: {
+              systemAlerts: document.querySelector(
+                "#tab-notifications .toggle-row:first-child input",
+              ).checked,
+              weeklyReport: document.querySelector(
+                "#tab-notifications .toggle-row:nth-child(2) input",
+              ).checked,
+              apiWarnings: document.querySelector(
+                "#tab-notifications .toggle-row:nth-child(3) input",
+              ).checked,
+            },
+          };
+
+          console.log("📋 Settings Data:", data);
+
+          // Show loading state
+          saveBtn.classList.add("is-loading");
+          saveBtn.disabled = true;
+
+          // Simulate API call
+          setTimeout(() => {
+            saveBtn.classList.remove("is-loading");
+            saveBtn.disabled = false;
+            showToast(
+              "Settings saved successfully! ✅",
+              "fa-check-circle",
+              false,
+            );
+          }, 1500);
+        });
+
+        // ============================================
+        // RESET BUTTON
+        // ============================================
+        resetBtn.addEventListener("click", function () {
+          if (confirm("Discard all unsaved changes?")) {
+            // Reset all form fields to their initial values
+            document.getElementById("companyName").value = "Acme Corporation";
+            document.getElementById("industry").value = "Technology";
+            document.getElementById("website").value = "https://acme.inc";
+            document.getElementById("openaiKey").value =
+              "sk-1234567890abcdefghijklmnopqrstuvwxyz";
+            document.getElementById("awsKey").value = "AKIAIOSFODNN7EXAMPLE";
+            document.getElementById("emailTemplate").value =
+              document.getElementById("emailTemplate").dataset.default ||
+              "Hi {{first_name}},\n\nWelcome to Acme Corporation! We are excited to have you on board.\n\nTo get started, please log in and configure your profile.\n\nBest,\nThe Team";
+
+            // Reset sliders
+            document.getElementById("slider-creativity").value = "0.7";
+            document.getElementById("val-creativity").textContent = "0.7";
+            document.getElementById("slider-precision").value = "0.9";
+            document.getElementById("val-precision").textContent = "0.9";
+            document.getElementById("slider-penalty").value = "0.0";
+            document.getElementById("val-penalty").textContent = "0.0";
+
+            // Reset toggles
+            const toggles = document.querySelectorAll(
+              "#tab-notifications .switch input",
+            );
+            toggles.forEach((toggle, index) => {
+              toggle.checked = [true, true, false][index] || false;
+            });
+
+            showToast("Settings reset to defaults ↩️", "fa-undo", false);
+          }
+        });
+
+        // ============================================
+        // TEST CONNECTIONS
+        // ============================================
+        window.testConnections = function () {
+          const btn = document.querySelector(
+            "#tab-integrations .btn-secondary",
+          );
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+          btn.disabled = true;
+
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            showToast("✅ All connections are healthy!", "fa-plug", false);
+          }, 2000);
+        };
+
+        // ============================================
+        // STORE DEFAULT EMAIL TEMPLATE
+        // ============================================
+        const emailTemplate = document.getElementById("emailTemplate");
+        emailTemplate.dataset.default = emailTemplate.value;
+
+        console.log("✅ Admin Settings page loaded successfully!");
+        console.log(
+          "📋 4 tabs available: General, AI Weights, Integrations, Notifications",
+        );
+      })();
     </script>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span>Settings saved successfully!</span>
+    </div>
   </body>
 </html>

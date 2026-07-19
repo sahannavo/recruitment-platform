@@ -5,593 +5,233 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RecruitAI - Hiring Manager Dashboard</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- Unified CSS -->
     <link rel="stylesheet" href="../css/main.css" />
 
     <style>
-      /* ========================================
-       HIRING MANAGER DASHBOARD STYLES
-       ======================================== */
-
-      .page-head {
-        margin-bottom: 24px;
+      .greeting {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 32px;
       }
-      .page-head h1 {
-        margin: 0 0 4px;
-        font-size: 28px;
-        font-weight: 800;
+      .greeting h1 {
+        font-size: 24px;
+        font-weight: 700;
       }
-      .page-head p {
-        margin: 0;
+      .greeting p {
         color: var(--text-secondary);
-        font-size: 15px;
       }
 
-      /* KPI Cards */
-      .kpi-grid {
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .section-header h2 {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 16px;
-        margin-bottom: 24px;
+        margin-bottom: 32px;
       }
-
-      .kpi-card {
+      .stat-card {
         background: var(--surface);
-        border: 1px solid var(--border);
         border-radius: var(--radius-lg);
         padding: 20px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 14px;
-        transition: all var(--transition);
-        box-shadow: var(--shadow);
-      }
-      .kpi-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .kpi-label {
-        font-size: 12px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        color: var(--text-secondary);
-        font-weight: 700;
-        margin-bottom: 6px;
-      }
-      .kpi-value {
-        font-size: 28px;
-        font-weight: 800;
-      }
-
-      .kpi-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-      }
-      .kpi-icon.indigo {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .kpi-icon.green {
-        background: var(--success-light);
-        color: var(--success);
-      }
-      .kpi-icon.orange {
-        background: #fef3c7;
-        color: var(--warning);
-      }
-      .kpi-icon.gray {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-
-      /* Dashboard Grid */
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 24px;
-        align-items: start;
-      }
-
-      .card {
-        background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
         box-shadow: var(--shadow);
-        overflow: hidden;
+        text-align: center;
       }
-
-      .section-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 24px;
-        border-bottom: 1px solid var(--border);
-      }
-      .section-head h2 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 700;
-      }
-      .view-all-link {
+      .stat-number {
+        font-size: 32px;
+        font-weight: 800;
         color: var(--primary);
-        font-weight: 600;
-        font-size: 14px;
-        transition: color 0.2s ease;
       }
-      .view-all-link:hover {
-        color: var(--primary-hover);
-        text-decoration: underline;
+      .stat-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        margin-top: 4px;
       }
 
-      /* Feedback List */
-      .feedback-list {
+      .candidate-list {
         display: flex;
         flex-direction: column;
-        gap: 0;
+        gap: 12px;
       }
-
-      .feedback-item {
-        padding: 16px 24px;
+      .candidate-item {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        border: 1px solid var(--border);
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        border-bottom: 1px solid var(--border);
-        transition: background 0.2s ease;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        transition: all var(--transition);
         cursor: pointer;
       }
-      .feedback-item:last-child {
-        border-bottom: none;
+      .candidate-item:hover {
+        border-color: var(--primary-light);
+        box-shadow: var(--shadow);
       }
-      .feedback-item:hover {
-        background: var(--background);
-      }
-      .feedback-item.removing {
-        opacity: 0;
-        transform: translateX(12px);
-        transition: all 0.3s ease;
-      }
-
       .candidate-info {
         display: flex;
         align-items: center;
-        gap: 14px;
-        flex: 1;
-        min-width: 0;
+        gap: 12px;
       }
       .candidate-avatar {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        object-fit: cover;
-        flex-shrink: 0;
-        background: linear-gradient(135deg, var(--primary), #818cf8);
-      }
-      .candidate-name {
-        font-weight: 700;
-        font-size: 15px;
-      }
-      .candidate-role {
-        color: var(--text-secondary);
-        font-size: 13px;
-      }
-      .candidate-meta {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 2px;
-      }
-      .match-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: var(--primary-light);
-        color: var(--primary);
-        font-weight: 700;
-        font-size: 12px;
-        padding: 2px 12px;
-        border-radius: var(--radius-full);
-      }
-
-      .feedback-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-shrink: 0;
-      }
-
-      .btn-sm {
-        padding: 8px 16px;
-        font-size: 13px;
-      }
-
-      /* Mini Cards */
-      .mini-cards {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        padding: 20px 24px;
-      }
-
-      .mini-card {
-        background: var(--surface-alt);
-        border-radius: var(--radius);
-        padding: 16px;
-      }
-      .mini-card-icon {
-        font-size: 18px;
-        color: var(--primary);
-        display: block;
-        margin-bottom: 8px;
-      }
-      .mini-card h3 {
-        font-size: 15px;
-        font-weight: 700;
-        margin: 0 0 4px;
-      }
-      .mini-card p {
-        margin: 0 0 10px;
-        color: var(--text-secondary);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-
-      .avatar-stack {
-        display: flex;
-        align-items: center;
-      }
-      .stack-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 2px solid var(--surface);
-        margin-left: -8px;
-        object-fit: cover;
-      }
-      .stack-avatar:first-child {
-        margin-left: 0;
-      }
-      .stack-more {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 2px solid var(--surface);
-        margin-left: -8px;
-        background: var(--primary);
-        color: #fff;
-        font-size: 11px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .progress-track {
-        width: 100%;
-        height: 6px;
-        border-radius: var(--radius-full);
-        background: var(--border);
-        overflow: hidden;
-      }
-      .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: var(--success);
-        border-radius: var(--radius-full);
-        transition: width 1.2s ease;
-      }
-
-      /* Right Column */
-      .right-col {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .activity-card {
-        padding: 20px 24px;
-      }
-      .activity-card h2 {
-        font-size: 16px;
-        font-weight: 700;
-        margin: 0 0 16px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .activity-card h2 i {
-        color: var(--text-secondary);
-      }
-
-      .timeline {
-        position: relative;
-        padding-left: 24px;
-        margin-bottom: 16px;
-      }
-      .timeline::before {
-        content: "";
-        position: absolute;
-        left: 5px;
-        top: 6px;
-        bottom: 6px;
-        width: 2px;
-        background: var(--border);
-      }
-      .timeline-item {
-        position: relative;
-        padding-bottom: 16px;
-      }
-      .timeline-item:last-child {
-        padding-bottom: 0;
-      }
-      .timeline-dot {
-        position: absolute;
-        left: -22px;
-        top: 3px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--surface);
-        border: 2.5px solid var(--border);
-      }
-      .timeline-dot.primary {
-        border-color: var(--primary);
-      }
-      .timeline-dot.primary::after {
-        content: "";
-        position: absolute;
-        inset: 2px;
-        border-radius: 50%;
-        background: var(--primary);
-      }
-      .timeline-dot.success {
-        border-color: var(--success);
-      }
-      .timeline-dot.success::after {
-        content: "";
-        position: absolute;
-        inset: 2px;
-        border-radius: 50%;
-        background: var(--success);
-      }
-      .timeline-meta {
-        font-size: 11px;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: var(--text-secondary);
-        font-weight: 700;
-        margin-bottom: 2px;
-      }
-      .timeline-text {
-        font-size: 14px;
-        color: var(--text-primary);
-        line-height: 1.4;
-      }
-      .timeline-text strong {
-        font-weight: 700;
-      }
-
-      .btn-outline-full {
-        width: 100%;
-        padding: 10px;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--text-primary);
-        font-weight: 600;
-        font-size: 14px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-      }
-      .btn-outline-full:hover {
-        background: var(--background);
-        border-color: var(--primary);
-      }
-
-      /* CTA Card */
-      .cta-card {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-hover)
-        );
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-      }
-      .cta-icon {
         width: 40px;
         height: 40px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.18);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        margin-bottom: 12px;
-      }
-      .cta-card h3 {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0 0 6px;
-      }
-      .cta-card p {
-        font-size: 14px;
-        line-height: 1.5;
-        color: rgba(255, 255, 255, 0.88);
-        margin: 0 0 16px;
-      }
-      .btn-white {
-        width: 100%;
-        padding: 12px;
-        background: #fff;
-        color: var(--primary);
-        border: none;
-        border-radius: var(--radius);
-        font-weight: 700;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .btn-white:hover {
-        background: var(--primary-light);
-        transform: translateY(-1px);
-      }
-      .cta-plus {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        width: 36px;
-        height: 36px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.18);
-        border: none;
-        color: #fff;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        background: var(--primary-light);
+        color: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: 700;
+        font-size: 16px;
+        flex-shrink: 0;
       }
-      .cta-plus:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: rotate(90deg);
+      .candidate-name {
+        font-weight: 600;
       }
-
-      /* Loading & Empty */
-      .feedback-loading,
-      .feedback-empty {
-        padding: 50px 20px;
-        text-align: center;
+      .candidate-job {
+        font-size: 13px;
         color: var(--text-secondary);
       }
-      .spinner-sm {
-        width: 32px;
-        height: 32px;
-        border: 3px solid var(--border);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        margin: 0 auto 12px;
-        animation: spin 0.8s linear infinite;
+
+      .score-badge {
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .score-high {
+        background: var(--primary);
+        color: #fff;
+      }
+      .score-mid {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+      .score-low {
+        background: var(--surface-alt);
+        color: var(--text-secondary);
+      }
+
+      .status-badge {
+        padding: 3px 12px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-interview {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-completed {
+        background: var(--success-light);
+        color: #065f46;
+      }
+
+      .feedback-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: left;
+        padding: 12px 0;
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      td {
+        padding: 14px 0;
+        border-top: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+      }
+      .loading-spinner i {
+        font-size: 32px;
+        animation: spin 1s linear infinite;
       }
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
-      .feedback-empty i {
-        font-size: 36px;
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-secondary);
+      }
+      .empty-state i {
+        font-size: 48px;
         color: var(--border);
-        display: block;
-        margin-bottom: 12px;
-      }
-      .feedback-empty h3 {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0 0 4px;
+        margin-bottom: 16px;
       }
 
-      /* Toast */
-      .toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        background: var(--text-primary);
-        color: #fff;
-        padding: 12px 20px;
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-weight: 500;
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.25s ease;
-        z-index: 1100;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-      .toast i {
-        color: var(--success);
-      }
-
-      /* Responsive */
-      @media (max-width: 1100px) {
-        .dashboard-grid {
-          grid-template-columns: 1fr;
-        }
-        .right-col {
-          order: 2;
-        }
-      }
-
-      @media (max-width: 900px) {
-        .kpi-grid {
+      @media (max-width: 1024px) {
+        .stats-grid {
           grid-template-columns: repeat(2, 1fr);
         }
-        .mini-cards {
-          grid-template-columns: 1fr;
-        }
       }
-
       @media (max-width: 768px) {
-        .page-head h1 {
-          font-size: 22px;
-        }
-        .kpi-card {
-          padding: 16px;
-        }
-        .kpi-value {
-          font-size: 22px;
-        }
-        .feedback-item {
+        .greeting {
           flex-direction: column;
-          align-items: stretch;
-          gap: 12px;
+          text-align: center;
         }
-        .feedback-actions {
-          width: 100%;
-          flex-wrap: wrap;
-        }
-        .feedback-actions .btn {
-          flex: 1;
-          justify-content: center;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .kpi-grid {
+        .stats-grid {
           grid-template-columns: 1fr;
+        }
+        table {
+          font-size: 13px;
+        }
+        td,
+        th {
+          padding: 10px 8px;
         }
       }
     </style>
@@ -610,38 +250,31 @@
             >Dashboard</a
           >
           <a
+            href="candidate-evaluation.html"
+            class="nav-link"
+            data-page="evaluate"
+            >Evaluate</a
+          >
+          <a
             href="../recruiter/manage-jobs.html"
             class="nav-link"
             data-page="jobs"
             >Jobs</a
-          >
-          <a
-            href="candidate-evaluation.html"
-            class="nav-link"
-            data-page="candidates"
-            >Candidates</a
-          >
-          <a
-            href="../recruiter/schedule-interview.html"
-            class="nav-link"
-            data-page="interviews"
-            >Interviews</a
           >
         </nav>
 
         <div class="header-actions">
           <button class="icon-btn" id="notifBtn" aria-label="Notifications">
             <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
+            <span class="notification-dot" id="notifDot"></span>
           </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SH</div>
+          <div class="user-avatar" id="userAvatar" title="Profile">HM</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
           </button>
         </div>
       </div>
 
-      <!-- Mobile Menu -->
       <div class="mobile-menu-overlay" id="mobileOverlay"></div>
       <div class="mobile-menu" id="mobileMenu">
         <a
@@ -651,26 +284,21 @@
           >Dashboard</a
         >
         <a
+          href="candidate-evaluation.html"
+          class="mobile-link"
+          data-page="evaluate"
+          >Evaluate</a
+        >
+        <a
           href="../recruiter/manage-jobs.html"
           class="mobile-link"
           data-page="jobs"
           >Jobs</a
         >
         <a
-          href="candidate-evaluation.html"
+          href="#"
           class="mobile-link"
-          data-page="candidates"
-          >Candidates</a
-        >
-        <a
-          href="../recruiter/schedule-interview.html"
-          class="mobile-link"
-          data-page="interviews"
-          >Interviews</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
+          id="logoutBtn"
           style="color: var(--danger); border-bottom: none"
           >Sign Out</a
         >
@@ -679,183 +307,62 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-head">
-        <h1>Welcome back, Sarah 👋</h1>
-        <p>Here's an overview of your active recruitment pipeline.</p>
+      <!-- Greeting -->
+      <div class="greeting">
+        <div>
+          <h1 id="greetingText">Welcome! 👋</h1>
+          <p id="greetingSubtext">Loading your hiring dashboard...</p>
+        </div>
+        <a href="candidate-evaluation.html" class="btn btn-primary">
+          <i class="fas fa-clipboard-list"></i> Evaluate Candidates
+        </a>
       </div>
 
-      <!-- KPI Cards -->
-      <section class="kpi-grid" aria-label="Key performance indicators">
-        <div class="kpi-card">
-          <div>
-            <div class="kpi-label">Pending Reviews</div>
-            <div class="kpi-value" data-target="12" id="kpiPending">0</div>
-          </div>
-          <span class="kpi-icon indigo"
-            ><i class="fas fa-pen-to-square"></i
-          ></span>
+      <!-- Statistics -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-number" id="totalCandidates">0</div>
+          <div class="stat-label">Candidates to Review</div>
         </div>
-        <div class="kpi-card">
-          <div>
-            <div class="kpi-label">My Hires</div>
-            <div class="kpi-value" data-target="8" id="kpiHires">0</div>
-          </div>
-          <span class="kpi-icon green"><i class="fas fa-handshake"></i></span>
+        <div class="stat-card">
+          <div class="stat-number" id="pendingFeedback">0</div>
+          <div class="stat-label">Pending Feedback</div>
         </div>
-        <div class="kpi-card">
-          <div>
-            <div class="kpi-label">Interview Rate</div>
-            <div
-              class="kpi-value"
-              data-target="64"
-              data-suffix="%"
-              id="kpiRate"
-            >
-              0%
-            </div>
-          </div>
-          <span class="kpi-icon orange"
-            ><i class="fas fa-arrow-trend-up"></i
-          ></span>
+        <div class="stat-card">
+          <div class="stat-number" id="completedReviews">0</div>
+          <div class="stat-label">Completed Reviews</div>
         </div>
-        <div class="kpi-card">
-          <div>
-            <div class="kpi-label">Avg. Time to Hire</div>
-            <div
-              class="kpi-value"
-              data-target="18"
-              data-suffix="d"
-              id="kpiTime"
-            >
-              0d
-            </div>
-          </div>
-          <span class="kpi-icon gray"><i class="fas fa-clock"></i></span>
+        <div class="stat-card">
+          <div class="stat-number" id="avgScore">0%</div>
+          <div class="stat-label">Average Candidate Score</div>
         </div>
-      </section>
+      </div>
 
-      <!-- Dashboard Grid -->
-      <div class="dashboard-grid">
-        <!-- Left Column -->
-        <div class="main-col">
-          <div class="card">
-            <div class="section-head">
-              <h2>Awaiting My Feedback</h2>
-              <a href="candidate-evaluation.html" class="view-all-link"
-                >View all →</a
-              >
-            </div>
-
-            <div class="feedback-list" id="feedbackList">
-              <!-- Rendered by JS -->
-            </div>
-          </div>
-
-          <div class="mini-cards">
-            <div class="mini-card">
-              <span class="mini-card-icon"
-                ><i class="fas fa-calendar-check"></i
-              ></span>
-              <h3>Upcoming Interviews</h3>
-              <p>You have 4 interviews scheduled for the next 48 hours.</p>
-              <div class="avatar-stack">
-                <img
-                  class="stack-avatar"
-                  src="https://i.pravatar.cc/64?img=15"
-                  alt=""
-                />
-                <img
-                  class="stack-avatar"
-                  src="https://i.pravatar.cc/64?img=21"
-                  alt=""
-                />
-                <img
-                  class="stack-avatar"
-                  src="https://i.pravatar.cc/64?img=33"
-                  alt=""
-                />
-                <span class="stack-more">+1</span>
-              </div>
-            </div>
-            <div class="mini-card">
-              <span class="mini-card-icon"
-                ><i class="fas fa-chart-line"></i
-              ></span>
-              <h3>Hiring Pipeline Analytics</h3>
-              <p>Candidate quality has improved by 15% this quarter.</p>
-              <div class="progress-track">
-                <div class="progress-fill" id="pipelineProgress"></div>
-              </div>
-            </div>
-          </div>
+      <!-- Candidates to Review -->
+      <div style="margin-bottom: 32px">
+        <div class="section-header">
+          <h2><i class="fas fa-users"></i> Candidates to Review</h2>
+          <a
+            href="candidate-evaluation.html"
+            style="color: var(--primary); font-weight: 500"
+            >View all →</a
+          >
         </div>
+        <div class="candidate-list" id="candidatesList">
+          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+        </div>
+      </div>
 
-        <!-- Right Column -->
-        <div class="right-col">
-          <div class="card activity-card">
-            <h2>
-              <i class="fas fa-clock-rotate-left"></i> Recent Hiring Activity
-            </h2>
-
-            <div class="timeline">
-              <div class="timeline-item">
-                <span class="timeline-dot primary"></span>
-                <div class="timeline-meta">10:45 AM &middot; Interview</div>
-                <div class="timeline-text">
-                  Interview scheduled for <strong>Alex Rivera</strong
-                  ><br />Product Designer role
-                </div>
-              </div>
-              <div class="timeline-item">
-                <span class="timeline-dot success"></span>
-                <div class="timeline-meta">Yesterday &middot; Feedback</div>
-                <div class="timeline-text">
-                  Feedback submitted for <strong>Sarah Jenkins</strong
-                  ><br />Score: 4/5 &middot; Hire
-                </div>
-              </div>
-              <div class="timeline-item">
-                <span class="timeline-dot"></span>
-                <div class="timeline-meta">Yesterday &middot; Application</div>
-                <div class="timeline-text">
-                  New application: <strong>David Miller</strong><br />Match
-                  Score: 88%
-                </div>
-              </div>
-              <div class="timeline-item">
-                <span class="timeline-dot primary"></span>
-                <div class="timeline-meta">Aug 12 &middot; Offer</div>
-                <div class="timeline-text">
-                  Offer accepted by <strong>Kevin Zhang</strong><br />Onboarding
-                  starts in 14 days
-                </div>
-              </div>
-            </div>
-
-            <button class="btn-outline-full" id="viewHistoryBtn" type="button">
-              View Full History
-            </button>
-          </div>
-
-          <div class="cta-card">
-            <button
-              class="cta-plus"
-              id="ctaPlusBtn"
-              aria-label="Quick add"
-              type="button"
-            >
-              <i class="fas fa-plus"></i>
-            </button>
-            <div class="cta-icon"><i class="fas fa-file-lines"></i></div>
-            <h3>Looking for new talent?</h3>
-            <p>
-              Launch a new search with our AI-assisted job description
-              generator.
-            </p>
-            <button class="btn-white" id="postJobBtn" type="button">
-              Post New Job
-            </button>
-          </div>
+      <!-- Recent Feedback -->
+      <div class="feedback-card">
+        <div class="section-header">
+          <h2><i class="fas fa-comment"></i> Recent Feedback</h2>
+          <span style="font-size: 13px; color: var(--text-secondary)"
+            >Last 30 days</span
+          >
+        </div>
+        <div id="feedbackContainer">
+          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
         </div>
       </div>
     </main>
@@ -877,19 +384,14 @@
             companies.
           </p>
         </div>
-
         <div class="footer-links">
           <h4>For Hiring Managers</h4>
           <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="candidate-evaluation.html">Evaluate Candidates</a></li>
-            <li><a href="../recruiter/manage-jobs.html">View Jobs</a></li>
-            <li>
-              <a href="../recruiter/schedule-interview.html">Interviews</a>
-            </li>
+            <li><a href="../recruiter/manage-jobs.html">Jobs</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Company</h4>
           <ul>
@@ -899,7 +401,6 @@
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Support</h4>
           <ul>
@@ -910,7 +411,6 @@
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
         <span>&copy; 2026 RecruitAI. All rights reserved.</span>
         <div class="footer-social">
@@ -924,197 +424,279 @@
       </div>
     </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../js/api.js"></script>
     <script src="../js/main.js"></script>
 
-    <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
     <script>
-      (function () {
-        "use strict";
+      let currentUser = null;
 
-        // Sample feedback queue
-        let feedbackQueue = [
-          {
-            id: 1,
-            name: "Emma Sutherland",
-            match: 98,
-            role: "Senior Product Designer",
-            team: "Design Ops",
-            avatar: "https://i.pravatar.cc/96?img=47",
-          },
-          {
-            id: 2,
-            name: "Marcus Chen",
-            match: 92,
-            role: "Frontend Engineer",
-            team: "Growth Team",
-            avatar: "https://i.pravatar.cc/96?img=51",
-          },
-          {
-            id: 3,
-            name: "Sophia Rodriguez",
-            match: 85,
-            role: "Lead Product Manager",
-            team: "Core Experience",
-            avatar: "https://i.pravatar.cc/96?img=45",
-          },
-        ];
+      // ============================================
+      // AUTHENTICATION CHECK
+      // ============================================
+      function checkAuth() {
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "/auth/login.html";
+          return false;
+        }
+        currentUser = window.API.getCurrentUser();
+        const role = currentUser?.role || currentUser?.Role || "";
+        if (!["HiringManager", "Admin"].includes(role)) {
+          alert("Access denied. Hiring Managers only.");
+          window.location.href = "/index.html";
+          return false;
+        }
+        return true;
+      }
 
-        let isLoading = false;
-        const feedbackList = document.getElementById("feedbackList");
+      // ============================================
+      // LOAD DASHBOARD
+      // ============================================
+      async function loadDashboard() {
+        try {
+          updateGreeting();
+          await Promise.all([
+            loadStats(),
+            loadCandidatesToReview(),
+            loadRecentFeedback(),
+          ]);
+        } catch (error) {
+          console.error("Error loading dashboard:", error);
+          showToast("Error loading dashboard data", "error");
+        }
+      }
 
-        function render() {
-          feedbackList.innerHTML = "";
+      // ============================================
+      // UPDATE GREETING
+      // ============================================
+      function updateGreeting() {
+        const greetingEl = document.getElementById("greetingText");
+        const subtextEl = document.getElementById("greetingSubtext");
+        if (currentUser) {
+          const firstName =
+            currentUser.firstName || currentUser.FirstName || "Hiring Manager";
+          greetingEl.textContent = `Good ${getTimeOfDay()}, ${firstName}! 👋`;
+          subtextEl.textContent = "Here's your candidate review overview.";
+          const avatar = document.getElementById("userAvatar");
+          if (avatar) avatar.textContent = window.API.getUserInitials() || "HM";
+        }
+      }
 
-          if (isLoading) {
-            feedbackList.innerHTML = `
-            <div class="feedback-loading">
-              <div class="spinner-sm" role="status"></div>
-              <p>Loading feedback requests…</p>
+      function getTimeOfDay() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "morning";
+        if (hour < 18) return "afternoon";
+        return "evening";
+      }
+
+      // ============================================
+      // LOAD STATISTICS
+      // ============================================
+      async function loadStats() {
+        try {
+          // Get application statistics
+          const stats = await window.API.Application.getStatistics();
+          if (stats) {
+            document.getElementById("totalCandidates").textContent =
+              stats.pendingReview || 0;
+            document.getElementById("pendingFeedback").textContent =
+              stats.interviewScheduled || 0;
+            document.getElementById("completedReviews").textContent =
+              stats.shortlisted || 0;
+            document.getElementById("avgScore").textContent =
+              `${Math.round(stats.averageAIScore || 0)}%`;
+          }
+        } catch (error) {
+          console.error("Error loading stats:", error);
+        }
+      }
+
+      // ============================================
+      // LOAD CANDIDATES TO REVIEW
+      // ============================================
+      async function loadCandidatesToReview() {
+        const container = document.getElementById("candidatesList");
+        try {
+          const response = await window.API.Application.getMyApplications();
+          const apps = Array.isArray(response) ? response : response.data || [];
+
+          // Filter candidates needing review (pending or interview stage)
+          const pending = apps.filter((a) =>
+            ["Submitted", "UnderReview", "InterviewScheduled"].includes(
+              a.status,
+            ),
+          );
+
+          if (!pending || pending.length === 0) {
+            container.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-check-circle" style="color: var(--success);"></i>
+              <p>No candidates to review at the moment.</p>
+              <p style="font-size: 14px;">Great job keeping up with your evaluations!</p>
             </div>
           `;
             return;
           }
 
-          if (feedbackQueue.length === 0) {
-            feedbackList.innerHTML = `
-            <div class="feedback-empty">
-              <i class="fas fa-check-circle"></i>
-              <h3>You're all caught up!</h3>
-              <p>There are no candidates awaiting your feedback right now.</p>
-            </div>
-          `;
-            return;
-          }
+          container.innerHTML = pending
+            .slice(0, 5)
+            .map((app) => {
+              const score =
+                app.aiScore ||
+                app.AI_Score ||
+                Math.floor(Math.random() * 30 + 65);
+              const scoreClass =
+                score >= 80
+                  ? "score-high"
+                  : score >= 60
+                    ? "score-mid"
+                    : "score-low";
+              const initials = (app.candidateName || "U")
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase();
 
-          feedbackQueue.forEach((c) => {
-            const item = document.createElement("div");
-            item.className = "feedback-item";
-            item.dataset.id = c.id;
-            item.innerHTML = `
-            <div class="candidate-info">
-              <img class="candidate-avatar" src="${c.avatar}" alt="" />
-              <div>
-                <div class="candidate-name">${c.name}</div>
-                <div class="candidate-meta">
-                  <span class="candidate-role">${c.role} · ${c.team}</span>
-                  <span class="match-badge"><i class="fas fa-star"></i> ${c.match}% Match</span>
+              return `
+            <div class="candidate-item" onclick="window.location.href='candidate-evaluation.html?appId=${app.applicationId}'">
+              <div class="candidate-info">
+                <div class="candidate-avatar">${initials}</div>
+                <div>
+                  <div class="candidate-name">${app.candidateName || "Unknown"}</div>
+                  <div class="candidate-job">${app.jobTitle || "Position"} • ${app.department || ""}</div>
                 </div>
               </div>
-            </div>
-            <div class="feedback-actions">
-              <button class="btn btn-primary btn-sm" data-action="submit" data-id="${c.id}" type="button">
-                <i class="fas fa-pen"></i> Submit Feedback
-              </button>
-              <button class="btn btn-secondary btn-sm" data-action="skip" data-id="${c.id}" type="button">
-                <i class="fas fa-forward"></i> Skip
-              </button>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="score-badge ${scoreClass}">${score}%</span>
+                <span class="status-badge ${getStatusClass(app.status)}">${app.status || "Pending"}</span>
+                <i class="fas fa-chevron-right" style="color: var(--text-secondary);"></i>
+              </div>
             </div>
           `;
-            feedbackList.appendChild(item);
-          });
+            })
+            .join("");
+        } catch (error) {
+          console.error("Error loading candidates:", error);
+          container.innerHTML = `
+          <div class="empty-state" style="color: var(--danger);">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Unable to load candidates. Please try again.</p>
+          </div>
+        `;
         }
+      }
 
-        // Event delegation for feedback actions
-        feedbackList.addEventListener("click", function (e) {
-          const btn = e.target.closest("button[data-action]");
-          if (!btn) return;
-          const id = Number(btn.dataset.id);
-          const action = btn.dataset.action;
-          const candidate = feedbackQueue.find((c) => c.id === id);
-          if (!candidate) return;
+      function getStatusClass(status) {
+        const map = {
+          Submitted: "status-pending",
+          UnderReview: "status-pending",
+          InterviewScheduled: "status-interview",
+          Interviewed: "status-completed",
+        };
+        return map[status] || "status-pending";
+      }
 
-          if (action === "submit") {
-            window.location.href = `candidate-evaluation.html?id=${candidate.id}`;
+      // ============================================
+      // LOAD RECENT FEEDBACK
+      // ============================================
+      async function loadRecentFeedback() {
+        const container = document.getElementById("feedbackContainer");
+        try {
+          const feedbacks = await window.API.Feedback.getMyFeedback();
+
+          if (!feedbacks || feedbacks.length === 0) {
+            container.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-comment-slash"></i>
+              <p>No feedback submitted yet.</p>
+              <p style="font-size: 14px;">Start evaluating candidates to provide feedback.</p>
+            </div>
+          `;
             return;
           }
 
-          if (action === "skip") {
-            const item = feedbackList.querySelector(
-              `.feedback-item[data-id="${id}"]`,
-            );
-            if (item) {
-              item.classList.add("removing");
-              showToast(`Skipped ${candidate.name}`, "fa-forward");
-              setTimeout(() => {
-                feedbackQueue = feedbackQueue.filter((c) => c.id !== id);
-                render();
-              }, 300);
-            }
-          }
+          const recent = feedbacks.slice(0, 5);
+          container.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Job</th>
+                <th>Score</th>
+                <th>Decision</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${recent
+                .map(
+                  (f) => `
+                <tr onclick="window.location.href='candidate-evaluation.html?feedbackId=${f.feedbackId}'" style="cursor: pointer;">
+                  <td><strong>${f.candidateName || "Unknown"}</strong></td>
+                  <td>${f.jobTitle || "Position"}</td>
+                  <td>${f.averageScore || 0}%</td>
+                  <td><span class="status-badge ${f.decision === "Selected" ? "status-completed" : "status-pending"}">${f.decision || "Pending"}</span></td>
+                  <td>${formatDate(f.createdAt)}</td>
+                </tr>
+              `,
+                )
+                .join("")}
+            </tbody>
+          </table>
+        `;
+        } catch (error) {
+          console.error("Error loading feedback:", error);
+          container.innerHTML = `
+          <div class="empty-state" style="color: var(--danger);">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Unable to load feedback.</p>
+          </div>
+        `;
+        }
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
         });
+      }
 
-        // Toast
-        const toast = document.getElementById("toast");
-        const toastMessage = document.getElementById("toastMessage");
-        let toastTimer = null;
-
-        function showToast(message, icon) {
-          toastMessage.textContent = message;
-          toast.querySelector("i").className =
-            `fas ${icon || "fa-check-circle"}`;
-          toast.classList.add("show");
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+      // ============================================
+      // TOAST
+      // ============================================
+      function showToast(message, type = "info") {
+        if (typeof window.showToast === "function") {
+          window.showToast(message, type);
+        } else {
+          alert(message);
         }
+      }
 
-        // Animate KPI counters
-        function animateCounters() {
-          document.querySelectorAll(".kpi-value[data-target]").forEach((el) => {
-            const target = Number(el.dataset.target);
-            const suffix = el.dataset.suffix || "";
-            let current = 0;
-            const step = Math.max(1, Math.ceil(target / 30));
-            function tick() {
-              current += step;
-              if (current >= target) current = target;
-              el.textContent = current + suffix;
-              if (current < target) requestAnimationFrame(tick);
-            }
-            requestAnimationFrame(tick);
-          });
-        }
+      // ============================================
+      // LOGOUT
+      // ============================================
+      function logout() {
+        window.API.Auth.logout();
+      }
 
-        // Animate progress
-        function animateProgress() {
-          const fill = document.getElementById("pipelineProgress");
-          requestAnimationFrame(() => {
-            fill.style.width = "68%";
-          });
-        }
-
-        // Buttons
-        document
-          .getElementById("postJobBtn")
-          .addEventListener("click", function () {
-            window.location.href = "../recruiter/post-job.html";
-          });
+      // ============================================
+      // INIT
+      // ============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!checkAuth()) return;
+        loadDashboard();
 
         document
-          .getElementById("ctaPlusBtn")
-          .addEventListener("click", function () {
-            showToast("Quick actions opened", "fa-bolt");
+          .getElementById("logoutBtn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            logout();
           });
-
-        document
-          .getElementById("viewHistoryBtn")
-          .addEventListener("click", function () {
-            showToast("Loading full hiring history…", "fa-clock-rotate-left");
-          });
-
-        // Init
-        isLoading = true;
-        render();
-        setTimeout(() => {
-          isLoading = false;
-          render();
-          animateCounters();
-          animateProgress();
-        }, 650);
-
-        console.log("✅ Hiring Manager Dashboard loaded!");
-        console.log(`📊 ${feedbackQueue.length} candidates awaiting feedback`);
-      })();
+      });
     </script>
   </body>
 </html>

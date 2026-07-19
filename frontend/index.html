@@ -1882,6 +1882,43 @@
 
         console.log("🚀 RecruitAI Landing Page Loaded Successfully!");
       })();
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Check if user is already logged in
+        if (window.API && window.API.isAuthenticated()) {
+          const user = window.API.getCurrentUser();
+          const roleMap = {
+            Candidate: "/candidate/dashboard.html",
+            Recruiter: "/recruiter/dashboard.html",
+            HiringManager: "/hiring-manager/dashboard.html",
+            Admin: "/admin/admin-dashboard.html",
+            SuperAdmin: "/admin/admin-dashboard.html",
+          };
+          const role = user?.role || user?.Role || "Candidate";
+          const redirectPath = roleMap[role] || "/candidate/dashboard.html";
+
+          // Show a brief message before redirect
+          const hero = document.querySelector(".hero");
+          const banner = document.createElement("div");
+          banner.style.cssText = `
+        background: var(--success);
+        color: white;
+        padding: 12px 20px;
+        text-align: center;
+        border-radius: var(--radius);
+        margin-bottom: 20px;
+        font-weight: 600;
+      `;
+          banner.textContent = `👋 Welcome back, ${user?.firstName || "User"}! Redirecting to your dashboard...`;
+          if (hero) {
+            hero.insertBefore(banner, hero.firstChild);
+          }
+
+          setTimeout(() => {
+            window.location.href = redirectPath;
+          }, 1500);
+        }
+      });
     </script>
   </body>
 </html>

@@ -15,7 +15,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace RecruitmentAPI
 {
     // Swagger schema filter to handle IFormFile parameters (file uploads)
-    // https://github.com/domaindrivendev/Swashbuckle.AspNetCore#handle-forms-and-file-uploads
     internal class FormFileSchemaFilter : ISchemaFilter
     {
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)
@@ -118,21 +117,63 @@ namespace RecruitmentAPI
             // ─────────────────────────────────────────────────────────────────────────────
             // Repository layer
             // ─────────────────────────────────────────────────────────────────────────────
-
-            // Unit of Work (contains all generic repositories + specialised repositories)
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            // Specialised repositories are resolved through IUnitOfWork, but can also be
-            // injected directly when a class only needs a single repo.
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
+            builder.Services.AddScoped<IJobRepository, JobRepository>();
+            builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
+            builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 
             // ─────────────────────────────────────────────────────────────────────────────
-            // Service layer
+            // Service layer - ALL services registered
             // ─────────────────────────────────────────────────────────────────────────────
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ICandidateService, CandidateService>();
+            builder.Services.AddScoped<IJobService, JobService>();
+            builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddScoped<IInterviewService, InterviewService>();
+            builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.Configure<AIServiceOptions>(builder.Configuration.GetSection(AIServiceOptions.SectionName));
+
+            // ─────────────────────────────────────────────────────────────────────────────
+            // AI Service with HttpClient
+            // ─────────────────────────────────────────────────────────────────────────────
+            builder.Services.Configure<AIServiceOptions>(
+                builder.Configuration.GetSection(AIServiceOptions.SectionName));
+
+            builder.Services.AddHttpClient<IAIService, AIService>((serviceProvider, client) =>
+            {
+                var options = serviceProvider.GetRequiredService<IOptions<AIServiceOptions>>().Value;
+    
+                if (!string.IsNullOrEmpty(options.BaseUrl))
+                {
+                    client.BaseAddress = new Uri(options.BaseUrl);
+                }
+                else if (!string.IsNullOrEmpty(options.Endpoint))
+                {
+                    client.BaseAddress = new Uri(options.Endpoint);
+                }
+    
+                client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+    
+                // Set default headers for OpenRouter
+                if (options.Provider?.Equals("OpenRouter", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    client.DefaultRequestHeaders.Add("HTTP-Referer", "https://recruitai.com");
+                    client.DefaultRequestHeaders.Add("X-Title", "RecruitAI Platform");
+                }
+            });
+
+            // Also register as scoped for dependency injection
+            builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.AddScoped<AIScoreCalculator>();
 
             // ─────────────────────────────────────────────────────────────────────────────
             // Helper services
@@ -162,9 +203,6 @@ namespace RecruitmentAPI
                         ValidAudience = jwtAudience,
                         IssuerSigningKey = new SymmetricSecurityKey(
                                                        Encoding.UTF8.GetBytes(jwtKey)),
-
-                        // Map the JWT "role" claim to ClaimTypes.Role so
-                        // [Authorize(Roles = "Admin,SuperAdmin")] works out of the box.
                         RoleClaimType = System.Security.Claims.ClaimTypes.Role
                     };
                 });
@@ -176,11 +214,14 @@ namespace RecruitmentAPI
             // ─────────────────────────────────────────────────────────────────────────────
             var app = builder.Build();
 
-            // Use CORS - MUST BE BEFORE Authentication/Authorization
-            app.UseCors("AllowFrontend");
-
-            // Global exception - RFC 7807 ProblemDetails
+            // Global exception handling - MUST BE FIRST
             app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+            // JWT Middleware for custom token validation
+            app.UseMiddleware<JwtMiddleware>();
+
+            // Use CORS
+            app.UseCors("AllowFrontend");
 
             if (app.Environment.IsDevelopment())
             {

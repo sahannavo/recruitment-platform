@@ -36,6 +36,12 @@
         border: 3px solid var(--primary);
         padding: 3px;
         margin: 0 auto 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface-alt);
+        font-size: 32px;
+        color: var(--primary);
       }
       .candidate-photo img {
         width: 100%;
@@ -102,12 +108,22 @@
         align-items: center;
         gap: 12px;
         padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .interviewer-row:last-child {
+        border-bottom: none;
       }
       .interviewer-avatar {
         width: 40px;
         height: 40px;
         border-radius: 50%;
         object-fit: cover;
+        background: var(--surface-alt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--primary);
       }
       .interviewer-name {
         font-weight: 600;
@@ -200,15 +216,16 @@
         align-items: center;
         justify-content: center;
       }
-      .cal-day:hover:not(:disabled) {
+      .cal-day:hover:not(:disabled):not(.other-month) {
         background: var(--primary-light);
       }
       .cal-day.other-month {
         color: var(--border);
+        cursor: default;
       }
       .cal-day:disabled {
         cursor: not-allowed;
-        opacity: 0.4;
+        opacity: 0.3;
       }
       .cal-day.selected {
         background: var(--primary);
@@ -327,6 +344,8 @@
         font-family: inherit;
         font-size: 14px;
         font-weight: 600;
+        background: var(--surface);
+        color: var(--text-primary);
       }
       .duration-select:focus {
         outline: none;
@@ -342,6 +361,8 @@
         font-family: inherit;
         font-size: 14px;
         resize: vertical;
+        background: var(--surface);
+        color: var(--text-primary);
       }
       textarea:focus {
         outline: none;
@@ -366,6 +387,26 @@
       .footer-actions {
         display: flex;
         gap: 12px;
+      }
+
+      .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+      }
+      .loading-spinner .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--border);
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 12px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       @media (max-width: 1024px) {
@@ -433,9 +474,9 @@
         <div class="header-actions">
           <button class="icon-btn" id="notifBtn" aria-label="Notifications">
             <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
+            <span class="notification-dot" id="notifDot"></span>
           </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+          <div class="user-avatar" id="userAvatar" title="Profile">U</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
           </button>
@@ -459,7 +500,8 @@
           >Interviews</a
         >
         <a
-          href="../auth/login.html"
+          href="#"
+          id="logoutBtn"
           class="mobile-link"
           style="color: var(--danger); border-bottom: none"
           >Sign Out</a
@@ -480,7 +522,9 @@
           margin-bottom: 16px;
         "
       >
-        <a href="candidates.html" style="color: var(--text-secondary)"
+        <a
+          href="candidates.html"
+          style="color: var(--text-secondary); text-decoration: none"
           >Candidates</a
         >
         <i class="fas fa-chevron-right" style="font-size: 10px"></i>
@@ -493,29 +537,35 @@
         Schedule Interview
       </h1>
 
-      <div class="schedule-layout">
+      <!-- Loading State -->
+      <div id="loadingState" class="loading-spinner" style="display: none">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Loading application details...</p>
+      </div>
+
+      <div class="schedule-layout" id="scheduleLayout">
         <!-- Left Column -->
         <div class="left-col">
           <!-- Candidate Card -->
           <div class="card candidate-card">
-            <div class="candidate-photo">
-              <img src="https://i.pravatar.cc/200?img=12" alt="Alex Rivera" />
+            <div class="candidate-photo" id="candidatePhoto">
+              <i class="fas fa-user"></i>
             </div>
-            <h2 class="candidate-name">Alex Rivera</h2>
-            <p class="candidate-role">Senior Product Designer</p>
-            <span class="match-badge"
-              ><i class="fas fa-star"></i> 98% Match</span
+            <h2 class="candidate-name" id="candidateName">Loading...</h2>
+            <p class="candidate-role" id="candidateRole">Loading...</p>
+            <span class="match-badge" id="matchBadge"
+              ><i class="fas fa-star"></i> --% Match</span
             >
 
             <div class="candidate-meta">
-              <div class="meta-row">
-                <i class="fas fa-location-dot"></i> San Francisco, CA (Remote)
+              <div class="meta-row" id="metaLocation">
+                <i class="fas fa-location-dot"></i> Loading...
               </div>
-              <div class="meta-row">
-                <i class="fas fa-envelope"></i> alex.rivera@example.com
+              <div class="meta-row" id="metaEmail">
+                <i class="fas fa-envelope"></i> Loading...
               </div>
-              <div class="meta-row">
-                <i class="fas fa-clock"></i> 8 years experience
+              <div class="meta-row" id="metaExperience">
+                <i class="fas fa-clock"></i> Loading...
               </div>
             </div>
           </div>
@@ -523,26 +573,15 @@
           <!-- Interview Panel -->
           <div class="card panel-card">
             <h3><i class="fas fa-users"></i> Interview Panel</h3>
-            <div class="interviewer-row">
-              <img
-                class="interviewer-avatar"
-                src="https://i.pravatar.cc/80?img=32"
-                alt=""
-              />
-              <div>
-                <div class="interviewer-name">Sarah Jenkins</div>
-                <div class="interviewer-role">Design Lead</div>
-              </div>
-            </div>
-            <div class="interviewer-row">
-              <img
-                class="interviewer-avatar"
-                src="https://i.pravatar.cc/80?img=51"
-                alt=""
-              />
-              <div>
-                <div class="interviewer-name">Marcus Chen</div>
-                <div class="interviewer-role">CTO</div>
+            <div id="panelContainer">
+              <div class="interviewer-row">
+                <div class="interviewer-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <div class="interviewer-name">Loading...</div>
+                  <div class="interviewer-role">Loading...</div>
+                </div>
               </div>
             </div>
             <button class="add-btn" onclick="addInterviewer()">
@@ -561,7 +600,7 @@
                 <button class="month-nav-btn" id="prevMonth">
                   <i class="fas fa-chevron-left"></i>
                 </button>
-                <span class="month-label" id="monthLabel">November 2024</span>
+                <span class="month-label" id="monthLabel">Loading...</span>
                 <button class="month-nav-btn" id="nextMonth">
                   <i class="fas fa-chevron-right"></i>
                 </button>
@@ -586,10 +625,17 @@
                 <span class="selected-date" id="selectedDateLabel"></span>
               </h3>
               <span style="font-size: 13px; color: var(--text-secondary)">
-                <i class="fas fa-clock"></i> PST
+                <i class="fas fa-clock"></i> Local Time
               </span>
             </div>
-            <div id="slotsContainer"></div>
+            <div id="slotsContainer">
+              <div class="slots-empty">
+                <i class="fas fa-calendar-day"></i>
+                <p style="margin-top: 8px">
+                  Select a date to see available time slots.
+                </p>
+              </div>
+            </div>
 
             <!-- Form -->
             <div class="form-row">
@@ -607,10 +653,10 @@
               <div>
                 <label for="durationSelect">Duration</label>
                 <select class="duration-select" id="durationSelect">
-                  <option>30 Minutes</option>
-                  <option selected>45 Minutes</option>
-                  <option>60 Minutes</option>
-                  <option>90 Minutes</option>
+                  <option value="30">30 Minutes</option>
+                  <option value="45" selected>45 Minutes</option>
+                  <option value="60">60 Minutes</option>
+                  <option value="90">90 Minutes</option>
                 </select>
               </div>
             </div>
@@ -624,8 +670,9 @@
                   display: block;
                   margin-bottom: 6px;
                 "
-                >Interview Notes (Internal)</label
               >
+                Interview Notes (Internal)
+              </label>
               <textarea
                 id="interviewNotes"
                 placeholder="Add specific focus areas for the interviewers or logistics for the candidate…"
@@ -713,17 +760,26 @@
       </div>
     </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../js/api.js"></script>
     <script src="../js/main.js"></script>
 
-    <!-- Page-specific JavaScript -->
+    <!-- ============================================
+         PAGE-SPECIFIC JAVASCRIPT
+         ============================================ -->
     <script>
-      // Calendar state
-      let viewYear = 2024,
-        viewMonth = 10;
-      let selectedDate = new Date(2024, 10, 6);
+      // ============================================
+      // STATE
+      // ============================================
+      let viewYear = new Date().getFullYear();
+      let viewMonth = new Date().getMonth();
+      let selectedDate = null;
       let selectedSlot = null;
       let selectedType = "Online";
+      let applicationId = null;
+      let candidateData = null;
+      let availableSlots = {};
+      let isLoading = false;
 
       const monthNames = [
         "January",
@@ -740,63 +796,193 @@
         "December",
       ];
 
-      const availability = {
-        "2024-11-1": ["09:00 AM", "01:00 PM"],
-        "2024-11-5": ["09:00 AM", "10:30 AM", "02:30 PM"],
-        "2024-11-6": [
-          "09:00 AM",
-          "10:30 AM",
-          "01:00 PM",
-          "02:30 PM",
-          "04:00 PM",
-        ],
-        "2024-11-7": ["10:30 AM", "04:00 PM"],
-        "2024-11-12": ["09:00 AM"],
-        "2024-11-14": ["01:00 PM", "02:30 PM", "04:00 PM"],
-      };
       const allSlots = [
         "09:00 AM",
+        "09:30 AM",
+        "10:00 AM",
         "10:30 AM",
+        "11:00 AM",
+        "11:30 AM",
         "01:00 PM",
+        "01:30 PM",
+        "02:00 PM",
         "02:30 PM",
+        "03:00 PM",
+        "03:30 PM",
         "04:00 PM",
-        "05:30 PM",
+        "04:30 PM",
+        "05:00 PM",
       ];
 
+      // ============================================
+      // DOM REFS
+      // ============================================
+      const calendarDays = document.getElementById("calendarDays");
+      const monthLabel = document.getElementById("monthLabel");
+      const selectedDateLabel = document.getElementById("selectedDateLabel");
+      const slotsContainer = document.getElementById("slotsContainer");
+      const sendInviteBtn = document.getElementById("sendInviteBtn");
+      const loadingState = document.getElementById("loadingState");
+      const scheduleLayout = document.getElementById("scheduleLayout");
+
+      // ============================================
+      // TOAST HELPER
+      // ============================================
+      function showToast(message, type = "info") {
+        if (typeof window.showToast === "function") {
+          window.showToast(message, type);
+        } else {
+          console.log(`[${type}] ${message}`);
+        }
+      }
+
+      // ============================================
+      // DATE HELPERS
+      // ============================================
       function dateKey(y, m, d) {
         return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       }
 
+      function to24Hour(timeStr) {
+        const map = {
+          "09:00 AM": "09:00",
+          "09:30 AM": "09:30",
+          "10:00 AM": "10:00",
+          "10:30 AM": "10:30",
+          "11:00 AM": "11:00",
+          "11:30 AM": "11:30",
+          "01:00 PM": "13:00",
+          "01:30 PM": "13:30",
+          "02:00 PM": "14:00",
+          "02:30 PM": "14:30",
+          "03:00 PM": "15:00",
+          "03:30 PM": "15:30",
+          "04:00 PM": "16:00",
+          "04:30 PM": "16:30",
+          "05:00 PM": "17:00",
+        };
+        return map[timeStr] || "12:00";
+      }
+
+      function getSelectedDateTime() {
+        if (!selectedDate || !selectedSlot) return null;
+        const dateStr = selectedDate.toISOString().split("T")[0];
+        const timeStr = to24Hour(selectedSlot);
+        return `${dateStr}T${timeStr}:00`;
+      }
+
+      function getDurationMinutes() {
+        return parseInt(document.getElementById("durationSelect").value) || 60;
+      }
+
+      // ============================================
+      // UPDATE CANDIDATE INFO
+      // ============================================
+      function updateCandidateInfo(appDetails) {
+        if (!appDetails) return;
+        candidateData = appDetails;
+
+        const nameEl = document.getElementById("candidateName");
+        const roleEl = document.getElementById("candidateRole");
+        const matchEl = document.getElementById("matchBadge");
+        const metaLocation = document.getElementById("metaLocation");
+        const metaEmail = document.getElementById("metaEmail");
+        const metaExperience = document.getElementById("metaExperience");
+
+        if (nameEl)
+          nameEl.textContent = appDetails.candidateName || "Candidate";
+        if (roleEl) roleEl.textContent = appDetails.jobTitle || "Position";
+
+        if (matchEl) {
+          const score = Math.round(appDetails.aiScore || 85);
+          matchEl.innerHTML = `<i class="fas fa-star"></i> ${score}% Match`;
+        }
+
+        // Update meta info
+        if (metaLocation)
+          metaLocation.innerHTML = `<i class="fas fa-location-dot"></i> ${appDetails.location || "Remote"}`;
+        if (metaEmail)
+          metaEmail.innerHTML = `<i class="fas fa-envelope"></i> ${appDetails.candidateEmail || "N/A"}`;
+        if (metaExperience)
+          metaExperience.innerHTML = `<i class="fas fa-clock"></i> ${appDetails.experience || "N/A"} experience`;
+      }
+
+      // ============================================
+      // LOAD AVAILABILITY
+      // ============================================
+      async function loadAvailability(date) {
+        try {
+          const dateStr = date.toISOString().split("T")[0];
+          const response = await window.API.Interview.getAvailability({
+            date: dateStr,
+            duration: getDurationMinutes(),
+          });
+
+          // Process availability response
+          if (Array.isArray(response)) {
+            const key = dateKey(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
+            );
+            availableSlots[key] = response.map((s) => {
+              const d = new Date(s);
+              return d.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+              });
+            });
+          }
+
+          renderSlots();
+          updateSendButton();
+        } catch (error) {
+          console.error("Error loading availability:", error);
+          // Fallback: show some slots if API fails
+          const key = dateKey(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+          );
+          availableSlots[key] = [
+            "09:00 AM",
+            "10:30 AM",
+            "01:00 PM",
+            "02:30 PM",
+            "04:00 PM",
+          ];
+          renderSlots();
+        }
+      }
+
+      // ============================================
+      // BUILD CALENDAR
+      // ============================================
       function buildCalendar() {
-        document.getElementById("monthLabel").textContent =
-          `${monthNames[viewMonth]} ${viewYear}`;
-        const container = document.getElementById("calendarDays");
-        container.innerHTML = "";
+        monthLabel.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+        calendarDays.innerHTML = "";
 
         const firstDay = new Date(viewYear, viewMonth, 1).getDay();
         const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
         const daysInPrev = new Date(viewYear, viewMonth, 0).getDate();
 
-        // Previous month days
         const startOffset = (firstDay + 6) % 7;
         for (let i = startOffset - 1; i >= 0; i--) {
           const d = daysInPrev - i;
           const m = viewMonth === 0 ? 11 : viewMonth - 1;
           const y = viewMonth === 0 ? viewYear - 1 : viewYear;
-          addDay(container, d, m, y, true);
+          addDay(calendarDays, d, m, y, true);
         }
 
-        // Current month days
         for (let d = 1; d <= daysInMonth; d++) {
-          addDay(container, d, viewMonth, viewYear, false);
+          addDay(calendarDays, d, viewMonth, viewYear, false);
         }
 
-        // Next month days
         let trailing = 1;
-        while (container.children.length % 7 !== 0) {
+        while (calendarDays.children.length % 7 !== 0) {
           const m = viewMonth === 11 ? 0 : viewMonth + 1;
           const y = viewMonth === 11 ? viewYear + 1 : viewYear;
-          addDay(container, trailing++, m, y, true);
+          addDay(calendarDays, trailing++, m, y, true);
         }
       }
 
@@ -805,58 +991,70 @@
         btn.className = "cal-day" + (otherMonth ? " other-month" : "");
 
         const key = dateKey(year, month, day);
-        const hasSlots = availability[key] && availability[key].length > 0;
+        const hasSlots = availableSlots[key] && availableSlots[key].length > 0;
         const isToday =
           new Date(year, month, day).toDateString() ===
           new Date().toDateString();
         const isSelected =
+          selectedDate &&
           selectedDate.getFullYear() === year &&
           selectedDate.getMonth() === month &&
           selectedDate.getDate() === day;
 
+        const cellDate = new Date(year, month, day);
+        const isPast = cellDate < new Date(new Date().setHours(0, 0, 0, 0));
+
         if (isSelected) btn.classList.add("selected");
         if (isToday && !otherMonth) btn.style.fontWeight = "800";
+        if (isPast) btn.disabled = true;
 
-        btn.innerHTML = `${day}${hasSlots ? '<span class="dot"></span>' : ""}`;
+        btn.innerHTML = `${day}${hasSlots && !isPast ? '<span class="dot"></span>' : ""}`;
 
-        if (otherMonth) {
-          btn.addEventListener("click", () => {
-            viewYear = year;
-            viewMonth = month;
-            buildCalendar();
-          });
-        } else {
-          btn.addEventListener("click", () => {
-            selectedDate = new Date(year, month, day);
-            selectedSlot = null;
-            buildCalendar();
-            renderSlots();
-            updateSendButton();
-          });
-        }
+        btn.addEventListener("click", async () => {
+          if (isPast || otherMonth) return;
+
+          selectedDate = new Date(year, month, day);
+          selectedSlot = null;
+
+          buildCalendar();
+          await loadAvailability(selectedDate);
+          updateSendButton();
+        });
 
         container.appendChild(btn);
       }
 
+      // ============================================
+      // RENDER SLOTS
+      // ============================================
       function renderSlots() {
-        const container = document.getElementById("slotsContainer");
-        const y = selectedDate.getFullYear(),
-          m = selectedDate.getMonth(),
-          d = selectedDate.getDate();
+        if (!selectedDate) {
+          slotsContainer.innerHTML = `
+            <div class="slots-empty">
+              <i class="fas fa-calendar-day"></i>
+              <p style="margin-top: 8px;">Select a date to see available time slots.</p>
+            </div>
+          `;
+          selectedDateLabel.textContent = "";
+          return;
+        }
+
+        const y = selectedDate.getFullYear();
+        const m = selectedDate.getMonth();
+        const d = selectedDate.getDate();
         const key = dateKey(y, m, d);
 
-        document.getElementById("selectedDateLabel").textContent =
-          `(${monthNames[m].slice(0, 3)} ${d})`;
+        selectedDateLabel.textContent = `(${monthNames[m].slice(0, 3)} ${d})`;
 
-        const daySlots = availability[key] || [];
+        const daySlots = availableSlots[key] || [];
 
         if (daySlots.length === 0) {
-          container.innerHTML = `
-          <div class="slots-empty">
-            <i class="fas fa-calendar-xmark"></i>
-            <p style="margin-top: 8px;">No available time slots for this date.</p>
-          </div>
-        `;
+          slotsContainer.innerHTML = `
+            <div class="slots-empty">
+              <i class="fas fa-calendar-xmark"></i>
+              <p style="margin-top: 8px;">No available time slots for this date.</p>
+            </div>
+          `;
           return;
         }
 
@@ -865,92 +1063,239 @@
           const available = daySlots.includes(slot);
           if (!available) return;
           const isSelected = slot === selectedSlot;
-          html += `<button class="slot-btn${isSelected ? " selected" : ""}" onclick="selectSlot('${slot}')">${slot}</button>`;
+          html += `
+            <button class="slot-btn${isSelected ? " selected" : ""}" onclick="selectSlot('${slot}')">
+              ${slot}
+            </button>
+          `;
         });
         html += "</div>";
-        container.innerHTML = html;
+        slotsContainer.innerHTML = html;
       }
 
-      function selectSlot(slot) {
+      // ============================================
+      // SELECT SLOT
+      // ============================================
+      window.selectSlot = function (slot) {
         selectedSlot = slot;
         renderSlots();
         updateSendButton();
-      }
+      };
 
+      // ============================================
+      // UPDATE SEND BUTTON
+      // ============================================
       function updateSendButton() {
-        document.getElementById("sendInviteBtn").disabled = !selectedSlot;
+        sendInviteBtn.disabled = !selectedSlot || !selectedDate;
       }
 
-      // Event listeners
-      document.getElementById("prevMonth").addEventListener("click", () => {
-        viewMonth--;
-        if (viewMonth < 0) {
-          viewMonth = 11;
-          viewYear--;
-        }
-        buildCalendar();
-      });
-      document.getElementById("nextMonth").addEventListener("click", () => {
-        viewMonth++;
-        if (viewMonth > 11) {
-          viewMonth = 0;
-          viewYear++;
-        }
-        buildCalendar();
-      });
-
-      document
-        .getElementById("interviewType")
-        .addEventListener("click", function (e) {
-          const btn = e.target.closest(".type-btn");
-          if (!btn) return;
-          document
-            .querySelectorAll(".type-btn")
-            .forEach((b) => b.classList.remove("selected"));
-          btn.classList.add("selected");
-          selectedType = btn.dataset.type;
-        });
-
-      document
-        .getElementById("sendInviteBtn")
-        .addEventListener("click", function () {
-          if (!selectedSlot) return;
-          const data = {
-            candidate: "Alex Rivera",
-            date: selectedDate.toDateString(),
-            time: selectedSlot,
-            type: selectedType,
-            duration: document.getElementById("durationSelect").value,
-            notes: document.getElementById("interviewNotes").value,
-          };
-          console.log("📨 Sending invite:", data);
-          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-          this.disabled = true;
-
-          setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-check"></i> Sent!';
-            this.style.background = "var(--success)";
-            setTimeout(() => {
-              alert("✅ Interview invitation sent successfully!");
-              window.location.href = "candidates.html";
-            }, 1000);
-          }, 1500);
-        });
-
+      // ============================================
+      // ADD INTERVIEWER
+      // ============================================
       function addInterviewer() {
-        alert("👤 Add interviewer (coming soon)");
+        showToast("👤 Add interviewer feature coming soon!", "info");
       }
 
+      // ============================================
+      // CANCEL SCHEDULE
+      // ============================================
       function cancelSchedule() {
         if (confirm("Cancel scheduling? Your progress will be lost.")) {
           window.location.href = "candidates.html";
         }
       }
 
-      // Init
-      buildCalendar();
-      renderSlots();
-      updateSendButton();
+      // ============================================
+      // LOGOUT
+      // ============================================
+      function logout() {
+        window.API.Auth.logout();
+      }
+
+      // ============================================
+      // INITIALIZATION
+      // ============================================
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Check authentication
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "/auth/login.html";
+          return;
+        }
+
+        const user = window.API.getCurrentUser();
+        if (
+          user?.role !== "Recruiter" &&
+          user?.role !== "Admin" &&
+          user?.role !== "HiringManager"
+        ) {
+          showToast(
+            "Only recruiters and hiring managers can schedule interviews.",
+            "error",
+          );
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        // Update avatar
+        const avatar = document.getElementById("userAvatar");
+        if (avatar) {
+          const initials = window.API.getUserInitials();
+          avatar.textContent = initials || "U";
+        }
+
+        // Get application ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        applicationId = urlParams.get("applicationId");
+
+        if (!applicationId) {
+          showToast(
+            "No application specified. Please select a candidate first.",
+            "error",
+          );
+          window.location.href = "candidates.html";
+          return;
+        }
+
+        // Show loading
+        loadingState.style.display = "block";
+        scheduleLayout.style.display = "none";
+
+        try {
+          // Load application details
+          const appDetails = await window.API.Application.getById(
+            parseInt(applicationId),
+          );
+          updateCandidateInfo(appDetails);
+        } catch (error) {
+          console.error("Error loading application:", error);
+          showToast("Failed to load application details", "error");
+        } finally {
+          loadingState.style.display = "none";
+          scheduleLayout.style.display = "grid";
+        }
+
+        // Setup logout
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            logout();
+          });
+        }
+
+        // Setup notification button
+        const notifBtn = document.getElementById("notifBtn");
+        if (notifBtn) {
+          notifBtn.addEventListener("click", function () {
+            showToast("No new notifications", "info");
+          });
+        }
+
+        // Calendar navigation
+        document.getElementById("prevMonth").addEventListener("click", () => {
+          viewMonth--;
+          if (viewMonth < 0) {
+            viewMonth = 11;
+            viewYear--;
+          }
+          buildCalendar();
+        });
+
+        document.getElementById("nextMonth").addEventListener("click", () => {
+          viewMonth++;
+          if (viewMonth > 11) {
+            viewMonth = 0;
+            viewYear++;
+          }
+          buildCalendar();
+        });
+
+        // Interview type selection
+        document
+          .getElementById("interviewType")
+          .addEventListener("click", function (e) {
+            const btn = e.target.closest(".type-btn");
+            if (!btn) return;
+            document
+              .querySelectorAll(".type-btn")
+              .forEach((b) => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            selectedType = btn.dataset.type;
+          });
+
+        // Duration change - reload availability
+        document
+          .getElementById("durationSelect")
+          .addEventListener("change", function () {
+            if (selectedDate) {
+              loadAvailability(selectedDate);
+            }
+          });
+
+        // Send invite
+        sendInviteBtn.addEventListener("click", async function () {
+          if (!selectedSlot || !selectedDate) return;
+
+          const scheduledAt = getSelectedDateTime();
+          if (!scheduledAt) {
+            showToast("Invalid date/time selection", "error");
+            return;
+          }
+
+          const interviewData = {
+            applicationId: parseInt(applicationId),
+            scheduledAt: scheduledAt,
+            duration: getDurationMinutes(),
+            type: selectedType,
+            notes: document.getElementById("interviewNotes").value || "",
+            meetingLink: selectedType === "Online" ? "" : null,
+          };
+
+          try {
+            this.disabled = true;
+            this.innerHTML =
+              '<i class="fas fa-spinner fa-spin"></i> Scheduling...';
+
+            const result = await window.API.Interview.schedule(interviewData);
+
+            this.innerHTML = '<i class="fas fa-check"></i> Scheduled!';
+            this.style.background = "var(--success)";
+
+            showToast("✅ Interview scheduled successfully!", "success");
+
+            setTimeout(() => {
+              window.location.href = `application-detail.html?id=${applicationId}`;
+            }, 1500);
+          } catch (error) {
+            console.error("Error scheduling interview:", error);
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-paper-plane"></i> Send Invite';
+            this.style.background = "";
+            showToast(error.message || "Failed to schedule interview", "error");
+          }
+        });
+
+        // Build initial calendar
+        buildCalendar();
+
+        // Set default selected date to today
+        const today = new Date();
+        selectedDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+        );
+
+        // Load availability for today
+        await loadAvailability(selectedDate);
+
+        updateSendButton();
+
+        console.log(
+          "📅 Schedule Interview page initialized for application:",
+          applicationId,
+        );
+      });
     </script>
   </body>
 </html>

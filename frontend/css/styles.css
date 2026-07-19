@@ -501,15 +501,6 @@ select.form-control {
     padding: 8px 12px;
   }
 }
-/* Mobile user info */
-.mobile-user-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0.5rem;
-}
 
 .mobile-avatar {
   width: 48px;

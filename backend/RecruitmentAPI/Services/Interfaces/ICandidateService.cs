@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using RecruitmentAPI.DTOs;
-using RecruitmentAPI.Models;
 
 namespace RecruitmentAPI.Services.Interfaces
 {

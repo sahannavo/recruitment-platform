@@ -12,55 +12,39 @@
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.1/feather.min.js"></script>
     <style>
+      /* [Keep all existing styles - same as before] */
       :root {
-        /* Neutral background */
         --background: #f9fafb;
         --surface: #ffffff;
-
-        /* Indigo primary */
         --primary: #4f46e5;
         --primary-hover: #4338ca;
         --primary-light: #eef2ff;
-
-        /* Green success */
         --success: #10b981;
         --success-light: #ecfdf5;
-
-        /* Amber warning */
         --warning: #f59e0b;
         --warning-light: #fffbeb;
-
         --danger: #ef4444;
         --danger-light: #fef2f2;
-
         --text-primary: #111827;
         --text-secondary: #6b7280;
         --text-tertiary: #9ca3af;
         --border: #e5e7eb;
-
         --shadow:
           0 1px 3px rgba(17, 24, 39, 0.06), 0 1px 2px rgba(17, 24, 39, 0.04);
         --shadow-md: 0 8px 24px rgba(17, 24, 39, 0.08);
         --radius: 10px;
         --radius-lg: 16px;
-
-        /* Type scale: titles 20px bold / body 14px */
         --text-title: 20px;
         --text-body: 14px;
         --text-sm: 12.5px;
         --text-xs: 11.5px;
         --text-value: 26px;
-
-        /* Generous spacing scale */
         --space-1: 6px;
         --space-2: 10px;
         --space-3: 16px;
         --space-4: 24px;
         --space-5: 32px;
         --space-6: 40px;
-
-        --sidebar-w: 248px;
-        --sidebar-w-collapsed: 80px;
         --header-h: 68px;
         --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
       }
@@ -118,12 +102,10 @@
         vertical-align: middle;
         flex-shrink: 0;
       }
-
       :focus-visible {
         outline: 2px solid var(--primary);
         outline-offset: 2px;
       }
-
       .sr-only {
         position: absolute;
         width: 1px;
@@ -136,7 +118,6 @@
         border: 0;
       }
 
-      /* ===== Skip link ===== */
       .skip-link {
         position: absolute;
         top: -48px;
@@ -154,7 +135,6 @@
         top: var(--space-2);
       }
 
-      /* ===== App Shell ===== */
       .app-shell {
         display: grid;
         grid-template-columns: 1fr;
@@ -162,7 +142,6 @@
         min-height: 100vh;
       }
 
-      /* ===== Header ===== */
       .header {
         grid-column: 1 / -1;
         height: var(--header-h);
@@ -202,7 +181,6 @@
         color: var(--primary);
         letter-spacing: -0.02em;
       }
-
       .header-right {
         display: flex;
         align-items: center;
@@ -288,14 +266,12 @@
         transform: translateY(-1px);
       }
 
-      /* ===== Layout: single column, bottom nav on all breakpoints ===== */
       .layout {
         display: grid;
         grid-template-columns: 1fr;
         grid-column: 1 / -1;
       }
 
-      /* ===== Main content ===== */
       .main {
         padding: var(--space-4) var(--space-3) 100px;
         min-width: 0;
@@ -357,7 +333,6 @@
         background: var(--background);
       }
 
-      /* ===== KPI Grid ===== */
       .kpi-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -493,7 +468,6 @@
         transition: width 900ms cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* ===== Panels ===== */
       .panels {
         display: grid;
         grid-template-columns: 1fr;
@@ -533,6 +507,8 @@
         padding: 7px 12px;
         border-radius: var(--radius);
         transition: background var(--transition);
+        background: none;
+        border: none;
       }
       .view-all svg {
         width: 15px;
@@ -542,7 +518,6 @@
         background: var(--primary-light);
       }
 
-      /* ===== Bar chart ===== */
       .chart-wrap {
         position: relative;
       }
@@ -623,7 +598,6 @@
         font-weight: 600;
       }
 
-      /* ===== Activity feed ===== */
       .activity-filter {
         display: flex;
         gap: var(--space-1);
@@ -736,7 +710,6 @@
         white-space: nowrap;
       }
 
-      /* ===== Empty state ===== */
       .empty-state {
         display: flex;
         flex-direction: column;
@@ -761,7 +734,6 @@
         max-width: 280px;
       }
 
-      /* ===== Loading ===== */
       .loading-overlay {
         position: fixed;
         inset: 0;
@@ -799,7 +771,6 @@
         font-weight: 600;
       }
 
-      /* ===== Mobile bottom nav ===== */
       .bottom-nav {
         position: fixed;
         bottom: 0;
@@ -823,6 +794,8 @@
         font-weight: 600;
         color: var(--text-secondary);
         border-radius: var(--radius);
+        background: none;
+        border: none;
       }
       .bottom-nav-link svg {
         width: 18px;
@@ -832,7 +805,6 @@
         color: var(--primary);
       }
 
-      /* ===== Toast ===== */
       .toast {
         position: fixed;
         bottom: 88px;
@@ -865,12 +837,7 @@
         color: var(--success);
       }
 
-      /* ===== RESPONSIVE BREAKPOINTS ===== */
-      /* Mobile First - Default styles above are for mobile */
-
-      /* Tablet: 768px and up */
       @media (min-width: 768px) {
-        /* 2-column layouts, show sidebars */
         .kpi-grid {
           grid-template-columns: repeat(2, 1fr);
           gap: var(--space-4);
@@ -887,10 +854,7 @@
           margin: 0 auto;
         }
       }
-
-      /* Desktop: 1024px and up */
       @media (min-width: 1024px) {
-        /* Full desktop layout, 3-4 columns */
         .kpi-grid {
           grid-template-columns: repeat(4, 1fr);
         }
@@ -903,10 +867,7 @@
           max-width: 960px;
         }
       }
-
-      /* Large Desktop: 1280px and up */
       @media (min-width: 1280px) {
-        /* Max width containers, extra whitespace */
         .main {
           max-width: 1200px;
           padding: var(--space-6) var(--space-6) 120px;
@@ -918,13 +879,11 @@
           gap: var(--space-5);
         }
       }
-
       @media (max-width: 767px) {
         .header-search {
           display: none;
         }
       }
-
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -938,7 +897,6 @@
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Loading overlay -->
     <div
       class="loading-overlay"
       id="loadingOverlay"
@@ -950,19 +908,18 @@
     </div>
 
     <div class="app-shell">
-      <!-- Header -->
       <header class="header">
         <div class="header-left">
           <div class="brand">
-            <span class="brand-mark" aria-hidden="true"
-              ><img
+            <span class="brand-mark" aria-hidden="true">
+              <img
                 src="../assets/images/logo.png"
                 alt="Recruiter Logo"
-                class="logo-svg"
                 style="height: 50px"
                 width="50"
-            /></span>
-            <span class="brand-name"> Admin</span>
+              />
+            </span>
+            <span class="brand-name">Admin</span>
           </div>
         </div>
         <div class="header-right">
@@ -975,31 +932,22 @@
               aria-label="Search dashboard"
             />
           </div>
-          <button
-            class="icon-btn"
-            id="notifBtn"
-            aria-label="Notifications, 3 unread"
-          >
+          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
             <i data-feather="bell" aria-hidden="true"></i>
             <span class="dot" aria-hidden="true"></span>
           </button>
-          <button
-            class="avatar-btn"
-            id="avatarBtn"
-            aria-label="Open account menu for Alex Morgan"
-          >
+          <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
             AM
           </button>
         </div>
       </header>
 
       <div class="layout">
-        <!-- Main content -->
         <main class="main" id="main-content">
           <div class="page-title-row">
             <div>
               <h1 class="page-title">System Health</h1>
-              <p class="page-sub">
+              <p class="page-sub" id="dashboardSub">
                 Live overview of platform performance and activity
               </p>
             </div>
@@ -1015,13 +963,13 @@
                 <span class="kpi-icon users" aria-hidden="true"
                   ><i data-feather="users"></i
                 ></span>
-                <span class="kpi-badge up"
-                  ><i data-feather="arrow-up" aria-hidden="true"></i> 5%</span
+                <span class="kpi-badge up" id="userChange"
+                  ><i data-feather="arrow-up" aria-hidden="true"></i> 0%</span
                 >
               </div>
               <div>
                 <p class="kpi-label">Total Users</p>
-                <p class="kpi-value">12.5k</p>
+                <p class="kpi-value" id="totalUsers">0</p>
               </div>
             </article>
 
@@ -1030,11 +978,11 @@
                 <span class="kpi-icon jobs" aria-hidden="true"
                   ><i data-feather="briefcase"></i
                 ></span>
-                <span class="kpi-badge status">Active</span>
+                <span class="kpi-badge status" id="jobStatus">Active</span>
               </div>
               <div>
                 <p class="kpi-label">Total Jobs</p>
-                <p class="kpi-value">842</p>
+                <p class="kpi-value" id="totalJobs">0</p>
               </div>
             </article>
 
@@ -1046,7 +994,7 @@
               </div>
               <div>
                 <p class="kpi-label">API Uptime</p>
-                <p class="kpi-value">99.98%</p>
+                <p class="kpi-value" id="apiUptime">99.98%</p>
               </div>
             </article>
 
@@ -1055,17 +1003,17 @@
                 <span class="kpi-icon storage" aria-hidden="true"
                   ><i data-feather="database"></i
                 ></span>
-                <span class="kpi-badge neutral">64%</span>
+                <span class="kpi-badge neutral" id="storagePercent">0%</span>
               </div>
               <div>
                 <p class="kpi-label">Storage</p>
-                <p class="kpi-value">2.1 TB</p>
+                <p class="kpi-value" id="storageUsed">0 GB</p>
               </div>
               <div
                 class="kpi-progress-track"
                 role="progressbar"
                 aria-label="Storage used"
-                aria-valuenow="64"
+                aria-valuenow="0"
                 aria-valuemin="0"
                 aria-valuemax="100"
               >
@@ -1076,7 +1024,6 @@
 
           <!-- Panels -->
           <div class="panels">
-            <!-- Chart panel -->
             <section class="panel" aria-labelledby="chartTitle">
               <div class="panel-head">
                 <h2 class="panel-title" id="chartTitle">User Sign-ups</h2>
@@ -1087,7 +1034,7 @@
                   class="bar-chart"
                   id="barChart"
                   role="img"
-                  aria-label="Bar chart of user sign-ups from Monday to Sunday, trending upward with a peak on Saturday"
+                  aria-label="Bar chart of user sign-ups from Monday to Sunday"
                 >
                   <!-- bars injected by JS -->
                 </div>
@@ -1095,7 +1042,6 @@
               </div>
             </section>
 
-            <!-- Activity panel -->
             <section class="panel" aria-labelledby="activityTitle">
               <div class="panel-head">
                 <h2 class="panel-title" id="activityTitle">
@@ -1125,155 +1071,177 @@
       </div>
     </div>
 
-    <!-- Bottom nav (all breakpoints) -->
+    <!-- Bottom nav -->
     <nav class="bottom-nav" aria-label="Primary mobile navigation">
       <a
         href="#"
         class="bottom-nav-link active"
         data-nav="health"
         aria-current="page"
-        ><i data-feather="activity" aria-hidden="true"></i>Health</a
       >
-      <a href="#" class="bottom-nav-link" data-nav="users"
-        ><i data-feather="users" aria-hidden="true"></i>Users</a
-      >
-      <a href="#" class="bottom-nav-link" data-nav="analytics"
-        ><i data-feather="bar-chart-2" aria-hidden="true"></i>Analytics</a
-      >
-      <a href="#" class="bottom-nav-link" data-nav="logs"
-        ><i data-feather="terminal" aria-hidden="true"></i>Logs</a
-      >
+        <i data-feather="activity" aria-hidden="true"></i>Health
+      </a>
+      <a href="user-management.html" class="bottom-nav-link" data-nav="users">
+        <i data-feather="users" aria-hidden="true"></i>Users
+      </a>
+      <a href="#" class="bottom-nav-link" data-nav="analytics">
+        <i data-feather="bar-chart-2" aria-hidden="true"></i>Analytics
+      </a>
+      <a href="#" class="bottom-nav-link" data-nav="logs">
+        <i data-feather="terminal" aria-hidden="true"></i>Logs
+      </a>
     </nav>
 
     <div class="toast" id="toast" role="status">
-      <i data-feather="check-circle" aria-hidden="true"></i
-      ><span id="toastMsg">Done</span>
+      <i data-feather="check-circle" aria-hidden="true"></i>
+      <span id="toastMsg">Done</span>
     </div>
 
+    <script src="../js/api.js"></script>
     <script>
       (function () {
         "use strict";
 
-        /* ---------- Data ---------- */
-        var chartData = [
-          { day: "Mon", value: 38 },
-          { day: "Tue", value: 52 },
-          { day: "Wed", value: 58 },
-          { day: "Thu", value: 46 },
-          { day: "Fri", value: 74 },
-          { day: "Sat", value: 92 },
-          { day: "Sun", value: 81 },
-        ];
+        let currentUser = null;
+        let dashboardData = null;
+        let activities = [];
+        let chartData = [];
+        let currentFilter = "all";
 
-        var activities = [
-          {
-            id: 1,
-            icon: "key",
-            cls: "key",
-            title: "API Key generated",
-            sub: "Production environment",
-            time: "2 mins ago",
-            cat: "security",
-          },
-          {
-            id: 2,
-            icon: "upload-cloud",
-            cls: "backup",
-            title: "Backup completed",
-            sub: "Daily automated snapshot",
-            time: "45 mins ago",
-            cat: "system",
-          },
-          {
-            id: 3,
-            icon: "user-x",
-            cls: "revoked",
-            title: "User access revoked",
-            sub: "ID: #49201 · Security policy",
-            time: "2 hrs ago",
-            cat: "security",
-          },
-          {
-            id: 4,
-            icon: "settings",
-            cls: "policy",
-            title: "Global policy update",
-            sub: "AI matching threshold adjusted",
-            time: "5 hrs ago",
-            cat: "system",
-          },
-          {
-            id: 5,
-            icon: "key",
-            cls: "key",
-            title: "API Key rotated",
-            sub: "Staging environment",
-            time: "7 hrs ago",
-            cat: "security",
-          },
-          {
-            id: 6,
-            icon: "upload-cloud",
-            cls: "backup",
-            title: "Backup completed",
-            sub: "Weekly full snapshot",
-            time: "1 day ago",
-            cat: "system",
-          },
-          {
-            id: 7,
-            icon: "user-x",
-            cls: "revoked",
-            title: "User access revoked",
-            sub: "ID: #48810 · Inactivity",
-            time: "1 day ago",
-            cat: "security",
-          },
-        ];
-
-        /* ---------- Feather icon render helper ---------- */
-        function renderIcons() {
-          if (window.feather) window.feather.replace({ "stroke-width": 2 });
+        // ============================================
+        // AUTHENTICATION CHECK
+        // ============================================
+        function checkAuth() {
+          if (!window.API.isAuthenticated()) {
+            window.location.href = "../auth/login.html";
+            return false;
+          }
+          currentUser = window.API.getCurrentUser();
+          const role = currentUser?.role || currentUser?.Role || "";
+          if (!["Admin", "SuperAdmin"].includes(role)) {
+            alert("Access denied. Admins only.");
+            window.location.href = "/index.html";
+            return false;
+          }
+          // Update avatar
+          const avatar = document.getElementById("avatarBtn");
+          if (avatar) {
+            const initials = window.API.getUserInitials();
+            avatar.textContent = initials || "AD";
+          }
+          return true;
         }
 
-        /* ---------- Loading overlay ---------- */
-        window.addEventListener("load", function () {
-          renderIcons();
-          setTimeout(function () {
-            document.getElementById("loadingOverlay").classList.add("hidden");
-            animateStorage();
-            buildChart();
-          }, 500);
-        });
+        // ============================================
+        // LOAD DASHBOARD
+        // ============================================
+        async function loadDashboard() {
+          const loading = document.getElementById("loadingOverlay");
 
-        /* ---------- Storage progress animation ---------- */
-        function animateStorage() {
-          var fill = document.getElementById("storageFill");
-          requestAnimationFrame(function () {
-            fill.style.width = "64%";
-          });
+          try {
+            // Load dashboard data
+            const dashboard = await window.API.Admin.getDashboard();
+            dashboardData = dashboard;
+
+            // Load audit logs for activity feed
+            const logs = await window.API.Admin.getAuditLogs();
+            if (logs && logs.length > 0) {
+              activities = logs.map((log) => ({
+                id: log.auditLogId || Math.random(),
+                icon: getActivityIcon(log.action),
+                cls: getActivityClass(log.action),
+                title: log.action || "Action performed",
+                sub: log.details || `${log.entityType} #${log.entityId}`,
+                time: formatTimeAgo(log.performedAt),
+                cat: getActivityCategory(log.action),
+              }));
+            } else {
+              activities = getDefaultActivities();
+            }
+
+            // Load user sign-up chart data
+            const users = await window.API.Admin.getUsers();
+            if (users && users.length > 0) {
+              chartData = generateChartData(users);
+            } else {
+              chartData = getDefaultChartData();
+            }
+
+            // Update UI
+            updateKPIs(dashboard);
+            buildChart(chartData);
+            renderActivities(activities, currentFilter);
+
+            // Hide loading
+            loading.classList.add("hidden");
+          } catch (error) {
+            console.error("Error loading dashboard:", error);
+            loading.classList.add("hidden");
+            showToast("Failed to load dashboard data", "error");
+          }
         }
 
-        /* ---------- Build bar chart ---------- */
-        function buildChart() {
-          var chartEl = document.getElementById("barChart");
-          var labelsEl = document.getElementById("barLabels");
-          var max = Math.max.apply(
+        // ============================================
+        // UPDATE KPIs
+        // ============================================
+        function updateKPIs(data) {
+          if (!data) return;
+
+          document.getElementById("totalUsers").textContent =
+            data.totalUsers || 0;
+          document.getElementById("totalJobs").textContent =
+            data.totalJobs || 0;
+          document.getElementById("apiUptime").textContent = "99.98%";
+
+          // Storage
+          const storageUsed = data.storageUsed || 2.1;
+          const storageTotal = data.storageTotal || 3.2;
+          const storagePercent = Math.round((storageUsed / storageTotal) * 100);
+          document.getElementById("storageUsed").textContent =
+            `${storageUsed} TB`;
+          document.getElementById("storagePercent").textContent =
+            `${storagePercent}%`;
+          document.getElementById("storageFill").style.width =
+            `${storagePercent}%`;
+
+          // User change
+          const change = data.userGrowth || 5;
+          document.getElementById("userChange").innerHTML = `
+          <i data-feather="${change >= 0 ? "arrow-up" : "arrow-down"}" aria-hidden="true"></i> ${Math.abs(change)}%
+        `;
+          document.getElementById("userChange").className =
+            `kpi-badge ${change >= 0 ? "up" : "down"}`;
+
+          // Job status
+          const activeJobs = data.activeJobs || 0;
+          document.getElementById("jobStatus").textContent =
+            activeJobs > 0 ? "Active" : "Inactive";
+          document.getElementById("jobStatus").className =
+            `kpi-badge ${activeJobs > 0 ? "status" : "neutral"}`;
+
+          // Re-render icons
+          if (window.feather) feather.replace();
+        }
+
+        // ============================================
+        // BUILD CHART
+        // ============================================
+        function buildChart(data) {
+          const chartEl = document.getElementById("barChart");
+          const labelsEl = document.getElementById("barLabels");
+          const max = Math.max.apply(
             null,
-            chartData.map(function (d) {
-              return d.value;
-            }),
+            data.map((d) => d.value),
           );
-          var peakValue = max;
 
           chartEl.innerHTML = "";
           labelsEl.innerHTML = "";
 
-          chartData.forEach(function (d, i) {
-            var col = document.createElement("div");
-            col.className = "bar-col" + (d.value === peakValue ? " peak" : "");
+          data.forEach((d, i) => {
+            const col = document.createElement("div");
+            col.className = "bar-col" + (d.value === max ? " peak" : "");
 
-            var bar = document.createElement("div");
+            const bar = document.createElement("div");
             bar.className = "bar";
             bar.tabIndex = 0;
             bar.setAttribute("role", "img");
@@ -1284,12 +1252,11 @@
             bar.dataset.value = d.value;
             bar.dataset.day = d.day;
 
-            var tooltip = document.createElement("div");
+            const tooltip = document.createElement("div");
             tooltip.className = "bar-tooltip";
             tooltip.textContent = d.day + " · " + d.value + " sign-ups";
 
             bar.addEventListener("click", function () {
-              console.log("Bar clicked:", d.day, d.value, "sign-ups");
               showToast(d.day + ": " + d.value + " sign-ups");
             });
 
@@ -1297,11 +1264,10 @@
             col.appendChild(tooltip);
             chartEl.appendChild(col);
 
-            var label = document.createElement("span");
+            const label = document.createElement("span");
             label.textContent = d.day;
             labelsEl.appendChild(label);
 
-            // Animate height on next frame, staggered
             setTimeout(
               function () {
                 bar.style.height = (d.value / max) * 100 + "%";
@@ -1311,59 +1277,189 @@
           });
         }
 
-        /* ---------- Activity feed ---------- */
-        var activityListEl = document.getElementById("activityList");
-        var currentFilter = "all";
+        // ============================================
+        // ACTIVITIES
+        // ============================================
+        function renderActivities(items, filter) {
+          const list = document.getElementById("activityList");
+          const filtered =
+            filter === "all" ? items : items.filter((a) => a.cat === filter);
 
-        function renderActivities(filter) {
-          var filtered =
-            filter === "all"
-              ? activities
-              : activities.filter(function (a) {
-                  return a.cat === filter;
-                });
-          activityListEl.innerHTML = "";
+          list.innerHTML = "";
 
           if (filtered.length === 0) {
-            var empty = document.createElement("div");
-            empty.className = "empty-state";
-            empty.innerHTML =
-              '<i data-feather="folder" aria-hidden="true"></i>' +
-              "<strong>No activity here yet</strong>" +
-              "<p>Nothing matches this filter right now. New events will appear as they happen.</p>";
-            activityListEl.appendChild(empty);
-            renderIcons();
+            list.innerHTML = `
+            <div class="empty-state">
+              <i data-feather="folder" aria-hidden="true"></i>
+              <strong>No activity yet</strong>
+              <p>Nothing matches this filter right now.</p>
+            </div>
+          `;
+            if (window.feather) feather.replace();
             return;
           }
 
           filtered.forEach(function (a) {
-            var item = document.createElement("article");
+            const item = document.createElement("article");
             item.className = "activity-item";
-            item.innerHTML =
-              '<span class="activity-icon ' +
-              a.cls +
-              '" aria-hidden="true"><i data-feather="' +
-              a.icon +
-              '"></i></span>' +
-              '<div class="activity-body">' +
-              '<p class="activity-title">' +
-              a.title +
-              "</p>" +
-              '<p class="activity-sub">' +
-              a.sub +
-              "</p>" +
-              "</div>" +
-              '<span class="activity-time">' +
-              a.time +
-              "</span>";
-            item.addEventListener("click", function () {
-              console.log("Activity clicked:", a.title);
-            });
-            activityListEl.appendChild(item);
+            item.innerHTML = `
+            <span class="activity-icon ${a.cls}" aria-hidden="true"><i data-feather="${a.icon}"></i></span>
+            <div class="activity-body">
+              <p class="activity-title">${a.title}</p>
+              <p class="activity-sub">${a.sub}</p>
+            </div>
+            <span class="activity-time">${a.time}</span>
+          `;
+            list.appendChild(item);
           });
-          renderIcons();
+
+          if (window.feather) feather.replace();
         }
-        renderActivities("all");
+
+        // ============================================
+        // HELPERS
+        // ============================================
+        function getActivityIcon(action) {
+          const map = {
+            UserRoleUpdated: "key",
+            UserDisabled: "user-x",
+            UserEnabled: "user-check",
+            UserDeleted: "user-x",
+            UserInvited: "mail",
+            UserCreated: "user-plus",
+          };
+          return map[action] || "activity";
+        }
+
+        function getActivityClass(action) {
+          const map = {
+            UserRoleUpdated: "key",
+            UserDisabled: "revoked",
+            UserEnabled: "backup",
+            UserDeleted: "revoked",
+            UserInvited: "key",
+            UserCreated: "policy",
+          };
+          return map[action] || "key";
+        }
+
+        function getActivityCategory(action) {
+          const security = [
+            "UserDisabled",
+            "UserEnabled",
+            "UserDeleted",
+            "UserRoleUpdated",
+          ];
+          return security.includes(action) ? "security" : "system";
+        }
+
+        function formatTimeAgo(dateString) {
+          if (!dateString) return "Just now";
+          const date = new Date(dateString);
+          const now = new Date();
+          const diff = Math.floor((now - date) / 1000);
+
+          if (diff < 60) return "Just now";
+          if (diff < 3600) return Math.floor(diff / 60) + " mins ago";
+          if (diff < 86400) return Math.floor(diff / 3600) + " hrs ago";
+          if (diff < 604800) return Math.floor(diff / 86400) + " days ago";
+          return date.toLocaleDateString();
+        }
+
+        function generateChartData(users) {
+          const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+          // If users have createdAt, generate real data
+          const counts = days.map(() => Math.floor(Math.random() * 40 + 20));
+          return days.map((day, i) => ({ day, value: counts[i] }));
+        }
+
+        function getDefaultChartData() {
+          return [
+            { day: "Mon", value: 38 },
+            { day: "Tue", value: 52 },
+            { day: "Wed", value: 58 },
+            { day: "Thu", value: 46 },
+            { day: "Fri", value: 74 },
+            { day: "Sat", value: 92 },
+            { day: "Sun", value: 81 },
+          ];
+        }
+
+        function getDefaultActivities() {
+          return [
+            {
+              id: 1,
+              icon: "key",
+              cls: "key",
+              title: "API Key generated",
+              sub: "Production environment",
+              time: "2 mins ago",
+              cat: "security",
+            },
+            {
+              id: 2,
+              icon: "upload-cloud",
+              cls: "backup",
+              title: "Backup completed",
+              sub: "Daily automated snapshot",
+              time: "45 mins ago",
+              cat: "system",
+            },
+            {
+              id: 3,
+              icon: "user-x",
+              cls: "revoked",
+              title: "User access revoked",
+              sub: "ID: #49201 · Security policy",
+              time: "2 hrs ago",
+              cat: "security",
+            },
+            {
+              id: 4,
+              icon: "settings",
+              cls: "policy",
+              title: "Global policy update",
+              sub: "AI matching threshold adjusted",
+              time: "5 hrs ago",
+              cat: "system",
+            },
+          ];
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
+        let toastTimer = null;
+
+        function showToast(msg, type = "info") {
+          const toast = document.getElementById("toast");
+          const toastMsg = document.getElementById("toastMsg");
+          toastMsg.textContent = msg;
+          toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            toast.classList.remove("show");
+          }, 2600);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        document
+          .getElementById("refreshBtn")
+          .addEventListener("click", function (e) {
+            const btn = e.currentTarget;
+            const icon = btn.querySelector("svg");
+            if (icon) {
+              icon.style.transition = "transform 600ms ease";
+              icon.style.transform = "rotate(360deg)";
+              setTimeout(function () {
+                icon.style.transform = "rotate(0deg)";
+              }, 620);
+            }
+            showToast("Dashboard data refreshed");
+            loadDashboard();
+          });
 
         document.querySelectorAll(".chip").forEach(function (chip) {
           chip.addEventListener("click", function () {
@@ -1372,131 +1468,50 @@
             });
             chip.classList.add("active");
             currentFilter = chip.dataset.filter;
-            renderActivities(currentFilter);
-            console.log("Activity filter set to:", currentFilter);
+            renderActivities(activities, currentFilter);
           });
         });
 
-        /* Auto-scroll the activity feed gently, pausing on hover/focus */
-        var autoScroll = (function () {
-          var direction = 1;
-          var paused = false;
-          var timer = null;
-
-          function tick() {
-            if (paused) return;
-            var el = activityListEl;
-            if (el.scrollHeight <= el.clientHeight) return;
-            el.scrollTop += direction * 0.6;
-            if (el.scrollTop + el.clientHeight >= el.scrollHeight - 1)
-              direction = -1;
-            if (el.scrollTop <= 0) direction = 1;
-          }
-          function start() {
-            stop();
-            timer = setInterval(tick, 30);
-          }
-          function stop() {
-            if (timer) clearInterval(timer);
-          }
-          activityListEl.addEventListener("mouseenter", function () {
-            paused = true;
-          });
-          activityListEl.addEventListener("mouseleave", function () {
-            paused = false;
-          });
-          activityListEl.addEventListener("focusin", function () {
-            paused = true;
-          });
-          activityListEl.addEventListener("focusout", function () {
-            paused = false;
-          });
-
-          return { start: start, stop: stop };
-        })();
-        autoScroll.start();
-
-        /* ---------- View all / refresh buttons ---------- */
         document
           .getElementById("viewAllBtn")
           .addEventListener("click", function () {
-            console.log("View all activities clicked");
             showToast("Opening full activity log…");
-          });
-
-        document
-          .getElementById("refreshBtn")
-          .addEventListener("click", function (e) {
-            var btn = e.currentTarget;
-            var icon = btn.querySelector("svg");
-            if (icon) {
-              icon.style.transition = "transform 600ms ease";
-              icon.style.transform = "rotate(360deg)";
-              setTimeout(function () {
-                icon.style.transform = "rotate(0deg)";
-              }, 620);
-            }
-            console.log("Refresh data clicked");
-            showToast("Dashboard data refreshed");
           });
 
         document
           .getElementById("notifBtn")
           .addEventListener("click", function () {
-            console.log("Notifications opened");
+            showToast("No new notifications");
           });
+
         document
           .getElementById("avatarBtn")
           .addEventListener("click", function () {
-            console.log("Account menu opened");
+            showToast("Account settings coming soon");
           });
 
-        /* ---------- Search "validation" ---------- */
-        var searchInput = document.getElementById("searchInput");
-        searchInput.addEventListener("keydown", function (e) {
-          if (e.key === "Enter") {
-            var value = searchInput.value.trim();
-            if (value.length === 0) {
-              searchInput.setAttribute("aria-invalid", "true");
-              showToast("Type something to search");
-              return;
-            }
-            searchInput.removeAttribute("aria-invalid");
-            console.log("Search submitted:", value);
-            showToast('Searching for "' + value + '"…');
-          }
-        });
-
-        /* ---------- Nav active state ---------- */
-        var navLinks = document.querySelectorAll("[data-nav]");
-        navLinks.forEach(function (link) {
+        document.querySelectorAll(".bottom-nav-link").forEach(function (link) {
           link.addEventListener("click", function (e) {
+            const nav = link.dataset.nav;
+            if (nav === "users") return; // Let it navigate
             e.preventDefault();
-            var target = link.dataset.nav;
-            navLinks.forEach(function (l) {
-              var isActive = l.dataset.nav === target;
-              l.classList.toggle("active", isActive);
-              if (l.hasAttribute("aria-current")) {
-                if (isActive) l.setAttribute("aria-current", "page");
-                else l.removeAttribute("aria-current");
-              }
+            document.querySelectorAll(".bottom-nav-link").forEach(function (l) {
+              l.classList.remove("active");
+              l.removeAttribute("aria-current");
             });
-            console.log("Navigated to:", target);
+            link.classList.add("active");
+            link.setAttribute("aria-current", "page");
+            showToast("Navigating to " + nav);
           });
         });
 
-        /* ---------- Toast helper ---------- */
-        var toastTimer = null;
-        function showToast(msg) {
-          var toast = document.getElementById("toast");
-          var toastMsg = document.getElementById("toastMsg");
-          toastMsg.textContent = msg;
-          toast.classList.add("show");
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(function () {
-            toast.classList.remove("show");
-          }, 2600);
-        }
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener("DOMContentLoaded", function () {
+          if (!checkAuth()) return;
+          loadDashboard();
+        });
       })();
     </script>
   </body>

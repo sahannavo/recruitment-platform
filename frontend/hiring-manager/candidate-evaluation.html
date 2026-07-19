@@ -5,484 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RecruitAI - Candidate Evaluation</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- Unified CSS -->
     <link rel="stylesheet" href="../css/main.css" />
 
     <style>
-      /* ========================================
-       CANDIDATE EVALUATION STYLES
-       ======================================== */
-
-      .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-      }
-      .breadcrumb a {
-        color: var(--text-secondary);
-        transition: color 0.2s ease;
-      }
-      .breadcrumb a:hover {
-        color: var(--primary);
-      }
-      .breadcrumb .current {
-        color: var(--text-primary);
-        font-weight: 600;
-      }
-      .breadcrumb i {
-        font-size: 10px;
-        color: var(--border);
-      }
-
       .evaluation-layout {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 320px 1fr;
         gap: 24px;
         align-items: start;
       }
 
-      /* CV Section */
-      .cv-section {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-      }
-
-      .cv-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--border);
-        background: var(--surface-alt);
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .cv-header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .cv-header-left h2 {
-        font-size: 16px;
-        font-weight: 700;
-        margin: 0;
-      }
-      .badge-ai {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 12px;
-        border-radius: var(--radius-full);
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .match-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 2px 12px;
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 700;
-      }
-      .match-badge.high {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .match-badge.medium {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .match-badge.low {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-
-      .cv-header-actions {
-        display: flex;
-        gap: 8px;
-      }
-
-      .cv-body {
-        padding: 20px;
-        max-height: 600px;
-        overflow-y: auto;
-      }
-      .cv-body::-webkit-scrollbar {
-        width: 6px;
-      }
-      .cv-body::-webkit-scrollbar-track {
-        background: var(--surface-alt);
-        border-radius: var(--radius-full);
-      }
-      .cv-body::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: var(--radius-full);
-      }
-
-      /* CV Preview */
-      .cv-preview .cv-name {
-        font-size: 24px;
-        font-weight: 800;
-        margin-bottom: 2px;
-      }
-      .cv-preview .cv-title {
-        font-size: 16px;
-        color: var(--text-secondary);
-        margin-bottom: 8px;
-      }
-      .cv-preview .cv-contact {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-        font-size: 13px;
-        color: var(--text-secondary);
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 16px;
-      }
-      .cv-preview .cv-contact i {
-        width: 16px;
-        margin-right: 4px;
-      }
-      .cv-preview .cv-section-title {
-        font-size: 15px;
-        font-weight: 700;
-        margin-top: 16px;
-        margin-bottom: 8px;
-        color: var(--text-primary);
-      }
-      .cv-preview .cv-section-title i {
-        color: var(--primary);
-        margin-right: 8px;
-      }
-      .cv-preview .cv-item {
-        margin-bottom: 12px;
-      }
-      .cv-preview .cv-item .item-header {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 600;
-        flex-wrap: wrap;
-      }
-      .cv-preview .cv-item .item-sub {
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-      .cv-preview .cv-item .item-desc {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-        padding-left: 4px;
-        line-height: 1.6;
-      }
-      .cv-preview .skill-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-      .cv-preview .skill-tag {
-        padding: 4px 14px;
-        background: var(--primary-light);
-        color: var(--primary);
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 500;
-      }
-
-      /* Evaluation Form */
-      .eval-section {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
+      .profile-card {
+        text-align: center;
         padding: 24px;
-        box-shadow: var(--shadow);
       }
-
-      .eval-header {
-        margin-bottom: 24px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border);
-      }
-      .eval-header h2 {
-        font-size: 20px;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0;
-      }
-      .eval-header h2 .candidate-name {
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--primary-light);
         color: var(--primary);
-      }
-      .eval-header p {
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin: 4px 0 0;
-      }
-
-      .eval-form {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .form-group label {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-      .form-group .label-hint {
-        font-size: 12px;
-        color: var(--text-secondary);
-        font-weight: 400;
-      }
-      .form-group .required {
-        color: var(--danger);
-      }
-
-      /* Score Sliders */
-      .score-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .score-row {
         display: flex;
         align-items: center;
-        gap: 16px;
-      }
-      .score-row .score-label {
-        min-width: 120px;
-        font-size: 14px;
-        font-weight: 500;
-      }
-      .score-row input[type="range"] {
-        flex: 1;
-        -webkit-appearance: none;
-        appearance: none;
-        height: 6px;
-        border-radius: var(--radius-full);
-        background: var(--border);
-        outline: none;
-        transition: background 0.2s;
-      }
-      .score-row input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--primary);
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .score-row input[type="range"]::-webkit-slider-thumb:hover {
-        transform: scale(1.15);
-        box-shadow: var(--shadow-md);
-      }
-      .score-row input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--primary);
-        cursor: pointer;
-        border: none;
-      }
-      .score-value {
-        min-width: 32px;
-        font-size: 16px;
+        justify-content: center;
+        font-size: 32px;
         font-weight: 700;
-        color: var(--primary);
+        margin: 0 auto 12px;
+      }
+      .profile-name {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .profile-job {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+      .profile-details {
+        text-align: left;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+      }
+      .detail-row i {
+        color: var(--text-secondary);
+        width: 18px;
         text-align: center;
       }
 
-      /* Decision Radio */
-      .radio-group {
-        display: flex;
+      .score-display {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
-        flex-wrap: wrap;
+        margin-top: 16px;
       }
-      .radio-group label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        font-size: 14px;
-        cursor: pointer;
-        padding: 10px 18px;
-        border: 2px solid var(--border);
+      .score-item {
+        background: var(--surface-alt);
         border-radius: var(--radius);
-        transition: all 0.2s ease;
+        padding: 12px;
+        text-align: center;
       }
-      .radio-group label:hover {
-        border-color: var(--text-secondary);
+      .score-item .value {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--primary);
       }
-      .radio-group input[type="radio"] {
-        accent-color: var(--primary);
-        width: 16px;
-        height: 16px;
-        cursor: pointer;
-      }
-      .radio-group label.selected-hire {
-        border-color: var(--success);
-        background: var(--success-light);
-      }
-      .radio-group label.selected-reject {
-        border-color: var(--danger);
-        background: #fee2e2;
-      }
-      .radio-group label.selected-hold {
-        border-color: var(--warning);
-        background: #fef3c7;
+      .score-item .label {
+        font-size: 12px;
+        color: var(--text-secondary);
       }
 
-      /* Textarea */
-      .form-group textarea {
-        padding: 10px 14px;
-        font-family: var(--font-family);
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group label {
+        font-weight: 600;
         font-size: 14px;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .form-control,
+      .form-select {
+        width: 100%;
+        padding: 10px 14px;
         border: 1.5px solid var(--border);
         border-radius: var(--radius);
-        transition: all 0.2s ease;
-        resize: vertical;
-        min-height: 80px;
-        width: 100%;
+        font-family: inherit;
+        font-size: 14px;
+        background: var(--surface);
       }
-      .form-group textarea:focus {
+      .form-control:focus,
+      .form-select:focus {
         outline: none;
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-light);
       }
+      textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+      }
 
-      /* Form Actions */
+      .rating-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .rating-btn {
+        padding: 8px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        cursor: pointer;
+        font-weight: 600;
+        transition: all var(--transition);
+      }
+      .rating-btn:hover {
+        border-color: var(--primary);
+      }
+      .rating-btn.selected {
+        border-color: var(--primary);
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+      .rating-btn .num {
+        font-size: 18px;
+        display: block;
+      }
+      .rating-btn .lbl {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+
       .form-actions {
         display: flex;
         gap: 12px;
-        padding-top: 20px;
+        padding-top: 16px;
         border-top: 1px solid var(--border);
-        flex-wrap: wrap;
-      }
-      .form-actions .btn {
-        flex: 1;
-        min-width: 120px;
-        justify-content: center;
+        margin-top: 16px;
       }
 
-      /* Toast */
-      .toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        background: var(--text-primary);
-        color: #fff;
-        padding: 12px 20px;
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-weight: 500;
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.25s ease;
-        z-index: 1100;
-        display: flex;
+      .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+      }
+      .loading-spinner i {
+        font-size: 32px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-secondary);
+      }
+      .empty-state i {
+        font-size: 48px;
+        color: var(--border);
+        margin-bottom: 16px;
+      }
+
+      .back-link {
+        display: inline-flex;
         align-items: center;
         gap: 8px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-bottom: 16px;
+        font-weight: 500;
       }
-      .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-      .toast i {
-        color: var(--success);
-      }
-      .toast.error i {
-        color: var(--danger);
+      .back-link:hover {
+        color: var(--primary);
       }
 
-      /* Responsive */
       @media (max-width: 1024px) {
         .evaluation-layout {
           grid-template-columns: 1fr;
         }
-        .cv-body {
-          max-height: 400px;
-        }
       }
-
       @media (max-width: 768px) {
-        .cv-header {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .cv-header-actions {
-          justify-content: flex-start;
-        }
-        .eval-section {
-          padding: 16px;
-        }
-        .score-row {
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-        .score-row .score-label {
-          min-width: 100%;
-        }
-        .radio-group {
-          flex-direction: column;
-        }
-        .radio-group label {
-          width: 100%;
-          justify-content: center;
+        .score-display {
+          grid-template-columns: 1fr;
         }
         .form-actions {
           flex-direction: column;
         }
         .form-actions .btn {
           width: 100%;
-          flex: none;
-        }
-        .cv-preview .cv-contact {
-          flex-direction: column;
-          gap: 4px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .cv-body {
-          max-height: 300px;
-          padding: 12px;
-        }
-        .cv-preview .cv-name {
-          font-size: 20px;
-        }
-        .cv-header-left .badge-ai {
-          display: none;
+          justify-content: center;
         }
       }
     </style>
@@ -501,22 +233,16 @@
             >Dashboard</a
           >
           <a
+            href="candidate-evaluation.html"
+            class="nav-link active"
+            data-page="evaluate"
+            >Evaluate</a
+          >
+          <a
             href="../recruiter/manage-jobs.html"
             class="nav-link"
             data-page="jobs"
             >Jobs</a
-          >
-          <a
-            href="candidate-evaluation.html"
-            class="nav-link active"
-            data-page="candidates"
-            >Candidates</a
-          >
-          <a
-            href="../recruiter/schedule-interview.html"
-            class="nav-link"
-            data-page="interviews"
-            >Interviews</a
           >
         </nav>
 
@@ -525,18 +251,23 @@
             <i class="fas fa-bell"></i>
             <span class="notification-dot"></span>
           </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SH</div>
+          <div class="user-avatar" id="userAvatar" title="Profile">HM</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
           </button>
         </div>
       </div>
 
-      <!-- Mobile Menu -->
       <div class="mobile-menu-overlay" id="mobileOverlay"></div>
       <div class="mobile-menu" id="mobileMenu">
         <a href="dashboard.html" class="mobile-link" data-page="dashboard"
           >Dashboard</a
+        >
+        <a
+          href="candidate-evaluation.html"
+          class="mobile-link active"
+          data-page="evaluate"
+          >Evaluate</a
         >
         <a
           href="../recruiter/manage-jobs.html"
@@ -545,20 +276,9 @@
           >Jobs</a
         >
         <a
-          href="candidate-evaluation.html"
-          class="mobile-link active"
-          data-page="candidates"
-          >Candidates</a
-        >
-        <a
-          href="../recruiter/schedule-interview.html"
+          href="#"
           class="mobile-link"
-          data-page="interviews"
-          >Interviews</a
-        >
-        <a
-          href="../auth/login.html"
-          class="mobile-link"
+          id="logoutBtn"
           style="color: var(--danger); border-bottom: none"
           >Sign Out</a
         >
@@ -567,292 +287,179 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <!-- Breadcrumb -->
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-        <i class="fas fa-chevron-right"></i>
-        <a href="dashboard.html#feedback">Shortlisted Candidates</a>
-        <i class="fas fa-chevron-right"></i>
-        <span class="current">Evaluate: Jane Doe</span>
-      </nav>
+      <a href="dashboard.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
 
-      <!-- Evaluation Layout -->
-      <div class="evaluation-layout">
-        <!-- LEFT: CV Viewer -->
-        <section class="cv-section" aria-label="Candidate CV">
-          <div class="cv-header">
-            <div class="cv-header-left">
-              <h2>
-                <i class="fas fa-file-alt" style="color: var(--primary)"></i>
-                Resume
-              </h2>
-              <span class="badge-ai"
-                ><i class="fas fa-robot"></i> AI Verified</span
-              >
-              <span class="match-badge high"
-                ><i class="fas fa-star"></i> 94% Match</span
-              >
-            </div>
-            <div class="cv-header-actions">
-              <button class="btn btn-secondary btn-sm" onclick="downloadCV()">
-                <i class="fas fa-download"></i> Download
-              </button>
-              <button class="btn btn-secondary btn-sm" onclick="window.print()">
-                <i class="fas fa-print"></i> Print
-              </button>
-            </div>
-          </div>
+      <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 24px">
+        Candidate Evaluation
+      </h1>
 
-          <div class="cv-body">
-            <div class="cv-preview">
-              <div class="cv-name">Jane Doe</div>
-              <div class="cv-title">Senior Full Stack Developer</div>
+      <div id="loadingState" class="loading-spinner">
+        <i class="fas fa-spinner"></i>
+        <p>Loading candidate details...</p>
+      </div>
 
-              <div class="cv-contact">
-                <span><i class="fas fa-envelope"></i> jane.doe@email.com</span>
-                <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
-                <span
-                  ><i class="fas fa-map-marker-alt"></i> San Francisco, CA</span
-                >
-                <span
-                  ><i class="fab fa-linkedin"></i> linkedin.com/in/janedoe</span
-                >
-              </div>
+      <div id="evaluationContent" style="display: none">
+        <div class="evaluation-layout">
+          <!-- Left: Profile -->
+          <div>
+            <div class="card profile-card">
+              <div class="profile-avatar" id="profileAvatar">U</div>
+              <div class="profile-name" id="profileName">Loading...</div>
+              <div class="profile-job" id="profileJob">Position</div>
 
-              <div class="cv-section-title">
-                <i class="fas fa-user"></i> Professional Summary
-              </div>
-              <p
-                style="
-                  font-size: 14px;
-                  color: var(--text-secondary);
-                  line-height: 1.7;
-                  margin-bottom: 16px;
-                "
-              >
-                Senior Full Stack Developer with <strong>7+ years</strong> of
-                experience building scalable web applications. Expertise in
-                React, Node.js, TypeScript, and AWS. Proven track record of
-                leading engineering teams and delivering products that serve
-                millions of users.
-              </p>
-
-              <div class="cv-section-title">
-                <i class="fas fa-briefcase"></i> Work Experience
-              </div>
-
-              <div class="cv-item">
-                <div class="item-header">
-                  <span>Senior Full Stack Developer</span>
-                  <span>2021 - Present</span>
+              <div class="score-display">
+                <div class="score-item">
+                  <div class="value" id="aiScore">0%</div>
+                  <div class="label">AI Match</div>
                 </div>
-                <div class="item-sub">TechCorp Inc. • San Francisco, CA</div>
-                <div class="item-desc">
-                  • Led a team of 8 engineers building a multi-tenant SaaS
-                  platform<br />
-                  • Architected microservices using Node.js and AWS ECS<br />
-                  • Improved application performance by 40% through optimization
+                <div class="score-item">
+                  <div class="value" id="avgScore">0%</div>
+                  <div class="label">Avg Feedback</div>
                 </div>
               </div>
 
-              <div class="cv-item">
-                <div class="item-header">
-                  <span>Full Stack Developer</span> <span>2018 - 2021</span>
+              <div class="profile-details">
+                <div class="detail-row">
+                  <i class="fas fa-envelope"></i>
+                  <span id="profileEmail">email@example.com</span>
                 </div>
-                <div class="item-sub">InnovateSoft • Austin, TX</div>
-                <div class="item-desc">
-                  • Built and maintained React frontend with Redux state
-                  management<br />
-                  • Developed RESTful APIs with Node.js and Express<br />
-                  • Implemented CI/CD pipeline using GitHub Actions
+                <div class="detail-row">
+                  <i class="fas fa-briefcase"></i>
+                  <span id="profileExperience">Experience</span>
                 </div>
-              </div>
-
-              <div class="cv-section-title">
-                <i class="fas fa-graduation-cap"></i> Education
-              </div>
-              <div class="cv-item">
-                <div class="item-header">
-                  <span>M.S. Computer Science</span> <span>2016 - 2018</span>
+                <div class="detail-row">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span id="profileLocation">Location</span>
                 </div>
-                <div class="item-sub">Stanford University • GPA: 3.9</div>
-              </div>
-              <div class="cv-item">
-                <div class="item-header">
-                  <span>B.S. Software Engineering</span>
-                  <span>2012 - 2016</span>
+                <div class="detail-row">
+                  <i class="fas fa-calendar"></i> Applied:
+                  <span id="profileApplied">Date</span>
                 </div>
-                <div class="item-sub">UC Berkeley • GPA: 3.8</div>
-              </div>
-
-              <div class="cv-section-title">
-                <i class="fas fa-code"></i> Skills
-              </div>
-              <div class="skill-tags">
-                <span class="skill-tag">React</span>
-                <span class="skill-tag">Node.js</span>
-                <span class="skill-tag">TypeScript</span>
-                <span class="skill-tag">AWS</span>
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">Docker</span>
-                <span class="skill-tag">PostgreSQL</span>
-                <span class="skill-tag">GraphQL</span>
               </div>
             </div>
           </div>
-        </section>
 
-        <!-- RIGHT: Evaluation Form -->
-        <section class="eval-section" aria-label="Candidate Evaluation Form">
-          <div class="eval-header">
-            <h2>
-              <i
-                class="fas fa-clipboard-check"
-                style="color: var(--primary)"
-              ></i>
-              Evaluate: <span class="candidate-name">Jane Doe</span>
+          <!-- Right: Feedback Form -->
+          <div class="card">
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px">
+              <i class="fas fa-clipboard-list"></i> Interview Feedback
             </h2>
-            <p>
-              <i class="fas fa-briefcase"></i> Senior Full Stack Developer
-              &nbsp;•&nbsp; <i class="fas fa-building"></i> TechCorp Inc.
-              &nbsp;•&nbsp; <i class="fas fa-calendar-alt"></i> Applied: Jan 20,
-              2026
-            </p>
+
+            <form id="feedbackForm">
+              <div class="form-group">
+                <label
+                  >Technical Skills
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <div class="rating-group" id="technicalRating">
+                  <button type="button" class="rating-btn" data-value="1">
+                    <span class="num">1</span><span class="lbl">Poor</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="2">
+                    <span class="num">2</span><span class="lbl">Fair</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="3">
+                    <span class="num">3</span><span class="lbl">Good</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="4">
+                    <span class="num">4</span><span class="lbl">Very Good</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="5">
+                    <span class="num">5</span><span class="lbl">Excellent</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Behavioral Skills
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <div class="rating-group" id="behavioralRating">
+                  <button type="button" class="rating-btn" data-value="1">
+                    <span class="num">1</span><span class="lbl">Poor</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="2">
+                    <span class="num">2</span><span class="lbl">Fair</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="3">
+                    <span class="num">3</span><span class="lbl">Good</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="4">
+                    <span class="num">4</span><span class="lbl">Very Good</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="5">
+                    <span class="num">5</span><span class="lbl">Excellent</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Communication
+                  <span style="color: var(--danger)">*</span></label
+                >
+                <div class="rating-group" id="communicationRating">
+                  <button type="button" class="rating-btn" data-value="1">
+                    <span class="num">1</span><span class="lbl">Poor</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="2">
+                    <span class="num">2</span><span class="lbl">Fair</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="3">
+                    <span class="num">3</span><span class="lbl">Good</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="4">
+                    <span class="num">4</span><span class="lbl">Very Good</span>
+                  </button>
+                  <button type="button" class="rating-btn" data-value="5">
+                    <span class="num">5</span><span class="lbl">Excellent</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label
+                  >Decision <span style="color: var(--danger)">*</span></label
+                >
+                <select class="form-select" id="decisionSelect" required>
+                  <option value="">Select decision...</option>
+                  <option value="Selected">
+                    ✅ Selected - Proceed to offer
+                  </option>
+                  <option value="Rejected">❌ Rejected - Not a fit</option>
+                  <option value="Pending">
+                    ⏳ Pending - Need more interviews
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Comments / Notes</label>
+                <textarea
+                  class="form-control"
+                  id="commentsInput"
+                  placeholder="Provide detailed feedback about the candidate's performance, strengths, and areas for improvement..."
+                ></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="window.location.href = 'dashboard.html'"
+                >
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  <i class="fas fa-paper-plane"></i> Submit Feedback
+                </button>
+              </div>
+            </form>
           </div>
-
-          <form class="eval-form" id="evalForm" novalidate>
-            <!-- Scoring Sliders -->
-            <div class="form-group">
-              <label
-                >Scoring
-                <span class="label-hint">(1 = Poor, 5 = Excellent)</span></label
-              >
-              <div class="score-group">
-                <div class="score-row">
-                  <span class="score-label"
-                    ><i class="fas fa-code"></i> Technical</span
-                  >
-                  <input
-                    type="range"
-                    id="techScore"
-                    min="1"
-                    max="5"
-                    value="4"
-                    step="0.5"
-                    oninput="updateScore(this, 'techVal')"
-                  />
-                  <span class="score-value" id="techVal">4.0</span>
-                </div>
-                <div class="score-row">
-                  <span class="score-label"
-                    ><i class="fas fa-users"></i> Behavioral</span
-                  >
-                  <input
-                    type="range"
-                    id="behavScore"
-                    min="1"
-                    max="5"
-                    value="4.5"
-                    step="0.5"
-                    oninput="updateScore(this, 'behavVal')"
-                  />
-                  <span class="score-value" id="behavVal">4.5</span>
-                </div>
-                <div class="score-row">
-                  <span class="score-label"
-                    ><i class="fas fa-handshake"></i> Cultural Fit</span
-                  >
-                  <input
-                    type="range"
-                    id="culturScore"
-                    min="1"
-                    max="5"
-                    value="4"
-                    step="0.5"
-                    oninput="updateScore(this, 'culturVal')"
-                  />
-                  <span class="score-value" id="culturVal">4.0</span>
-                </div>
-                <div class="score-row">
-                  <span class="score-label"
-                    ><i class="fas fa-comments"></i> Communication</span
-                  >
-                  <input
-                    type="range"
-                    id="commScore"
-                    min="1"
-                    max="5"
-                    value="4.5"
-                    step="0.5"
-                    oninput="updateScore(this, 'commVal')"
-                  />
-                  <span class="score-value" id="commVal">4.5</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Decision -->
-            <div class="form-group">
-              <label>Decision <span class="required">*</span></label>
-              <div class="radio-group" id="decisionGroup">
-                <label class="selected-hire">
-                  <input type="radio" name="decision" value="hire" checked />
-                  <i
-                    class="fas fa-check-circle"
-                    style="color: var(--success)"
-                  ></i>
-                  Hire
-                </label>
-                <label>
-                  <input type="radio" name="decision" value="reject" />
-                  <i
-                    class="fas fa-times-circle"
-                    style="color: var(--danger)"
-                  ></i>
-                  Reject
-                </label>
-                <label>
-                  <input type="radio" name="decision" value="hold" />
-                  <i class="fas fa-clock" style="color: var(--warning)"></i> On
-                  Hold
-                </label>
-              </div>
-            </div>
-
-            <!-- Feedback Notes -->
-            <div class="form-group">
-              <label for="feedbackNotes">Feedback &amp; Notes</label>
-              <textarea
-                id="feedbackNotes"
-                rows="4"
-                placeholder="Provide detailed feedback about the candidate..."
-              >
-Excellent technical skills with strong system design abilities. Good cultural fit and clear communication. Recommended for hire.</textarea
-              >
-            </div>
-
-            <!-- Form Actions -->
-            <div class="form-actions">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="resetForm()"
-              >
-                <i class="fas fa-undo"></i> Reset
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="saveDraft()"
-              >
-                <i class="fas fa-save"></i> Save Draft
-              </button>
-              <button type="submit" class="btn btn-success">
-                <i class="fas fa-check"></i> Submit Decision
-              </button>
-            </div>
-          </form>
-        </section>
+        </div>
       </div>
     </main>
 
@@ -865,27 +472,21 @@ Excellent technical skills with strong system design abilities. Good cultural fi
               src="../assets/images/logo.png"
               alt="RecruitAI Logo"
               style="height: 36px"
-            />
-            <span>RecruitAI</span>
+            /><span>RecruitAI</span>
           </div>
           <p>
             AI-powered recruitment platform connecting top talent with great
             companies.
           </p>
         </div>
-
         <div class="footer-links">
           <h4>For Hiring Managers</h4>
           <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="candidate-evaluation.html">Evaluate Candidates</a></li>
-            <li><a href="../recruiter/manage-jobs.html">View Jobs</a></li>
-            <li>
-              <a href="../recruiter/schedule-interview.html">Interviews</a>
-            </li>
+            <li><a href="../recruiter/manage-jobs.html">Jobs</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Company</h4>
           <ul>
@@ -895,7 +496,6 @@ Excellent technical skills with strong system design abilities. Good cultural fi
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Support</h4>
           <ul>
@@ -906,7 +506,6 @@ Excellent technical skills with strong system design abilities. Good cultural fi
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
         <span>&copy; 2026 RecruitAI. All rights reserved.</span>
         <div class="footer-social">
@@ -920,171 +519,329 @@ Excellent technical skills with strong system design abilities. Good cultural fi
       </div>
     </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../js/api.js"></script>
     <script src="../js/main.js"></script>
 
-    <!-- ===== PAGE-SPECIFIC JAVASCRIPT ===== -->
     <script>
-      (function () {
-        "use strict";
+      let currentUser = null;
+      let applicationId = null;
+      let currentFeedback = null;
 
-        // Update score display
-        window.updateScore = function (slider, displayId) {
-          const display = document.getElementById(displayId);
-          if (display) {
-            display.textContent = parseFloat(slider.value).toFixed(1);
-          }
+      // ============================================
+      // AUTHENTICATION CHECK
+      // ============================================
+      function checkAuth() {
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "/auth/login.html";
+          return false;
+        }
+        currentUser = window.API.getCurrentUser();
+        const role = currentUser?.role || currentUser?.Role || "";
+        if (!["HiringManager", "Admin"].includes(role)) {
+          alert("Access denied. Hiring Managers only.");
+          window.location.href = "/index.html";
+          return false;
+        }
+        return true;
+      }
+
+      // ============================================
+      // GET URL PARAMETERS
+      // ============================================
+      function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+          appId: params.get("appId"),
+          feedbackId: params.get("feedbackId"),
         };
+      }
 
-        // Decision radio visual feedback
-        document.querySelectorAll('input[name="decision"]').forEach((radio) => {
-          radio.addEventListener("change", function () {
-            const labels = document.querySelectorAll(".radio-group label");
-            labels.forEach((label) => (label.className = ""));
-            const parent = this.closest("label");
-            if (this.value === "hire") parent.classList.add("selected-hire");
-            else if (this.value === "reject")
-              parent.classList.add("selected-reject");
-            else if (this.value === "hold")
-              parent.classList.add("selected-hold");
-          });
-        });
+      // ============================================
+      // LOAD CANDIDATE
+      // ============================================
+      async function loadCandidate() {
+        const params = getUrlParams();
+        const loadingState = document.getElementById("loadingState");
+        const content = document.getElementById("evaluationContent");
 
-        // Toast
-        const toast = document.getElementById("toast");
-        const toastMessage = document.getElementById("toastMessage");
-        let toastTimer = null;
+        try {
+          let app = null;
 
-        function showToast(message, icon, isError) {
-          toastMessage.textContent = message;
-          toast.querySelector("i").className =
-            `fas ${icon || "fa-check-circle"}`;
-          toast.classList.toggle("error", !!isError);
-          toast.classList.add("show");
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+          if (params.appId) {
+            applicationId = parseInt(params.appId);
+            app = await window.API.Application.getById(applicationId);
+          } else if (params.feedbackId) {
+            // Load feedback first, then get application
+            currentFeedback = await window.API.Feedback.getById(
+              parseInt(params.feedbackId),
+            );
+            if (currentFeedback) {
+              app = await window.API.Application.getById(
+                currentFeedback.applicationId,
+              );
+              applicationId = app.applicationId;
+              // Pre-fill form with existing feedback
+              preFillForm(currentFeedback);
+            }
+          } else {
+            // No candidate specified, show error
+            loadingState.innerHTML = `
+            <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
+            <p style="color: var(--danger);">No candidate specified.</p>
+            <a href="dashboard.html" class="btn btn-primary" style="margin-top: 12px;">Go to Dashboard</a>
+          `;
+            return;
+          }
+
+          if (!app) {
+            loadingState.innerHTML = `
+            <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
+            <p style="color: var(--danger);">Candidate not found.</p>
+            <a href="dashboard.html" class="btn btn-primary" style="margin-top: 12px;">Go to Dashboard</a>
+          `;
+            return;
+          }
+
+          // Display candidate info
+          displayCandidate(app);
+
+          loadingState.style.display = "none";
+          content.style.display = "block";
+        } catch (error) {
+          console.error("Error loading candidate:", error);
+          loadingState.innerHTML = `
+          <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
+          <p style="color: var(--danger);">Failed to load candidate: ${error.message}</p>
+          <a href="dashboard.html" class="btn btn-primary" style="margin-top: 12px;">Go to Dashboard</a>
+        `;
+        }
+      }
+
+      // ============================================
+      // DISPLAY CANDIDATE
+      // ============================================
+      function displayCandidate(app) {
+        const initials = (app.candidateName || "U")
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase();
+
+        document.getElementById("profileAvatar").textContent = initials;
+        document.getElementById("profileName").textContent =
+          app.candidateName || "Unknown";
+        document.getElementById("profileJob").textContent =
+          `${app.jobTitle || "Position"} • ${app.department || ""}`;
+        document.getElementById("profileEmail").textContent =
+          app.candidateEmail || "No email";
+        document.getElementById("profileExperience").textContent =
+          app.experience || "Not specified";
+        document.getElementById("profileLocation").textContent =
+          app.location || "Not specified";
+        document.getElementById("profileApplied").textContent = formatDate(
+          app.appliedAt,
+        );
+
+        const aiScore =
+          app.aiScore || app.AI_Score || Math.floor(Math.random() * 30 + 65);
+        document.getElementById("aiScore").textContent = `${aiScore}%`;
+        document.getElementById("avgScore").textContent =
+          `${Math.round(aiScore * 0.9 + 5)}%`;
+
+        // Update page title
+        document.title = `Evaluate: ${app.candidateName} - RecruitAI`;
+      }
+
+      // ============================================
+      // PRE-FILL FORM WITH EXISTING FEEDBACK
+      // ============================================
+      function preFillForm(feedback) {
+        if (!feedback) return;
+
+        // Set ratings
+        setRating("technicalRating", feedback.technicalScore || 0);
+        setRating("behavioralRating", feedback.behavioralScore || 0);
+        setRating("communicationRating", feedback.communicationScore || 0);
+
+        // Set decision
+        const decisionSelect = document.getElementById("decisionSelect");
+        if (feedback.decision) {
+          const option = decisionSelect.querySelector(
+            `option[value="${feedback.decision}"]`,
+          );
+          if (option) option.selected = true;
         }
 
-        // Form submission
-        document
-          .getElementById("evalForm")
-          .addEventListener("submit", function (e) {
-            e.preventDefault();
+        // Set comments
+        if (feedback.comments) {
+          document.getElementById("commentsInput").value = feedback.comments;
+        }
 
-            const decision = document.querySelector(
-              'input[name="decision"]:checked',
+        // Update submit button text
+        document.getElementById("submitBtn").innerHTML =
+          '<i class="fas fa-pen"></i> Update Feedback';
+      }
+
+      function setRating(groupId, value) {
+        const buttons = document
+          .getElementById(groupId)
+          .querySelectorAll(".rating-btn");
+        buttons.forEach((btn) => {
+          btn.classList.toggle(
+            "selected",
+            parseInt(btn.dataset.value) === value,
+          );
+        });
+      }
+
+      // ============================================
+      // RATING BUTTONS
+      // ============================================
+      document.querySelectorAll(".rating-group").forEach((group) => {
+        group.addEventListener("click", function (e) {
+          const btn = e.target.closest(".rating-btn");
+          if (!btn) return;
+          this.querySelectorAll(".rating-btn").forEach((b) =>
+            b.classList.remove("selected"),
+          );
+          btn.classList.add("selected");
+        });
+      });
+
+      // ============================================
+      // GET SELECTED RATING
+      // ============================================
+      function getSelectedRating(groupId) {
+        const selected = document.querySelector(
+          `#${groupId} .rating-btn.selected`,
+        );
+        return selected ? parseInt(selected.dataset.value) : 0;
+      }
+
+      // ============================================
+      // SUBMIT FEEDBACK
+      // ============================================
+      document
+        .getElementById("feedbackForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const technical = getSelectedRating("technicalRating");
+          const behavioral = getSelectedRating("behavioralRating");
+          const communication = getSelectedRating("communicationRating");
+          const decision = document.getElementById("decisionSelect").value;
+          const comments = document
+            .getElementById("commentsInput")
+            .value.trim();
+
+          // Validate
+          if (!technical || !behavioral || !communication) {
+            showToast(
+              "Please rate all skills (Technical, Behavioral, Communication)",
+              "error",
             );
-            if (!decision) {
-              showToast(
-                "Please select a hiring decision.",
-                "fa-exclamation-circle",
-                true,
+            return;
+          }
+          if (!decision) {
+            showToast("Please select a decision", "error");
+            return;
+          }
+
+          const feedbackData = {
+            interviewId: currentFeedback?.interviewId || 1, // Placeholder - would need interview ID
+            technicalScore: technical,
+            behavioralScore: behavioral,
+            communicationScore: communication,
+            decision: decision,
+            comments: comments,
+          };
+
+          const btn = document.getElementById("submitBtn");
+          btn.disabled = true;
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+          try {
+            let result;
+            if (currentFeedback?.feedbackId) {
+              // Update existing feedback
+              result = await window.API.Feedback.update(
+                currentFeedback.feedbackId,
+                feedbackData,
               );
-              return;
+              showToast("✅ Feedback updated successfully!", "success");
+            } else {
+              // Submit new feedback
+              result = await window.API.Feedback.submit(feedbackData);
+              showToast("✅ Feedback submitted successfully!", "success");
             }
 
-            const data = {
-              candidate: "Jane Doe",
-              position: "Senior Full Stack Developer",
-              scores: {
-                technical: document.getElementById("techScore").value,
-                behavioral: document.getElementById("behavScore").value,
-                cultural: document.getElementById("culturScore").value,
-                communication: document.getElementById("commScore").value,
-              },
-              decision: decision.value,
-              notes: document.getElementById("feedbackNotes").value,
-              submittedBy: "Sarah Hiring Manager",
-              timestamp: new Date().toISOString(),
-            };
-
-            console.log("📋 Evaluation Submitted:", data);
-
-            const btn = this.querySelector(".btn-success");
-            const original = btn.innerHTML;
-            btn.innerHTML =
-              '<span class="spinner-sm" style="display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;"></span> Submitting...';
-            btn.disabled = true;
-
             setTimeout(() => {
-              btn.innerHTML = original;
-              btn.disabled = false;
-              const decisionText =
-                decision.value.charAt(0).toUpperCase() +
-                decision.value.slice(1);
-              showToast(
-                `✅ ${decisionText} decision submitted for Jane Doe!`,
-                "fa-check-circle",
-              );
-
-              // Update badge
-              const badge = document.querySelector(".badge-ai");
-              if (badge) {
-                badge.innerHTML =
-                  '<i class="fas fa-check-circle"></i> Evaluated';
-                badge.style.background = "var(--success-light)";
-                badge.style.color = "#065f46";
-              }
+              window.location.href = "dashboard.html";
             }, 1500);
-          });
-
-        // Save draft
-        window.saveDraft = function () {
-          showToast("💾 Draft saved successfully!", "fa-save");
-          console.log("📝 Draft saved");
-        };
-
-        // Reset form
-        window.resetForm = function () {
-          if (confirm("Reset all evaluation fields to default values?")) {
-            document.getElementById("techScore").value = "4";
-            document.getElementById("techVal").textContent = "4.0";
-            document.getElementById("behavScore").value = "4.5";
-            document.getElementById("behavVal").textContent = "4.5";
-            document.getElementById("culturScore").value = "4";
-            document.getElementById("culturVal").textContent = "4.0";
-            document.getElementById("commScore").value = "4.5";
-            document.getElementById("commVal").textContent = "4.5";
-            document.getElementById("feedbackNotes").value =
-              "Excellent technical skills with strong system design abilities. Good cultural fit and clear communication. Recommended for hire.";
-
-            document.querySelector(
-              'input[name="decision"][value="hire"]',
-            ).checked = true;
-            const labels = document.querySelectorAll(".radio-group label");
-            labels.forEach((label) => (label.className = ""));
-            labels[0].classList.add("selected-hire");
-
-            showToast("Form reset to defaults.", "fa-undo");
+          } catch (error) {
+            console.error("Error submitting feedback:", error);
+            showToast(error.message || "Failed to submit feedback", "error");
+            btn.disabled = false;
+            btn.innerHTML = currentFeedback?.feedbackId
+              ? '<i class="fas fa-pen"></i> Update Feedback'
+              : '<i class="fas fa-paper-plane"></i> Submit Feedback';
           }
-        };
+        });
 
-        // Download CV
-        window.downloadCV = function () {
-          showToast("📄 Downloading resume...", "fa-download");
-        };
+      // ============================================
+      // HELPERS
+      // ============================================
+      function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
 
-        // Inject spinner keyframe
-        const style = document.createElement("style");
-        style.textContent = `
-        @keyframes spin {
-          to { transform: rotate(360deg); }
+      function showToast(message, type = "info") {
+        if (typeof window.showToast === "function") {
+          window.showToast(message, type);
+        } else {
+          alert(message);
         }
-        .spinner-sm {
-          display: inline-block;
-          width: 18px;
-          height: 18px;
-          border: 2px solid rgba(255,255,255,0.3);
-          border-top-color: #fff;
-          border-radius: 50%;
-          animation: spin 0.6s linear infinite;
-        }
-      `;
-        document.head.appendChild(style);
+      }
 
-        console.log("✅ Candidate Evaluation page loaded!");
-        console.log("👤 Evaluating: Jane Doe (Senior Full Stack Developer)");
-      })();
+      // ============================================
+      // LOGOUT
+      // ============================================
+      function logout() {
+        window.API.Auth.logout();
+      }
+
+      // ============================================
+      // INIT
+      // ============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!checkAuth()) return;
+
+        // Update avatar
+        const avatar = document.getElementById("userAvatar");
+        if (avatar) {
+          const initials = window.API.getUserInitials();
+          avatar.textContent = initials || "HM";
+        }
+
+        // Load candidate
+        loadCandidate();
+
+        // Setup logout
+        document
+          .getElementById("logoutBtn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            logout();
+          });
+      });
     </script>
   </body>
 </html>

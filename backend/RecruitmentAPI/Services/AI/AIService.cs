@@ -409,20 +409,20 @@ namespace RecruitmentAPI.Services.AI
         /// </summary>
         private async Task<ResumeParseResult?> ParseResumeWithProviderAsync(string resumeText)
         {
-            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(_options.TimeoutSeconds));
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_options.TimeoutSeconds));
 
             var requestBody = new
             {
                 model = _options.Model,
                 messages = new object[]
                 {
-                    new { role = "system", content = "You extract structured resume data. Respond ONLY with JSON: {\"skills\":[],\"experience\":[{\"company\":\"\",\"title\":\"\",\"duration\":\"\"}],\"education\":[{\"institution\":\"\",\"degree\":\"\",\"year\":\"\"}],\"yearsOfExperience\":0}" },
-                    new { role = "user", content = resumeText }
+            new { role = "system", content = "You extract structured resume data. Respond ONLY with JSON: {\"skills\":[],\"experience\":[{\"company\":\"\",\"title\":\"\",\"duration\":\"\"}],\"education\":[{\"institution\":\"\",\"degree\":\"\",\"year\":\"\"}],\"yearsOfExperience\":0}" },
+            new { role = "user", content = resumeText }
                 },
                 temperature = 0.1
             };
 
-            var response = await _httpClient.PostAsJsonAsync(_options.Endpoint, requestBody, cts.Token);
+            var response = await SendAIRequestAsync(requestBody, cts.Token);
             response.EnsureSuccessStatusCode();
 
             var payload = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cts.Token);
@@ -525,6 +525,31 @@ Respond ONLY with JSON in this format:
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             return result;
+        }
+        /// <summary>
+        /// Sends a request to the AI provider with proper authentication and headers.
+        /// </summary>
+        private async Task<HttpResponseMessage> SendAIRequestAsync(object requestBody, CancellationToken ct)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _options.Endpoint)
+            {
+                Content = JsonContent.Create(requestBody)
+            };
+
+            // Set authentication header
+            if (!string.IsNullOrEmpty(_options.ApiKey))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _options.ApiKey);
+            }
+
+            // OpenRouter-specific headers
+            if (_options.Provider?.Equals("OpenRouter", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                request.Headers.Add("HTTP-Referer", "https://recruitai.com");
+                request.Headers.Add("X-Title", "RecruitAI Platform");
+            }
+
+            return await _httpClient.SendAsync(request, ct);
         }
     }
 }

@@ -39,7 +39,6 @@
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         font-family:
           "Inter",
@@ -51,7 +50,6 @@
         line-height: 1.5;
         -webkit-font-smoothing: antialiased;
       }
-
       a {
         text-decoration: none;
         color: inherit;
@@ -67,7 +65,6 @@
         z-index: 50;
         box-shadow: var(--shadow);
       }
-
       .nav-container {
         max-width: 1400px;
         margin: 0 auto;
@@ -75,7 +72,6 @@
         justify-content: space-between;
         align-items: center;
       }
-
       .logo {
         font-size: 1.25rem;
         font-weight: 700;
@@ -84,37 +80,38 @@
         align-items: center;
         gap: 0.5rem;
       }
-
       .nav-links {
         display: none;
         gap: 1.5rem;
       }
-
       .nav-links a {
         font-weight: 500;
         color: var(--text-secondary);
         transition: color 0.2s;
       }
-
       .nav-links a:hover,
       .nav-links a.active {
         color: var(--primary);
       }
-
       .user-menu {
         display: flex;
         align-items: center;
         gap: 1rem;
       }
-
       .header-avatar {
         width: 36px;
         height: 36px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 14px;
       }
-
       .hamburger {
         display: block;
         background: none;
@@ -123,7 +120,6 @@
         color: var(--text-secondary);
         cursor: pointer;
       }
-
       .mobile-menu {
         display: none;
         background-color: var(--surface);
@@ -135,7 +131,6 @@
         right: 0;
         box-shadow: var(--shadow);
       }
-
       .mobile-menu.active {
         display: flex;
         flex-direction: column;
@@ -148,25 +143,21 @@
         margin: 2rem auto;
         padding: 0 1.5rem;
       }
-
       .page-header {
         display: flex;
         flex-direction: column;
         gap: 1rem;
         margin-bottom: 2rem;
       }
-
       .page-title h1 {
         font-size: 1.875rem;
         font-weight: 700;
       }
-
       .page-title p {
         color: var(--text-secondary);
         margin-top: 0.25rem;
       }
 
-      /* Filters and Actions */
       .controls-bar {
         display: flex;
         flex-direction: column;
@@ -177,27 +168,23 @@
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
       }
-
       .date-filters {
         display: flex;
         flex-direction: column;
         gap: 1rem;
       }
-
       .date-input-group {
         display: flex;
         flex-direction: column;
         gap: 0.25rem;
         flex: 1;
       }
-
       .date-input-group label {
         font-size: 0.75rem;
         font-weight: 600;
         color: var(--text-secondary);
         text-transform: uppercase;
       }
-
       .date-input-group input {
         padding: 0.5rem 0.75rem;
         border: 1px solid var(--border);
@@ -206,7 +193,6 @@
         color: var(--text-primary);
         width: 100%;
       }
-
       .date-input-group input:focus {
         outline: none;
         border-color: var(--primary);
@@ -227,16 +213,18 @@
         gap: 0.5rem;
         border: 1px solid transparent;
       }
-
       .btn-primary {
         background-color: var(--primary);
         color: white;
         align-self: flex-end;
         width: 100%;
       }
-
       .btn-primary:hover {
         background-color: var(--primary-hover);
+      }
+      .btn-primary:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
       }
 
       /* ===== CHART GRID ===== */
@@ -246,7 +234,6 @@
         gap: 1.5rem;
         margin-top: 2rem;
       }
-
       .chart-card {
         background: var(--surface);
         border-radius: var(--radius);
@@ -256,25 +243,23 @@
         display: flex;
         flex-direction: column;
       }
-
       .chart-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
       }
-
       .chart-title {
         font-size: 1.125rem;
         font-weight: 600;
       }
-
       .chart-subtitle {
         font-size: 0.875rem;
         color: var(--text-secondary);
       }
 
-      /* Chart Tooltip (Global) */
       .chart-tooltip {
         position: absolute;
         background: var(--text-primary);
@@ -302,25 +287,21 @@
         border-color: var(--text-primary) transparent transparent transparent;
       }
 
-      /* --- SVG Line Chart --- */
       .line-chart-container {
         width: 100%;
         height: 300px;
         position: relative;
       }
-
       .line-chart-svg {
         width: 100%;
         height: 100%;
         overflow: visible;
       }
-
       .line-grid {
         stroke: var(--border);
         stroke-width: 1;
         stroke-dasharray: 4 4;
       }
-
       .line-path {
         fill: none;
         stroke: var(--primary);
@@ -329,13 +310,11 @@
         stroke-linecap: round;
         transition: d var(--transition-speed) ease-in-out;
       }
-
       .line-area {
         fill: url(#gradientPrimary);
         opacity: 0.2;
         transition: d var(--transition-speed) ease-in-out;
       }
-
       .line-point {
         fill: var(--surface);
         stroke: var(--primary);
@@ -346,19 +325,16 @@
           r 0.2s,
           stroke-width 0.2s;
       }
-
       .line-point:hover {
         r: 7;
         stroke-width: 3;
       }
-
       .chart-labels text {
         fill: var(--text-secondary);
         font-size: 12px;
         font-family: inherit;
       }
 
-      /* --- CSS Bar Chart --- */
       .bar-chart-container {
         width: 100%;
         height: 250px;
@@ -372,7 +348,6 @@
         border-left: 1px solid var(--border);
         padding-left: 0.5rem;
       }
-
       .bar-wrapper {
         flex: 1;
         display: flex;
@@ -382,7 +357,6 @@
         justify-content: flex-end;
         position: relative;
       }
-
       .bar {
         width: 80%;
         background-color: var(--info);
@@ -391,12 +365,11 @@
           height var(--transition-speed) ease-in-out,
           background-color 0.2s;
         cursor: pointer;
+        min-height: 8px;
       }
-
       .bar:hover {
         background-color: var(--primary);
       }
-
       .bar-label {
         position: absolute;
         bottom: -1.75rem;
@@ -404,7 +377,6 @@
         color: var(--text-secondary);
       }
 
-      /* --- CSS Pie Chart --- */
       .pie-chart-wrapper {
         display: flex;
         flex-direction: column;
@@ -413,7 +385,6 @@
         height: 100%;
         justify-content: center;
       }
-
       .pie-chart {
         width: 200px;
         height: 200px;
@@ -428,8 +399,6 @@
         box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
         transition: background var(--transition-speed);
       }
-
-      /* Donut hole */
       .pie-chart::after {
         content: "";
         position: absolute;
@@ -441,7 +410,6 @@
         background-color: var(--surface);
         border-radius: 50%;
       }
-
       .pie-center-text {
         position: absolute;
         top: 50%;
@@ -450,7 +418,6 @@
         z-index: 10;
         text-align: center;
       }
-
       .pie-center-text .val {
         font-weight: 700;
         font-size: 1.25rem;
@@ -467,7 +434,6 @@
         justify-content: center;
         width: 100%;
       }
-
       .legend-item {
         display: flex;
         align-items: center;
@@ -475,14 +441,12 @@
         font-size: 0.875rem;
         color: var(--text-secondary);
       }
-
       .legend-color {
         width: 12px;
         height: 12px;
         border-radius: 3px;
       }
 
-      /* Toast */
       .toast {
         position: fixed;
         bottom: 2rem;
@@ -500,13 +464,14 @@
         transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         z-index: 100;
       }
-
       .toast.show {
         transform: translateY(0);
         opacity: 1;
       }
+      .toast.error {
+        background: var(--danger);
+      }
 
-      /* Loading Spinner */
       .spinner {
         display: none;
         width: 1rem;
@@ -516,16 +481,41 @@
         border-top-color: white;
         animation: spin 1s ease-in-out infinite;
       }
-
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
 
-      /* ===== RESPONSIVE MEDIA QUERIES ===== */
+      .loading-overlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+        gap: 1rem;
+      }
+      .loading-overlay i {
+        font-size: 2rem;
+        animation: spin 1s linear infinite;
+      }
 
-      /* Tablet: 768px and up */
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+        text-align: center;
+        gap: 0.5rem;
+      }
+      .empty-state i {
+        font-size: 3rem;
+        color: var(--border);
+      }
+
+      /* ===== RESPONSIVE ===== */
       @media (min-width: 768px) {
         .hamburger {
           display: none;
@@ -536,43 +526,34 @@
         .mobile-menu {
           display: none !important;
         }
-
         .controls-bar {
           flex-direction: row;
           align-items: flex-end;
           justify-content: space-between;
         }
-
         .date-filters {
           flex-direction: row;
           flex: 1;
           max-width: 600px;
         }
-
         .btn-primary {
           width: auto;
         }
-
         .charts-grid {
           grid-template-columns: 1fr 1fr;
         }
-
         .chart-card.full-width {
           grid-column: 1 / -1;
         }
-
         .pie-chart-wrapper {
           flex-direction: row;
           justify-content: space-around;
         }
-
         .pie-legend {
           flex-direction: column;
           width: auto;
         }
       }
-
-      /* Desktop: 1024px and up */
       @media (min-width: 1024px) {
         .page-header {
           flex-direction: row;
@@ -586,74 +567,71 @@
     </style>
   </head>
   <body>
+    <!-- ===== HEADER ===== -->
     <header class="navbar">
       <div class="nav-container">
         <a href="#" class="logo">
           <i class="fa-solid fa-chart-pie"></i> Analytics
         </a>
-
         <nav class="nav-links">
-          <a href="dashboard.html">Dashboard</a>
-          <a href="reports.html" class="active">Reports</a>
-          <a href="settings.html">Settings</a>
+          <a href="admin-dashboard.html">Dashboard</a>
+          <a href="analytics-reports.html" class="active">Reports</a>
+          <a href="user-management.html">Users</a>
         </nav>
-
         <div class="user-menu">
-          <img
-            src="https://i.pravatar.cc/150?img=11"
-            alt="User Avatar"
-            class="header-avatar"
-          />
+          <div class="header-avatar" id="userAvatar">AD</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <i class="fa-solid fa-bars"></i>
           </button>
         </div>
       </div>
-
       <nav class="mobile-menu" id="mobileMenu">
-        <a href="#">Dashboard</a>
+        <a href="admin-dashboard.html">Dashboard</a>
         <a
-          href="../admin/analytics-reports.html"
+          href="analytics-reports.html"
           style="color: var(--primary); font-weight: 600"
           >Reports</a
         >
-        <a href="settings.html">Settings</a>
+        <a href="user-management.html">Users</a>
+        <a href="#" id="mobileLogout" style="color: var(--danger)">Sign Out</a>
       </nav>
     </header>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
       <header class="page-header">
         <div class="page-title">
           <h1>Analytics Overview</h1>
-          <p>Track your platform's performance and user engagement.</p>
+          <p id="dashboardSub">Loading recruitment analytics...</p>
         </div>
 
         <div class="controls-bar">
           <div class="date-filters">
             <div class="date-input-group">
               <label for="startDate">Start Date</label>
-              <input type="date" id="startDate" value="2023-09-01" />
+              <input type="date" id="startDate" />
             </div>
             <div class="date-input-group">
               <label for="endDate">End Date</label>
-              <input type="date" id="endDate" value="2023-09-30" />
+              <input type="date" id="endDate" />
             </div>
           </div>
-          <button type="button" class="btn btn-primary" id="exportBtn">
-            <i class="fa-solid fa-download" id="exportIcon"></i>
-            <div class="spinner" id="exportSpinner"></div>
-            <span>Export CSV</span>
+          <button type="button" class="btn btn-primary" id="refreshBtn">
+            <i class="fa-solid fa-sync" id="refreshIcon"></i>
+            <div class="spinner" id="refreshSpinner"></div>
+            <span>Refresh</span>
           </button>
         </div>
       </header>
 
-      <div class="charts-grid">
+      <div class="charts-grid" id="chartsGrid">
+        <!-- Line Chart -->
         <div class="chart-card full-width">
           <div class="chart-header">
             <div>
-              <h2 class="chart-title">Revenue Trend</h2>
+              <h2 class="chart-title">Applications Trend</h2>
               <span class="chart-subtitle"
-                >Daily revenue over selected period</span
+                >Daily applications over selected period</span
               >
             </div>
             <div
@@ -663,222 +641,44 @@
                 font-size: 1.25rem;
               "
             >
-              <span id="totalRevenue">$12,450</span>
+              <span id="totalApplications">0</span>
             </div>
           </div>
-
-          <div class="line-chart-container">
-            <svg
-              class="line-chart-svg"
-              viewBox="0 0 800 300"
-              preserveAspectRatio="none"
-            >
-              <defs>
-                <linearGradient
-                  id="gradientPrimary"
-                  x1="0"
-                  x2="0"
-                  y1="0"
-                  y2="1"
-                >
-                  <stop
-                    offset="0%"
-                    stop-color="var(--primary)"
-                    stop-opacity="0.8"
-                  />
-                  <stop
-                    offset="100%"
-                    stop-color="var(--primary)"
-                    stop-opacity="0"
-                  />
-                </linearGradient>
-              </defs>
-
-              <line x1="0" y1="50" x2="800" y2="50" class="line-grid" />
-              <line x1="0" y1="125" x2="800" y2="125" class="line-grid" />
-              <line x1="0" y1="200" x2="800" y2="200" class="line-grid" />
-              <line x1="0" y1="275" x2="800" y2="275" class="line-grid" />
-
-              <path
-                id="chartArea"
-                class="line-area"
-                d="M 0,275 L 0,200 L 133,150 L 266,220 L 400,100 L 533,170 L 666,80 L 800,120 L 800,275 Z"
-              />
-              <path
-                id="chartPath"
-                class="line-path"
-                d="M 0,200 L 133,150 L 266,220 L 400,100 L 533,170 L 666,80 L 800,120"
-              />
-
-              <g id="chartPoints">
-                <circle
-                  class="line-point interactive-el"
-                  cx="0"
-                  cy="200"
-                  data-val="$1,200"
-                  data-lbl="Sep 1"
-                />
-                <circle
-                  class="line-point interactive-el"
-                  cx="133"
-                  cy="150"
-                  data-val="$1,850"
-                  data-lbl="Sep 5"
-                />
-                <circle
-                  class="line-point interactive-el"
-                  cx="266"
-                  cy="220"
-                  data-val="$900"
-                  data-lbl="Sep 10"
-                />
-                <circle
-                  class="line-point interactive-el"
-                  cx="400"
-                  cy="100"
-                  data-val="$2,400"
-                  data-lbl="Sep 15"
-                />
-                <circle
-                  class="line-point interactive-el"
-                  cx="533"
-                  cy="170"
-                  data-val="$1,600"
-                  data-lbl="Sep 20"
-                />
-                <circle
-                  class="line-point interactive-el"
-                  cx="666"
-                  cy="80"
-                  data-val="$2,800"
-                  data-lbl="Sep 25"
-                />
-                <circle
-                  class="line-point interactive-el"
-                  cx="800"
-                  cy="120"
-                  data-val="$2,100"
-                  data-lbl="Sep 30"
-                />
-              </g>
-
-              <g class="chart-labels">
-                <text x="0" y="45">$3k</text>
-                <text x="0" y="120">$2k</text>
-                <text x="0" y="195">$1k</text>
-                <text x="0" y="270">$0</text>
-              </g>
-            </svg>
+          <div id="lineChartContainer">
+            <div class="loading-overlay">
+              <i class="fa-solid fa-spinner"></i> Loading chart...
+            </div>
           </div>
         </div>
 
+        <!-- Bar Chart -->
         <div class="chart-card">
           <div class="chart-header">
             <div>
-              <h2 class="chart-title">User Acquisition</h2>
-              <span class="chart-subtitle">New signups by channel</span>
+              <h2 class="chart-title">Applications by Department</h2>
+              <span class="chart-subtitle"
+                >Total applications per department</span
+              >
             </div>
           </div>
-
           <div class="bar-chart-container" id="barChart">
-            <div class="bar-wrapper">
-              <div
-                class="bar interactive-el"
-                style="height: 75%"
-                data-val="1,240"
-                data-lbl="Organic Search"
-              ></div>
-              <span class="bar-label">SEO</span>
-            </div>
-            <div class="bar-wrapper">
-              <div
-                class="bar interactive-el"
-                style="height: 45%"
-                data-val="850"
-                data-lbl="Social Media"
-              ></div>
-              <span class="bar-label">Social</span>
-            </div>
-            <div class="bar-wrapper">
-              <div
-                class="bar interactive-el"
-                style="height: 90%"
-                data-val="1,600"
-                data-lbl="Paid Ads"
-              ></div>
-              <span class="bar-label">Paid</span>
-            </div>
-            <div class="bar-wrapper">
-              <div
-                class="bar interactive-el"
-                style="height: 30%"
-                data-val="420"
-                data-lbl="Referrals"
-              ></div>
-              <span class="bar-label">Ref</span>
-            </div>
-            <div class="bar-wrapper">
-              <div
-                class="bar interactive-el"
-                style="height: 60%"
-                data-val="980"
-                data-lbl="Direct Traffic"
-              ></div>
-              <span class="bar-label">Direct</span>
+            <div class="loading-overlay">
+              <i class="fa-solid fa-spinner"></i>
             </div>
           </div>
         </div>
 
+        <!-- Pie Chart -->
         <div class="chart-card">
           <div class="chart-header">
             <div>
-              <h2 class="chart-title">Device Usage</h2>
-              <span class="chart-subtitle">Traffic by device type</span>
+              <h2 class="chart-title">Status Distribution</h2>
+              <span class="chart-subtitle">Applications by current status</span>
             </div>
           </div>
-
-          <div class="pie-chart-wrapper">
-            <div
-              class="pie-chart interactive-el"
-              id="pieChart"
-              data-val="100%"
-              data-lbl="Total Users"
-            >
-              <div class="pie-center-text">
-                <div class="val">4.1k</div>
-                <div class="lbl">Users</div>
-              </div>
-            </div>
-
-            <div class="pie-legend">
-              <div class="legend-item">
-                <div
-                  class="legend-color"
-                  style="background: var(--primary)"
-                ></div>
-                <span>Desktop (40%)</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color"
-                  style="background: var(--success)"
-                ></div>
-                <span>Mobile (30%)</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color"
-                  style="background: var(--warning)"
-                ></div>
-                <span>Tablet (20%)</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color"
-                  style="background: var(--danger)"
-                ></div>
-                <span>Other (10%)</span>
-              </div>
+          <div id="pieChartContainer">
+            <div class="loading-overlay">
+              <i class="fa-solid fa-spinner"></i>
             </div>
           </div>
         </div>
@@ -886,172 +686,420 @@
     </main>
 
     <div class="chart-tooltip" id="tooltip"></div>
-
     <div class="toast" id="toast">
       <i class="fa-solid fa-circle-check"></i>
-      <span>Report exported successfully!</span>
+      <span id="toastMsg">Done</span>
     </div>
 
+    <script src="../js/api.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- Mobile Menu Toggle ---
-        const hamburgerBtn = document.getElementById("hamburgerBtn");
-        const mobileMenu = document.getElementById("mobileMenu");
+      (function () {
+        "use strict";
 
-        hamburgerBtn.addEventListener("click", () => {
-          mobileMenu.classList.toggle("active");
-          const icon = hamburgerBtn.querySelector("i");
-          if (mobileMenu.classList.contains("active")) {
-            icon.classList.replace("fa-bars", "fa-xmark");
-          } else {
-            icon.classList.replace("fa-xmark", "fa-bars");
+        let currentUser = null;
+        let analyticsData = null;
+
+        // ============================================
+        // AUTHENTICATION CHECK
+        // ============================================
+        function checkAuth() {
+          if (!window.API.isAuthenticated()) {
+            window.location.href = "/auth/login.html";
+            return false;
           }
-        });
+          currentUser = window.API.getCurrentUser();
+          const role = currentUser?.role || currentUser?.Role || "";
+          if (!["Admin", "SuperAdmin"].includes(role)) {
+            alert("Access denied. Admins only.");
+            window.location.href = "/index.html";
+            return false;
+          }
+          const avatar = document.getElementById("userAvatar");
+          if (avatar) {
+            const initials = window.API.getUserInitials();
+            avatar.textContent = initials || "AD";
+          }
+          return true;
+        }
 
-        // --- Tooltip Logic ---
-        const tooltip = document.getElementById("tooltip");
-        const interactiveElements =
-          document.querySelectorAll(".interactive-el");
+        // ============================================
+        // LOAD ANALYTICS
+        // ============================================
+        async function loadAnalytics() {
+          const startDate = document.getElementById("startDate").value;
+          const endDate = document.getElementById("endDate").value;
 
-        interactiveElements.forEach((el) => {
-          el.addEventListener("mouseenter", (e) => {
+          showLoading(true);
+
+          try {
+            // Get recruitment analytics
+            const params = new URLSearchParams();
+            if (startDate) params.append("startDate", startDate);
+            if (endDate) params.append("endDate", endDate);
+
+            const response = await window.API.Admin.getAnalytics(
+              params.toString(),
+            );
+            analyticsData = response;
+
+            // Update UI
+            updateDashboard(response);
+            renderLineChart(response);
+            renderBarChart(response);
+            renderPieChart(response);
+
+            document.getElementById("dashboardSub").textContent =
+              `Showing analytics for ${startDate || "all time"} to ${endDate || "present"}`;
+          } catch (error) {
+            console.error("Error loading analytics:", error);
+            showToast("Failed to load analytics data", "error");
+          } finally {
+            showLoading(false);
+          }
+        }
+
+        // ============================================
+        // UPDATE DASHBOARD
+        // ============================================
+        function updateDashboard(data) {
+          if (!data) return;
+
+          // Total applications
+          const totalApps = data.totalApplications || 0;
+          document.getElementById("totalApplications").textContent =
+            totalApps.toLocaleString();
+
+          // Set default dates if not set
+          const startInput = document.getElementById("startDate");
+          const endInput = document.getElementById("endDate");
+          if (!startInput.value) {
+            const d = new Date();
+            d.setDate(d.getDate() - 30);
+            startInput.value = d.toISOString().split("T")[0];
+          }
+          if (!endInput.value) {
+            const d = new Date();
+            endInput.value = d.toISOString().split("T")[0];
+          }
+        }
+
+        // ============================================
+        // RENDER LINE CHART
+        // ============================================
+        function renderLineChart(data) {
+          const container = document.getElementById("lineChartContainer");
+
+          if (!data || !data.timeline || data.timeline.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <i class="fa-solid fa-chart-line"></i>
+                <p>No data available for the selected period</p>
+              </div>
+            `;
+            return;
+          }
+
+          const timeline = data.timeline || [];
+          const max =
+            Math.max.apply(
+              null,
+              timeline.map((d) => d.value),
+            ) || 1;
+
+          let svg = `
+            <div class="line-chart-container">
+              <svg class="line-chart-svg" viewBox="0 0 800 300" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="gradientPrimary" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+          `;
+
+          // Grid lines
+          for (let i = 0; i < 4; i++) {
+            const y = 50 + i * 75;
+            svg += `<line x1="0" y1="${y}" x2="800" y2="${y}" class="line-grid"/>`;
+          }
+
+          // Generate path data
+          const points = timeline.map((d, i) => {
+            const x = (i / (timeline.length - 1)) * 800;
+            const y = 275 - (d.value / max) * 225;
+            return { x, y, label: d.label || d.date, value: d.value };
+          });
+
+          // Area path
+          let areaPath = `M 0,275 L ${points[0].x},${points[0].y}`;
+          let linePath = `M ${points[0].x},${points[0].y}`;
+          for (let i = 1; i < points.length; i++) {
+            linePath += ` L ${points[i].x},${points[i].y}`;
+            areaPath += ` L ${points[i].x},${points[i].y}`;
+          }
+          areaPath += ` L 800,275 Z`;
+
+          svg += `<path id="chartArea" class="line-area" d="${areaPath}"/>`;
+          svg += `<path id="chartPath" class="line-path" d="${linePath}"/>`;
+
+          // Points
+          points.forEach((p, i) => {
+            svg += `
+              <circle class="line-point interactive-el"
+                cx="${p.x}" cy="${p.y}"
+                data-val="${p.value}" data-lbl="${p.label}"
+                r="5"
+              />
+            `;
+          });
+
+          // Y-axis labels
+          svg += `
+            <g class="chart-labels">
+              <text x="0" y="45">${Math.round(max)}</text>
+              <text x="0" y="120">${Math.round(max * 0.66)}</text>
+              <text x="0" y="195">${Math.round(max * 0.33)}</text>
+              <text x="0" y="270">0</text>
+            </g>
+          `;
+
+          svg += `</svg></div>`;
+          container.innerHTML = svg;
+
+          // Re-bind tooltips
+          bindTooltips();
+        }
+
+        // ============================================
+        // RENDER BAR CHART
+        // ============================================
+        function renderBarChart(data) {
+          const container = document.getElementById("barChart");
+
+          if (!data || !data.byDepartment || data.byDepartment.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state" style="width: 100%;">
+                <i class="fa-solid fa-building"></i>
+                <p>No department data available</p>
+              </div>
+            `;
+            return;
+          }
+
+          const depts = data.byDepartment || [];
+          const max =
+            Math.max.apply(
+              null,
+              depts.map((d) => d.value),
+            ) || 1;
+
+          container.innerHTML = depts
+            .map((dept) => {
+              const height = Math.max((dept.value / max) * 100, 8);
+              return `
+              <div class="bar-wrapper">
+                <div class="bar interactive-el"
+                  style="height: ${height}%;"
+                  data-val="${dept.value}" data-lbl="${dept.department}"
+                ></div>
+                <span class="bar-label">${dept.department.substring(0, 4)}</span>
+              </div>
+            `;
+            })
+            .join("");
+
+          bindTooltips();
+        }
+
+        // ============================================
+        // RENDER PIE CHART
+        // ============================================
+        function renderPieChart(data) {
+          const container = document.getElementById("pieChartContainer");
+
+          if (!data || !data.byStatus || data.byStatus.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <i class="fa-solid fa-chart-pie"></i>
+                <p>No status data available</p>
+              </div>
+            `;
+            return;
+          }
+
+          const statuses = data.byStatus || [];
+          const total = statuses.reduce((sum, s) => sum + s.value, 0) || 1;
+          const colors = [
+            "var(--primary)",
+            "var(--success)",
+            "var(--warning)",
+            "var(--danger)",
+            "#8b5cf6",
+            "#ec4899",
+          ];
+
+          // Build conic gradient
+          let gradient = "conic-gradient(";
+          let currentAngle = 0;
+          statuses.forEach((s, i) => {
+            const percent = (s.value / total) * 100;
+            const angle = (s.value / total) * 360;
+            const color = colors[i % colors.length];
+            gradient += `${color} ${currentAngle}deg ${currentAngle + angle}deg`;
+            if (i < statuses.length - 1) gradient += ", ";
+            currentAngle += angle;
+          });
+          gradient += ")";
+
+          const statusColors = statuses.map(
+            (s, i) => colors[i % colors.length],
+          );
+
+          container.innerHTML = `
+            <div class="pie-chart-wrapper">
+              <div class="pie-chart interactive-el" id="pieChart"
+                style="background: ${gradient};"
+                data-val="${total}" data-lbl="Total Applications"
+              >
+                <div class="pie-center-text">
+                  <div class="val">${total}</div>
+                  <div class="lbl">Applications</div>
+                </div>
+              </div>
+              <div class="pie-legend">
+                ${statuses
+                  .map(
+                    (s, i) => `
+                  <div class="legend-item">
+                    <div class="legend-color" style="background: ${statusColors[i]};"></div>
+                    <span>${s.status || "Unknown"} (${Math.round((s.value / total) * 100)}%)</span>
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `;
+
+          bindTooltips();
+        }
+
+        // ============================================
+        // TOOLTIP BINDING
+        // ============================================
+        function bindTooltips() {
+          const tooltip = document.getElementById("tooltip");
+          const elements = document.querySelectorAll(".interactive-el");
+
+          elements.forEach((el) => {
+            el.removeEventListener("mouseenter", handleMouseEnter);
+            el.removeEventListener("mousemove", handleMouseMove);
+            el.removeEventListener("mouseleave", handleMouseLeave);
+
+            el.addEventListener("mouseenter", handleMouseEnter);
+            el.addEventListener("mousemove", handleMouseMove);
+            el.addEventListener("mouseleave", handleMouseLeave);
+          });
+
+          function handleMouseEnter(e) {
             const val = e.target.getAttribute("data-val");
             const lbl = e.target.getAttribute("data-lbl");
             if (val && lbl) {
               tooltip.innerHTML = `<strong>${val}</strong><br>${lbl}`;
               tooltip.style.opacity = "1";
             }
-          });
+          }
 
-          el.addEventListener("mousemove", (e) => {
+          function handleMouseMove(e) {
             tooltip.style.left = e.pageX + "px";
             tooltip.style.top = e.pageY - 10 + "px";
-          });
+          }
 
-          el.addEventListener("mouseleave", () => {
+          function handleMouseLeave() {
             tooltip.style.opacity = "0";
+          }
+        }
+
+        // ============================================
+        // LOADING / TOAST
+        // ============================================
+        function showLoading(show) {
+          const charts = document.querySelectorAll(".chart-card");
+          // Show/hide loading indicators within charts
+        }
+
+        let toastTimer = null;
+
+        function showToast(msg, type = "success") {
+          const toast = document.getElementById("toast");
+          const toastMsg = document.getElementById("toastMsg");
+          toastMsg.textContent = msg;
+          toast.className = "toast" + (type === "error" ? " error" : "");
+          toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+        }
+
+        // ============================================
+        // REFRESH
+        // ============================================
+        document
+          .getElementById("refreshBtn")
+          .addEventListener("click", function () {
+            const icon = document.getElementById("refreshIcon");
+            const spinner = document.getElementById("refreshSpinner");
+            const btn = this;
+
+            btn.disabled = true;
+            icon.style.display = "none";
+            spinner.style.display = "block";
+
+            loadAnalytics().then(() => {
+              btn.disabled = false;
+              icon.style.display = "block";
+              spinner.style.display = "none";
+              showToast("Analytics refreshed");
+            });
           });
+
+        // ============================================
+        // DATE FILTERS
+        // ============================================
+        document
+          .getElementById("startDate")
+          .addEventListener("change", loadAnalytics);
+        document
+          .getElementById("endDate")
+          .addEventListener("change", loadAnalytics);
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        document
+          .getElementById("hamburgerBtn")
+          .addEventListener("click", function () {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("active");
+          });
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        document
+          .getElementById("mobileLogout")
+          ?.addEventListener("click", function (e) {
+            e.preventDefault();
+            window.API.Auth.logout();
+          });
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener("DOMContentLoaded", function () {
+          if (!checkAuth()) return;
+          loadAnalytics();
         });
-
-        // --- Chart Data Update Simulation (Date Filter Change) ---
-        const startDateInput = document.getElementById("startDate");
-        const endDateInput = document.getElementById("endDate");
-
-        const updateCharts = () => {
-          console.log(
-            `Filters changed: ${startDateInput.value} to ${endDateInput.value}. Updating charts...`,
-          );
-
-          // 1. Update Line Chart
-          const chartPath = document.getElementById("chartPath");
-          const chartArea = document.getElementById("chartArea");
-          const points = document.querySelectorAll(".line-point");
-          const totalRevenueStr = document.getElementById("totalRevenue");
-
-          let newPathStr = "M 0,";
-          let newAreaStr = "M 0,275 L 0,";
-          let totalRev = 0;
-
-          points.forEach((point, index) => {
-            // Randomize Y value between 50 and 250
-            const newY = Math.floor(Math.random() * (250 - 50 + 1) + 50);
-            const cx = point.getAttribute("cx");
-
-            point.setAttribute("cy", newY);
-
-            // Generate fake value based on height (inverted)
-            const revVal = Math.round((275 - newY) * 12.5);
-            totalRev += revVal;
-            point.setAttribute("data-val", `$${revVal.toLocaleString()}`);
-
-            if (index === 0) {
-              newPathStr += `${newY} `;
-              newAreaStr += `${newY} `;
-            } else {
-              newPathStr += `L ${cx},${newY} `;
-              newAreaStr += `L ${cx},${newY} `;
-            }
-          });
-
-          newAreaStr += "L 800,275 Z";
-          chartPath.setAttribute("d", newPathStr);
-          chartArea.setAttribute("d", newAreaStr);
-          totalRevenueStr.textContent = `$${totalRev.toLocaleString()}`;
-
-          // 2. Update Bar Chart
-          const bars = document.querySelectorAll(".bar");
-          bars.forEach((bar) => {
-            const newHeight = Math.floor(Math.random() * 80) + 15; // 15% to 95%
-            bar.style.height = `${newHeight}%`;
-            bar.setAttribute(
-              "data-val",
-              Math.floor(newHeight * 25).toLocaleString(),
-            );
-          });
-
-          // 3. Update Pie Chart
-          const pieChart = document.getElementById("pieChart");
-          // Randomize slices slightly
-          const p1 = Math.floor(Math.random() * 20) + 30; // 30-50%
-          const p2 = Math.floor(Math.random() * 20) + 20; // 20-40%
-          const p3 = Math.floor(Math.random() * 15) + 10; // 10-25%
-          // p4 is remainder
-
-          const d1 = Math.round(p1 * 3.6);
-          const d2 = d1 + Math.round(p2 * 3.6);
-          const d3 = d2 + Math.round(p3 * 3.6);
-
-          pieChart.style.background = `conic-gradient(
-                    var(--primary) 0deg ${d1}deg, 
-                    var(--success) ${d1}deg ${d2}deg, 
-                    var(--warning) ${d2}deg ${d3}deg, 
-                    var(--danger) ${d3}deg 360deg
-                )`;
-
-          // Update legend text
-          const legends = document.querySelectorAll(".legend-item span");
-          legends[0].textContent = `Desktop (${p1}%)`;
-          legends[1].textContent = `Mobile (${p2}%)`;
-          legends[2].textContent = `Tablet (${p3}%)`;
-          legends[3].textContent = `Other (${100 - (p1 + p2 + p3)}%)`;
-        };
-
-        startDateInput.addEventListener("change", updateCharts);
-        endDateInput.addEventListener("change", updateCharts);
-
-        // --- Export Handler ---
-        const exportBtn = document.getElementById("exportBtn");
-        const exportIcon = document.getElementById("exportIcon");
-        const exportSpinner = document.getElementById("exportSpinner");
-        const toast = document.getElementById("toast");
-
-        exportBtn.addEventListener("click", () => {
-          // UI Loading State
-          exportBtn.disabled = true;
-          exportIcon.style.display = "none";
-          exportSpinner.style.display = "block";
-          exportBtn.querySelector("span").textContent = "Generating...";
-
-          // Simulate network delay
-          setTimeout(() => {
-            console.log(
-              `Exported data from ${startDateInput.value} to ${endDateInput.value} as CSV`,
-            );
-
-            // Reset UI State
-            exportBtn.disabled = false;
-            exportIcon.style.display = "block";
-            exportSpinner.style.display = "none";
-            exportBtn.querySelector("span").textContent = "Export CSV";
-
-            // Show Toast
-            toast.classList.add("show");
-            setTimeout(() => {
-              toast.classList.remove("show");
-            }, 3000);
-          }, 1500);
-        });
-      });
+      })();
     </script>
   </body>
 </html>

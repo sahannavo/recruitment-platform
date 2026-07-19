@@ -1,51 +1,66 @@
+using System.Security.Claims;
 using RecruitmentAPI.Helpers;
 using RecruitmentAPI.Repository.Interfaces;
+using RecruitmentAPI.Models;
 
 namespace RecruitmentAPI.Middleware
 {
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<JwtMiddleware> _logger;
+        private readonly IUserRepository _userRepository;
 
-        public JwtMiddleware(RequestDelegate next)
+        public JwtMiddleware(
+            RequestDelegate next,
+            ILogger<JwtMiddleware> logger,
+            IUserRepository userRepository)
         {
             _next = next;
+            _logger = logger;
+            _userRepository = userRepository;
         }
 
-        public async Task Invoke(HttpContext context, IJwtHelper jwtHelper, IUnitOfWork unitOfWork)
+        public async Task Invoke(HttpContext context, IJwtHelper jwtHelper)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            if (token != null)
+            if (!string.IsNullOrEmpty(token))
             {
-                await AttachUserToContext(context, jwtHelper, unitOfWork, token);
+                await AttachUserToContext(context, jwtHelper, token);
             }
 
-            // Call the next delegate/middleware in the pipeline
             await _next(context);
         }
 
-        private async Task AttachUserToContext(HttpContext context, IJwtHelper jwtHelper, IUnitOfWork unitOfWork, string token)
+        private async Task AttachUserToContext(HttpContext context, IJwtHelper jwtHelper, string token)
         {
             try
             {
                 var principal = jwtHelper.ValidateToken(token);
                 if (principal != null)
                 {
-                    // Extract the User ID from the JWT claims
-                    var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    var userIdClaim = principal.FindFirst("sub")?.Value
+                                   ?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                    if (int.TryParse(userIdClaim, out int userId))
+                    if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
                     {
-                        // Attach user to context on successful JWT validation
-                        context.Items["User"] = await unitOfWork.Users.GetByIdAsync(userId);
+                        var user = await _userRepository.GetByIdAsync(userId);
+                        if (user != null)
+                        {
+                            context.Items["User"] = user;
+                            _logger.LogDebug("User {UserId} attached to context", userId);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("User {UserId} not found in database", userId);
+                        }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Do nothing if JWT validation fails
-                // User is not attached to context, so the request won't have access to secure routes
+                _logger.LogError(ex, "Error attaching user to context");
             }
         }
     }

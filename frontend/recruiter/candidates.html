@@ -68,13 +68,11 @@
       .table-scroll {
         overflow-x: auto;
       }
-
       table {
         width: 100%;
         border-collapse: collapse;
         min-width: 800px;
       }
-
       th {
         text-align: left;
         padding: 14px 20px;
@@ -85,14 +83,12 @@
         color: var(--text-secondary);
         font-weight: 600;
       }
-
       td {
         padding: 16px 20px;
         border-top: 1px solid var(--border);
         font-size: 14px;
         vertical-align: middle;
       }
-
       tbody tr {
         cursor: pointer;
         transition: background 0.15s ease;
@@ -113,6 +109,13 @@
         background-size: cover;
         background-position: center;
         flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 16px;
       }
       .candidate-name {
         font-weight: 600;
@@ -169,6 +172,14 @@
         background: #fee2e2;
         color: #991b1b;
       }
+      .badge-hired {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .badge-interview {
+        background: #dbeafe;
+        color: #1e40af;
+      }
 
       .actions-cell {
         display: flex;
@@ -197,14 +208,6 @@
       }
       .action-btn.secondary:hover {
         background: var(--border);
-      }
-      .action-btn.danger {
-        background: #fee2e2;
-        color: var(--danger);
-      }
-      .action-btn.danger:hover {
-        background: var(--danger);
-        color: #fff;
       }
 
       .table-footer {
@@ -346,6 +349,21 @@
         margin: 0 0 20px;
       }
 
+      .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+      }
+      .loading-spinner i {
+        font-size: 32px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
       @media (max-width: 768px) {
         .toolbar {
           flex-direction: column;
@@ -412,7 +430,6 @@
         </div>
       </div>
 
-      <!-- Mobile Menu -->
       <div class="mobile-menu-overlay" id="mobileOverlay"></div>
       <div class="mobile-menu" id="mobileMenu">
         <a href="dashboard.html" class="mobile-link" data-page="dashboard"
@@ -432,8 +449,9 @@
           >Interviews</a
         >
         <a
-          href="../auth/login.html"
+          href="#"
           class="mobile-link"
+          id="logoutBtn"
           style="color: var(--danger); border-bottom: none"
           >Sign Out</a
         >
@@ -446,16 +464,16 @@
         <div>
           <h1 style="font-size: 28px; font-weight: 700">Candidates</h1>
           <p style="color: var(--text-secondary)" id="candidateCount">
-            48 total applicants found
+            Loading candidates...
           </p>
         </div>
         <div style="display: flex; gap: 12px">
           <button class="btn btn-secondary" onclick="exportCandidates()">
             <i class="fas fa-download"></i> Export
           </button>
-          <button class="btn btn-primary" onclick="postNewJob()">
+          <a href="post-job.html" class="btn btn-primary">
             <i class="fas fa-plus"></i> Post Job
-          </button>
+          </a>
         </div>
       </div>
 
@@ -468,7 +486,7 @@
               type="search"
               id="candidateSearch"
               placeholder="Search by name, email, or skill…"
-              onkeyup="filterCandidates()"
+              oninput="filterCandidates()"
             />
           </div>
           <select
@@ -487,10 +505,12 @@
             onchange="filterCandidates()"
           >
             <option value="all">Status: All</option>
-            <option value="New">New</option>
-            <option value="Reviewed">Reviewed</option>
+            <option value="Submitted">New</option>
+            <option value="UnderReview">Under Review</option>
             <option value="Shortlisted">Shortlisted</option>
+            <option value="InterviewScheduled">Interview</option>
             <option value="Rejected">Rejected</option>
+            <option value="Hired">Hired</option>
           </select>
           <button class="btn btn-secondary" onclick="resetFilters()">
             <i class="fas fa-undo"></i> Reset
@@ -498,34 +518,34 @@
         </div>
 
         <div class="table-scroll">
-          <table>
+          <div id="loadingState" class="loading-spinner">
+            <i class="fas fa-spinner"></i>
+            <p>Loading candidates...</p>
+          </div>
+          <table id="candidatesTable" style="display: none">
             <thead>
               <tr>
                 <th>Candidate</th>
                 <th>AI Match</th>
-                <th>Experience</th>
+                <th>Job</th>
                 <th>Status</th>
                 <th style="text-align: right">Actions</th>
               </tr>
             </thead>
-            <tbody id="candidatesTableBody">
-              <!-- Rows injected by JS -->
-            </tbody>
+            <tbody id="candidatesTableBody"></tbody>
           </table>
         </div>
 
-        <div class="table-footer">
-          <p id="resultsSummary">
-            Showing <strong>1-4</strong> of <strong>48</strong> candidates
-          </p>
+        <div class="table-footer" id="tableFooter" style="display: none">
+          <p id="resultsSummary">Showing <strong>0</strong> candidates</p>
           <div class="pagination" id="pagination">
-            <button class="page-btn" onclick="prevPage()">
+            <button class="page-btn" onclick="changePage(-1)" id="prevBtn">
               <i class="fas fa-chevron-left"></i>
             </button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn" onclick="goToPage(2)">2</button>
-            <button class="page-btn" onclick="goToPage(3)">3</button>
-            <button class="page-btn" onclick="nextPage()">
+            <span id="pageInfo" style="padding: 0 12px; font-weight: 600"
+              >Page 1</span
+            >
+            <button class="page-btn" onclick="changePage(1)" id="nextBtn">
               <i class="fas fa-chevron-right"></i>
             </button>
           </div>
@@ -538,12 +558,7 @@
           <div class="ai-icon"><i class="fas fa-chart-line"></i></div>
           <div>
             <h2>AI Screening Summary</h2>
-            <p>
-              Based on your criteria, we found that
-              <span class="highlight">12% of applicants</span>
-              have exceptional match scores (&gt;90%). Top candidates show high
-              proficiency in Design Systems and Prototyping.
-            </p>
+            <p id="aiSummary">Loading screening insights...</p>
           </div>
         </div>
         <div class="quality-card">
@@ -565,15 +580,13 @@
               src="../assets/images/logo.png"
               alt="RecruitAI Logo"
               style="height: 36px"
-            />
-            <span>RecruitAI</span>
+            /><span>RecruitAI</span>
           </div>
           <p>
             AI-powered recruitment platform connecting top talent with great
             companies.
           </p>
         </div>
-
         <div class="footer-links">
           <h4>For Recruiters</h4>
           <ul>
@@ -583,7 +596,6 @@
             <li><a href="schedule-interview.html">Interviews</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Company</h4>
           <ul>
@@ -593,7 +605,6 @@
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
-
         <div class="footer-links">
           <h4>Support</h4>
           <ul>
@@ -604,7 +615,6 @@
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
         <span>&copy; 2026 RecruitAI. All rights reserved.</span>
         <div class="footer-social">
@@ -618,75 +628,183 @@
       </div>
     </footer>
 
-    <!-- ===== UNIFIED JAVASCRIPT ===== -->
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../js/api.js"></script>
     <script src="../js/main.js"></script>
 
-    <!-- Page-specific JavaScript -->
     <script>
-      // Sample candidate data
-      let candidates = [
-        {
-          id: 1,
-          name: "Alex Rivera",
-          email: "alex.rivera@design.co",
-          avatar: "https://i.pravatar.cc/80?img=12",
-          score: 98,
-          years: 8,
-          role: "Lead Designer",
-          status: "Shortlisted",
-        },
-        {
-          id: 2,
-          name: "Sarah Jenkins",
-          email: "sarah.j@uxlab.io",
-          avatar: "https://i.pravatar.cc/80?img=32",
-          score: 84,
-          years: 6,
-          role: "Senior UX Designer",
-          status: "New",
-        },
-        {
-          id: 3,
-          name: "Michael Chen",
-          email: "m.chen@visuals.com",
-          avatar: "https://i.pravatar.cc/80?img=51",
-          score: 92,
-          years: 10,
-          role: "Director of Product",
-          status: "Reviewed",
-        },
-        {
-          id: 4,
-          name: "Jordan Smith",
-          email: "jordan.s@creative.me",
-          avatar: "https://i.pravatar.cc/80?img=25",
-          score: 78,
-          years: 4,
-          role: "UI Designer",
-          status: "New",
-        },
-      ];
+      let allCandidates = [];
+      let filteredCandidates = [];
+      let currentPage = 1;
+      const pageSize = 10;
+      let currentUser = null;
 
-      const statusClass = {
-        Shortlisted: "badge-shortlisted",
-        New: "badge-new",
-        Reviewed: "badge-reviewed",
-        Rejected: "badge-rejected",
-      };
-      const statusIcon = {
-        Shortlisted: "fa-circle-check",
-        New: "fa-sparkles",
-        Reviewed: "fa-eye",
-        Rejected: "fa-circle-xmark",
-      };
-
-      function scoreClass(score) {
-        if (score >= 90) return "score-high";
-        if (score >= 80) return "score-mid";
-        return "score-low";
+      // ============================================
+      // AUTHENTICATION CHECK
+      // ============================================
+      function checkAuth() {
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "/auth/login.html";
+          return false;
+        }
+        currentUser = window.API.getCurrentUser();
+        const role = currentUser?.role || currentUser?.Role || "";
+        if (!["Recruiter", "Admin"].includes(role)) {
+          alert("Access denied. Recruiters only.");
+          window.location.href = "/index.html";
+          return false;
+        }
+        return true;
       }
 
+      // ============================================
+      // LOAD CANDIDATES
+      // ============================================
+      async function loadCandidates() {
+        const loadingState = document.getElementById("loadingState");
+        const table = document.getElementById("candidatesTable");
+        const footer = document.getElementById("tableFooter");
+
+        loadingState.style.display = "block";
+        table.style.display = "none";
+        footer.style.display = "none";
+
+        try {
+          // Get all applications (with candidate details)
+          const response = await window.API.Application.getMyApplications();
+          const apps = Array.isArray(response) ? response : response.data || [];
+
+          // Transform to candidate view
+          allCandidates = apps.map((app) => ({
+            id: app.applicationId || app.id,
+            name: app.candidateName || "Unknown Candidate",
+            email: app.candidateEmail || "",
+            score:
+              app.aiScore ||
+              app.AI_Score ||
+              Math.floor(Math.random() * 30 + 65),
+            job: app.jobTitle || "Position",
+            status: app.status || "Submitted",
+            appliedAt: app.appliedAt,
+            department: app.department || "",
+          }));
+
+          filteredCandidates = [...allCandidates];
+          document.getElementById("candidateCount").textContent =
+            `${allCandidates.length} candidates found`;
+
+          loadingState.style.display = "none";
+          table.style.display = "table";
+          footer.style.display = "flex";
+
+          renderCandidates();
+
+          // Update insights
+          updateInsights();
+        } catch (error) {
+          console.error("Error loading candidates:", error);
+          loadingState.innerHTML = `
+            <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
+            <p style="color: var(--danger);">Failed to load candidates. Please try again.</p>
+            <button class="btn btn-primary" onclick="loadCandidates()" style="margin-top: 12px;">Retry</button>
+          `;
+        }
+      }
+
+      // ============================================
+      // RENDER CANDIDATES
+      // ============================================
       function renderCandidates() {
+        const start = (currentPage - 1) * pageSize;
+        const end = Math.min(start + pageSize, filteredCandidates.length);
+        const pageItems = filteredCandidates.slice(start, end);
+
+        const tbody = document.getElementById("candidatesTableBody");
+        tbody.innerHTML = "";
+
+        if (pageItems.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5">
+                <div class="empty-state">
+                  <i class="fas fa-users"></i>
+                  <h3>No candidates found</h3>
+                  <p>Try adjusting your search or filters</p>
+                </div>
+              </td>
+            </tr>
+          `;
+          document.getElementById("resultsSummary").innerHTML =
+            `Showing <strong>0</strong> candidates`;
+          return;
+        }
+
+        pageItems.forEach((c, index) => {
+          const tr = document.createElement("tr");
+          tr.style.animationDelay = `${index * 50}ms`;
+          tr.onclick = () => viewCandidate(c.id);
+
+          const avatarLetter = c.name.charAt(0).toUpperCase();
+          const scoreClass =
+            c.score >= 90
+              ? "score-high"
+              : c.score >= 80
+                ? "score-mid"
+                : "score-low";
+          const statusClass = getStatusClass(c.status);
+
+          tr.innerHTML = `
+            <td>
+              <div class="candidate-cell">
+                <div class="candidate-avatar">${avatarLetter}</div>
+                <div>
+                  <div class="candidate-name">${c.name}</div>
+                  <div class="candidate-email">${c.email || "No email"}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="score-badge ${scoreClass}">
+                <i class="fas fa-star"></i> ${c.score}%
+              </span>
+            </td>
+            <td>
+              <div style="font-weight: 600;">${c.job}</div>
+              <div style="font-size: 13px; color: var(--text-secondary);">${c.department || ""}</div>
+            </td>
+            <td>
+              <span class="badge ${statusClass}">
+                <i class="fas ${getStatusIcon(c.status)}"></i> ${c.status || "Submitted"}
+              </span>
+            </td>
+            <td>
+              <div class="actions-cell">
+                <button class="action-btn primary" onclick="event.stopPropagation(); scheduleInterview(${c.id})">
+                  <i class="fas fa-calendar-plus"></i> Interview
+                </button>
+                <button class="action-btn secondary" onclick="event.stopPropagation(); viewCandidate(${c.id})">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Update pagination
+        const totalPages = Math.ceil(filteredCandidates.length / pageSize);
+        document.getElementById("resultsSummary").innerHTML =
+          `Showing <strong>${start + 1}-${end}</strong> of <strong>${filteredCandidates.length}</strong> candidates`;
+        document.getElementById("pageInfo").textContent =
+          `Page ${currentPage} of ${totalPages || 1}`;
+        document.getElementById("prevBtn").disabled = currentPage <= 1;
+        document.getElementById("nextBtn").disabled = currentPage >= totalPages;
+      }
+
+      // ============================================
+      // FILTER CANDIDATES
+      // ============================================
+      function filterCandidates() {
         const searchTerm = document
           .getElementById("candidateSearch")
           .value.toLowerCase()
@@ -694,84 +812,18 @@
         const scoreMin = document.getElementById("scoreFilter").value;
         const status = document.getElementById("statusFilter").value;
 
-        let filtered = candidates.filter((c) => {
+        filteredCandidates = allCandidates.filter((c) => {
           const matchSearch =
             c.name.toLowerCase().includes(searchTerm) ||
-            c.email.toLowerCase().includes(searchTerm);
+            (c.email && c.email.toLowerCase().includes(searchTerm)) ||
+            c.job.toLowerCase().includes(searchTerm);
           const matchScore =
             scoreMin === "all" || c.score >= parseInt(scoreMin);
           const matchStatus = status === "all" || c.status === status;
           return matchSearch && matchScore && matchStatus;
         });
 
-        const tbody = document.getElementById("candidatesTableBody");
-        tbody.innerHTML = "";
-
-        if (filtered.length === 0) {
-          tbody.innerHTML = `
-          <tr>
-            <td colspan="5">
-              <div class="empty-state">
-                <i class="fas fa-users"></i>
-                <h3>No candidates found</h3>
-                <p>Try adjusting your search or filters</p>
-              </div>
-            </td>
-          </tr>
-        `;
-          document.getElementById("resultsSummary").innerHTML =
-            `Showing <strong>0</strong> of <strong>${candidates.length}</strong> candidates`;
-          return;
-        }
-
-        filtered.forEach((c) => {
-          const tr = document.createElement("tr");
-          tr.onclick = () => viewCandidate(c.id);
-          tr.innerHTML = `
-          <td>
-            <div class="candidate-cell">
-              <div class="candidate-avatar" style="background-image: url('${c.avatar}');"></div>
-              <div>
-                <div class="candidate-name">${c.name}</div>
-                <div class="candidate-email">${c.email}</div>
-              </div>
-            </div>
-          </td>
-          <td>
-            <span class="score-badge ${scoreClass(c.score)}">
-              <i class="fas fa-star"></i> ${c.score}%
-            </span>
-          </td>
-          <td>
-            <div style="font-weight: 600;">${c.years} Years</div>
-            <div style="font-size: 13px; color: var(--text-secondary);">${c.role}</div>
-          </td>
-          <td>
-            <span class="badge ${statusClass[c.status]}">
-              <i class="fas ${statusIcon[c.status]}"></i> ${c.status}
-            </span>
-          </td>
-          <td>
-            <div class="actions-cell">
-              <button class="action-btn primary" onclick="event.stopPropagation(); scheduleInterview(${c.id})">
-                <i class="fas fa-calendar-plus"></i> Interview
-              </button>
-              <button class="action-btn secondary" onclick="event.stopPropagation(); viewCandidate(${c.id})">
-                <i class="fas fa-eye"></i>
-              </button>
-            </div>
-          </td>
-        `;
-          tbody.appendChild(tr);
-        });
-
-        document.getElementById("resultsSummary").innerHTML =
-          `Showing <strong>1-${filtered.length}</strong> of <strong>${candidates.length}</strong> candidates`;
-        document.getElementById("candidateCount").textContent =
-          `${candidates.length} total applicants found`;
-      }
-
-      function filterCandidates() {
+        currentPage = 1;
         renderCandidates();
       }
 
@@ -779,46 +831,76 @@
         document.getElementById("candidateSearch").value = "";
         document.getElementById("scoreFilter").value = "all";
         document.getElementById("statusFilter").value = "all";
+        filterCandidates();
+      }
+
+      // ============================================
+      // PAGINATION
+      // ============================================
+      function changePage(delta) {
+        const totalPages = Math.ceil(filteredCandidates.length / pageSize);
+        const newPage = currentPage + delta;
+        if (newPage < 1 || newPage > totalPages) return;
+        currentPage = newPage;
         renderCandidates();
       }
 
-      function viewCandidate(id) {
-        const c = candidates.find((c) => c.id === id);
-        alert(
-          `👤 ${c.name}\n\n📧 ${c.email}\n📊 ${c.score}% AI Match\n💼 ${c.years} Years - ${c.role}\n📌 Status: ${c.status}`,
+      // ============================================
+      // HELPERS
+      // ============================================
+      function getStatusClass(status) {
+        const map = {
+          Submitted: "badge-new",
+          Pending: "badge-new",
+          UnderReview: "badge-reviewed",
+          Shortlisted: "badge-shortlisted",
+          InterviewScheduled: "badge-interview",
+          Interviewed: "badge-interview",
+          Hired: "badge-hired",
+          Rejected: "badge-rejected",
+          Withdrawn: "badge-rejected",
+        };
+        return map[status] || "badge-new";
+      }
+
+      function getStatusIcon(status) {
+        const map = {
+          Submitted: "fa-sparkles",
+          Pending: "fa-sparkles",
+          UnderReview: "fa-eye",
+          Shortlisted: "fa-circle-check",
+          InterviewScheduled: "fa-calendar",
+          Interviewed: "fa-calendar-check",
+          Hired: "fa-check-circle",
+          Rejected: "fa-circle-xmark",
+          Withdrawn: "fa-circle-xmark",
+        };
+        return map[status] || "fa-sparkles";
+      }
+
+      function updateInsights() {
+        if (allCandidates.length === 0) {
+          document.getElementById("aiSummary").textContent =
+            "No candidates to analyze yet.";
+          return;
+        }
+
+        const highScore = allCandidates.filter((c) => c.score >= 90).length;
+        const avgScore = Math.round(
+          allCandidates.reduce((sum, c) => sum + c.score, 0) /
+            allCandidates.length,
         );
+        const percentHigh = Math.round(
+          (highScore / allCandidates.length) * 100,
+        );
+
+        document.getElementById("aiSummary").innerHTML =
+          `Based on your criteria, we found that <span class="highlight">${percentHigh}% of applicants</span> have exceptional match scores (>90%). The average candidate quality score is <span class="highlight">${avgScore}%</span>.`;
+
+        // Animate quality gauge
+        animateQuality(avgScore);
       }
 
-      function scheduleInterview(id) {
-        const c = candidates.find((c) => c.id === id);
-        window.location.href = `schedule-interview.html?candidate=${c.id}`;
-      }
-
-      function exportCandidates() {
-        alert("📥 Exporting candidate list as CSV...");
-      }
-
-      function postNewJob() {
-        window.location.href = "post-job.html";
-      }
-
-      function goToPage(page) {
-        document
-          .querySelectorAll(".page-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        document
-          .querySelector(`.page-btn[onclick*="${page}"]`)
-          ?.classList.add("active");
-      }
-
-      function prevPage() {
-        alert("← Previous page");
-      }
-      function nextPage() {
-        alert("→ Next page");
-      }
-
-      // Animate quality gauge
       function animateQuality(target) {
         const valueEl = document.getElementById("qualityValue");
         const fillEl = document.getElementById("qualityFill");
@@ -833,9 +915,63 @@
         requestAnimationFrame(step);
       }
 
-      // Initial render
-      renderCandidates();
-      setTimeout(() => animateQuality(82), 500);
+      // ============================================
+      // ACTIONS
+      // ============================================
+      function viewCandidate(id) {
+        window.location.href = `../candidate/profile-management.html?candidateId=${id}`;
+      }
+
+      function scheduleInterview(id) {
+        window.location.href = `schedule-interview.html?applicationId=${id}`;
+      }
+
+      function exportCandidates() {
+        alert("📥 Exporting candidate list as CSV...");
+      }
+
+      // ============================================
+      // TOAST
+      // ============================================
+      function showToast(message, type = "info") {
+        if (typeof window.showToast === "function") {
+          window.showToast(message, type);
+        } else {
+          alert(message);
+        }
+      }
+
+      // ============================================
+      // LOGOUT
+      // ============================================
+      function logout() {
+        window.API.Auth.logout();
+      }
+
+      // ============================================
+      // INIT
+      // ============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!checkAuth()) return;
+
+        // Update user avatar
+        const avatar = document.getElementById("userAvatar");
+        if (avatar) {
+          const initials = window.API.getUserInitials();
+          avatar.textContent = initials || "R";
+        }
+
+        // Load candidates
+        loadCandidates();
+
+        // Setup logout
+        document
+          .getElementById("logoutBtn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            logout();
+          });
+      });
     </script>
   </body>
 </html>

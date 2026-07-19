@@ -1,38 +1,21 @@
 <header class="app-header" role="banner">
   <div class="header-inner">
-    <a href="/candidate/dashboard.html" class="logo">
+    <a href="/" class="logo" id="logoLink">
       <img src="/assets/images/logo.png" alt="RecruitAI Logo" />
       <span>RecruitAI</span>
     </a>
 
-    <nav class="main-nav" aria-label="Primary navigation">
-      <a href="/candidate/dashboard.html" class="nav-link" data-page="dashboard"
-        >Dashboard</a
-      >
-      <a href="/candidate/job-search.html" class="nav-link" data-page="jobs"
-        >Jobs</a
-      >
-      <a
-        href="/candidate/my-applications.html"
-        class="nav-link"
-        data-page="applications"
-        >Applications</a
-      >
-      <a
-        href="/candidate/profile-management.html"
-        class="nav-link"
-        data-page="profile"
-        >Profile</a
-      >
+    <nav class="main-nav" aria-label="Primary navigation" id="mainNav">
+      <!-- Navigation links will be injected by JavaScript -->
     </nav>
 
     <div class="header-actions">
       <button class="icon-btn" id="notifBtn" aria-label="Notifications">
         <i class="fas fa-bell"></i>
-        <span class="notification-dot"></span>
+        <span class="notification-dot" id="notifDot"></span>
       </button>
       <div class="user-avatar" id="userAvatar" title="Profile">
-        <span id="userInitials">JD</span>
+        <span id="userInitials">U</span>
       </div>
       <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
         <i class="fas fa-bars"></i>
@@ -44,33 +27,15 @@
   <div class="mobile-menu-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-user-info" id="mobileUserInfo">
-      <span id="mobileUserInitials" class="mobile-avatar">JD</span>
+      <span id="mobileUserInitials" class="mobile-avatar">U</span>
       <div>
-        <div id="mobileUserName" class="mobile-user-name">John Doe</div>
+        <div id="mobileUserName" class="mobile-user-name">User</div>
         <div id="mobileUserRole" class="mobile-user-role">Candidate</div>
       </div>
     </div>
-    <a
-      href="/candidate/dashboard.html"
-      class="mobile-link"
-      data-page="dashboard"
-      >Dashboard</a
-    >
-    <a href="/candidate/job-search.html" class="mobile-link" data-page="jobs"
-      >Jobs</a
-    >
-    <a
-      href="/candidate/my-applications.html"
-      class="mobile-link"
-      data-page="applications"
-      >Applications</a
-    >
-    <a
-      href="/candidate/profile-management.html"
-      class="mobile-link"
-      data-page="profile"
-      >Profile</a
-    >
+    <div id="mobileNavLinks">
+      <!-- Mobile links injected by JavaScript -->
+    </div>
     <a
       href="#"
       id="signOutLink"
@@ -83,97 +48,330 @@
 </header>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Load user data into header
-    function updateHeaderUser() {
-      const user = window.API?.getCurrentUser();
-      if (!user) {
-        // Redirect to login if not authenticated
-        if (
-          !window.location.pathname.includes("login.html") &&
-          !window.location.pathname.includes("register.html")
-        ) {
-          window.location.href = "/auth/login.html";
-        }
-        return;
+  (function () {
+    "use strict";
+
+    // ============================================
+    // ROLE-BASED NAVIGATION CONFIGURATION
+    // ============================================
+    const roleConfig = {
+      Candidate: {
+        basePath: "/candidate/",
+        dashboard: "/candidate/dashboard.html",
+        navLinks: [
+          {
+            page: "dashboard",
+            label: "Dashboard",
+            href: "/candidate/dashboard.html",
+          },
+          { page: "jobs", label: "Jobs", href: "/candidate/job-search.html" },
+          {
+            page: "applications",
+            label: "Applications",
+            href: "/candidate/my-applications.html",
+          },
+          {
+            page: "profile",
+            label: "Profile",
+            href: "/candidate/profile-management.html",
+          },
+        ],
+      },
+      Recruiter: {
+        basePath: "/recruiter/",
+        dashboard: "/recruiter/dashboard.html",
+        navLinks: [
+          {
+            page: "dashboard",
+            label: "Dashboard",
+            href: "/recruiter/dashboard.html",
+          },
+          { page: "jobs", label: "Jobs", href: "/recruiter/manage-jobs.html" },
+          {
+            page: "candidates",
+            label: "Candidates",
+            href: "/recruiter/candidates.html",
+          },
+          {
+            page: "interviews",
+            label: "Interviews",
+            href: "/recruiter/schedule-interview.html",
+          },
+        ],
+      },
+      HiringManager: {
+        basePath: "/hiring-manager/",
+        dashboard: "/hiring-manager/dashboard.html",
+        navLinks: [
+          {
+            page: "dashboard",
+            label: "Dashboard",
+            href: "/hiring-manager/dashboard.html",
+          },
+          {
+            page: "evaluate",
+            label: "Evaluate",
+            href: "/hiring-manager/candidate-evaluation.html",
+          },
+          { page: "jobs", label: "Jobs", href: "/recruiter/manage-jobs.html" },
+        ],
+      },
+      Admin: {
+        basePath: "/admin/",
+        dashboard: "/admin/admin-dashboard.html",
+        navLinks: [
+          {
+            page: "dashboard",
+            label: "Dashboard",
+            href: "/admin/admin-dashboard.html",
+          },
+          {
+            page: "users",
+            label: "Users",
+            href: "/admin/user-management.html",
+          },
+          {
+            page: "analytics",
+            label: "Analytics",
+            href: "/admin/analytics-reports.html",
+          },
+        ],
+      },
+    };
+
+    // ============================================
+    // GET CURRENT USER AND ROLE
+    // ============================================
+    function getCurrentUser() {
+      try {
+        const userStr = localStorage.getItem("user");
+        return userStr ? JSON.parse(userStr) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function getToken() {
+      return localStorage.getItem("accessToken");
+    }
+
+    function getUserRole() {
+      const user = getCurrentUser();
+      return user?.role || user?.Role || "Candidate";
+    }
+
+    function getUserInitials() {
+      const user = getCurrentUser();
+      if (!user) return "U";
+      const firstName = user.firstName || user.FirstName || "";
+      const lastName = user.lastName || user.LastName || "";
+      if (firstName && lastName) {
+        return `${firstName[0]}${lastName[0]}`.toUpperCase();
+      }
+      return firstName[0]?.toUpperCase() || "U";
+    }
+
+    function getUserFullName() {
+      const user = getCurrentUser();
+      if (!user) return "User";
+      const firstName = user.firstName || user.FirstName || "";
+      const lastName = user.lastName || user.LastName || "";
+      if (firstName && lastName) {
+        return `${firstName} ${lastName}`;
+      }
+      return firstName || "User";
+    }
+
+    // ============================================
+    // RENDER NAVIGATION
+    // ============================================
+    function renderNavigation() {
+      const role = getUserRole();
+      const config = roleConfig[role] || roleConfig["Candidate"];
+      const isAuthenticated = !!getToken();
+
+      // Update logo link
+      const logoLink = document.getElementById("logoLink");
+      if (logoLink && isAuthenticated) {
+        logoLink.href = config.dashboard || "/";
       }
 
-      const initials = window.API?.getUserInitials() || "?";
-      const fullName = window.API?.getUserFullName() || "User";
-      const role = user.role || user.Role || "Candidate";
-
-      // Update desktop avatar
-      const userAvatar = document.getElementById("userAvatar");
-      if (userAvatar) {
-        userAvatar.innerHTML = `<span id="userInitials">${initials}</span>`;
+      // Render desktop nav
+      const mainNav = document.getElementById("mainNav");
+      if (mainNav) {
+        mainNav.innerHTML = config.navLinks
+          .map(
+            (link) => `
+          <a href="${link.href}" class="nav-link" data-page="${link.page}">${link.label}</a>
+        `,
+          )
+          .join("");
       }
 
-      // Update mobile menu
+      // Render mobile nav
+      const mobileNav = document.getElementById("mobileNavLinks");
+      if (mobileNav) {
+        mobileNav.innerHTML = config.navLinks
+          .map(
+            (link) => `
+          <a href="${link.href}" class="mobile-link" data-page="${link.page}">${link.label}</a>
+        `,
+          )
+          .join("");
+      }
+
+      // Update user avatar
+      const initials = getUserInitials();
+      const userInitials = document.getElementById("userInitials");
+      if (userInitials) userInitials.textContent = initials;
+
+      // Update mobile user info
       const mobileInitials = document.getElementById("mobileUserInitials");
       const mobileName = document.getElementById("mobileUserName");
       const mobileRole = document.getElementById("mobileUserRole");
 
       if (mobileInitials) mobileInitials.textContent = initials;
-      if (mobileName) mobileName.textContent = fullName;
+      if (mobileName) mobileName.textContent = getUserFullName();
       if (mobileRole) mobileRole.textContent = role;
 
-      // Update role-based navigation
-      const roleMap = {
-        Candidate: "/candidate/",
-        Recruiter: "/recruiter/",
-        HiringManager: "/hiring-manager/",
-        Admin: "/admin/",
-        SuperAdmin: "/admin/",
-      };
+      // Set active nav link
+      setActiveNavLink();
 
-      const basePath = roleMap[role] || "/candidate/";
+      // Update notification dot
+      updateNotificationDot();
+    }
+
+    // ============================================
+    // SET ACTIVE NAV LINK
+    // ============================================
+    function setActiveNavLink() {
+      const currentPath = window.location.pathname;
+
       document.querySelectorAll(".nav-link, .mobile-link").forEach((link) => {
-        if (
-          link.getAttribute("href") &&
-          !link.getAttribute("href").startsWith("#")
-        ) {
-          // Ensure links point to correct role base
-          const href = link.getAttribute("href");
-          if (href.startsWith("/candidate/") && role !== "Candidate") {
-            link.setAttribute("href", href.replace("/candidate/", basePath));
-          }
+        link.classList.remove("active");
+        const href = link.getAttribute("href");
+        if (href && currentPath.includes(href.replace("/", ""))) {
+          link.classList.add("active");
         }
       });
     }
 
-    // Sign out handler
-    document
-      .getElementById("signOutLink")
-      ?.addEventListener("click", function (e) {
+    // ============================================
+    // NOTIFICATION DOT
+    // ============================================
+    function updateNotificationDot() {
+      const dot = document.getElementById("notifDot");
+      if (!dot) return;
+
+      // Check for unread notifications (placeholder)
+      const hasUnread = true; // Replace with actual check
+      dot.style.display = hasUnread ? "block" : "none";
+    }
+
+    // ============================================
+    // MOBILE MENU TOGGLE
+    // ============================================
+    function initMobileMenu() {
+      const hamburger = document.getElementById("hamburgerBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const overlay = document.getElementById("mobileOverlay");
+
+      if (!hamburger || !mobileMenu) return;
+
+      function toggleMenu() {
+        mobileMenu.classList.toggle("active");
+        overlay.classList.toggle("active");
+        document.body.style.overflow = mobileMenu.classList.contains("active")
+          ? "hidden"
+          : "";
+        hamburger.setAttribute(
+          "aria-expanded",
+          mobileMenu.classList.contains("active"),
+        );
+      }
+
+      hamburger.addEventListener("click", toggleMenu);
+      overlay.addEventListener("click", toggleMenu);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+          toggleMenu();
+        }
+      });
+
+      mobileMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (mobileMenu.classList.contains("active")) {
+            toggleMenu();
+          }
+        });
+      });
+    }
+
+    // ============================================
+    // SIGN OUT
+    // ============================================
+    function initSignOut() {
+      const signOutBtn = document.getElementById("signOutLink");
+      if (!signOutBtn) return;
+
+      signOutBtn.addEventListener("click", function (e) {
         e.preventDefault();
         if (window.API?.Auth) {
           window.API.Auth.logout();
         } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("user");
           window.location.href = "/auth/login.html";
         }
       });
-
-    // Initialize
-    if (typeof window.API !== "undefined") {
-      updateHeaderUser();
     }
 
-    // Avatar click - go to profile
-    document
-      .getElementById("userAvatar")
-      ?.addEventListener("click", function () {
-        const user = window.API?.getCurrentUser();
-        if (user) {
-          const roleMap = {
-            Candidate: "/candidate/profile-management.html",
-            Recruiter: "/recruiter/profile-management.html",
-            HiringManager: "/hiring-manager/profile-management.html",
-            Admin: "/admin/profile-management.html",
-          };
-          const role = user.role || user.Role || "Candidate";
-          window.location.href =
-            roleMap[role] || "/candidate/profile-management.html";
+    // ============================================
+    // NOTIFICATIONS
+    // ============================================
+    function initNotifications() {
+      const notifBtn = document.getElementById("notifBtn");
+      if (!notifBtn) return;
+
+      notifBtn.addEventListener("click", function () {
+        // Placeholder - would open notification panel
+        alert("🔔 Notification center coming soon!");
+      });
+    }
+
+    // ============================================
+    // USER AVATAR CLICK
+    // ============================================
+    function initUserAvatar() {
+      const avatar = document.getElementById("userAvatar");
+      if (!avatar) return;
+
+      avatar.addEventListener("click", function () {
+        const role = getUserRole();
+        const config = roleConfig[role] || roleConfig["Candidate"];
+        if (config.navLinks.find((l) => l.page === "profile")) {
+          window.location.href = config.navLinks.find(
+            (l) => l.page === "profile",
+          ).href;
+        } else {
+          window.location.href = config.dashboard;
         }
       });
-  });
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener("DOMContentLoaded", function () {
+      renderNavigation();
+      initMobileMenu();
+      initSignOut();
+      initNotifications();
+      initUserAvatar();
+
+      console.log("✅ Header component initialized successfully!");
+      console.log(`👤 Role: ${getUserRole()}, User: ${getUserFullName()}`);
+    });
+  })();
 </script>

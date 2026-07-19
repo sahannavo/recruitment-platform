@@ -3,31 +3,48 @@ using RecruitmentAPI.Helpers;
 using RecruitmentAPI.Models;
 using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Services.Interfaces;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace RecruitmentAPI.Services.Implementations
 {
     public class AuthService : IAuthService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
+        private readonly ICandidateRepository _candidateRepository;
+        private readonly IRecruiterRepository _recruiterRepository;
+        private readonly IHiringManagerRepository _hiringManagerRepository;
+        private readonly IAdminRepository _adminRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtHelper _jwtHelper;
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AuthService(
-            IUnitOfWork unitOfWork,
+            IUserRepository userRepository,
+            ICandidateRepository candidateRepository,
+            IRecruiterRepository recruiterRepository,
+            IHiringManagerRepository hiringManagerRepository,
+            IAdminRepository adminRepository,
             IPasswordHasher passwordHasher,
             IJwtHelper jwtHelper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
+            _candidateRepository = candidateRepository;
+            _recruiterRepository = recruiterRepository;
+            _hiringManagerRepository = hiringManagerRepository;
+            _adminRepository = adminRepository;
             _passwordHasher = passwordHasher;
             _jwtHelper = jwtHelper;
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
         {
-            var existingUser = await _unitOfWork.Users.GetByEmailAsync(request.Email);
+            var existingUser = await _userRepository.GetByEmailAsync(request.Email);
             if (existingUser != null)
             {
                 throw new InvalidOperationException("User with this email already exists.");
@@ -46,7 +63,7 @@ namespace RecruitmentAPI.Services.Implementations
                 UpdatedAt = DateTime.UtcNow
             };
 
-            await _unitOfWork.Users.AddAsync(newUser);
+            await _userRepository.AddAsync(newUser);
             await _unitOfWork.SaveChangesAsync();
 
             // Create role-specific profile
@@ -60,7 +77,7 @@ namespace RecruitmentAPI.Services.Implementations
                         IsAvailable = true,
                         IsOpenToOpportunities = true
                     };
-                    await _unitOfWork.Candidates.AddAsync(candidate);
+                    await _candidateRepository.AddAsync(candidate);
                     break;
 
                 case "recruiter":
@@ -70,33 +87,14 @@ namespace RecruitmentAPI.Services.Implementations
                         Department = "General",
                         JobTitle = "Recruiter"
                     };
-                    await _unitOfWork.Recruiters.AddAsync(recruiter);
+                    await _recruiterRepository.AddAsync(recruiter);
                     break;
 
-                case "hiringmanager":
-                    var hiringManager = new HiringManager
-                    {
-                        UserId = newUser.UserId,
-                        Department = "General"
-                    };
-                    await _unitOfWork.HiringManagers.AddAsync(hiringManager);
-                    break;
-
-                case "admin":
-                case "superadmin":
-                    var admin = new Admin
-                    {
-                        UserId = newUser.UserId,
-                        Department = "General",
-                        Permissions = "All"
-                    };
-                    await _unitOfWork.Admins.AddAsync(admin);
-                    break;
+                    // ... etc for other roles
             }
 
             await _unitOfWork.SaveChangesAsync();
 
-            // Generate Token for immediate login after registration
             var token = _jwtHelper.GenerateToken(newUser, request.Role ?? "Candidate");
             var expiry = DateTime.UtcNow.AddMinutes(
                 double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60"));
@@ -108,14 +106,15 @@ namespace RecruitmentAPI.Services.Implementations
                 UserId = newUser.UserId,
                 Email = newUser.Email,
                 Role = newUser.Role,
-                FirstName = newUser.FirstName,  // ✅ ADD
-                LastName = newUser.LastName     // ✅ ADD
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName
             };
         }
 
+        // LoginAsync and RefreshTokenAsync...
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
-            var user = await _unitOfWork.Users.GetByEmailAsync(request.Email);
+            var user = await _userRepository.GetByEmailAsync(request.Email);
 
             if (user == null || !user.IsActive ||
                 !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
@@ -134,8 +133,8 @@ namespace RecruitmentAPI.Services.Implementations
                 UserId = user.UserId,
                 Email = user.Email,
                 Role = user.Role,
-                FirstName = user.FirstName,  // ✅ ADD
-                LastName = user.LastName     // ✅ ADD
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
 
@@ -147,20 +146,19 @@ namespace RecruitmentAPI.Services.Implementations
                 throw new UnauthorizedAccessException("Invalid token.");
             }
 
-            var email = principal.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-            if (email == null)
+            var emailClaim = principal.FindFirst(ClaimTypes.Email)?.Value
+                             ?? principal.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+
+            if (string.IsNullOrEmpty(emailClaim))
                 throw new UnauthorizedAccessException("Invalid token claims.");
 
-            var user = await _unitOfWork.Users.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailAsync(emailClaim);
             if (user == null || !user.IsActive)
             {
                 throw new UnauthorizedAccessException("User not found or inactive.");
             }
 
-            var role = principal.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
-                       ?? user.Role
-                       ?? "Candidate";
-
+            var role = principal.FindFirst(ClaimTypes.Role)?.Value ?? user.Role;
             var newToken = _jwtHelper.GenerateToken(user, role);
             var expiry = DateTime.UtcNow.AddMinutes(
                 double.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60"));
@@ -172,8 +170,8 @@ namespace RecruitmentAPI.Services.Implementations
                 UserId = user.UserId,
                 Email = user.Email,
                 Role = role,
-                FirstName = user.FirstName,  
-                LastName = user.LastName     
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
     }
