@@ -6,35 +6,74 @@ const API_BASE_URL = "https://localhost:5001";
 const REQUEST_TIMEOUT = 30000; // 30 seconds
 const MAX_RETRIES = 2;
 
-// Get JWT token from localStorage
+// ============================================
+// TOKEN MANAGEMENT
+// ============================================
 function getToken() {
   return localStorage.getItem("accessToken");
 }
 
-// Save JWT token
 function setToken(token) {
   localStorage.setItem("accessToken", token);
 }
 
-// Remove JWT token (logout)
 function removeToken() {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("user");
 }
 
-// Get current user from localStorage
 function getCurrentUser() {
   const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
 }
 
-// Save current user
 function setCurrentUser(user) {
   localStorage.setItem("user", JSON.stringify(user));
 }
 
 // ============================================
-// API Request Helper (FULLY FIXED)
+// ✅ RESTORED: AUTH HELPER FUNCTIONS
+// ============================================
+function isAuthenticated() {
+  const token = getToken();
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return Date.now() < payload.exp * 1000;
+  } catch {
+    return false;
+  }
+}
+
+function getUserRole() {
+  const user = getCurrentUser();
+  return user?.role || user?.Role || "Candidate";
+}
+
+function getUserInitials() {
+  const user = getCurrentUser();
+  if (!user) return "U";
+  const firstName = user.firstName || user.FirstName || "";
+  const lastName = user.lastName || user.LastName || "";
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  }
+  return firstName[0]?.toUpperCase() || "U";
+}
+
+function getUserFullName() {
+  const user = getCurrentUser();
+  if (!user) return "User";
+  const firstName = user.firstName || user.FirstName || "";
+  const lastName = user.lastName || user.LastName || "";
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
+  }
+  return firstName || "User";
+}
+
+// ============================================
+// API REQUEST HELPER
 // ============================================
 async function apiRequest(
   endpoint,
@@ -50,13 +89,11 @@ async function apiRequest(
     Accept: "application/json",
   };
 
-  // Add Authorization header if token exists and requiresAuth is true
   if (requiresAuth) {
     const token = getToken();
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     } else {
-      // Redirect to login if no token
       if (
         !window.location.pathname.includes("login.html") &&
         !window.location.pathname.includes("register.html")
@@ -67,7 +104,6 @@ async function apiRequest(
     }
   }
 
-  // Setup AbortController for timeout
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
@@ -81,13 +117,11 @@ async function apiRequest(
     options.body = JSON.stringify(data);
   }
 
-  // Retry logic
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       const response = await fetch(url, options);
       clearTimeout(timeoutId);
 
-      // Handle 401 Unauthorized
       if (response.status === 401) {
         removeToken();
         if (!window.location.pathname.includes("login.html")) {
@@ -96,7 +130,6 @@ async function apiRequest(
         return null;
       }
 
-      // Handle 204 No Content
       if (response.status === 204) {
         return { success: true };
       }
@@ -104,7 +137,6 @@ async function apiRequest(
       const responseData = await response.json();
 
       if (!response.ok) {
-        // ✅ FIXED: Check for 'detail' first (from backend ProblemDetails)
         const errorMsg =
           responseData.detail ||
           responseData.message ||
@@ -117,7 +149,6 @@ async function apiRequest(
     } catch (error) {
       clearTimeout(timeoutId);
 
-      // Retry on network errors only (not on AbortError or 4xx/5xx responses)
       const shouldRetry =
         attempt < retries - 1 &&
         (error.name === "TypeError" ||
@@ -132,7 +163,6 @@ async function apiRequest(
         continue;
       }
 
-      // Throw error if it's AbortError (timeout)
       if (error.name === "AbortError") {
         throw new Error(
           `Request timed out after ${REQUEST_TIMEOUT / 1000} seconds`,
@@ -146,9 +176,64 @@ async function apiRequest(
 }
 
 // ============================================
+// ✅ RESTORED: CANDIDATE API
+// ============================================
+const CandidateAPI = {
+  getProfile: async () => {
+    return await apiRequest("/api/candidates/profile", "GET", null, true);
+  },
+
+  updateProfile: async (profileData) => {
+    return await apiRequest(
+      "/api/candidates/profile",
+      "PUT",
+      profileData,
+      true,
+    );
+  },
+
+  uploadCV: async (file) => {
+    const token = getToken();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/candidates/upload-cv`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || error.message || "Upload failed");
+      }
+
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === "AbortError") {
+        throw new Error(
+          `Upload timed out after ${REQUEST_TIMEOUT / 1000} seconds`,
+        );
+      }
+      console.error("Upload Error:", error);
+      throw error;
+    }
+  },
+};
+
+// ============================================
 // AUTH API (FIXED)
 // ============================================
-
 const AuthAPI = {
   login: async (email, password) => {
     const response = await apiRequest(
@@ -189,34 +274,13 @@ const AuthAPI = {
     return await apiRequest("/api/auth/me", "GET", null, true);
   },
 
-  // ✅ FIX: Expose auth check functions
+  // ✅ Expose auth check functions
   isAuthenticated: isAuthenticated,
   getUserRole: getUserRole,
   getUserInitials: getUserInitials,
   getUserFullName: getUserFullName,
 };
 
-// ============================================
-// UPDATE EXPOSED API
-// ============================================
-window.API = {
-  Auth: AuthAPI,
-  Candidate: CandidateAPI,
-  Job: JobAPI,
-  Application: ApplicationAPI,
-  Interview: InterviewAPI,
-  Feedback: FeedbackAPI,
-  Admin: AdminAPI,
-  getToken,
-  setToken,
-  removeToken,
-  getCurrentUser,
-  setCurrentUser,
-  isAuthenticated,
-  getUserRole,
-  getUserInitials,
-  getUserFullName,
-};
 // ============================================
 // JOB API
 // ============================================
@@ -245,6 +309,10 @@ const JobAPI = {
 
   delete: async (jobId) => {
     return await apiRequest(`/api/jobs/${jobId}`, "DELETE", null, true);
+  },
+
+  getStatistics: async () => {
+    return await apiRequest("/api/jobs/statistics", "GET", null, true);
   },
 };
 
@@ -277,6 +345,23 @@ const ApplicationAPI = {
       true,
     );
   },
+
+  getById: async (applicationId) => {
+    return await apiRequest(`/api/applications/${applicationId}`, "GET", null, true);
+  },
+
+  getStatistics: async () => {
+    return await apiRequest("/api/applications/statistics", "GET", null, true);
+  },
+
+  withdraw: async (applicationId) => {
+    return await apiRequest(
+      `/api/applications/${applicationId}/withdraw`,
+      "PUT",
+      null,
+      true,
+    );
+  },
 };
 
 // ============================================
@@ -295,6 +380,12 @@ const InterviewAPI = {
   getMyInterviews: async () => {
     return await apiRequest("/api/interviews/my", "GET", null, true);
   },
+
+  getAvailability: async (params = {}) => {
+    const queryParams = new URLSearchParams(params).toString();
+    const endpoint = `/api/interviews/availability${queryParams ? "?" + queryParams : ""}`;
+    return await apiRequest(endpoint, "GET", null, true);
+  },
 };
 
 // ============================================
@@ -303,6 +394,18 @@ const InterviewAPI = {
 const FeedbackAPI = {
   submit: async (feedbackData) => {
     return await apiRequest("/api/feedbacks", "POST", feedbackData, true);
+  },
+
+  getMyFeedback: async () => {
+    return await apiRequest("/api/feedbacks/manager", "GET", null, true);
+  },
+
+  getById: async (feedbackId) => {
+    return await apiRequest(`/api/feedbacks/${feedbackId}`, "GET", null, true);
+  },
+
+  update: async (feedbackId, feedbackData) => {
+    return await apiRequest(`/api/feedbacks/${feedbackId}`, "PUT", feedbackData, true);
   },
 };
 
@@ -323,19 +426,60 @@ const AdminAPI = {
     );
   },
 
-  getAnalytics: async () => {
-    return await apiRequest("/api/analytics/recruitment", "GET", null, true);
+  getAnalytics: async (params = "") => {
+    return await apiRequest(`/api/analytics/recruitment?${params}`, "GET", null, true);
+  },
+
+  getDashboard: async () => {
+    return await apiRequest("/api/admin/dashboard", "GET", null, true);
+  },
+
+  getAuditLogs: async () => {
+    return await apiRequest("/api/admin/audit-logs", "GET", null, true);
+  },
+
+  disableUser: async (userId) => {
+    return await apiRequest(`/api/admin/users/${userId}/disable`, "PUT", null, true);
+  },
+
+  enableUser: async (userId) => {
+    return await apiRequest(`/api/admin/users/${userId}/enable`, "PUT", null, true);
+  },
+
+  deleteUser: async (userId) => {
+    return await apiRequest(`/api/admin/users/${userId}`, "DELETE", null, true);
+  },
+
+  inviteUser: async (inviteData) => {
+    return await apiRequest("/api/admin/users/invite", "POST", inviteData, true);
   },
 
   getHealth: async () => {
-    return await apiRequest("/api/system/health", "GET", null, true);
+    return await apiRequest("/api/analytics/system-health", "GET", null, true);
   },
 };
 
 // ============================================
-// EXPOSE TO GLOBAL SCOPE
+// EXPOSE TO GLOBAL SCOPE (SINGLE DEFINITION)
 // ============================================
-
+window.API = {
+  Auth: AuthAPI,
+  Candidate: CandidateAPI,
+  Job: JobAPI,
+  Application: ApplicationAPI,
+  Interview: InterviewAPI,
+  Feedback: FeedbackAPI,
+  Admin: AdminAPI,
+  getToken,
+  setToken,
+  removeToken,
+  getCurrentUser,
+  setCurrentUser,
+  isAuthenticated,
+  getUserRole,
+  getUserInitials,
+  getUserFullName,
+};
 
 console.log("✅ API Client Loaded Successfully!");
 console.log("📍 API Base URL:", API_BASE_URL);
