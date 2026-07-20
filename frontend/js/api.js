@@ -98,7 +98,7 @@ async function apiRequest(
         !window.location.pathname.includes("login.html") &&
         !window.location.pathname.includes("register.html")
       ) {
-        window.location.href = "/auth/login.html";
+        window.location.href = "../auth/login.html";
         return;
       }
     }
@@ -125,7 +125,7 @@ async function apiRequest(
       if (response.status === 401) {
         removeToken();
         if (!window.location.pathname.includes("login.html")) {
-          window.location.href = "/auth/login.html";
+          window.location.href = "../auth/login.html";
         }
         return null;
       }
@@ -267,7 +267,7 @@ const AuthAPI = {
 
   logout: () => {
     removeToken();
-    window.location.href = "/auth/login.html";
+    window.location.href = "../auth/login.html";
   },
 
   getMe: async () => {

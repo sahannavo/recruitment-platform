@@ -258,27 +258,7 @@
   <script src="../js/api.js"></script>
   <script src="../js/toast.js"></script>
   <script>
-    // Login controller
-    (function () {
-      "use strict";
-      // Check authentication
-      if (!window.API.isAuthenticated()) {
-        window.location.href = '/auth/login.html';
-        return;
-      }
 
-      // Update user avatar
-      const avatar = document.getElementById('userAvatar');
-      if (avatar) {
-        const initials = window.API.getUserInitials();
-        avatar.textContent = initials || 'U';
-      }
-
-      console.log('✅ Page initialized with API client');
-
-      // Add page-specific logic below
-
-    })();
     document.addEventListener("DOMContentLoaded", function () {
       // Check if already logged in
       if (window.API.isAuthenticated()) {
@@ -287,7 +267,7 @@
           Candidate: "/candidate/dashboard.html",
           Recruiter: "/recruiter/dashboard.html",
           HiringManager: "/hiring-manager/dashboard.html",
-          Admin: "/admin/dashboard.html",
+          Admin: "/admin/admin-dashboard.html",
         };
         window.location.href = roleMap[user?.role] || "/index.html";
         return;
@@ -353,7 +333,7 @@
               Candidate: "/candidate/dashboard.html",
               Recruiter: "/recruiter/dashboard.html",
               HiringManager: "/hiring-manager/dashboard.html",
-              Admin: "/admin/dashboard.html",
+              Admin: "/admin/admin-dashboard.html",
             };
 
             setTimeout(() => {

@@ -1,729 +1,724 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Candidates</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Candidates</title>
 
-    <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    .toolbar {
+      padding: 18px 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1 1 260px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--background);
+    }
+
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .filter-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--background);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    th {
+      text-align: left;
+      padding: 14px 20px;
+      background: var(--background);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: var(--background);
+    }
+
+    .candidate-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .candidate-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .candidate-name {
+      font-weight: 600;
+    }
+
+    .candidate-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .score-high {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .score-mid {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .score-low {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-shortlisted {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .badge-new {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-reviewed {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .badge-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-hired {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-interview {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .action-btn.secondary {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .action-btn.secondary:hover {
+      background: var(--border);
+    }
+
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-footer p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .pagination {
+      display: flex;
+      gap: 6px;
+    }
+
+    .page-btn {
+      min-width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .page-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .page-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .insights {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .ai-card {
+      background: var(--primary-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+      border: 1px solid #c7d2fe;
+    }
+
+    .ai-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    .ai-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .ai-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .ai-card .highlight {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .quality-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 1px solid var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .quality-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .quality-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .quality-track {
+      width: 100%;
+      height: 8px;
+      background: var(--surface-alt);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .quality-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: var(--radius-full);
+      transition: width 1.2s ease;
+    }
+
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .empty-state i {
+      font-size: 40px;
+      color: var(--border);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      margin: 0 0 20px;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner i {
+      font-size: 32px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 768px) {
       .toolbar {
-        padding: 18px 24px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .search-wrap {
-        position: relative;
-        flex: 1 1 260px;
-      }
-      .search-wrap i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-secondary);
-      }
-      .search-wrap input {
-        width: 100%;
-        padding: 10px 14px 10px 38px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-family: inherit;
-        background: var(--background);
-      }
-      .search-wrap input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
+        flex-direction: column;
+        align-items: stretch;
       }
 
       .filter-select {
-        padding: 10px 14px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--background);
-        font-family: inherit;
-        font-size: 14px;
-      }
-      .filter-select:focus {
-        outline: none;
-        border-color: var(--primary);
-      }
-
-      .table-scroll {
-        overflow-x: auto;
-      }
-      table {
         width: 100%;
-        border-collapse: collapse;
-        min-width: 800px;
-      }
-      th {
-        text-align: left;
-        padding: 14px 20px;
-        background: var(--background);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-secondary);
-        font-weight: 600;
-      }
-      td {
-        padding: 16px 20px;
-        border-top: 1px solid var(--border);
-        font-size: 14px;
-        vertical-align: middle;
-      }
-      tbody tr {
-        cursor: pointer;
-        transition: background 0.15s ease;
-      }
-      tbody tr:hover {
-        background: var(--background);
-      }
-
-      .candidate-cell {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .candidate-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-size: cover;
-        background-position: center;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--primary-light);
-        color: var(--primary);
-        font-weight: 700;
-        font-size: 16px;
-      }
-      .candidate-name {
-        font-weight: 600;
-      }
-      .candidate-email {
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-
-      .score-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 14px;
-        border-radius: var(--radius-full);
-        font-size: 13px;
-        font-weight: 700;
-      }
-      .score-high {
-        background: var(--primary);
-        color: #fff;
-      }
-      .score-mid {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .score-low {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 14px;
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 600;
-      }
-      .badge-shortlisted {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .badge-new {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .badge-reviewed {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-      .badge-rejected {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-      .badge-hired {
-        background: #d1fae5;
-        color: #065f46;
-      }
-      .badge-interview {
-        background: #dbeafe;
-        color: #1e40af;
-      }
-
-      .actions-cell {
-        display: flex;
-        gap: 6px;
-        justify-content: flex-end;
-      }
-      .action-btn {
-        padding: 6px 12px;
-        border: none;
-        border-radius: var(--radius);
-        font-weight: 600;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .action-btn.primary {
-        background: var(--primary);
-        color: #fff;
-      }
-      .action-btn.primary:hover {
-        background: var(--primary-hover);
-      }
-      .action-btn.secondary {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-      .action-btn.secondary:hover {
-        background: var(--border);
-      }
-
-      .table-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 24px;
-        border-top: 1px solid var(--border);
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      .table-footer p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-
-      .pagination {
-        display: flex;
-        gap: 6px;
-      }
-      .page-btn {
-        min-width: 36px;
-        height: 36px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        border-radius: var(--radius);
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .page-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-      .page-btn.active {
-        background: var(--primary);
-        color: #fff;
-        border-color: var(--primary);
       }
 
       .insights {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 20px;
-        margin-top: 24px;
-      }
-      .ai-card {
-        background: var(--primary-light);
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        display: flex;
-        gap: 16px;
-        border: 1px solid #c7d2fe;
-      }
-      .ai-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        background: var(--primary);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 20px;
-      }
-      .ai-card h2 {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0 0 8px;
-      }
-      .ai-card p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 14px;
-        line-height: 1.6;
-      }
-      .ai-card .highlight {
-        color: var(--primary);
-        font-weight: 600;
+        grid-template-columns: 1fr;
       }
 
-      .quality-card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        border: 1px solid var(--border);
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      .quality-value {
-        font-size: 36px;
-        font-weight: 800;
-        color: var(--primary);
-      }
-      .quality-label {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-secondary);
-        font-weight: 600;
-        margin-bottom: 12px;
-      }
-      .quality-track {
-        width: 100%;
-        height: 8px;
-        background: var(--surface-alt);
-        border-radius: var(--radius-full);
-        overflow: hidden;
-      }
-      .quality-fill {
-        height: 100%;
-        width: 0%;
-        background: var(--primary);
-        border-radius: var(--radius-full);
-        transition: width 1.2s ease;
+      td,
+      th {
+        padding: 12px 16px;
+        font-size: 13px;
       }
 
-      .empty-state {
-        padding: 60px 20px;
-        text-align: center;
-      }
-      .empty-state i {
-        font-size: 40px;
-        color: var(--border);
-        margin-bottom: 16px;
-      }
-      .empty-state h3 {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0 0 8px;
-      }
-      .empty-state p {
-        color: var(--text-secondary);
-        margin: 0 0 20px;
+      .actions-cell {
+        flex-wrap: wrap;
       }
 
-      .loading-spinner {
-        text-align: center;
-        padding: 40px;
-        color: var(--text-secondary);
+      .action-btn {
+        font-size: 11px;
+        padding: 4px 10px;
       }
-      .loading-spinner i {
-        font-size: 32px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+    }
+  </style>
+</head>
 
-      @media (max-width: 768px) {
-        .toolbar {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .filter-select {
-          width: 100%;
-        }
-        .insights {
-          grid-template-columns: 1fr;
-        }
-        td,
-        th {
-          padding: 12px 16px;
-          font-size: 13px;
-        }
-        .actions-cell {
-          flex-wrap: wrap;
-        }
-        .action-btn {
-          font-size: 11px;
-          padding: 4px 10px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="manage-jobs.html" class="nav-link" data-page="jobs">Jobs</a>
+        <a href="candidates.html" class="nav-link active" data-page="candidates">Candidates</a>
+        <a href="schedule-interview.html" class="nav-link" data-page="interviews">Interviews</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="manage-jobs.html" class="mobile-link" data-page="jobs">Jobs</a>
+      <a href="candidates.html" class="mobile-link active" data-page="candidates">Candidates</a>
+      <a href="schedule-interview.html" class="mobile-link" data-page="interviews">Interviews</a>
+      <a href="#" class="mobile-link" id="logoutBtn" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <div class="page-header">
+      <div>
+        <h1 style="font-size: 28px; font-weight: 700">Candidates</h1>
+        <p style="color: var(--text-secondary)" id="candidateCount">
+          Loading candidates...
+        </p>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <button class="btn btn-secondary" onclick="exportCandidates()">
+          <i class="fas fa-download"></i> Export
+        </button>
+        <a href="post-job.html" class="btn btn-primary">
+          <i class="fas fa-plus"></i> Post Job
         </a>
+      </div>
+    </div>
 
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a href="manage-jobs.html" class="nav-link" data-page="jobs">Jobs</a>
-          <a
-            href="candidates.html"
-            class="nav-link active"
-            data-page="candidates"
-            >Candidates</a
-          >
-          <a
-            href="schedule-interview.html"
-            class="nav-link"
-            data-page="interviews"
-            >Interviews</a
-          >
-        </nav>
+    <!-- Candidates Table -->
+    <div class="card">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <input type="search" id="candidateSearch" placeholder="Search by name, email, or skill…"
+            oninput="filterCandidates()" />
+        </div>
+        <select class="filter-select" id="scoreFilter" onchange="filterCandidates()">
+          <option value="all">AI Score: All</option>
+          <option value="90">90%+</option>
+          <option value="80">80%+</option>
+          <option value="70">70%+</option>
+        </select>
+        <select class="filter-select" id="statusFilter" onchange="filterCandidates()">
+          <option value="all">Status: All</option>
+          <option value="Submitted">New</option>
+          <option value="UnderReview">Under Review</option>
+          <option value="Shortlisted">Shortlisted</option>
+          <option value="InterviewScheduled">Interview</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Hired">Hired</option>
+        </select>
+        <button class="btn btn-secondary" onclick="resetFilters()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
 
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
+      <div class="table-scroll">
+        <div id="loadingState" class="loading-spinner">
+          <i class="fas fa-spinner"></i>
+          <p>Loading candidates...</p>
+        </div>
+        <table id="candidatesTable" style="display: none">
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>AI Match</th>
+              <th>Job</th>
+              <th>Status</th>
+              <th style="text-align: right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="candidatesTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer" id="tableFooter" style="display: none">
+        <p id="resultsSummary">Showing <strong>0</strong> candidates</p>
+        <div class="pagination" id="pagination">
+          <button class="page-btn" onclick="changePage(-1)" id="prevBtn">
+            <i class="fas fa-chevron-left"></i>
           </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
+          <span id="pageInfo" style="padding: 0 12px; font-weight: 600">Page 1</span>
+          <button class="page-btn" onclick="changePage(1)" id="nextBtn">
+            <i class="fas fa-chevron-right"></i>
           </button>
         </div>
       </div>
+    </div>
 
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="manage-jobs.html" class="mobile-link" data-page="jobs">Jobs</a>
-        <a
-          href="candidates.html"
-          class="mobile-link active"
-          data-page="candidates"
-          >Candidates</a
-        >
-        <a
-          href="schedule-interview.html"
-          class="mobile-link"
-          data-page="interviews"
-          >Interviews</a
-        >
-        <a
-          href="#"
-          class="mobile-link"
-          id="logoutBtn"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-header">
+    <!-- Insights -->
+    <section class="insights" aria-label="Screening insights">
+      <div class="ai-card">
+        <div class="ai-icon"><i class="fas fa-chart-line"></i></div>
         <div>
-          <h1 style="font-size: 28px; font-weight: 700">Candidates</h1>
-          <p style="color: var(--text-secondary)" id="candidateCount">
-            Loading candidates...
-          </p>
-        </div>
-        <div style="display: flex; gap: 12px">
-          <button class="btn btn-secondary" onclick="exportCandidates()">
-            <i class="fas fa-download"></i> Export
-          </button>
-          <a href="post-job.html" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Post Job
-          </a>
+          <h2>AI Screening Summary</h2>
+          <p id="aiSummary">Loading screening insights...</p>
         </div>
       </div>
-
-      <!-- Candidates Table -->
-      <div class="card">
-        <div class="toolbar">
-          <div class="search-wrap">
-            <i class="fas fa-search" aria-hidden="true"></i>
-            <input
-              type="search"
-              id="candidateSearch"
-              placeholder="Search by name, email, or skill…"
-              oninput="filterCandidates()"
-            />
-          </div>
-          <select
-            class="filter-select"
-            id="scoreFilter"
-            onchange="filterCandidates()"
-          >
-            <option value="all">AI Score: All</option>
-            <option value="90">90%+</option>
-            <option value="80">80%+</option>
-            <option value="70">70%+</option>
-          </select>
-          <select
-            class="filter-select"
-            id="statusFilter"
-            onchange="filterCandidates()"
-          >
-            <option value="all">Status: All</option>
-            <option value="Submitted">New</option>
-            <option value="UnderReview">Under Review</option>
-            <option value="Shortlisted">Shortlisted</option>
-            <option value="InterviewScheduled">Interview</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Hired">Hired</option>
-          </select>
-          <button class="btn btn-secondary" onclick="resetFilters()">
-            <i class="fas fa-undo"></i> Reset
-          </button>
-        </div>
-
-        <div class="table-scroll">
-          <div id="loadingState" class="loading-spinner">
-            <i class="fas fa-spinner"></i>
-            <p>Loading candidates...</p>
-          </div>
-          <table id="candidatesTable" style="display: none">
-            <thead>
-              <tr>
-                <th>Candidate</th>
-                <th>AI Match</th>
-                <th>Job</th>
-                <th>Status</th>
-                <th style="text-align: right">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="candidatesTableBody"></tbody>
-          </table>
-        </div>
-
-        <div class="table-footer" id="tableFooter" style="display: none">
-          <p id="resultsSummary">Showing <strong>0</strong> candidates</p>
-          <div class="pagination" id="pagination">
-            <button class="page-btn" onclick="changePage(-1)" id="prevBtn">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <span id="pageInfo" style="padding: 0 12px; font-weight: 600"
-              >Page 1</span
-            >
-            <button class="page-btn" onclick="changePage(1)" id="nextBtn">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
+      <div class="quality-card">
+        <div class="quality-label">Avg. Candidate Quality</div>
+        <div class="quality-value" id="qualityValue">0%</div>
+        <div class="quality-track">
+          <div class="quality-fill" id="qualityFill"></div>
         </div>
       </div>
+    </section>
+  </main>
 
-      <!-- Insights -->
-      <section class="insights" aria-label="Screening insights">
-        <div class="ai-card">
-          <div class="ai-icon"><i class="fas fa-chart-line"></i></div>
-          <div>
-            <h2>AI Screening Summary</h2>
-            <p id="aiSummary">Loading screening insights...</p>
-          </div>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" /><span>RecruitAI</span>
         </div>
-        <div class="quality-card">
-          <div class="quality-label">Avg. Candidate Quality</div>
-          <div class="quality-value" id="qualityValue">0%</div>
-          <div class="quality-track">
-            <div class="quality-fill" id="qualityFill"></div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            /><span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
-        </div>
-        <div class="footer-links">
-          <h4>For Recruiters</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="manage-jobs.html">Manage Jobs</a></li>
-            <li><a href="candidates.html">Candidates</a></li>
-            <li><a href="schedule-interview.html">Interviews</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-links">
+        <h4>For Recruiters</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="manage-jobs.html">Manage Jobs</a></li>
+          <li><a href="candidates.html">Candidates</a></li>
+          <li><a href="schedule-interview.html">Interviews</a></li>
+        </ul>
       </div>
-    </footer>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-    <!-- ===== SCRIPTS ===== -->
-    <script src="../js/api.js"></script>
-    <script src="../js/main.js"></script>
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-    <script>
-      let allCandidates = [];
-      let filteredCandidates = [];
-      let currentPage = 1;
-      const pageSize = 10;
-      let currentUser = null;
+  <script>
+    let allCandidates = [];
+    let filteredCandidates = [];
+    let currentPage = 1;
+    const pageSize = 10;
+    let currentUser = null;
 
-      // ============================================
-      // AUTHENTICATION CHECK
-      // ============================================
-      function checkAuth() {
-        if (!window.API.isAuthenticated()) {
-          window.location.href = "/auth/login.html";
-          return false;
-        }
-        currentUser = window.API.getCurrentUser();
-        const role = currentUser?.role || currentUser?.Role || "";
-        if (!["Recruiter", "Admin"].includes(role)) {
-          alert("Access denied. Recruiters only.");
-          window.location.href = "/index.html";
-          return false;
-        }
-        return true;
+    // ============================================
+    // AUTHENTICATION CHECK
+    // ============================================
+    function checkAuth() {
+      if (!window.API.isAuthenticated()) {
+        window.location.href = "../auth/login.html";
+        return false;
       }
+      currentUser = window.API.getCurrentUser();
+      const role = currentUser?.role || currentUser?.Role || "";
+      if (!["Recruiter", "Admin"].includes(role)) {
+        alert("Access denied. Recruiters only.");
+        window.location.href = "/index.html";
+        return false;
+      }
+      return true;
+    }
 
-      // ============================================
-      // LOAD CANDIDATES
-      // ============================================
-      async function loadCandidates() {
-        const loadingState = document.getElementById("loadingState");
-        const table = document.getElementById("candidatesTable");
-        const footer = document.getElementById("tableFooter");
+    // ============================================
+    // LOAD CANDIDATES
+    // ============================================
+    async function loadCandidates() {
+      const loadingState = document.getElementById("loadingState");
+      const table = document.getElementById("candidatesTable");
+      const footer = document.getElementById("tableFooter");
 
-        loadingState.style.display = "block";
-        table.style.display = "none";
-        footer.style.display = "none";
+      loadingState.style.display = "block";
+      table.style.display = "none";
+      footer.style.display = "none";
 
-        try {
-          // Get all applications (with candidate details)
-          const response = await window.API.Application.getMyApplications();
-          const apps = Array.isArray(response) ? response : response.data || [];
+      try {
+        // Get all applications (with candidate details)
+        const response = await window.API.Application.getMyApplications();
+        const apps = Array.isArray(response) ? response : response.data || [];
 
-          // Transform to candidate view
-          allCandidates = apps.map((app) => ({
-            id: app.applicationId || app.id,
-            name: app.candidateName || "Unknown Candidate",
-            email: app.candidateEmail || "",
-            score:
-              app.aiScore ||
-              app.AI_Score ||
-              Math.floor(Math.random() * 30 + 65),
-            job: app.jobTitle || "Position",
-            status: app.status || "Submitted",
-            appliedAt: app.appliedAt,
-            department: app.department || "",
-          }));
+        // Transform to candidate view
+        allCandidates = apps.map((app) => ({
+          id: app.applicationId || app.id,
+          name: app.candidateName || "Unknown Candidate",
+          email: app.candidateEmail || "",
+          score:
+            app.aiScore ||
+            app.AI_Score ||
+            Math.floor(Math.random() * 30 + 65),
+          job: app.jobTitle || "Position",
+          status: app.status || "Submitted",
+          appliedAt: app.appliedAt,
+          department: app.department || "",
+        }));
 
-          filteredCandidates = [...allCandidates];
-          document.getElementById("candidateCount").textContent =
-            `${allCandidates.length} candidates found`;
+        filteredCandidates = [...allCandidates];
+        document.getElementById("candidateCount").textContent =
+          `${allCandidates.length} candidates found`;
 
-          loadingState.style.display = "none";
-          table.style.display = "table";
-          footer.style.display = "flex";
+        loadingState.style.display = "none";
+        table.style.display = "table";
+        footer.style.display = "flex";
 
-          renderCandidates();
+        renderCandidates();
 
-          // Update insights
-          updateInsights();
-        } catch (error) {
-          console.error("Error loading candidates:", error);
-          loadingState.innerHTML = `
+        // Update insights
+        updateInsights();
+      } catch (error) {
+        console.error("Error loading candidates:", error);
+        loadingState.innerHTML = `
             <i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>
             <p style="color: var(--danger);">Failed to load candidates. Please try again.</p>
             <button class="btn btn-primary" onclick="loadCandidates()" style="margin-top: 12px;">Retry</button>
           `;
-        }
       }
+    }
 
-      // ============================================
-      // RENDER CANDIDATES
-      // ============================================
-      function renderCandidates() {
-        const start = (currentPage - 1) * pageSize;
-        const end = Math.min(start + pageSize, filteredCandidates.length);
-        const pageItems = filteredCandidates.slice(start, end);
+    // ============================================
+    // RENDER CANDIDATES
+    // ============================================
+    function renderCandidates() {
+      const start = (currentPage - 1) * pageSize;
+      const end = Math.min(start + pageSize, filteredCandidates.length);
+      const pageItems = filteredCandidates.slice(start, end);
 
-        const tbody = document.getElementById("candidatesTableBody");
-        tbody.innerHTML = "";
+      const tbody = document.getElementById("candidatesTableBody");
+      tbody.innerHTML = "";
 
-        if (pageItems.length === 0) {
-          tbody.innerHTML = `
+      if (pageItems.length === 0) {
+        tbody.innerHTML = `
             <tr>
               <td colspan="5">
                 <div class="empty-state">
@@ -734,26 +729,26 @@
               </td>
             </tr>
           `;
-          document.getElementById("resultsSummary").innerHTML =
-            `Showing <strong>0</strong> candidates`;
-          return;
-        }
+        document.getElementById("resultsSummary").innerHTML =
+          `Showing <strong>0</strong> candidates`;
+        return;
+      }
 
-        pageItems.forEach((c, index) => {
-          const tr = document.createElement("tr");
-          tr.style.animationDelay = `${index * 50}ms`;
-          tr.onclick = () => viewCandidate(c.id);
+      pageItems.forEach((c, index) => {
+        const tr = document.createElement("tr");
+        tr.style.animationDelay = `${index * 50}ms`;
+        tr.onclick = () => viewCandidate(c.id);
 
-          const avatarLetter = c.name.charAt(0).toUpperCase();
-          const scoreClass =
-            c.score >= 90
-              ? "score-high"
-              : c.score >= 80
-                ? "score-mid"
-                : "score-low";
-          const statusClass = getStatusClass(c.status);
+        const avatarLetter = c.name.charAt(0).toUpperCase();
+        const scoreClass =
+          c.score >= 90
+            ? "score-high"
+            : c.score >= 80
+              ? "score-mid"
+              : "score-low";
+        const statusClass = getStatusClass(c.status);
 
-          tr.innerHTML = `
+        tr.innerHTML = `
             <td>
               <div class="candidate-cell">
                 <div class="candidate-avatar">${avatarLetter}</div>
@@ -788,190 +783,191 @@
               </div>
             </td>
           `;
-          tbody.appendChild(tr);
-        });
-
-        // Update pagination
-        const totalPages = Math.ceil(filteredCandidates.length / pageSize);
-        document.getElementById("resultsSummary").innerHTML =
-          `Showing <strong>${start + 1}-${end}</strong> of <strong>${filteredCandidates.length}</strong> candidates`;
-        document.getElementById("pageInfo").textContent =
-          `Page ${currentPage} of ${totalPages || 1}`;
-        document.getElementById("prevBtn").disabled = currentPage <= 1;
-        document.getElementById("nextBtn").disabled = currentPage >= totalPages;
-      }
-
-      // ============================================
-      // FILTER CANDIDATES
-      // ============================================
-      function filterCandidates() {
-        const searchTerm = document
-          .getElementById("candidateSearch")
-          .value.toLowerCase()
-          .trim();
-        const scoreMin = document.getElementById("scoreFilter").value;
-        const status = document.getElementById("statusFilter").value;
-
-        filteredCandidates = allCandidates.filter((c) => {
-          const matchSearch =
-            c.name.toLowerCase().includes(searchTerm) ||
-            (c.email && c.email.toLowerCase().includes(searchTerm)) ||
-            c.job.toLowerCase().includes(searchTerm);
-          const matchScore =
-            scoreMin === "all" || c.score >= parseInt(scoreMin);
-          const matchStatus = status === "all" || c.status === status;
-          return matchSearch && matchScore && matchStatus;
-        });
-
-        currentPage = 1;
-        renderCandidates();
-      }
-
-      function resetFilters() {
-        document.getElementById("candidateSearch").value = "";
-        document.getElementById("scoreFilter").value = "all";
-        document.getElementById("statusFilter").value = "all";
-        filterCandidates();
-      }
-
-      // ============================================
-      // PAGINATION
-      // ============================================
-      function changePage(delta) {
-        const totalPages = Math.ceil(filteredCandidates.length / pageSize);
-        const newPage = currentPage + delta;
-        if (newPage < 1 || newPage > totalPages) return;
-        currentPage = newPage;
-        renderCandidates();
-      }
-
-      // ============================================
-      // HELPERS
-      // ============================================
-      function getStatusClass(status) {
-        const map = {
-          Submitted: "badge-new",
-          Pending: "badge-new",
-          UnderReview: "badge-reviewed",
-          Shortlisted: "badge-shortlisted",
-          InterviewScheduled: "badge-interview",
-          Interviewed: "badge-interview",
-          Hired: "badge-hired",
-          Rejected: "badge-rejected",
-          Withdrawn: "badge-rejected",
-        };
-        return map[status] || "badge-new";
-      }
-
-      function getStatusIcon(status) {
-        const map = {
-          Submitted: "fa-sparkles",
-          Pending: "fa-sparkles",
-          UnderReview: "fa-eye",
-          Shortlisted: "fa-circle-check",
-          InterviewScheduled: "fa-calendar",
-          Interviewed: "fa-calendar-check",
-          Hired: "fa-check-circle",
-          Rejected: "fa-circle-xmark",
-          Withdrawn: "fa-circle-xmark",
-        };
-        return map[status] || "fa-sparkles";
-      }
-
-      function updateInsights() {
-        if (allCandidates.length === 0) {
-          document.getElementById("aiSummary").textContent =
-            "No candidates to analyze yet.";
-          return;
-        }
-
-        const highScore = allCandidates.filter((c) => c.score >= 90).length;
-        const avgScore = Math.round(
-          allCandidates.reduce((sum, c) => sum + c.score, 0) /
-            allCandidates.length,
-        );
-        const percentHigh = Math.round(
-          (highScore / allCandidates.length) * 100,
-        );
-
-        document.getElementById("aiSummary").innerHTML =
-          `Based on your criteria, we found that <span class="highlight">${percentHigh}% of applicants</span> have exceptional match scores (>90%). The average candidate quality score is <span class="highlight">${avgScore}%</span>.`;
-
-        // Animate quality gauge
-        animateQuality(avgScore);
-      }
-
-      function animateQuality(target) {
-        const valueEl = document.getElementById("qualityValue");
-        const fillEl = document.getElementById("qualityFill");
-        let current = 0;
-        const step = () => {
-          current += Math.max(1, Math.round((target - current) / 8));
-          if (current >= target) current = target;
-          valueEl.textContent = current + "%";
-          fillEl.style.width = current + "%";
-          if (current < target) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }
-
-      // ============================================
-      // ACTIONS
-      // ============================================
-      function viewCandidate(id) {
-        window.location.href = `../candidate/profile-management.html?candidateId=${id}`;
-      }
-
-      function scheduleInterview(id) {
-        window.location.href = `schedule-interview.html?applicationId=${id}`;
-      }
-
-      function exportCandidates() {
-        alert("📥 Exporting candidate list as CSV...");
-      }
-
-      // ============================================
-      // TOAST
-      // ============================================
-      function showToast(message, type = "info") {
-        if (typeof window.showToast === "function") {
-          window.showToast(message, type);
-        } else {
-          alert(message);
-        }
-      }
-
-      // ============================================
-      // LOGOUT
-      // ============================================
-      function logout() {
-        window.API.Auth.logout();
-      }
-
-      // ============================================
-      // INIT
-      // ============================================
-      document.addEventListener("DOMContentLoaded", function () {
-        if (!checkAuth()) return;
-
-        // Update user avatar
-        const avatar = document.getElementById("userAvatar");
-        if (avatar) {
-          const initials = window.API.getUserInitials();
-          avatar.textContent = initials || "R";
-        }
-
-        // Load candidates
-        loadCandidates();
-
-        // Setup logout
-        document
-          .getElementById("logoutBtn")
-          .addEventListener("click", function (e) {
-            e.preventDefault();
-            logout();
-          });
+        tbody.appendChild(tr);
       });
-    </script>
-  </body>
+
+      // Update pagination
+      const totalPages = Math.ceil(filteredCandidates.length / pageSize);
+      document.getElementById("resultsSummary").innerHTML =
+        `Showing <strong>${start + 1}-${end}</strong> of <strong>${filteredCandidates.length}</strong> candidates`;
+      document.getElementById("pageInfo").textContent =
+        `Page ${currentPage} of ${totalPages || 1}`;
+      document.getElementById("prevBtn").disabled = currentPage <= 1;
+      document.getElementById("nextBtn").disabled = currentPage >= totalPages;
+    }
+
+    // ============================================
+    // FILTER CANDIDATES
+    // ============================================
+    function filterCandidates() {
+      const searchTerm = document
+        .getElementById("candidateSearch")
+        .value.toLowerCase()
+        .trim();
+      const scoreMin = document.getElementById("scoreFilter").value;
+      const status = document.getElementById("statusFilter").value;
+
+      filteredCandidates = allCandidates.filter((c) => {
+        const matchSearch =
+          c.name.toLowerCase().includes(searchTerm) ||
+          (c.email && c.email.toLowerCase().includes(searchTerm)) ||
+          c.job.toLowerCase().includes(searchTerm);
+        const matchScore =
+          scoreMin === "all" || c.score >= parseInt(scoreMin);
+        const matchStatus = status === "all" || c.status === status;
+        return matchSearch && matchScore && matchStatus;
+      });
+
+      currentPage = 1;
+      renderCandidates();
+    }
+
+    function resetFilters() {
+      document.getElementById("candidateSearch").value = "";
+      document.getElementById("scoreFilter").value = "all";
+      document.getElementById("statusFilter").value = "all";
+      filterCandidates();
+    }
+
+    // ============================================
+    // PAGINATION
+    // ============================================
+    function changePage(delta) {
+      const totalPages = Math.ceil(filteredCandidates.length / pageSize);
+      const newPage = currentPage + delta;
+      if (newPage < 1 || newPage > totalPages) return;
+      currentPage = newPage;
+      renderCandidates();
+    }
+
+    // ============================================
+    // HELPERS
+    // ============================================
+    function getStatusClass(status) {
+      const map = {
+        Submitted: "badge-new",
+        Pending: "badge-new",
+        UnderReview: "badge-reviewed",
+        Shortlisted: "badge-shortlisted",
+        InterviewScheduled: "badge-interview",
+        Interviewed: "badge-interview",
+        Hired: "badge-hired",
+        Rejected: "badge-rejected",
+        Withdrawn: "badge-rejected",
+      };
+      return map[status] || "badge-new";
+    }
+
+    function getStatusIcon(status) {
+      const map = {
+        Submitted: "fa-sparkles",
+        Pending: "fa-sparkles",
+        UnderReview: "fa-eye",
+        Shortlisted: "fa-circle-check",
+        InterviewScheduled: "fa-calendar",
+        Interviewed: "fa-calendar-check",
+        Hired: "fa-check-circle",
+        Rejected: "fa-circle-xmark",
+        Withdrawn: "fa-circle-xmark",
+      };
+      return map[status] || "fa-sparkles";
+    }
+
+    function updateInsights() {
+      if (allCandidates.length === 0) {
+        document.getElementById("aiSummary").textContent =
+          "No candidates to analyze yet.";
+        return;
+      }
+
+      const highScore = allCandidates.filter((c) => c.score >= 90).length;
+      const avgScore = Math.round(
+        allCandidates.reduce((sum, c) => sum + c.score, 0) /
+        allCandidates.length,
+      );
+      const percentHigh = Math.round(
+        (highScore / allCandidates.length) * 100,
+      );
+
+      document.getElementById("aiSummary").innerHTML =
+        `Based on your criteria, we found that <span class="highlight">${percentHigh}% of applicants</span> have exceptional match scores (>90%). The average candidate quality score is <span class="highlight">${avgScore}%</span>.`;
+
+      // Animate quality gauge
+      animateQuality(avgScore);
+    }
+
+    function animateQuality(target) {
+      const valueEl = document.getElementById("qualityValue");
+      const fillEl = document.getElementById("qualityFill");
+      let current = 0;
+      const step = () => {
+        current += Math.max(1, Math.round((target - current) / 8));
+        if (current >= target) current = target;
+        valueEl.textContent = current + "%";
+        fillEl.style.width = current + "%";
+        if (current < target) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    // ============================================
+    // ACTIONS
+    // ============================================
+    function viewCandidate(id) {
+      window.location.href = `../candidate/profile-management.html?candidateId=${id}`;
+    }
+
+    function scheduleInterview(id) {
+      window.location.href = `schedule-interview.html?applicationId=${id}`;
+    }
+
+    function exportCandidates() {
+      alert("📥 Exporting candidate list as CSV...");
+    }
+
+    // ============================================
+    // TOAST
+    // ============================================
+    function showToast(message, type = "info") {
+      if (typeof window.showToast === "function") {
+        window.showToast(message, type);
+      } else {
+        alert(message);
+      }
+    }
+
+    // ============================================
+    // LOGOUT
+    // ============================================
+    function logout() {
+      window.API.Auth.logout();
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!checkAuth()) return;
+
+      // Update user avatar
+      const avatar = document.getElementById("userAvatar");
+      if (avatar) {
+        const initials = window.API.getUserInitials();
+        avatar.textContent = initials || "R";
+      }
+
+      // Load candidates
+      loadCandidates();
+
+      // Setup logout
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          logout();
+        });
+    });
+  </script>
+</body>
+
 </html>

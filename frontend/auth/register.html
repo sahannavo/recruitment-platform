@@ -299,27 +299,7 @@
   <script src="../js/api.js"></script>
   <script src="../js/toast.js"></script>
   <script>
-    (function () {
-      'use strict';
 
-      // Check authentication
-      if (!window.API.isAuthenticated()) {
-        window.location.href = '/auth/login.html';
-        return;
-      }
-
-      // Update user avatar
-      const avatar = document.getElementById('userAvatar');
-      if (avatar) {
-        const initials = window.API.getUserInitials();
-        avatar.textContent = initials || 'U';
-      }
-
-      console.log('✅ Page initialized with API client');
-
-      // Add page-specific logic below
-
-    })();
     document.addEventListener("DOMContentLoaded", function () {
       // Role selector UI
       const roleOptions = document.querySelectorAll(".role-option");
