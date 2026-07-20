@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using RecruitmentAPI.Helpers;
-using RecruitmentAPI.Repository.Interfaces;
 using RecruitmentAPI.Models;
+using RecruitmentAPI.Repository.Interfaces;
 
 namespace RecruitmentAPI.Middleware
 {
@@ -9,16 +9,16 @@ namespace RecruitmentAPI.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<JwtMiddleware> _logger;
-        private readonly IUserRepository _userRepository;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public JwtMiddleware(
             RequestDelegate next,
             ILogger<JwtMiddleware> logger,
-            IUserRepository userRepository)
+            IServiceScopeFactory scopeFactory)
         {
             _next = next;
             _logger = logger;
-            _userRepository = userRepository;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task Invoke(HttpContext context, IJwtHelper jwtHelper)
@@ -45,7 +45,11 @@ namespace RecruitmentAPI.Middleware
 
                     if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
                     {
-                        var user = await _userRepository.GetByIdAsync(userId);
+                        // Create a scope to resolve scoped services
+                        using var scope = _scopeFactory.CreateScope();
+                        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+
+                        var user = await userRepository.GetByIdAsync(userId);
                         if (user != null)
                         {
                             context.Items["User"] = user;
@@ -56,6 +60,14 @@ namespace RecruitmentAPI.Middleware
                             _logger.LogWarning("User {UserId} not found in database", userId);
                         }
                     }
+                    else
+                    {
+                        _logger.LogWarning("Invalid user ID claim in token");
+                    }
+                }
+                else
+                {
+                    _logger.LogDebug("Token validation failed");
                 }
             }
             catch (Exception ex)

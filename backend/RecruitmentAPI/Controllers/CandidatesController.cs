@@ -105,13 +105,14 @@ namespace RecruitmentAPI.Controllers
         /// <param name="documentType">Type of document (default: CV)</param>
         /// <returns>Uploaded document details</returns>
         [HttpPost("upload-cv")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(DocumentResponseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status413PayloadTooLarge)]
         public async Task<ActionResult<DocumentResponseDto>> UploadCV(
-            [FromForm] IFormFile file,
+            IFormFile file,
             [FromQuery] string documentType = "CV")
         {
             try

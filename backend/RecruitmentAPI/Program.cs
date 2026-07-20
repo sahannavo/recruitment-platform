@@ -145,6 +145,9 @@ namespace RecruitmentAPI
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.AddScoped<IBlobStorageService, LocalBlobStorageService>();
+            builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
+            builder.Services.AddScoped<ISmsSender, TwilioSmsSender>();
             builder.Services.Configure<AIServiceOptions>(builder.Configuration.GetSection(AIServiceOptions.SectionName));
 
             // ─────────────────────────────────────────────────────────────────────────────
