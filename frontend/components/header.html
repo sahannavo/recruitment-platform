@@ -36,12 +36,7 @@
     <div id="mobileNavLinks">
       <!-- Mobile links injected by JavaScript -->
     </div>
-    <a
-      href="#"
-      id="signOutLink"
-      class="mobile-link"
-      style="color: var(--danger); border-bottom: none"
-    >
+    <a href="#" id="signOutLink" class="mobile-link" style="color: var(--danger); border-bottom: none">
       <i class="fas fa-sign-out-alt"></i> Sign Out
     </a>
   </div>
@@ -57,45 +52,45 @@
     const roleConfig = {
       Candidate: {
         basePath: "/candidate/",
-        dashboard: "/candidate/dashboard.html",
+        dashboard: "../candidate/dashboard.html",
         navLinks: [
           {
             page: "dashboard",
             label: "Dashboard",
-            href: "/candidate/dashboard.html",
+            href: "../candidate/dashboard.html",
           },
-          { page: "jobs", label: "Jobs", href: "/candidate/job-search.html" },
+          { page: "jobs", label: "Jobs", href: "../candidate/job-search.html" },
           {
             page: "applications",
             label: "Applications",
-            href: "/candidate/my-applications.html",
+            href: "..candidate/my-applications.html",
           },
           {
             page: "profile",
             label: "Profile",
-            href: "/candidate/profile-management.html",
+            href: "../candidate/profile-management.html",
           },
         ],
       },
       Recruiter: {
         basePath: "/recruiter/",
-        dashboard: "/recruiter/dashboard.html",
+        dashboard: "../recruiter/dashboard.html",
         navLinks: [
           {
             page: "dashboard",
             label: "Dashboard",
-            href: "/recruiter/dashboard.html",
+            href: "..recruiter/dashboard.html",
           },
-          { page: "jobs", label: "Jobs", href: "/recruiter/manage-jobs.html" },
+          { page: "jobs", label: "Jobs", href: "../recruiter/manage-jobs.html" },
           {
             page: "candidates",
             label: "Candidates",
-            href: "/recruiter/candidates.html",
+            href: "../recruiter/candidates.html",
           },
           {
             page: "interviews",
             label: "Interviews",
-            href: "/recruiter/schedule-interview.html",
+            href: "../recruiter/schedule-interview.html",
           },
         ],
       },

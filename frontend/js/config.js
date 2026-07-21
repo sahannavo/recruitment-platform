@@ -6,8 +6,8 @@ const CONFIG = {
   // API Configuration
   API: {
     BASE_URL:
-      window.location.hostname === "localhost"
-        ? "https://localhost:5001" // Development
+      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === ""
+        ? "http://localhost:5000" // Development
         : "https://api.yourdomain.com", // Production
     TIMEOUT: 30000,
     MAX_RETRIES: 2,

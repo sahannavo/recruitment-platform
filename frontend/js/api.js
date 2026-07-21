@@ -2,7 +2,7 @@
 // js/api.js - API Client for Backend Communication
 // ============================================
 
-const API_BASE_URL = "https://localhost:5001";
+const API_BASE_URL = "http://localhost:5000";
 const REQUEST_TIMEOUT = 30000; // 30 seconds
 const MAX_RETRIES = 2;
 
@@ -38,9 +38,28 @@ function isAuthenticated() {
   const token = getToken();
   if (!token) return false;
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    const base64Url = token.split(".")[1];
+    let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    
+    // Add padding if required by the browser's atob
+    const pad = base64.length % 4;
+    if (pad) {
+      if (pad === 1) throw new Error("Invalid base64 string");
+      base64 += new Array(5 - pad).join("=");
+    }
+
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    const payload = JSON.parse(jsonPayload);
     return Date.now() < payload.exp * 1000;
-  } catch {
+  } catch (error) {
+    console.error("Token validation error:", error);
     return false;
   }
 }
@@ -137,11 +156,16 @@ async function apiRequest(
       const responseData = await response.json();
 
       if (!response.ok) {
-        const errorMsg =
+        let errorMsg =
           responseData.detail ||
           responseData.message ||
           responseData.title ||
           "API request failed";
+        
+        if (responseData.errors) {
+          errorMsg += ": " + JSON.stringify(responseData.errors);
+        }
+        
         throw new Error(errorMsg);
       }
 

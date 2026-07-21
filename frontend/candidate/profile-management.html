@@ -332,7 +332,9 @@
       <a href="job-search.html" class="mobile-link" data-page="jobs">Jobs</a>
       <a href="my-applications.html" class="mobile-link" data-page="applications">Applications</a>
       <a href="profile-management.html" class="mobile-link active" data-page="profile">Profile</a>
-      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none;">Sign Out</a>
+      <a href="#" class="mobile-link" style="color: var(--danger); border-bottom: none;"
+        onclick="if(window.API && window.API.Auth) { window.API.Auth.logout(); } else { localStorage.removeItem('accessToken'); window.location.href = '../auth/login.html'; } return false;">Sign
+        Out</a>
     </div>
   </header>
 
@@ -342,9 +344,9 @@
       <!-- Sidebar -->
       <aside class="profile-sidebar">
         <div>
-          <div class="profile-avatar-large" onclick="editPhoto()">JD</div>
-          <h3>Jane Doe</h3>
-          <p>Senior Software Engineer</p>
+          <div class="profile-avatar-large" id="sidebarAvatar" onclick="editPhoto()">JD</div>
+          <h3 id="sidebarName">Candidate Name</h3>
+          <p id="sidebarTitle">Candidate</p>
         </div>
         <nav class="sidebar-nav-mini">
           <a href="#" class="active"><i class="fas fa-user"></i> Personal Info</a>
@@ -367,36 +369,36 @@
           </button>
         </div>
 
-        <form id="profileForm" novalidate>
+        <form id="profileForm" novalidate onsubmit="saveProfile(event)">
           <div class="form-grid">
             <div class="form-group">
               <label>First Name <span class="required">*</span></label>
-              <input type="text" value="Jane" required />
+              <input type="text" id="firstName" value="" required />
             </div>
             <div class="form-group">
               <label>Last Name <span class="required">*</span></label>
-              <input type="text" value="Doe" required />
+              <input type="text" id="lastName" value="" required />
             </div>
             <div class="form-group">
               <label>Email <span class="required">*</span></label>
-              <input type="email" value="jane.doe@example.com" required />
+              <input type="email" id="email" value="" readonly
+                style="background-color: var(--background); cursor: not-allowed;" />
             </div>
             <div class="form-group">
               <label>Phone</label>
-              <input type="tel" value="+1 (555) 123-4567" />
+              <input type="tel" id="phone" value="" />
             </div>
             <div class="form-group full-width">
               <label>Location</label>
-              <input type="text" value="San Francisco, CA" />
+              <input type="text" id="location" value="" />
             </div>
             <div class="form-group full-width">
               <label>Professional Summary</label>
-              <textarea
-                rows="3">Senior Software Engineer with 7+ years of experience in full-stack development, specializing in React, Node.js, and cloud architecture.</textarea>
+              <textarea id="biography" rows="3"></textarea>
             </div>
             <div class="form-group full-width">
               <label>Skills <span class="required">*</span></label>
-              <input type="text" value="React, Node.js, AWS, Python, TypeScript, Docker" required />
+              <input type="text" id="skillsSummary" value="" required />
               <span style="font-size: 12px; color: var(--text-secondary);">Enter skills separated by commas</span>
             </div>
 
@@ -512,15 +514,90 @@
       console.log('✅ Page initialized with API client');
 
       // Add page-specific logic below
+      loadProfileData();
 
     })();
-    function saveProfile() {
-      alert('✅ Profile saved successfully!');
+
+    let currentProfile = null;
+
+    async function loadProfileData() {
+      try {
+        const profile = await window.API.Candidate.getProfile();
+        if (profile) {
+          currentProfile = profile;
+          document.getElementById('firstName').value = profile.firstName || '';
+          document.getElementById('lastName').value = profile.lastName || '';
+          document.getElementById('email').value = profile.email || '';
+          document.getElementById('phone').value = profile.phone || '';
+          document.getElementById('location').value = profile.location || '';
+          document.getElementById('biography').value = profile.biography || profile.skillsSummary || '';
+          document.getElementById('skillsSummary').value = profile.skillsSummary || '';
+
+          const fullName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
+          document.getElementById('sidebarName').textContent = fullName || 'Candidate';
+          document.getElementById('sidebarTitle').textContent = profile.currentJobTitle || 'Candidate';
+
+          const initials = window.API.getUserInitials();
+          const avatarEl = document.getElementById('sidebarAvatar');
+          if (avatarEl) avatarEl.textContent = initials || 'U';
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      }
+    }
+
+    async function saveProfile(event) {
+      if (event) event.preventDefault();
+
+      const form = document.getElementById('profileForm');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const profileData = {
+        firstName: document.getElementById('firstName').value || null,
+        lastName: document.getElementById('lastName').value || null,
+        phone: document.getElementById('phone').value || null,
+        location: document.getElementById('location').value || null,
+        biography: document.getElementById('biography').value || null,
+        skillsSummary: document.getElementById('skillsSummary').value || null
+      };
+
+      try {
+        const updatedProfile = await window.API.Candidate.updateProfile(profileData);
+
+        // Update local storage user data to reflect name changes
+        const currentUser = window.API.getCurrentUser();
+        if (currentUser) {
+          if (profileData.firstName) currentUser.firstName = profileData.firstName;
+          if (profileData.lastName) currentUser.lastName = profileData.lastName;
+          window.API.setCurrentUser(currentUser);
+
+          // Update header avatar
+          const headerAvatar = document.querySelector('.user-avatar');
+          if (headerAvatar) {
+            headerAvatar.textContent = window.API.getUserInitials();
+          }
+        }
+
+        alert('✅ Profile saved successfully!');
+        loadProfileData();
+      } catch (err) {
+        alert('❌ Failed to save profile: ' + err.message);
+      }
     }
 
     function resetForm() {
       if (confirm('Reset all changes?')) {
-        alert('🔄 Form reset to saved values.');
+        if (currentProfile) {
+          document.getElementById('firstName').value = currentProfile.firstName || '';
+          document.getElementById('lastName').value = currentProfile.lastName || '';
+          document.getElementById('phone').value = currentProfile.phone || '';
+          document.getElementById('location').value = currentProfile.location || '';
+          document.getElementById('biography').value = currentProfile.biography || currentProfile.skillsSummary || '';
+          document.getElementById('skillsSummary').value = currentProfile.skillsSummary || '';
+        }
       }
     }
 

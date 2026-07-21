@@ -12,51 +12,51 @@ namespace RecruitmentAPI.DTOs
         /// Candidate's first name
         /// </summary>
         [MaxLength(100)]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
         /// Candidate's last name
         /// </summary>
         [MaxLength(100)]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// Candidate's phone number
         /// </summary>
         [Phone]
         [MaxLength(20)]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         /// <summary>
         /// Candidate's location (city, country)
         /// </summary>
         [MaxLength(200)]
-        public string Location { get; set; }
+        public string? Location { get; set; }
 
         /// <summary>
         /// Candidate's LinkedIn profile URL
         /// </summary>
         [Url]
         [MaxLength(255)]
-        public string LinkedIn { get; set; }
+        public string? LinkedIn { get; set; }
 
         /// <summary>
         /// Summary of candidate's skills
         /// </summary>
         [MaxLength(1000)]
-        public string SkillsSummary { get; set; }
+        public string? SkillsSummary { get; set; }
 
         /// <summary>
         /// Candidate's current job title
         /// </summary>
         [MaxLength(100)]
-        public string CurrentJobTitle { get; set; }
+        public string? CurrentJobTitle { get; set; }
 
         /// <summary>
         /// Candidate's current company
         /// </summary>
         [MaxLength(200)]
-        public string CurrentCompany { get; set; }
+        public string? CurrentCompany { get; set; }
 
         /// <summary>
         /// Years of experience
@@ -68,13 +68,13 @@ namespace RecruitmentAPI.DTOs
         /// Highest education level
         /// </summary>
         [MaxLength(100)]
-        public string EducationLevel { get; set; }
+        public string? EducationLevel { get; set; }
 
         /// <summary>
         /// Candidate's biography or summary
         /// </summary>
         [MaxLength(2000)]
-        public string Biography { get; set; }
+        public string? Biography { get; set; }
 
         /// <summary>
         /// Candidate's date of birth
@@ -85,19 +85,19 @@ namespace RecruitmentAPI.DTOs
         /// Candidate's nationality
         /// </summary>
         [MaxLength(50)]
-        public string Nationality { get; set; }
+        public string? Nationality { get; set; }
 
         /// <summary>
         /// Candidate's gender
         /// </summary>
         [MaxLength(20)]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         /// <summary>
         /// Candidate's preferred work location
         /// </summary>
         [MaxLength(200)]
-        public string PreferredLocation { get; set; }
+        public string? PreferredLocation { get; set; }
 
         /// <summary>
         /// Whether the candidate is willing to relocate
@@ -113,7 +113,7 @@ namespace RecruitmentAPI.DTOs
         /// Expected salary range
         /// </summary>
         [MaxLength(50)]
-        public string ExpectedSalary { get; set; }
+        public string? ExpectedSalary { get; set; }
 
         /// <summary>
         /// Available start date

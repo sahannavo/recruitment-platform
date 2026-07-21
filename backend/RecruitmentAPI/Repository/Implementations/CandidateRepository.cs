@@ -20,6 +20,7 @@ namespace RecruitmentAPI.Repository.Implementations
         public async Task<Candidate?> GetByUserIdAsync(int userId)
         {
             return await _context.Candidates
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 

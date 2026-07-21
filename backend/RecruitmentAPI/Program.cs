@@ -50,16 +50,7 @@ namespace RecruitmentAPI
                 options.AddPolicy("AllowFrontend",
                     policy =>
                     {
-                        policy.WithOrigins(
-                                "http://localhost:5500",      // VS Code Live Server
-                                "https://localhost:5500",
-                                "http://127.0.0.1:5500",
-                                "http://localhost:3000",      // React
-                                "https://localhost:3000",
-                                "http://localhost:8080",      // Vue.js
-                                "https://localhost:8080",
-                                "http://localhost:4200"       // Angular
-                            )
+                        policy.SetIsOriginAllowed(origin => true)
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials(); // Required for cookies/auth
@@ -238,7 +229,7 @@ namespace RecruitmentAPI
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Recruitment Platform API v1"));
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
