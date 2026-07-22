@@ -141,7 +141,7 @@ async function apiRequest(
       const response = await fetch(url, options);
       clearTimeout(timeoutId);
 
-      if (response.status === 401) {
+      if (response.status === 401 && requiresAuth) {
         removeToken();
         if (!window.location.pathname.includes("login.html")) {
           window.location.href = "../auth/login.html";
