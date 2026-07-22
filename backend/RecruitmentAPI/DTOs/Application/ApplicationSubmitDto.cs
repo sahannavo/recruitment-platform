@@ -24,19 +24,19 @@ namespace RecruitmentAPI.DTOs
         /// Additional notes or cover letter from the candidate
         /// </summary>
         [MaxLength(500, ErrorMessage = "Notes cannot exceed 500 characters")]
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         /// <summary>
         /// Source of the application (e.g., LinkedIn, Company Website, Referral)
         /// </summary>
         [MaxLength(100)]
-        public string Source { get; set; }
+        public string? Source { get; set; }
 
         /// <summary>
         /// Expected salary for this position
         /// </summary>
         [MaxLength(50)]
-        public string ExpectedSalary { get; set; }
+        public string? ExpectedSalary { get; set; }
 
         /// <summary>
         /// Availability date for the candidate
@@ -56,7 +56,7 @@ namespace RecruitmentAPI.DTOs
         /// <summary>
         /// Additional questions answered by the candidate
         /// </summary>
-        public Dictionary<string, string> CustomAnswers { get; set; }
+        public Dictionary<string, string>? CustomAnswers { get; set; }
     }
 
     /// <summary>
@@ -68,9 +68,9 @@ namespace RecruitmentAPI.DTOs
         public string Status { get; set; }
 
         [MaxLength(500)]
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
-        public string RejectionReason { get; set; }
+        public string? RejectionReason { get; set; }
 
         public int? ReviewedBy { get; set; }
     }

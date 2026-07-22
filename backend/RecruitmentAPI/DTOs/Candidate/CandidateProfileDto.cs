@@ -48,6 +48,11 @@ namespace RecruitmentAPI.DTOs
         public string SkillsSummary { get; set; }
 
         /// <summary>
+        /// Candidate's biography
+        /// </summary>
+        public string Biography { get; set; }
+
+        /// <summary>
         /// Candidate's full name (computed)
         /// </summary>
         public string FullName => $"{FirstName} {LastName}";

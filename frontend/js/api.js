@@ -216,6 +216,39 @@ const CandidateAPI = {
     );
   },
 
+  parseCV: async (file) => {
+    const token = getToken();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT * 2); // Give AI some extra time
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/candidates/parse-cv`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to parse CV");
+      }
+
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      console.error("Parse CV Error:", error);
+      throw error;
+    }
+  },
+
   uploadCV: async (file) => {
     const token = getToken();
     const formData = new FormData();
@@ -252,6 +285,14 @@ const CandidateAPI = {
       console.error("Upload Error:", error);
       throw error;
     }
+  },
+
+  getDocuments: async () => {
+    return await apiRequest("/api/candidates/documents", "GET", null, true);
+  },
+
+  deleteDocument: async (documentId) => {
+    return await apiRequest(`/api/candidates/documents/${documentId}`, "DELETE", null, true);
   },
 };
 
@@ -352,6 +393,14 @@ const ApplicationAPI = {
     return await apiRequest("/api/applications/candidate", "GET", null, true);
   },
 
+  getById: async (applicationId) => {
+    return await apiRequest(`/api/applications/${applicationId}`, "GET", null, true);
+  },
+
+  getForRecruiter: async () => {
+    return await apiRequest("/api/applications/recruiter", "GET", null, true);
+  },
+
   getByJob: async (jobId) => {
     return await apiRequest(
       `/api/applications/recruiter/${jobId}`,
@@ -372,6 +421,14 @@ const ApplicationAPI = {
 
   getById: async (applicationId) => {
     return await apiRequest(`/api/applications/${applicationId}`, "GET", null, true);
+  },
+
+  getByStatus: async (status) => {
+    return await apiRequest(`/api/applications/status/${status}`, "GET", null, true);
+  },
+
+  getManagerReview: async () => {
+    return await apiRequest("/api/applications/manager-review", "GET", null, true);
   },
 
   getStatistics: async () => {
@@ -410,6 +467,10 @@ const InterviewAPI = {
     const endpoint = `/api/interviews/availability${queryParams ? "?" + queryParams : ""}`;
     return await apiRequest(endpoint, "GET", null, true);
   },
+
+  getHiringManagers: async () => {
+    return await apiRequest("/api/interviews/hiring-managers", "GET", null, true);
+  },
 };
 
 // ============================================
@@ -417,19 +478,19 @@ const InterviewAPI = {
 // ============================================
 const FeedbackAPI = {
   submit: async (feedbackData) => {
-    return await apiRequest("/api/feedbacks", "POST", feedbackData, true);
+    return await apiRequest("/api/Feedback", "POST", feedbackData, true);
   },
 
   getMyFeedback: async () => {
-    return await apiRequest("/api/feedbacks/manager", "GET", null, true);
+    return await apiRequest("/api/Feedback/manager", "GET", null, true);
   },
 
   getById: async (feedbackId) => {
-    return await apiRequest(`/api/feedbacks/${feedbackId}`, "GET", null, true);
+    return await apiRequest(`/api/Feedback/${feedbackId}`, "GET", null, true);
   },
 
   update: async (feedbackId, feedbackData) => {
-    return await apiRequest(`/api/feedbacks/${feedbackId}`, "PUT", feedbackData, true);
+    return await apiRequest(`/api/Feedback/${feedbackId}`, "PUT", feedbackData, true);
   },
 };
 
@@ -484,9 +545,36 @@ const AdminAPI = {
 };
 
 // ============================================
+// SETTINGS API
+// ============================================
+const SettingsAPI = {
+  getSettings: async () => {
+    return await apiRequest("/api/settings", "GET", null, true);
+  },
+  
+  getPublicSettings: async () => {
+    return await apiRequest("/api/settings/public", "GET", null, false);
+  },
+  
+  updateSettings: async (settingsData) => {
+    return await apiRequest("/api/settings", "PUT", settingsData, true);
+  }
+};
+
+// ============================================
+// CHATBOT API
+// ============================================
+const ChatbotAPI = {
+  ask: async (message) => {
+    return await apiRequest("/api/chatbot/ask", "POST", { message }, true);
+  }
+};
+
+// ============================================
 // EXPOSE TO GLOBAL SCOPE (SINGLE DEFINITION)
 // ============================================
 window.API = {
+  BASE_URL: API_BASE_URL,
   Auth: AuthAPI,
   Candidate: CandidateAPI,
   Job: JobAPI,
@@ -494,6 +582,8 @@ window.API = {
   Interview: InterviewAPI,
   Feedback: FeedbackAPI,
   Admin: AdminAPI,
+  Settings: SettingsAPI,
+  Chatbot: ChatbotAPI,
   getToken,
   setToken,
   removeToken,

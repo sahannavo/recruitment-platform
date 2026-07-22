@@ -21,19 +21,7 @@
        JOB DETAIL STYLES
        ======================================== */
 
-    /* Fix scroll issue - ensure proper overflow handling */
-    html,
-    body {
-      height: 100%;
-      overflow-x: hidden;
-    }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      padding-top: var(--header-height);
-    }
 
     main {
       flex: 1;
@@ -375,6 +363,21 @@
       border-bottom: none;
     }
 
+    .company-logo-large {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      background: var(--surface-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+
     .meta-icon {
       width: 44px;
       height: 44px;
@@ -514,10 +517,6 @@
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot"></span>
-        </button>
         <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
@@ -532,7 +531,8 @@
       <a href="job-search.html" class="mobile-link active" data-page="jobs">Jobs</a>
       <a href="my-applications.html" class="mobile-link" data-page="applications">Applications</a>
       <a href="profile-management.html" class="mobile-link" data-page="profile">Profile</a>
-      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+      <a href="#" onclick="window.API.Auth.logout()" class="mobile-link"
+        style="color: var(--danger); border-bottom: none">Sign Out</a>
     </div>
   </header>
 
@@ -552,9 +552,9 @@
           <!-- Job Header -->
           <div class="job-header-detail">
             <div class="company-info">
-              <span style="font-size: 28px">🏢</span>
+              <div class="company-logo-large" id="companyLogo">🏢</div>
               <div>
-                <div class="name">TechFlow Inc.</div>
+                <div class="name" id="companyName">Company</div>
                 <div class="location">
                   <i class="fas fa-location-dot"></i> San Francisco, CA
                   (Hybrid)
@@ -787,7 +787,7 @@
       "use strict";
       // Check authentication
       if (!window.API.isAuthenticated()) {
-        window.location.href = '/auth/login.html';
+        window.location.href = '../auth/login.html';
         return;
       }
 
@@ -816,34 +816,113 @@
       }
 
       // ============================================
-      // APPLY TO JOB
+      // LOAD JOB DATA
       // ============================================
-      const applyBtn = document.getElementById("applyBtn");
+      async function loadJobData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('id');
+        
+        if (!jobId) {
+          showToast("No job ID provided.", "fa-exclamation-triangle", true);
+          return;
+        }
 
-      applyBtn.addEventListener("click", function () {
-        const originalHTML = this.innerHTML;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
-        this.disabled = true;
+        try {
+          const job = await window.API.Job.getById(jobId);
+          if (!job) throw new Error("Job not found");
 
-        setTimeout(() => {
-          this.innerHTML = originalHTML;
-          this.disabled = false;
-          showToast(
-            "🎉 Application submitted successfully!",
-            "fa-check-circle",
-          );
-        }, 1500);
-      });
+          let companyName = "Company";
+          try {
+            if (window.API.Settings && window.API.Settings.getPublicSettings) {
+              const settings = await window.API.Settings.getPublicSettings();
+              if (settings && settings.companyName) {
+                companyName = settings.companyName;
+              }
+            }
+          } catch (e) {
+            console.error("Failed to load public settings", e);
+          }
+
+          // Update DOM Elements
+          document.querySelector('.breadcrumb .current').textContent = job.title;
+          document.querySelector('.job-title-detail').textContent = job.title;
+          
+          document.getElementById('companyName').textContent = companyName;
+          
+          const companyInitial = companyName !== "Company" ? companyName.charAt(0).toUpperCase() : "🏢";
+          document.getElementById('companyLogo').textContent = companyInitial;
+          
+          document.querySelector('.company-info .location').innerHTML = `<i class="fas fa-location-dot"></i> ${job.location || 'Remote'}`;
+          
+          const postDate = new Date(job.createdAt);
+          document.querySelector('.company-info .posted').innerHTML = `<i class="fas fa-clock"></i> Posted ${postDate.toLocaleDateString()}`;
+
+          // Tags
+          const tagsContainer = document.querySelector('.tags');
+          tagsContainer.innerHTML = '';
+          if (job.department) tagsContainer.innerHTML += `<span class="tag">${job.department}</span>`;
+          if (job.employmentType) tagsContainer.innerHTML += `<span class="tag">${job.employmentType}</span>`;
+          if (job.experienceLevel) tagsContainer.innerHTML += `<span class="tag">${job.experienceLevel}</span>`;
+
+          // Description & Requirements
+          const mainContent = document.querySelector('.main-content-detail');
+          let mainHtml = '';
+          
+          if (job.description) {
+            mainHtml += `<div class="section"><h2><i class="fas fa-file-lines"></i> Overview</h2><p>${job.description.replace(/\n/g, '<br>')}</p></div>`;
+          }
+          if (job.requirements) {
+            const reqItems = job.requirements.split('\n').filter(r => r.trim());
+            mainHtml += `<div class="section"><h2><i class="fas fa-clipboard-list"></i> Requirements</h2><ul class="requirements">`;
+            reqItems.forEach(req => mainHtml += `<li>${req}</li>`);
+            mainHtml += `</ul></div>`;
+          }
+          mainContent.innerHTML = mainHtml || '<div class="section"><p>No details provided.</p></div>';
+
+          // Meta Card
+          const metaCardItems = document.querySelectorAll('.meta-card .meta-item');
+          if (metaCardItems.length >= 3) {
+            metaCardItems[0].querySelector('div > div:nth-child(2)').textContent = job.salaryRange || 'Not specified';
+            metaCardItems[1].querySelector('div > div:nth-child(2)').textContent = job.employmentType || 'Not specified';
+            metaCardItems[2].querySelector('div > div:nth-child(2)').textContent = job.experienceLevel || 'Not specified';
+          }
+
+          // Apply Button Logic
+          const applyBtn = document.getElementById("applyBtn");
+          applyBtn.onclick = async function () {
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+            this.disabled = true;
+
+            try {
+              await window.API.Application.submit({ jobId: job.jobId || job.id });
+              this.innerHTML = '<i class="fas fa-check"></i> Applied!';
+              this.classList.add('saved'); // visual feedback
+              showToast("🎉 Application submitted successfully!", "fa-check-circle");
+            } catch (error) {
+              console.error(error);
+              this.innerHTML = originalHTML;
+              this.disabled = false;
+              showToast(error.message || "Failed to apply", "fa-times-circle", true);
+            }
+          };
+
+        } catch (error) {
+          console.error(error);
+          showToast("Failed to load job details.", "fa-exclamation-triangle", true);
+        }
+      }
+
+      loadJobData();
 
       // ============================================
-      // SAVE JOB
+      // SAVE JOB (MOCK)
       // ============================================
       const saveBtn = document.getElementById("saveBtn");
       let isSaved = false;
 
       saveBtn.addEventListener("click", function () {
         isSaved = !isSaved;
-
         if (isSaved) {
           this.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
           this.classList.add("saved");
@@ -858,23 +937,16 @@
       // ============================================
       // NOTIFICATIONS
       // ============================================
-      document
-        .getElementById("notifBtn")
-        .addEventListener("click", function () {
-          showToast("🔔 You have 3 unread notifications", "fa-bell");
-        });
+      document.getElementById("notifBtn").addEventListener("click", function () {
+        showToast("🔔 You have 3 unread notifications", "fa-bell");
+      });
 
       // ============================================
       // USER AVATAR
       // ============================================
-      document
-        .getElementById("userAvatar")
-        .addEventListener("click", function () {
-          window.location.href = "profile-management.html";
-        });
-
-      console.log("✅ Job Detail page loaded successfully!");
-      console.log("📋 Job: Senior Frontend Engineer at TechFlow Inc.");
+      document.getElementById("userAvatar").addEventListener("click", function () {
+        window.location.href = "profile-management.html";
+      });
     })();
   </script>
 </body>

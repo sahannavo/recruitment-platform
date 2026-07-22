@@ -112,6 +112,12 @@ namespace RecruitmentAPI.Repository.Interfaces
         Task<IEnumerable<Application>> GetPendingReviewApplicationsAsync();
 
         /// <summary>
+        /// Get applications that are shortlisted and pending manager review
+        /// </summary>
+        /// <returns>List of applications pending manager review</returns>
+        Task<IEnumerable<Application>> GetManagerReviewApplicationsAsync();
+
+        /// <summary>
         /// Get applications with interview scheduled
         /// </summary>
         /// <returns>List of applications with interviews scheduled</returns>

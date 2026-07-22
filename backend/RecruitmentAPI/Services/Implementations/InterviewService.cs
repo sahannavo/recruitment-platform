@@ -15,19 +15,18 @@ public class InterviewService : IInterviewService
     private readonly IInterviewRepository _interviewRepository;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<InterviewService> _logger;
-    // Uncomment when NotificationService is available
-    // private readonly INotificationService _notificationService;
+    private readonly INotificationService _notificationService;
 
     public InterviewService(
         IInterviewRepository interviewRepository,
         ApplicationDbContext context,
-        ILogger<InterviewService> logger)
-        // INotificationService notificationService)
+        ILogger<InterviewService> logger,
+        INotificationService notificationService)
     {
         _interviewRepository = interviewRepository;
         _context = context;
         _logger = logger;
-        // _notificationService = notificationService;
+        _notificationService = notificationService;
     }
 
     public async Task<InterviewResponseDto> ScheduleAsync(ScheduleInterviewDto dto, int scheduledBy)
@@ -37,6 +36,7 @@ public class InterviewService : IInterviewService
             // Validate application exists
             var application = await _context.Applications
                 .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
                 .Include(a => a.Job)
                 .FirstOrDefaultAsync(a => a.ApplicationId == dto.ApplicationId);
 
@@ -68,18 +68,38 @@ public class InterviewService : IInterviewService
                 Status = "Scheduled",
                 MeetingLink = meetingLink,
                 Notes = dto.Notes,
+                InterviewerId = dto.InterviewerId, // Use the selected Interviewer ID
                 CreatedAt = DateTime.UtcNow
             };
 
             await _interviewRepository.AddAsync(interview);
+            
+            // Update application status
+            application.Status = ApplicationStatus.InterviewScheduled;
+            application.UpdatedAt = DateTime.UtcNow;
+            
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Interview {InterviewId} scheduled for application {ApplicationId}", 
                 interview.InterviewId, dto.ApplicationId);
 
             // Send notification to candidate
-            // Uncomment when NotificationService is available
-            // await SendInterviewNotificationAsync(interview, application);
+            if (application.Candidate?.User != null && !string.IsNullOrEmpty(application.Candidate.User.Email))
+            {
+                var candidateName = $"{application.Candidate.User.FirstName} {application.Candidate.User.LastName}".Trim();
+                if (string.IsNullOrEmpty(candidateName)) candidateName = "Candidate";
+
+                var jobTitle = application.Job?.Title ?? "Open Position";
+                
+                await _notificationService.SendInterviewReminderAsync(
+                    application.Candidate.UserId,
+                    application.Candidate.User.Email, 
+                    candidateName, 
+                    jobTitle, 
+                    dto.ScheduledAt, 
+                    meetingLink ?? string.Empty
+                );
+            }
 
             return MapToResponseDto(interview, application);
         }

@@ -417,11 +417,8 @@
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot"></span>
-        </button>
         <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+        <button class="btn btn-secondary" onclick="window.API.Auth.logout()" style="padding: 6px 12px; font-size: 13px; margin-left: 8px;">Sign Out</button>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
         </button>
@@ -593,6 +590,38 @@
     </div>
   </footer>
 
+  <!-- View Job Modal -->
+  <div class="modal-overlay" id="viewJobModal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-icon" style="background: var(--primary-light); color: var(--primary);">
+        <i class="fas fa-briefcase"></i>
+      </div>
+      <h2 id="modalJobTitle">Job Title</h2>
+      <div style="margin-bottom: 24px;">
+        <p style="margin-bottom: 8px;"><strong>Department:</strong> <span id="modalJobDept"></span></p>
+        <p style="margin-bottom: 8px;"><strong>Status:</strong> <span id="modalJobStatus"></span></p>
+        <p style="margin-bottom: 8px;"><strong>Applicants:</strong> <span id="modalJobApplicants"></span></p>
+        <p style="margin-bottom: 16px;"><strong>Posted:</strong> <span id="modalJobDate"></span></p>
+        <div>
+          <strong>Description:</strong>
+          <p id="modalJobDesc" style="margin-top: 4px; white-space: pre-wrap; font-size: 13px; max-height: 150px; overflow-y: auto; padding-right: 8px;">Loading...</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000; display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+  </style>
+
   <!-- ===== UNIFIED JAVASCRIPT ===== -->
   <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
@@ -604,7 +633,7 @@
 
       // Check authentication
       if (!window.API.isAuthenticated()) {
-        window.location.href = '/auth/login.html';
+        window.location.href = '../auth/login.html';
         return;
       }
 
@@ -620,49 +649,38 @@
       // Add page-specific logic below
 
     })();
-    // Sample data
-    let jobs = [
-      {
-        id: 1,
-        title: "Senior Product Designer",
-        department: "Design",
-        applicants: 24,
-        status: "Active",
-        date: "Oct 12, 2023",
-      },
-      {
-        id: 2,
-        title: "Full-Stack Engineer",
-        department: "Engineering",
-        applicants: 48,
-        status: "Draft",
-        date: "Oct 14, 2023",
-      },
-      {
-        id: 3,
-        title: "Marketing Manager",
-        department: "Marketing",
-        applicants: 12,
-        status: "Closed",
-        date: "Sep 28, 2023",
-      },
-      {
-        id: 4,
-        title: "HR Specialist",
-        department: "HR",
-        applicants: 8,
-        status: "Active",
-        date: "Oct 05, 2023",
-      },
-    ];
+    let jobs = [];
+
+    async function loadJobs() {
+      try {
+        const response = await window.API.Job.getAll();
+        // Assuming response is an object with a jobs array
+        jobs = (response.jobs || response || []).map((job) => ({
+          id: job.jobId || job.id,
+          title: job.title,
+          department: job.department,
+          applicants: job.applicantsCount || 0,
+          status: job.status,
+          date: new Date(job.createdAt || job.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        }));
+        renderJobs();
+      } catch (error) {
+        console.error("Failed to load jobs:", error);
+        alert("Failed to load jobs from the server.");
+      }
+    }
 
     const statusClass = {
       Active: "badge-active",
+      Published: "badge-active",
+      Open: "badge-active",
       Draft: "badge-draft",
       Closed: "badge-closed",
     };
     const statusIcon = {
       Active: "fa-circle-check",
+      Published: "fa-circle-check",
+      Open: "fa-circle-check",
       Draft: "fa-pen",
       Closed: "fa-circle-xmark",
     };
@@ -740,23 +758,50 @@
       window.location.href = "post-job.html";
     }
 
-    function viewJob(id) {
+    async function viewJob(id) {
       const job = jobs.find((j) => j.id === id);
-      alert(
-        `📋 Viewing: ${job.title}\n\nDepartment: ${job.department}\nApplicants: ${job.applicants}\nStatus: ${job.status}\nPosted: ${job.date}`,
-      );
+      if (job) {
+        document.getElementById('modalJobTitle').textContent = job.title;
+        document.getElementById('modalJobDept').textContent = job.department;
+        document.getElementById('modalJobStatus').textContent = job.status;
+        document.getElementById('modalJobApplicants').textContent = job.applicants;
+        document.getElementById('modalJobDate').textContent = job.date;
+        document.getElementById('modalJobDesc').textContent = 'Loading description...';
+        document.getElementById('viewJobModal').classList.add('open');
+
+        try {
+          const fullJob = await window.API.Job.getById(id);
+          if (fullJob && fullJob.description) {
+            document.getElementById('modalJobDesc').textContent = fullJob.description;
+          } else {
+            document.getElementById('modalJobDesc').textContent = 'No description available.';
+          }
+        } catch (error) {
+          console.error("Failed to fetch full job details", error);
+          document.getElementById('modalJobDesc').textContent = 'Failed to load description.';
+        }
+      }
+    }
+
+    function closeViewModal() {
+      document.getElementById('viewJobModal').classList.remove('open');
     }
 
     function editJob(id) {
-      const job = jobs.find((j) => j.id === id);
-      alert(`✏️ Editing: ${job.title}`);
+      window.location.href = `post-job.html?id=${id}`;
     }
 
-    function deleteJob(id) {
+    async function deleteJob(id) {
       if (confirm(`🗑️ Are you sure you want to delete this job?`)) {
-        jobs = jobs.filter((j) => j.id !== id);
-        renderJobs();
-        alert("✅ Job deleted successfully!");
+        try {
+          await window.API.Job.delete(id);
+          jobs = jobs.filter((j) => j.id !== id);
+          renderJobs();
+          alert("✅ Job deleted successfully!");
+        } catch (error) {
+          console.error("Failed to delete job:", error);
+          alert("❌ Failed to delete job from the server.");
+        }
       }
     }
 
@@ -776,8 +821,8 @@
       alert("→ Next page");
     }
 
-    // Initial render
-    renderJobs();
+    // Initial load
+    loadJobs();
   </script>
 </body>
 

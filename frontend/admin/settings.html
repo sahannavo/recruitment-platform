@@ -542,16 +542,15 @@
       </a>
 
       <nav class="main-nav" aria-label="Primary navigation">
-        <a href="../admin/dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="../admin/admin-dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
         <a href="../admin/user-management.html" class="nav-link" data-page="users">Users</a>
         <a href="../admin/settings.html" class="nav-link active" data-page="settings">Settings</a>
         <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a>
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot"></span>
+        <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;" id="logoutBtnHeader">
+          <i class="fas fa-sign-out-alt" id="logoutBtnDesktop"></i>
         </button>
         <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
@@ -563,11 +562,11 @@
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay" id="mobileOverlay"></div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="../admin/dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
-      <a href="../admin/users.html" class="mobile-link" data-page="users">Users</a>
+      <a href="../admin/admin-dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="../admin/user-management.html" class="mobile-link" data-page="users">Users</a>
       <a href="../admin/settings.html" class="mobile-link active" data-page="settings">Settings</a>
       <a href="../admin/analytics-reports.html" class="mobile-link" data-page="analytics">Analytics</a>
-      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+      <a href="#" id="logoutBtnMobile" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
     </div>
   </header>
 
@@ -824,6 +823,12 @@ The Team</textarea>
     </div>
   </main>
 
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span>Settings saved successfully!</span>
+  </div>
+
   <!-- ===== FOOTER ===== -->
   <footer class="app-footer">
     <div class="footer-content">
@@ -893,6 +898,15 @@ The Team</textarea>
         window.location.href = '../auth/login.html';
         return;
       }
+      
+      // Role check
+      const currentUser = window.API.getCurrentUser();
+      const role = currentUser?.role || currentUser?.Role || "";
+      if (!["Admin", "SuperAdmin"].includes(role)) {
+        alert("Access denied. Admins only.");
+        window.location.href = "../index.html";
+        return;
+      }
 
       // Update user avatar
       const avatar = document.getElementById('userAvatar');
@@ -902,6 +916,17 @@ The Team</textarea>
       }
 
       console.log('✅ Page initialized with API client');
+      
+      // ============================================
+      // LOGOUT FUNCTIONALITY
+      // ============================================
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.API.Auth.logout();
+        });
+      }
       // ============================================
       // TAB SWITCHING
       // ============================================
@@ -1012,7 +1037,7 @@ The Team</textarea>
       const saveText = document.getElementById("saveText");
       const resetBtn = document.getElementById("resetBtn");
 
-      form.addEventListener("submit", function (e) {
+      form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         // Collect form data
@@ -1027,15 +1052,9 @@ The Team</textarea>
           precision: document.getElementById("slider-precision").value,
           penalty: document.getElementById("slider-penalty").value,
           notifications: {
-            systemAlerts: document.querySelector(
-              "#tab-notifications .toggle-row:first-child input",
-            ).checked,
-            weeklyReport: document.querySelector(
-              "#tab-notifications .toggle-row:nth-child(2) input",
-            ).checked,
-            apiWarnings: document.querySelector(
-              "#tab-notifications .toggle-row:nth-child(3) input",
-            ).checked,
+            systemAlerts: document.querySelectorAll("#tab-notifications .toggle-row input")[0].checked,
+            weeklyReport: document.querySelectorAll("#tab-notifications .toggle-row input")[1].checked,
+            apiWarnings: document.querySelectorAll("#tab-notifications .toggle-row input")[2].checked,
           },
         };
 
@@ -1045,51 +1064,29 @@ The Team</textarea>
         saveBtn.classList.add("is-loading");
         saveBtn.disabled = true;
 
-        // Simulate API call
-        setTimeout(() => {
+        try {
+          if (window.API && window.API.Settings) {
+            await window.API.Settings.updateSettings(data);
+            showToast("Settings saved successfully! ✅", "fa-check-circle", false);
+          } else {
+            showToast("API not initialized", "fa-exclamation-triangle", true);
+          }
+        } catch (error) {
+          console.error("Save error:", error);
+          showToast(error.message || "Failed to save settings", "fa-times-circle", true);
+        } finally {
           saveBtn.classList.remove("is-loading");
           saveBtn.disabled = false;
-          showToast(
-            "Settings saved successfully! ✅",
-            "fa-check-circle",
-            false,
-          );
-        }, 1500);
+        }
       });
 
       // ============================================
       // RESET BUTTON
       // ============================================
       resetBtn.addEventListener("click", function () {
-        if (confirm("Discard all unsaved changes?")) {
-          // Reset all form fields to their initial values
-          document.getElementById("companyName").value = "Acme Corporation";
-          document.getElementById("industry").value = "Technology";
-          document.getElementById("website").value = "https://acme.inc";
-          document.getElementById("openaiKey").value =
-            "sk-1234567890abcdefghijklmnopqrstuvwxyz";
-          document.getElementById("awsKey").value = "AKIAIOSFODNN7EXAMPLE";
-          document.getElementById("emailTemplate").value =
-            document.getElementById("emailTemplate").dataset.default ||
-            "Hi {{first_name}},\n\nWelcome to Acme Corporation! We are excited to have you on board.\n\nTo get started, please log in and configure your profile.\n\nBest,\nThe Team";
-
-          // Reset sliders
-          document.getElementById("slider-creativity").value = "0.7";
-          document.getElementById("val-creativity").textContent = "0.7";
-          document.getElementById("slider-precision").value = "0.9";
-          document.getElementById("val-precision").textContent = "0.9";
-          document.getElementById("slider-penalty").value = "0.0";
-          document.getElementById("val-penalty").textContent = "0.0";
-
-          // Reset toggles
-          const toggles = document.querySelectorAll(
-            "#tab-notifications .switch input",
-          );
-          toggles.forEach((toggle, index) => {
-            toggle.checked = [true, true, false][index] || false;
-          });
-
-          showToast("Settings reset to defaults ↩️", "fa-undo", false);
+        if (confirm("Discard all unsaved changes and reload from server?")) {
+          loadSettings();
+          showToast("Settings reset to saved values ↩️", "fa-undo", false);
         }
       });
 
@@ -1112,10 +1109,64 @@ The Team</textarea>
       };
 
       // ============================================
-      // STORE DEFAULT EMAIL TEMPLATE
+      // LOGOUT
       // ============================================
-      const emailTemplate = document.getElementById("emailTemplate");
-      emailTemplate.dataset.default = emailTemplate.value;
+      function handleLogout(e) {
+        e.preventDefault();
+        if (confirm("Are you sure you want to sign out?")) {
+          if (window.API && window.API.Auth) {
+            window.API.Auth.logout();
+          }
+          window.location.href = "../auth/login.html";
+        }
+      }
+
+      const logoutBtnHeader = document.getElementById("logoutBtnHeader");
+      if (logoutBtnHeader) logoutBtnHeader.addEventListener("click", handleLogout);
+
+      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+      if (logoutBtnMobile) logoutBtnMobile.addEventListener("click", handleLogout);
+
+      // ============================================
+      // LOAD SETTINGS FROM API
+      // ============================================
+      async function loadSettings() {
+        if (!window.API || !window.API.Settings) return;
+        
+        try {
+          const settings = await window.API.Settings.getSettings();
+          
+          if (settings) {
+            document.getElementById("companyName").value = settings.companyName || "";
+            document.getElementById("industry").value = settings.industry || "";
+            document.getElementById("website").value = settings.websiteUrl || "";
+            document.getElementById("openaiKey").value = settings.openAIKey || "";
+            document.getElementById("awsKey").value = settings.awsKey || "";
+            document.getElementById("emailTemplate").value = settings.emailTemplate || "";
+            
+            // Sliders
+            document.getElementById("slider-creativity").value = settings.creativity || "0";
+            document.getElementById("val-creativity").textContent = settings.creativity || "0";
+            document.getElementById("slider-precision").value = settings.precision || "0";
+            document.getElementById("val-precision").textContent = settings.precision || "0";
+            document.getElementById("slider-penalty").value = settings.penalty || "0";
+            document.getElementById("val-penalty").textContent = settings.penalty || "0";
+            
+            // Toggles
+            const toggleInputs = document.querySelectorAll("#tab-notifications .toggle-row input");
+            if (toggleInputs.length >= 3) {
+              toggleInputs[0].checked = settings.systemAlerts || false;
+              toggleInputs[1].checked = settings.weeklyReport || false;
+              toggleInputs[2].checked = settings.apiWarnings || false;
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load settings:", error);
+          showToast("Failed to load settings from server", "fa-exclamation-triangle", true);
+        }
+      }
+
+      loadSettings();
 
       console.log("✅ Admin Settings page loaded successfully!");
       console.log(

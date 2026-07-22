@@ -105,7 +105,8 @@ namespace RecruitmentAPI.Services.Implementations
                         ApplicantsCount = applications.Count(),
                         IsRemote = job.IsRemote,
                         EmploymentType = job.EmploymentType,
-                        ExperienceLevel = job.ExperienceLevel
+                        ExperienceLevel = job.ExperienceLevel,
+                        RequiredSkills = string.IsNullOrEmpty(job.RequiredSkills) ? new List<string>() : job.RequiredSkills.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList()
                     });
                 }
 
@@ -189,9 +190,9 @@ namespace RecruitmentAPI.Services.Implementations
         {
             try
             {
-                var recruiter = await _unitOfWork.Recruiters.GetByIdAsync(recruiterId);
+                var recruiter = await _unitOfWork.Recruiters.FirstOrDefaultAsync(r => r.UserId == recruiterId);
                 if (recruiter == null)
-                    throw new KeyNotFoundException($"Recruiter with ID {recruiterId} not found");
+                    throw new KeyNotFoundException($"Recruiter profile for User ID {recruiterId} not found");
 
                 var job = new JobPosting
                 {
@@ -202,7 +203,7 @@ namespace RecruitmentAPI.Services.Implementations
                     Location = jobPostDto.Location,
                     SalaryRange = jobPostDto.SalaryRange,
                     Status = Enum.TryParse<JobStatus>(jobPostDto.Status, true, out var status) ? status : JobStatus.Draft,
-                    RecruiterId = recruiterId,
+                    RecruiterId = recruiter.RecruiterId,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     ExpiresAt = jobPostDto.ExpiryDate,
@@ -305,13 +306,10 @@ namespace RecruitmentAPI.Services.Implementations
                 var job = await _unitOfWork.Jobs.GetByIdAsync(jobId);
                 if (job == null)
                     return false;
-
-                job.Status = JobStatus.Archived;
-                job.UpdatedAt = DateTime.UtcNow;
-
+                _unitOfWork.Jobs.Remove(job);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.LogInformation("Job {JobId} archived", jobId);
+                _logger.LogInformation("Job {JobId} permanently deleted", jobId);
                 return true;
             }
             catch (Exception ex)

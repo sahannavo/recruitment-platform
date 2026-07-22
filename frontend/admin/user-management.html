@@ -677,9 +677,8 @@
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot"></span>
+        <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;">
+          <i class="fas fa-sign-out-alt" id="logoutBtnDesktop"></i>
         </button>
         <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
@@ -695,7 +694,7 @@
       <a href="../admin/user-management.html" class="mobile-link active" data-page="users">Users</a>
       <a href="../admin/settings.html" class="mobile-link" data-page="settings">Settings</a>
       <a href="../admin/analytics-reports.html" class="mobile-link" data-page="analytics">Analytics</a>
-      <a href="../auth/login.html" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+      <a href="#" id="logoutBtn" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
     </div>
   </header>
 
@@ -778,7 +777,7 @@
         <select class="form-control" id="editRoleSelect">
           <option value="Admin">Admin</option>
           <option value="Recruiter">Recruiter</option>
-          <option value="Hiring Manager">Hiring Manager</option>
+          <option value="HiringManager">Hiring Manager</option>
         </select>
       </div>
       <div class="modal-footer">
@@ -819,7 +818,7 @@
           <select class="form-control" id="inviteRole">
             <option value="Recruiter">Recruiter</option>
             <option value="Admin">Admin</option>
-            <option value="Hiring Manager">Hiring Manager</option>
+            <option value="HiringManager">Hiring Manager</option>
           </select>
         </div>
         <div class="modal-footer">
@@ -891,53 +890,23 @@
       // ============================================
       // DATA
       // ============================================
-      const USERS = [
-        {
-          id: 1,
-          name: "Alex Rivera",
-          email: "alex.rivera@recruitai.com",
-          role: "Admin",
-          status: "Active",
-          initials: "AR",
-        },
-        {
-          id: 2,
-          name: "Jordan Smith",
-          email: "jordan.s@recruitai.com",
-          role: "Recruiter",
-          status: "Disabled",
-          initials: "JS",
-        },
-        {
-          id: 3,
-          name: "Elena Rodriguez",
-          email: "e.rodriguez@recruitai.com",
-          role: "Hiring Manager",
-          status: "Active",
-          initials: "ER",
-        },
-        {
-          id: 4,
-          name: "Chen Wei",
-          email: "c.wei@recruitai.com",
-          role: "Recruiter",
-          status: "Active",
-          initials: "CW",
-        },
-      ];
-
-      const TOTAL_USERS = 24;
-      const PAGE_SIZE = 4;
-      const TOTAL_PAGES = 3;
+      let TOTAL_USERS = 0;
+      let PAGE_SIZE = 10;
+      let TOTAL_PAGES = 1;
 
       let currentPage = 1;
-      let workingUsers = USERS.map((u) => ({ ...u }));
+      let workingUsers = [];
       let activeUserId = null;
+      let confirmActionType = null; // 'toggle' or 'delete'
 
       const roleBadgeClass = {
         Admin: "badge-role-admin",
         Recruiter: "badge-role-recruiter",
-        "Hiring Manager": "badge-role-manager",
+        HiringManager: "badge-role-manager",
+      };
+
+      const formatRole = (role) => {
+        return role === "HiringManager" ? "Hiring Manager" : role;
       };
 
       // ============================================
@@ -1003,7 +972,7 @@
               </div>
             </div>
             <div class="badges">
-              <span class="badge ${roleBadgeClass[u.role] || "badge-role-recruiter"}">${u.role}</span>
+              <span class="badge ${roleBadgeClass[u.role] || "badge-role-recruiter"}">${formatRole(u.role)}</span>
               <span class="badge ${statusClass}">${u.status}</span>
             </div>
             <div class="row-actions">
@@ -1014,6 +983,11 @@
                       data-action="toggle-status" data-id="${u.id}"
                       aria-label="${isActive ? `Disable ${u.name}` : `Enable ${u.name}`}">
                 <i class="fas ${isActive ? "fa-ban" : "fa-check-circle"}"></i>
+              </button>
+              <button class="action-icon-btn danger" 
+                      data-action="delete-user" data-id="${u.id}"
+                      aria-label="Delete ${u.name}">
+                <i class="fas fa-trash-alt"></i>
               </button>
             </div>
           `;
@@ -1160,14 +1134,27 @@
 
       document
         .getElementById("editRoleSave")
-        .addEventListener("click", () => {
-          const user = workingUsers.find((u) => u.id === activeUserId);
-          if (!user) return;
-          const newRole = editRoleSelect.value;
-          user.role = newRole;
-          renderRows(workingUsers);
-          closeModal(editRoleOverlay);
-          showToast(`${user.name}'s role updated to ${newRole}`);
+        .addEventListener("click", async (e) => {
+          const btn = e.target;
+          const originalText = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = "Saving...";
+
+          try {
+            const payload = {
+              userId: activeUserId,
+              newRole: editRoleSelect.value,
+            };
+            await window.API.Admin.updateUserRole(activeUserId, payload);
+            showToast("Role updated successfully!", "fa-check-circle");
+            closeModal(editRoleOverlay);
+            await loadUsers();
+          } catch (error) {
+            showToast(error.message || "Failed to update role", "fa-exclamation-circle", true);
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+          }
         });
 
       // ============================================
@@ -1195,44 +1182,34 @@
         .getElementById("inviteCancel")
         .addEventListener("click", () => closeModal(inviteOverlay));
 
-      inviteForm.addEventListener("submit", (e) => {
+      inviteForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "Sending...";
 
-        const name = document.getElementById("inviteName");
-        const email = document.getElementById("inviteEmail");
-        const nameError = document.getElementById("inviteNameError");
-        const emailError = document.getElementById("inviteEmailError");
-
-        name.classList.remove("invalid");
-        email.classList.remove("invalid");
-        nameError.classList.remove("visible");
-        emailError.classList.remove("visible");
-
-        let valid = true;
-
-        if (!name.value.trim()) {
-          name.classList.add("invalid");
-          nameError.classList.add("visible");
-          valid = false;
-        }
-
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(email.value.trim())) {
-          email.classList.add("invalid");
-          emailError.classList.add("visible");
-          valid = false;
-        }
-
-        if (!valid) return;
-
+        const email = document.getElementById("inviteEmail").value.trim();
         const role = document.getElementById("inviteRole").value;
-        console.log("📧 Sending invite:", {
-          name: name.value.trim(),
-          email: email.value.trim(),
-          role,
-        });
-        closeModal(inviteOverlay);
-        showToast(`Invite sent to ${email.value.trim()} 🎉`);
+        const department = document.getElementById("inviteDept").value;
+
+        try {
+          const inviteData = {
+            email: email,
+            role: role,
+            department: department
+          };
+          
+          await window.API.Admin.inviteUser(inviteData);
+          showToast(`Invitation sent to ${email}`, "fa-paper-plane");
+          closeModal(inviteOverlay);
+          inviteForm.reset();
+        } catch (error) {
+          showToast(error.message || "Failed to send invite", "fa-exclamation-circle", true);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
       });
 
       // ============================================
@@ -1258,6 +1235,7 @@
           const user = workingUsers.find((u) => u.id === id);
           if (!user) return;
           activeUserId = id;
+          confirmActionType = "toggle";
 
           const willDisable = user.status === "Active";
           document.getElementById("confirmTitle").textContent = willDisable
@@ -1274,6 +1252,21 @@
             : "btn btn-success";
           openModal(confirmOverlay);
         }
+
+        const deleteBtn = e.target.closest('[data-action="delete-user"]');
+        if (deleteBtn) {
+          const id = Number(deleteBtn.dataset.id);
+          const user = workingUsers.find((u) => u.id === id);
+          if (!user) return;
+          activeUserId = id;
+          confirmActionType = "delete";
+
+          document.getElementById("confirmTitle").textContent = "Hard Remove User?";
+          confirmMessage.innerHTML = `Are you sure you want to <strong>permanently delete ${user.name}</strong>? This action cannot be undone and will erase their platform data.`;
+          confirmProceed.textContent = "Delete User";
+          confirmProceed.className = "btn btn-danger";
+          openModal(confirmOverlay);
+        }
       });
 
       // ============================================
@@ -1286,16 +1279,35 @@
         .getElementById("confirmCancel")
         .addEventListener("click", () => closeModal(confirmOverlay));
 
-      confirmProceed.addEventListener("click", () => {
+      confirmProceed.addEventListener("click", async () => {
         const user = workingUsers.find((u) => u.id === activeUserId);
         if (!user) return;
-        const willDisable = user.status === "Active";
-        user.status = willDisable ? "Disabled" : "Active";
-        renderRows(workingUsers);
-        closeModal(confirmOverlay);
-        showToast(
-          `${user.name} has been ${willDisable ? "disabled" : "enabled"}`,
-        );
+        
+        try {
+            confirmProceed.disabled = true;
+
+            if (confirmActionType === "delete") {
+                await window.API.Admin.deleteUser(activeUserId);
+                showToast(`User ${user.name} deleted successfully`);
+            } else if (confirmActionType === "toggle") {
+                const willDisable = user.status === "Active";
+                if (willDisable) {
+                    await window.API.Admin.disableUser(activeUserId);
+                } else {
+                    await window.API.Admin.enableUser(activeUserId);
+                }
+                showToast(
+                  `${user.name} has been ${willDisable ? "disabled" : "enabled"}`
+                );
+            }
+            
+            closeModal(confirmOverlay);
+            await loadUsers();
+        } catch (error) {
+            showToast(error.message || "Action failed", "fa-exclamation-circle", true);
+        } finally {
+            confirmProceed.disabled = false;
+        }
       });
 
       // ============================================
@@ -1312,13 +1324,39 @@
       // ============================================
       // INIT
       // ============================================
+      async function loadUsers() {
+        try {
+            loadingState.style.display = "flex";
+            userList.style.display = "none";
+            emptyState.classList.remove("visible");
+
+            const users = await window.API.Admin.getUsers();
+            
+            workingUsers = users.map(u => ({
+                id: u.userId,
+                name: u.fullName || (u.firstName + " " + u.lastName),
+                email: u.email,
+                role: u.role,
+                status: u.isActive ? "Active" : "Disabled",
+                initials: ((u.firstName?.[0] || "") + (u.lastName?.[0] || "")).toUpperCase()
+            }));
+
+            TOTAL_USERS = workingUsers.length;
+            TOTAL_PAGES = Math.ceil(TOTAL_USERS / PAGE_SIZE) || 1;
+
+            loadingState.style.display = "none";
+            renderRows(workingUsers);
+            renderPagination();
+            
+            console.log("✅ Admin Users page loaded successfully!");
+        } catch (err) {
+            console.error(err);
+            loadingState.innerHTML = `<div style="color:var(--danger)">Failed to load users</div>`;
+        }
+      }
+
       function init() {
-        simulateLoad(() => {
-          renderRows(workingUsers);
-          renderPagination();
-        });
-        console.log("✅ Admin Users page loaded successfully!");
-        console.log(`👥 ${USERS.length} users loaded, ${TOTAL_USERS} total`);
+        loadUsers();
       }
 
       init();

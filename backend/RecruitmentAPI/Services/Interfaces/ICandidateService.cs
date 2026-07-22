@@ -126,8 +126,9 @@ namespace RecruitmentAPI.Services.Interfaces
         /// Parse CV and extract information
         /// </summary>
         /// <param name="documentId">Document ID</param>
+        /// <param name="resumeText">The extracted text from the resume</param>
         /// <returns>Parsed resume result</returns>
-        Task<ResumeParseResultDto> ParseResumeAsync(int documentId);
+        Task<ResumeParseResultDto> ParseResumeAsync(int documentId, string resumeText = null);
 
         /// <summary>
         /// Get candidate's skills with proficiency levels

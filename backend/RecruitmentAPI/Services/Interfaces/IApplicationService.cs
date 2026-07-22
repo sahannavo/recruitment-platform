@@ -65,7 +65,7 @@ namespace RecruitmentAPI.Services.Interfaces
         /// <summary>
         /// Get applications for a recruiter
         /// </summary>
-        Task<IEnumerable<ApplicationResponseDto>> GetByRecruiterAsync(int recruiterId);
+        Task<IEnumerable<ApplicationResponseDto>> GetByRecruiterAsync(int userId);
 
         /// <summary>
         /// Get recent applications
@@ -76,6 +76,11 @@ namespace RecruitmentAPI.Services.Interfaces
         /// Get applications pending review
         /// </summary>
         Task<IEnumerable<ApplicationResponseDto>> GetPendingReviewApplicationsAsync();
+
+        /// <summary>
+        /// Get applications shortlisted and pending manager review
+        /// </summary>
+        Task<IEnumerable<ApplicationResponseDto>> GetManagerReviewApplicationsAsync();
 
         /// <summary>
         /// Get applications with interviews scheduled

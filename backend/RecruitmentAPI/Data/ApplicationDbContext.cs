@@ -23,6 +23,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Document> Documents => Set<Document>();
+    public DbSet<PlatformSettings> PlatformSettings => Set<PlatformSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +42,31 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.IsActive).HasDefaultValue(true);
             entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
             entity.Property(u => u.UpdatedAt).IsRequired(false);
+        });
+
+        // ── Platform Settings ──────────────────────────────────────────────────
+        modelBuilder.Entity<PlatformSettings>(entity =>
+        {
+            entity.HasKey(ps => ps.Id);
+            
+            // Seed default settings
+            entity.HasData(new PlatformSettings
+            {
+                Id = 1,
+                CompanyName = "Acme Corporation",
+                Industry = "Technology",
+                WebsiteUrl = "https://acme.inc",
+                OpenAIKey = "sk-1234567890abcdefghijklmnopqrstuvwxyz",
+                AWSKey = "AKIAIOSFODNN7EXAMPLE",
+                EmailTemplate = "Hi {{first_name}},\n\nWelcome to Acme Corporation! We are excited to have you on board.\n\nTo get started, please log in and configure your profile.\n\nBest,\nThe Team",
+                Creativity = 0.70m,
+                Precision = 0.90m,
+                Penalty = 0.00m,
+                SystemAlerts = true,
+                WeeklyReport = true,
+                ApiWarnings = false,
+                UpdatedAt = DateTime.UtcNow
+            });
         });
 
         // ── Admin ─────────────────────────────────────────────────────────────

@@ -293,6 +293,94 @@
         justify-content: center;
       }
     }
+
+    /* AI Summary Panel */
+    .ai-summary-panel {
+      display: none;
+      margin-top: 16px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
+      border: 1px solid #c4b5fd;
+      border-radius: 12px;
+      overflow: hidden;
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ai-summary-header {
+      background: linear-gradient(90deg, #7c3aed, #6366f1);
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .ai-summary-body {
+      padding: 16px;
+    }
+    .ai-summary-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: white;
+      border: 1px solid #e9d5ff;
+      border-radius: 8px;
+      padding: 14px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .ai-summary-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .btn-ai-generate {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-top: 10px;
+    }
+    .btn-ai-generate:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-ai-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-copy-bio {
+      flex: 1;
+      padding: 9px 16px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+    .btn-copy-bio:hover { opacity: 0.85; }
+    .btn-dismiss-ai {
+      padding: 9px 16px;
+      background: transparent;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-dismiss-ai:hover { background: #f3f4f6; }
   </style>
 </head>
 
@@ -314,10 +402,6 @@
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot"></span>
-        </button>
         <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
@@ -352,7 +436,8 @@
           <a href="#" class="active"><i class="fas fa-user"></i> Personal Info</a>
           <a href="#"><i class="fas fa-file-alt"></i> Resume</a>
           <a href="#"><i class="fas fa-cog"></i> Settings</a>
-          <a href="#" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+          <a href="#" onclick="window.API.Auth.logout()" style="color: var(--danger);"><i
+              class="fas fa-sign-out-alt"></i> Sign Out</a>
         </nav>
       </aside>
 
@@ -364,7 +449,7 @@
             <h1 style="font-size: 24px; font-weight: 700;">Profile Management</h1>
             <p style="color: var(--text-secondary);">Update your personal information and resume</p>
           </div>
-          <button class="btn btn-primary" onclick="saveProfile()">
+          <button type="button" class="btn btn-primary" onclick="saveProfile()">
             <i class="fas fa-save"></i> Save Changes
           </button>
         </div>
@@ -395,6 +480,30 @@
             <div class="form-group full-width">
               <label>Professional Summary</label>
               <textarea id="biography" rows="3"></textarea>
+              <button type="button" class="btn-ai-generate" id="generateAiBtn" onclick="generateAISummary()">
+                <i class="fas fa-magic"></i> Generate AI Summary
+              </button>
+              <span style="font-size: 11px; color: var(--text-secondary); margin-top: 4px; display: block;">
+                <i class="fas fa-info-circle"></i> Save your profile first, then click to generate an AI-written summary based on your skills.
+              </span>
+
+              <!-- AI Summary Result Panel -->
+              <div class="ai-summary-panel" id="aiSummaryPanel">
+                <div class="ai-summary-header">
+                  <i class="fas fa-robot"></i> AI-Generated Biography
+                </div>
+                <div class="ai-summary-body">
+                  <div class="ai-summary-text" id="aiSummaryText">Generating...</div>
+                  <div class="ai-summary-actions">
+                    <button class="btn-copy-bio" onclick="copyAISummaryToBio()">
+                      <i class="fas fa-paste"></i> Copy to Biography
+                    </button>
+                    <button class="btn-dismiss-ai" onclick="dismissAISummary()">
+                      <i class="fas fa-times"></i> Dismiss
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="form-group full-width">
               <label>Skills <span class="required">*</span></label>
@@ -407,18 +516,26 @@
               <div class="upload-zone" id="uploadZone">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <p><span class="highlight">Click to upload</span> or drag and drop</p>
-                <span style="font-size: 12px; color: var(--text-secondary);">PDF, DOCX up to 10MB</span>
-                <input type="file" id="fileInput" accept=".pdf,.docx" style="display: none;" />
+                <span style="font-size: 12px; color: var(--text-secondary);">Upload a text-based PDF or .txt file (up to
+                  10MB). Image-based scans cannot be processed.</span>
+
+                <input type="file" id="fileInput" accept=".pdf,.txt" style="display: none;" />
               </div>
-              <div class="current-resume" id="currentResume">
+              <div class="current-resume" id="currentResume" style="display: none;">
                 <i class="fas fa-file-pdf"></i>
                 <div class="info">
-                  <div class="name">Jane_Doe_Resume.pdf</div>
-                  <div class="meta">Uploaded on Jan 15, 2026 • 2.4 MB</div>
+                  <div class="name" id="resumeFileName">No resume uploaded</div>
+                  <div class="meta" id="resumeFileMeta">Upload a resume to stand out</div>
                 </div>
-                <button class="btn btn-secondary btn-sm" onclick="viewResume()"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-danger-outline btn-sm" onclick="removeResume()"><i
-                    class="fas fa-trash"></i></button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="viewResume()" id="viewResumeBtn"
+                  style="display: none;" title="Open in new tab"><i class="fas fa-external-link-alt"></i></button>
+                <button type="button" class="btn btn-danger-outline btn-sm" onclick="removeResume()"
+                  id="deleteResumeBtn"><i class="fas fa-trash"></i></button>
+              </div>
+              <!-- Resume IFrame Container -->
+              <div id="resumePreviewContainer"
+                style="display: none; width: 100%; height: 600px; margin-top: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
+                <iframe id="resumeIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
               </div>
             </div>
 
@@ -500,7 +617,7 @@
 
       // Check authentication
       if (!window.API.isAuthenticated()) {
-        window.location.href = '/auth/login.html';
+        window.location.href = '../auth/login.html';
         return;
       }
 
@@ -519,6 +636,8 @@
     })();
 
     let currentProfile = null;
+
+    let currentDocument = null;
 
     async function loadProfileData() {
       try {
@@ -541,8 +660,83 @@
           const avatarEl = document.getElementById('sidebarAvatar');
           if (avatarEl) avatarEl.textContent = initials || 'U';
         }
+
+        await loadDocumentData();
       } catch (err) {
         console.error('Failed to load profile:', err);
+      }
+    }
+
+    async function loadDocumentData() {
+      try {
+        const documents = await window.API.Candidate.getDocuments();
+        const resumeDoc = documents && documents.length > 0 ? documents.find(d => d.documentType === 'Resume' || d.documentType === 1) || documents[0] : null;
+
+        const currentResumeEl = document.getElementById('currentResume');
+        const previewContainer = document.getElementById('resumePreviewContainer');
+        const resumeIframe = document.getElementById('resumeIframe');
+
+        if (resumeDoc) {
+          currentDocument = resumeDoc;
+          document.getElementById('resumeFileName').textContent = resumeDoc.fileName || 'Resume.pdf';
+
+          const uploadDate = resumeDoc.uploadedAt ? new Date(resumeDoc.uploadedAt).toLocaleDateString() : 'Recently';
+          document.getElementById('resumeFileMeta').textContent = `Uploaded on ${uploadDate}`;
+
+          currentResumeEl.style.display = 'flex';
+
+          const viewBtn = document.getElementById('viewResumeBtn');
+          if (resumeDoc.blobUrl) {
+            viewBtn.style.display = 'inline-flex';
+
+            // Use the backend proxy to download/view the file securely
+            const baseUrl = window.API.BASE_URL || 'http://localhost:5000';
+            const downloadUrl = `${baseUrl}/api/candidates/documents/${resumeDoc.documentId}/download`;
+
+            viewBtn.onclick = () => {
+              // Open a new window that will fetch and display the PDF
+              window.open(downloadUrl, '_blank');
+              // Note: if the backend requires authentication, this simple window.open might fail.
+              // We'd need to handle auth token. But for now we focus on the iframe preview:
+            };
+
+            // Fetch the PDF securely with the token to display in iframe
+            previewContainer.style.display = 'block';
+            resumeIframe.src = ''; // clear it first
+
+            try {
+              const token = window.API.getToken();
+              const response = await fetch(downloadUrl, {
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (response.ok) {
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                resumeIframe.src = objectUrl;
+
+                // Update view button to use the object URL so it works with auth
+                viewBtn.onclick = () => window.open(objectUrl, '_blank');
+              } else {
+                console.error("Failed to fetch resume for preview", response.status);
+              }
+            } catch (e) {
+              console.error("Error fetching preview", e);
+            }
+          } else {
+            viewBtn.style.display = 'none';
+            previewContainer.style.display = 'none';
+          }
+        } else {
+          currentDocument = null;
+          currentResumeEl.style.display = 'none';
+          previewContainer.style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Failed to load documents:', err);
+        document.getElementById('currentResume').style.display = 'none';
+        if (document.getElementById('resumePreviewContainer')) {
+          document.getElementById('resumePreviewContainer').style.display = 'none';
+        }
       }
     }
 
@@ -581,10 +775,18 @@
           }
         }
 
-        alert('✅ Profile saved successfully!');
+        if (typeof showToast !== 'undefined') {
+          showToast('✅ Profile saved successfully!', 'success');
+        } else {
+          alert('✅ Profile saved successfully!');
+        }
         loadProfileData();
       } catch (err) {
-        alert('❌ Failed to save profile: ' + err.message);
+        if (typeof showToast !== 'undefined') {
+          showToast('❌ Failed to save profile: ' + err.message, 'error');
+        } else {
+          alert('❌ Failed to save profile: ' + err.message);
+        }
       }
     }
 
@@ -606,13 +808,38 @@
     }
 
     function viewResume() {
-      alert('📄 Opening resume...');
+      if (currentDocument && currentDocument.blobUrl) {
+        let resumeUrl = currentDocument.blobUrl;
+        if (!resumeUrl.startsWith('http')) {
+          const baseUrl = window.API.BASE_URL || 'http://localhost:5000';
+          resumeUrl = baseUrl + '/' + resumeUrl.replace(/^[\/\\]/, '');
+        }
+        window.open(resumeUrl, '_blank');
+      } else {
+        alert('📄 Opening resume...');
+      }
     }
 
-    function removeResume() {
+    async function removeResume() {
+      if (!currentDocument) return;
       if (confirm('Remove uploaded resume?')) {
-        document.getElementById('currentResume').style.display = 'none';
-        alert('🗑️ Resume removed.');
+        try {
+          await window.API.Candidate.deleteDocument(currentDocument.documentId);
+          document.getElementById('currentResume').style.display = 'none';
+          document.getElementById('resumePreviewContainer').style.display = 'none';
+          currentDocument = null;
+          if (typeof showToast !== 'undefined') {
+            showToast('🗑️ Resume removed.', 'success');
+          } else {
+            alert('🗑️ Resume removed.');
+          }
+        } catch (err) {
+          if (typeof showToast !== 'undefined') {
+            showToast('❌ Failed to remove resume: ' + err.message, 'error');
+          } else {
+            alert('❌ Failed to remove resume: ' + err.message);
+          }
+        }
       }
     }
 
@@ -638,13 +865,142 @@
       if (e.target.files[0]) handleFile(e.target.files[0]);
     });
 
-    function handleFile(file) {
+    function showToast(message, type = 'info') {
+      let toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6';
+      toast.style.cssText = `background: ${bgColor}; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 14px; opacity: 0; transform: translateY(10px); transition: all 0.3s ease;`;
+      toast.innerHTML = message;
+
+      toastContainer.appendChild(toast);
+
+      // Animate in
+      setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+      }, 10);
+
+      // Remove after 4 seconds
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    async function handleFile(file) {
       if (file.size > 10 * 1024 * 1024) {
-        alert('❌ File exceeds 10MB limit.');
+        showToast('❌ File exceeds 10MB limit.', 'error');
         return;
       }
-      alert(`✅ "${file.name}" uploaded successfully!`);
-      document.getElementById('currentResume').style.display = 'flex';
+      try {
+        // Upload CV
+        await window.API.Candidate.uploadCV(file);
+        showToast(`✅ "${file.name}" uploaded successfully!`, 'success');
+        await loadDocumentData();
+
+        // Auto-fill using AI
+        if (file.name.toLowerCase().endsWith('.txt') || file.name.toLowerCase().endsWith('.pdf')) {
+          showToast('🤖 Analyzing CV with AI to auto-fill your profile...', 'info');
+          try {
+            const parseResult = await window.API.Candidate.parseCV(file);
+
+            if (parseResult && parseResult.parsedSuccessfully) {
+              if (parseResult.skills && parseResult.skills.length > 0) {
+                document.getElementById('skillsSummary').value = parseResult.skills.join(', ');
+              }
+              if (parseResult.yearsOfExperience) {
+                const yrsEl = document.getElementById('yearsExperience');
+                if (yrsEl) yrsEl.value = parseResult.yearsOfExperience;
+              }
+
+              showToast('✨ Profile auto-filled from your CV using AI! Please review and click Save Changes.', 'success');
+            }
+          } catch (parseErr) {
+            console.warn('AI Parsing failed:', parseErr);
+            showToast('⚠️ CV uploaded successfully, but could not auto-fill profile details: ' + parseErr.message, 'warning');
+          }
+        }
+      } catch (err) {
+        showToast('❌ Failed to upload resume: ' + err.message, 'error');
+      }
+    }
+
+    // ============================================
+    // AI BIOGRAPHY GENERATOR
+    // ============================================
+    let lastAISummaryText = ''; // store plain text version for copy
+
+    async function generateAISummary() {
+      const btn = document.getElementById('generateAiBtn');
+      const panel = document.getElementById('aiSummaryPanel');
+      const textEl = document.getElementById('aiSummaryText');
+
+      // Show panel with spinner
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      panel.style.display = 'block';
+      textEl.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; color: #6b7280; font-size: 13px;">
+          <i class="fas fa-spinner fa-spin" style="color: #7c3aed;"></i>
+          Analyzing your profile and crafting a summary...
+        </div>`;
+
+      try {
+        const currentUser = window.API.getCurrentUser();
+        const candidateId = currentUser?.userId || currentUser?.UserId || currentUser?.id || currentUser?.Id;
+        if (!candidateId) throw new Error('Could not identify your profile. Please log out and log back in.');
+
+        const baseUrl = window.API.BASE_URL || 'http://localhost:5000';
+        const token = window.API.getToken();
+        const response = await fetch(`${baseUrl}/api/candidates/${candidateId}/ai-summary`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+        const data = await response.json();
+        if (!data.summary) throw new Error('No summary was returned. Please ensure your Skills are filled in and saved.');
+
+        // Render HTML (the AI returns HTML now)
+        textEl.innerHTML = data.summary;
+
+        // Store plain text for the copy action
+        lastAISummaryText = textEl.innerText || textEl.textContent;
+
+      } catch (err) {
+        textEl.innerHTML = `
+          <div style="color: #ef4444; font-size: 13px;">
+            <i class="fas fa-exclamation-circle"></i>
+            ${err.message}
+          </div>`;
+        lastAISummaryText = '';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic"></i> Generate AI Summary';
+      }
+    }
+
+    function copyAISummaryToBio() {
+      if (!lastAISummaryText) return;
+      const bioEl = document.getElementById('biography');
+      bioEl.value = lastAISummaryText.trim();
+      // Scroll to biography field
+      bioEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      bioEl.focus();
+      showToast('✅ AI summary copied to Biography! Remember to click Save Profile.', 'success');
+    }
+
+    function dismissAISummary() {
+      document.getElementById('aiSummaryPanel').style.display = 'none';
+      lastAISummaryText = '';
     }
   </script>
 </body>

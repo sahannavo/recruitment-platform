@@ -1,559 +1,547 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - Recruiter Dashboard</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - Recruiter Dashboard</title>
 
-    <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    .greeting {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .greeting h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .greeting p {
+      color: var(--text-secondary);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .stat-change.positive {
+      color: var(--success);
+    }
+
+    .stat-change.negative {
+      color: var(--danger);
+    }
+
+    .job-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .job-item {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .job-item:hover {
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow);
+    }
+
+    .job-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .job-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .job-meta i {
+      width: 14px;
+    }
+
+    .status-badge {
+      padding: 3px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-open {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .status-closed {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-draft {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .recent-applications {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 0;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .status {
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-shortlisted {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-hired {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-interview {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner i {
+      font-size: 32px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: var(--border);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
       .greeting {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 32px;
-        box-shadow: var(--shadow);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 32px;
-      }
-      .greeting h1 {
-        font-size: 24px;
-        font-weight: 700;
-      }
-      .greeting p {
-        color: var(--text-secondary);
-      }
-
-      .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-      .section-header h2 {
-        font-size: 20px;
-        font-weight: 700;
+        flex-direction: column;
+        text-align: center;
       }
 
       .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 32px;
-      }
-      .stat-card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 20px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        text-align: center;
-      }
-      .stat-number {
-        font-size: 32px;
-        font-weight: 800;
-        color: var(--primary);
-      }
-      .stat-label {
-        font-size: 13px;
-        color: var(--text-secondary);
-        font-weight: 500;
-        margin-top: 4px;
-      }
-      .stat-change {
-        font-size: 12px;
-        font-weight: 600;
-        margin-top: 4px;
-      }
-      .stat-change.positive {
-        color: var(--success);
-      }
-      .stat-change.negative {
-        color: var(--danger);
-      }
-
-      .job-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .job-item {
-        background: var(--surface);
-        border-radius: var(--radius);
-        padding: 16px 20px;
-        border: 1px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        transition: all var(--transition);
-        cursor: pointer;
-      }
-      .job-item:hover {
-        border-color: var(--primary-light);
-        box-shadow: var(--shadow);
-      }
-      .job-title {
-        font-weight: 600;
-        font-size: 15px;
-      }
-      .job-meta {
-        font-size: 13px;
-        color: var(--text-secondary);
-        display: flex;
-        gap: 16px;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-      .job-meta i {
-        width: 14px;
-      }
-
-      .status-badge {
-        padding: 3px 12px;
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 600;
-      }
-      .status-open {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .status-closed {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-      .status-draft {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-
-      .recent-applications {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
+        grid-template-columns: 1fr;
       }
 
       table {
-        width: 100%;
-        border-collapse: collapse;
+        font-size: 13px;
       }
+
+      td,
       th {
-        text-align: left;
-        padding: 12px 0;
-        font-weight: 600;
-        color: var(--text-secondary);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        padding: 10px 8px;
       }
-      td {
-        padding: 14px 0;
-        border-top: 1px solid var(--border);
-        font-size: 14px;
-      }
+    }
+  </style>
+</head>
 
-      .status {
-        padding: 4px 14px;
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
-      }
-      .status-pending {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .status-shortlisted {
-        background: #dbeafe;
-        color: #1e40af;
-      }
-      .status-hired {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .status-rejected {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-      .status-interview {
-        background: #dbeafe;
-        color: #1e40af;
-      }
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
 
-      .loading-spinner {
-        text-align: center;
-        padding: 40px;
-        color: var(--text-secondary);
-      }
-      .loading-spinner i {
-        font-size: 32px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: var(--text-secondary);
-      }
-      .empty-state i {
-        font-size: 48px;
-        color: var(--border);
-        margin-bottom: 16px;
-      }
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link active" data-page="dashboard">Dashboard</a>
+        <a href="manage-jobs.html" class="nav-link" data-page="jobs">Jobs</a>
+        <a href="candidates.html" class="nav-link" data-page="candidates">Candidates</a>
+        <a href="schedule-interview.html" class="nav-link" data-page="interviews">Interviews</a>
+      </nav>
 
-      @media (max-width: 1024px) {
-        .stats-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-      @media (max-width: 768px) {
-        .greeting {
-          flex-direction: column;
-          text-align: center;
-        }
-        .stats-grid {
-          grid-template-columns: 1fr;
-        }
-        table {
-          font-size: 13px;
-        }
-        td,
-        th {
-          padding: 10px 8px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatar">JD</div>
+        <button class="btn btn-secondary" onclick="window.API.Auth.logout()" style="padding: 6px 12px; font-size: 13px; margin-left: 8px;">Sign Out</button>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link active" data-page="dashboard">Dashboard</a>
+      <a href="manage-jobs.html" class="mobile-link" data-page="jobs">Jobs</a>
+      <a href="candidates.html" class="mobile-link" data-page="candidates">Candidates</a>
+      <a href="schedule-interview.html" class="mobile-link" data-page="interviews">Interviews</a>
+      <a href="#" class="mobile-link" id="logoutBtn" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <!-- Greeting -->
+    <div class="greeting">
+      <div>
+        <h1 id="greetingText">Welcome! 👋</h1>
+        <p id="greetingSubtext">Loading your recruiter dashboard...</p>
+      </div>
+      <a href="post-job.html" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Post New Job
+      </a>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalJobs">0</div>
+        <div class="stat-label">Total Jobs</div>
+        <div class="stat-change positive" id="jobsChange">+0% this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="activeJobs">0</div>
+        <div class="stat-label">Active Jobs</div>
+        <div class="stat-change positive" id="activeChange">
+          +0% this month
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalApplications">0</div>
+        <div class="stat-label">Total Applications</div>
+        <div class="stat-change positive" id="appsChange">+0% this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="pendingReviews">0</div>
+        <div class="stat-label">Pending Reviews</div>
+        <div class="stat-change" id="pendingChange">0 new</div>
+      </div>
+    </div>
+
+    <!-- Recent Jobs -->
+    <div style="margin-bottom: 32px">
+      <div class="section-header">
+        <h2><i class="fas fa-briefcase"></i> Your Recent Jobs</h2>
+        <a href="manage-jobs.html" style="color: var(--primary); font-weight: 500">View all →</a>
+      </div>
+      <div class="job-list" id="jobsList">
+        <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+      </div>
+    </div>
+
+    <!-- Recent Applications -->
+    <div class="recent-applications">
+      <div class="section-header">
+        <h2><i class="fas fa-file-alt"></i> Recent Applications</h2>
+        <a href="candidates.html" style="color: var(--primary); font-weight: 500">Review all →</a>
+      </div>
+      <div id="applicationsContainer">
+        <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" />
           <span>RecruitAI</span>
-        </a>
-
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link active" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a href="manage-jobs.html" class="nav-link" data-page="jobs">Jobs</a>
-          <a href="candidates.html" class="nav-link" data-page="candidates"
-            >Candidates</a
-          >
-          <a
-            href="schedule-interview.html"
-            class="nav-link"
-            data-page="interviews"
-            >Interviews</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot" id="notifDot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
         </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
-
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a
-          href="dashboard.html"
-          class="mobile-link active"
-          data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="manage-jobs.html" class="mobile-link" data-page="jobs">Jobs</a>
-        <a href="candidates.html" class="mobile-link" data-page="candidates"
-          >Candidates</a
-        >
-        <a
-          href="schedule-interview.html"
-          class="mobile-link"
-          data-page="interviews"
-          >Interviews</a
-        >
-        <a
-          href="#"
-          class="mobile-link"
-          id="logoutBtn"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
+      <div class="footer-links">
+        <h4>For Recruiters</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="manage-jobs.html">Manage Jobs</a></li>
+          <li><a href="candidates.html">Candidates</a></li>
+          <li><a href="schedule-interview.html">Interviews</a></li>
+        </ul>
       </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <!-- Greeting -->
-      <div class="greeting">
-        <div>
-          <h1 id="greetingText">Welcome! 👋</h1>
-          <p id="greetingSubtext">Loading your recruiter dashboard...</p>
-        </div>
-        <a href="post-job.html" class="btn btn-primary">
-          <i class="fas fa-plus"></i> Post New Job
-        </a>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
       </div>
-
-      <!-- Statistics -->
-      <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-          <div class="stat-number" id="totalJobs">0</div>
-          <div class="stat-label">Total Jobs</div>
-          <div class="stat-change positive" id="jobsChange">+0% this month</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="activeJobs">0</div>
-          <div class="stat-label">Active Jobs</div>
-          <div class="stat-change positive" id="activeChange">
-            +0% this month
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalApplications">0</div>
-          <div class="stat-label">Total Applications</div>
-          <div class="stat-change positive" id="appsChange">+0% this month</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="pendingReviews">0</div>
-          <div class="stat-label">Pending Reviews</div>
-          <div class="stat-change" id="pendingChange">0 new</div>
-        </div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
       </div>
-
-      <!-- Recent Jobs -->
-      <div style="margin-bottom: 32px">
-        <div class="section-header">
-          <h2><i class="fas fa-briefcase"></i> Your Recent Jobs</h2>
-          <a
-            href="manage-jobs.html"
-            style="color: var(--primary); font-weight: 500"
-            >View all →</a
-          >
-        </div>
-        <div class="job-list" id="jobsList">
-          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
-        </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
       </div>
+    </div>
+  </footer>
 
-      <!-- Recent Applications -->
-      <div class="recent-applications">
-        <div class="section-header">
-          <h2><i class="fas fa-file-alt"></i> Recent Applications</h2>
-          <a
-            href="review-applications.html"
-            style="color: var(--primary); font-weight: 500"
-            >Review all →</a
-          >
-        </div>
-        <div id="applicationsContainer">
-          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
-        </div>
-      </div>
-    </main>
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            />
-            <span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
-        </div>
-        <div class="footer-links">
-          <h4>For Recruiters</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="manage-jobs.html">Manage Jobs</a></li>
-            <li><a href="candidates.html">Candidates</a></li>
-            <li><a href="schedule-interview.html">Interviews</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-    </footer>
+  <script>
+    let currentUser = null;
 
-    <!-- ===== SCRIPTS ===== -->
-    <script src="../js/api.js"></script>
-    <script src="../js/main.js"></script>
-
-    <script>
-      let currentUser = null;
-
-      // ============================================
-      // AUTHENTICATION CHECK
-      // ============================================
-      function checkAuth() {
-        if (!window.API.isAuthenticated()) {
-          window.location.href = "../auth/login.html";
-          return false;
-        }
-        currentUser = window.API.getCurrentUser();
-        // Verify recruiter role
-        const role = currentUser?.role || currentUser?.Role || "";
-        if (!["Recruiter", "Admin"].includes(role)) {
-          alert("Access denied. Recruiters only.");
-          window.location.href = "/index.html";
-          return false;
-        }
-        return true;
+    // ============================================
+    // AUTHENTICATION CHECK
+    // ============================================
+    function checkAuth() {
+      if (!window.API.isAuthenticated()) {
+        window.location.href = "../auth/login.html";
+        return false;
       }
+      currentUser = window.API.getCurrentUser();
+      // Verify recruiter role
+      const role = currentUser?.role || currentUser?.Role || "";
+      if (!["Recruiter", "Admin"].includes(role)) {
+        alert("Access denied. Recruiters only.");
+        window.location.href = "../index.html";
+        return false;
+      }
+      return true;
+    }
 
-      // ============================================
-      // LOAD DASHBOARD
-      // ============================================
-      async function loadDashboard() {
-        try {
-          updateGreeting();
-          await Promise.all([
-            loadStats(),
-            loadRecentJobs(),
-            loadRecentApplications(),
-          ]);
-        } catch (error) {
-          console.error("Error loading dashboard:", error);
-          showToast("Error loading dashboard data", "error");
+    // ============================================
+    // LOAD DASHBOARD
+    // ============================================
+    async function loadDashboard() {
+      try {
+        updateGreeting();
+        await Promise.all([
+          loadStats(),
+          loadRecentJobs(),
+          loadRecentApplications(),
+        ]);
+      } catch (error) {
+        console.error("Error loading dashboard:", error);
+        showToast("Error loading dashboard data", "error");
+      }
+    }
+
+    // ============================================
+    // UPDATE GREETING
+    // ============================================
+    function updateGreeting() {
+      const greetingEl = document.getElementById("greetingText");
+      const subtextEl = document.getElementById("greetingSubtext");
+      if (currentUser) {
+        const firstName =
+          currentUser.firstName || currentUser.FirstName || "Recruiter";
+        greetingEl.textContent = `Good ${getTimeOfDay()}, ${firstName}! 👋`;
+        subtextEl.textContent = "Here's your recruitment overview.";
+        const avatar = document.getElementById("userAvatar");
+        if (avatar) avatar.textContent = window.API.getUserInitials() || "R";
+      }
+    }
+
+    function getTimeOfDay() {
+      const hour = new Date().getHours();
+      if (hour < 12) return "morning";
+      if (hour < 18) return "afternoon";
+      return "evening";
+    }
+
+    // ============================================
+    // LOAD STATISTICS
+    // ============================================
+    async function loadStats() {
+      try {
+        // Get job statistics
+        const jobStats = await window.API.Job.getStatistics();
+        if (jobStats) {
+          document.getElementById("totalJobs").textContent =
+            jobStats.totalJobs || 0;
+          document.getElementById("activeJobs").textContent =
+            jobStats.activeJobs || 0;
         }
-      }
 
-      // ============================================
-      // UPDATE GREETING
-      // ============================================
-      function updateGreeting() {
-        const greetingEl = document.getElementById("greetingText");
-        const subtextEl = document.getElementById("greetingSubtext");
-        if (currentUser) {
-          const firstName =
-            currentUser.firstName || currentUser.FirstName || "Recruiter";
-          greetingEl.textContent = `Good ${getTimeOfDay()}, ${firstName}! 👋`;
-          subtextEl.textContent = "Here's your recruitment overview.";
-          const avatar = document.getElementById("userAvatar");
-          if (avatar) avatar.textContent = window.API.getUserInitials() || "R";
+        // Get application statistics
+        const appStats = await window.API.Application.getStatistics();
+        if (appStats) {
+          document.getElementById("totalApplications").textContent =
+            appStats.totalApplications || 0;
+          document.getElementById("pendingReviews").textContent =
+            appStats.pendingReview || 0;
         }
+      } catch (error) {
+        console.error("Error loading stats:", error);
       }
+    }
 
-      function getTimeOfDay() {
-        const hour = new Date().getHours();
-        if (hour < 12) return "morning";
-        if (hour < 18) return "afternoon";
-        return "evening";
-      }
+    // ============================================
+    // LOAD RECENT JOBS
+    // ============================================
+    async function loadRecentJobs() {
+      const container = document.getElementById("jobsList");
+      try {
+        const response = await window.API.Job.getAll({ pageSize: 5 });
+        const jobs = response.jobs || response || [];
 
-      // ============================================
-      // LOAD STATISTICS
-      // ============================================
-      async function loadStats() {
-        try {
-          // Get job statistics
-          const jobStats = await window.API.Job.getStatistics();
-          if (jobStats) {
-            document.getElementById("totalJobs").textContent =
-              jobStats.totalJobs || 0;
-            document.getElementById("activeJobs").textContent =
-              jobStats.activeJobs || 0;
-          }
-
-          // Get application statistics
-          const appStats = await window.API.Application.getStatistics();
-          if (appStats) {
-            document.getElementById("totalApplications").textContent =
-              appStats.totalApplications || 0;
-            document.getElementById("pendingReviews").textContent =
-              appStats.pendingReview || 0;
-          }
-        } catch (error) {
-          console.error("Error loading stats:", error);
-        }
-      }
-
-      // ============================================
-      // LOAD RECENT JOBS
-      // ============================================
-      async function loadRecentJobs() {
-        const container = document.getElementById("jobsList");
-        try {
-          const response = await window.API.Job.getAll({ pageSize: 5 });
-          const jobs = response.jobs || response || [];
-
-          if (!jobs || jobs.length === 0) {
-            container.innerHTML = `
+        if (!jobs || jobs.length === 0) {
+          container.innerHTML = `
               <div class="empty-state">
                 <i class="fas fa-briefcase"></i>
                 <p>No jobs posted yet.</p>
                 <a href="post-job.html" class="btn btn-primary" style="margin-top: 12px;">Post Your First Job</a>
               </div>
             `;
-            return;
-          }
+          return;
+        }
 
-          container.innerHTML = jobs
-            .map(
-              (job) => `
+        container.innerHTML = jobs
+          .map(
+            (job) => `
             <div class="job-item" onclick="window.location.href='manage-jobs.html?jobId=${job.jobId}'">
               <div>
                 <div class="job-title">${job.title || "Untitled"}</div>
@@ -568,54 +556,54 @@
               </div>
             </div>
           `,
-            )
-            .join("");
-        } catch (error) {
-          console.error("Error loading jobs:", error);
-          container.innerHTML = `
+          )
+          .join("");
+      } catch (error) {
+        console.error("Error loading jobs:", error);
+        container.innerHTML = `
             <div class="empty-state" style="color: var(--danger);">
               <i class="fas fa-exclamation-circle"></i>
               <p>Unable to load jobs. Please try again.</p>
             </div>
           `;
-        }
       }
+    }
 
-      function getJobStatusClass(status) {
-        const map = {
-          Open: "status-open",
-          Published: "status-open",
-          Closed: "status-closed",
-          Filled: "status-closed",
-          Draft: "status-draft",
-          Archived: "status-closed",
-        };
-        return map[status] || "status-draft";
-      }
+    function getJobStatusClass(status) {
+      const map = {
+        Open: "status-open",
+        Published: "status-open",
+        Closed: "status-closed",
+        Filled: "status-closed",
+        Draft: "status-draft",
+        Archived: "status-closed",
+      };
+      return map[status] || "status-draft";
+    }
 
-      // ============================================
-      // LOAD RECENT APPLICATIONS
-      // ============================================
-      async function loadRecentApplications() {
-        const container = document.getElementById("applicationsContainer");
-        try {
-          // Get applications for recruiter's jobs
-          const response = await window.API.Application.getMyApplications();
-          const apps = Array.isArray(response) ? response : response.data || [];
+    // ============================================
+    // LOAD RECENT APPLICATIONS
+    // ============================================
+    async function loadRecentApplications() {
+      const container = document.getElementById("applicationsContainer");
+      try {
+        // Get applications for recruiter's jobs
+        const response = await window.API.Application.getMyApplications();
+        const apps = Array.isArray(response) ? response : response.data || [];
 
-          if (!apps || apps.length === 0) {
-            container.innerHTML = `
+        if (!apps || apps.length === 0) {
+          container.innerHTML = `
               <div class="empty-state">
                 <i class="fas fa-file-alt"></i>
                 <p>No applications yet.</p>
                 <p style="font-size: 14px;">Applications will appear here once candidates start applying.</p>
               </div>
             `;
-            return;
-          }
+          return;
+        }
 
-          const recent = apps.slice(0, 5);
-          container.innerHTML = `
+        const recent = apps.slice(0, 5);
+        container.innerHTML = `
             <table>
               <thead>
                 <tr>
@@ -628,9 +616,9 @@
               </thead>
               <tbody>
                 ${recent
-                  .map(
-                    (app) => `
-                  <tr onclick="window.location.href='review-applications.html?appId=${app.applicationId}'" style="cursor: pointer;">
+            .map(
+                (app) => `
+                  <tr onclick="window.location.href='candidates.html'" style="cursor: pointer;">
                     <td><strong>${app.candidateName || "Unknown"}</strong></td>
                     <td>${app.jobTitle || "Position"}</td>
                     <td>${formatDate(app.appliedAt)}</td>
@@ -638,82 +626,83 @@
                     <td>${app.aiScore || app.AI_Score || "-"}</td>
                   </tr>
                 `,
-                  )
-                  .join("")}
+            )
+            .join("")}
               </tbody>
             </table>
           `;
-        } catch (error) {
-          console.error("Error loading applications:", error);
-          container.innerHTML = `
+      } catch (error) {
+        console.error("Error loading applications:", error);
+        container.innerHTML = `
             <div class="empty-state" style="color: var(--danger);">
               <i class="fas fa-exclamation-circle"></i>
               <p>Unable to load applications.</p>
             </div>
           `;
-        }
       }
+    }
 
-      function getAppStatusClass(status) {
-        const map = {
-          Submitted: "status-pending",
-          Pending: "status-pending",
-          UnderReview: "status-pending",
-          Shortlisted: "status-shortlisted",
-          InterviewScheduled: "status-interview",
-          Interviewed: "status-interview",
-          Hired: "status-hired",
-          Rejected: "status-rejected",
-          Withdrawn: "status-rejected",
-        };
-        return map[status] || "status-pending";
-      }
+    function getAppStatusClass(status) {
+      const map = {
+        Submitted: "status-pending",
+        Pending: "status-pending",
+        UnderReview: "status-pending",
+        Shortlisted: "status-shortlisted",
+        InterviewScheduled: "status-interview",
+        Interviewed: "status-interview",
+        Hired: "status-hired",
+        Rejected: "status-rejected",
+        Withdrawn: "status-rejected",
+      };
+      return map[status] || "status-pending";
+    }
 
-      // ============================================
-      // FORMAT DATE
-      // ============================================
-      function formatDate(dateString) {
-        if (!dateString) return "N/A";
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-      }
-
-      // ============================================
-      // TOAST
-      // ============================================
-      function showToast(message, type = "info") {
-        if (typeof window.showToast === "function") {
-          window.showToast(message, type);
-        } else {
-          alert(message);
-        }
-      }
-
-      // ============================================
-      // LOGOUT
-      // ============================================
-      function logout() {
-        window.API.Auth.logout();
-      }
-
-      // ============================================
-      // INIT
-      // ============================================
-      document.addEventListener("DOMContentLoaded", function () {
-        if (!checkAuth()) return;
-        loadDashboard();
-
-        document
-          .getElementById("logoutBtn")
-          .addEventListener("click", function (e) {
-            e.preventDefault();
-            logout();
-          });
+    // ============================================
+    // FORMAT DATE
+    // ============================================
+    function formatDate(dateString) {
+      if (!dateString) return "N/A";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
       });
-    </script>
-  </body>
+    }
+
+    // ============================================
+    // TOAST
+    // ============================================
+    function showToast(message, type = "info") {
+      if (typeof window.showToast === "function") {
+        window.showToast(message, type);
+      } else {
+        alert(message);
+      }
+    }
+
+    // ============================================
+    // LOGOUT
+    // ============================================
+    function logout() {
+      window.API.Auth.logout();
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!checkAuth()) return;
+      loadDashboard();
+
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          logout();
+        });
+    });
+  </script>
+</body>
+
 </html>

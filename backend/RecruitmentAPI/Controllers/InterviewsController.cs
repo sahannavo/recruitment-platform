@@ -117,6 +117,33 @@ public class InterviewsController : ControllerBase
     }
 
     /// <summary>
+    /// Get a list of hiring managers for scheduling interviews
+    /// </summary>
+    [HttpGet("hiring-managers")]
+    [Authorize(Roles = "Recruiter,Admin,HiringManager")]
+    public async Task<ActionResult<IEnumerable<object>>> GetHiringManagers([FromServices] RecruitmentAPI.Data.ApplicationDbContext context)
+    {
+        try
+        {
+            var managers = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                context.Users
+                .Where(u => u.Role == "HiringManager")
+                .Select(u => new { id = u.UserId, name = u.FirstName + " " + u.LastName, role = u.Role })
+            );
+            return Ok(managers);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving hiring managers");
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Title = "Internal Server Error",
+                Status = StatusCodes.Status500InternalServerError
+            });
+        }
+    }
+
+    /// <summary>
     /// Get interview by ID
     /// </summary>
     /// <param name="id">Interview ID</param>

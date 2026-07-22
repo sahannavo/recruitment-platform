@@ -120,34 +120,37 @@ namespace RecruitmentAPI.Repository.Implementations
 
         public async Task<IEnumerable<JobPosting>> GetRecommendedJobsForCandidateAsync(List<string> skills, int limit)
         {
+            var activeJobs = await GetActiveJobsAsync();
+
             if (skills == null || skills.Count == 0)
             {
-                return await GetActiveJobsAsync();
+                return activeJobs.Take(limit);
             }
 
             var skillPatterns = skills.Select(s => s.ToLower()).ToList();
 
-            return await _dbSet
-                .Where(j => (j.Status == JobStatus.Open || j.Status == JobStatus.Published) &&
-                            (j.RequiredSkills != null &&
-                             skillPatterns.Any(s => j.RequiredSkills.ToLower().Contains(s))))
+            return activeJobs
+                .Where(j => j.RequiredSkills != null &&
+                             skillPatterns.Any(s => j.RequiredSkills.ToLower().Contains(s)))
                 .OrderByDescending(j => j.CreatedAt)
                 .Take(limit)
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<IEnumerable<JobPosting>> GetByRequiredSkillsAsync(List<string> skills)
         {
+            var activeJobs = await GetActiveJobsAsync();
+
             if (skills == null || skills.Count == 0)
-                return await GetActiveJobsAsync();
+                return activeJobs;
 
             var skillPatterns = skills.Select(s => s.ToLower()).ToList();
 
-            return await _dbSet
+            return activeJobs
                 .Where(j => j.RequiredSkills != null &&
                             skillPatterns.Any(s => j.RequiredSkills.ToLower().Contains(s)))
                 .OrderByDescending(j => j.CreatedAt)
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<IEnumerable<JobPosting>> GetJobsWithNoApplicationsAsync()

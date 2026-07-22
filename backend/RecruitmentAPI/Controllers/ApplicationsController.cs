@@ -99,7 +99,7 @@ namespace RecruitmentAPI.Controllers
                 var userId = User.GetUserId();
                 var userRole = User.GetRole();
 
-                if (application.CandidateId != userId && userRole != "Admin" && userRole != "Recruiter")
+                if (application.CandidateId != userId && userRole != "Admin" && userRole != "Recruiter" && userRole != "HiringManager")
                     return Forbid();
 
                 return Ok(application);
@@ -114,6 +114,46 @@ namespace RecruitmentAPI.Controllers
                 _logger.LogError(ex, "Error getting application {ApplicationId}", id);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "An error occurred while retrieving the application" });
+            }
+        }
+
+        /// <summary>
+        /// Download the candidate's resume for a specific application
+        /// </summary>
+        /// <param name="id">Application ID</param>
+        /// <returns>File stream</returns>
+        [HttpGet("{id}/resume/download")]
+        [Authorize(Roles = "Recruiter,Admin,HiringManager")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DownloadResume(int id, [FromServices] RecruitmentAPI.Services.Interfaces.IBlobStorageService blobStorageService, [FromServices] RecruitmentAPI.Repository.Interfaces.IUnitOfWork unitOfWork)
+        {
+            try
+            {
+                var application = await unitOfWork.Applications.GetApplicationWithDetailsAsync(id);
+                if (application == null)
+                    return NotFound(new { message = "Application not found" });
+
+                var userId = User.GetUserId();
+                var userRole = User.GetRole();
+
+                if (application.Job.Recruiter.UserId != userId && userRole != "Admin" && userRole != "HiringManager")
+                    return Forbid();
+
+                var cvDoc = application.Candidate.Documents?.FirstOrDefault(d => (d.DocumentType == "CV" || d.DocumentType == "Resume") && d.IsActive);
+                if (cvDoc == null || string.IsNullOrEmpty(cvDoc.BlobUrl))
+                    return NotFound(new { message = "Resume not found for this candidate" });
+
+                var fileStream = await blobStorageService.DownloadFileAsync(cvDoc.BlobUrl);
+                return File(fileStream, cvDoc.FileType ?? "application/pdf", cvDoc.FileName ?? "resume.pdf");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error downloading resume for application {ApplicationId}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while downloading the resume" });
             }
         }
 
@@ -167,13 +207,38 @@ namespace RecruitmentAPI.Controllers
         }
 
         /// <summary>
+        /// Get all applications for the current recruiter
+        /// </summary>
+        /// <returns>List of applications</returns>
+        [HttpGet("recruiter")]
+        [Authorize(Roles = "Recruiter,Admin")]
+        [ProducesResponseType(typeof(IEnumerable<ApplicationResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IEnumerable<ApplicationResponseDto>>> GetRecruiterApplications()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var applications = await _applicationService.GetByRecruiterAsync(userId);
+                return Ok(applications);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting applications for recruiter {UserId}", User.GetUserId());
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while retrieving applications" });
+            }
+        }
+
+        /// <summary>
         /// Update application status
         /// </summary>
         /// <param name="id">Application ID</param>
         /// <param name="updateDto">Status update data</param>
         /// <returns>Updated application</returns>
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "Recruiter,Admin")]
+        [Authorize(Roles = "Recruiter,Admin,HiringManager")]
         [ProducesResponseType(typeof(ApplicationResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -260,7 +325,7 @@ namespace RecruitmentAPI.Controllers
         /// <param name="status">Application status</param>
         /// <returns>List of applications</returns>
         [HttpGet("status/{status}")]
-        [Authorize(Roles = "Recruiter,Admin")]
+        [Authorize(Roles = "Recruiter,Admin,HiringManager")]
         [ProducesResponseType(typeof(IEnumerable<ApplicationResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -313,7 +378,7 @@ namespace RecruitmentAPI.Controllers
         /// </summary>
         /// <returns>Application statistics</returns>
         [HttpGet("statistics")]
-        [Authorize(Roles = "Recruiter,Admin")]
+        [Authorize(Roles = "Recruiter,Admin,HiringManager")]
         [ProducesResponseType(typeof(ApplicationStatistics), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -382,6 +447,30 @@ namespace RecruitmentAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting pending review applications");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while retrieving applications" });
+            }
+        }
+
+        /// <summary>
+        /// Get applications shortlisted and pending manager review
+        /// </summary>
+        /// <returns>List of applications pending manager review</returns>
+        [HttpGet("manager-review")]
+        [Authorize(Roles = "HiringManager,Admin")]
+        [ProducesResponseType(typeof(IEnumerable<ApplicationResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IEnumerable<ApplicationResponseDto>>> GetManagerReview()
+        {
+            try
+            {
+                var applications = await _applicationService.GetManagerReviewApplicationsAsync();
+                return Ok(applications);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting manager review applications");
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "An error occurred while retrieving applications" });
             }

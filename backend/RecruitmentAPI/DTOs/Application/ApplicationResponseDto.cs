@@ -54,6 +54,11 @@ namespace RecruitmentAPI.DTOs
         public string Message { get; set; }
 
         /// <summary>
+        /// URL to the candidate's resume/CV document
+        /// </summary>
+        public string CandidateResumeUrl { get; set; }
+
+        /// <summary>
         /// Whether the application was successfully submitted
         /// </summary>
         public bool Success { get; set; }

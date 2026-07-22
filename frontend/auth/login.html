@@ -184,7 +184,7 @@
 <body>
   <!-- Header -->
   <header class="header">
-    <a href="/index.html" class="logo">
+    <a href="../index.html" class="logo">
       <img src="../assets/images/Logo.png" alt="RecruitAI Logo" style="height: 40px"
         onerror="this.style.display = 'none'" />
     </a>
@@ -269,7 +269,7 @@
           HiringManager: "../hiring-manager/dashboard.html",
           Admin: "../admin/admin-dashboard.html",
         };
-        window.location.href = roleMap[user?.role] || "/index.html";
+        window.location.href = roleMap[user?.role] || "../index.html";
         return;
       }
 
@@ -337,7 +337,7 @@
             };
 
             setTimeout(() => {
-              window.location.href = roleMap[user?.role] || "/index.html";
+              window.location.href = roleMap[user?.role] || "../index.html";
             }, 500);
           }
         } catch (error) {

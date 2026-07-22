@@ -229,11 +229,8 @@
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot"></span>
-        </button>
         <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+        <button class="btn btn-secondary" onclick="window.API.Auth.logout()" style="padding: 6px 12px; font-size: 13px; margin-left: 8px;">Sign Out</button>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
         </button>
@@ -299,6 +296,27 @@
             <div class="error-message">Please select an employment type.</div>
           </div>
 
+          <!-- Experience Level -->
+          <div class="form-group">
+            <label for="experienceLevel">Experience Level <span class="required">*</span></label>
+            <select id="experienceLevel" class="form-select" required>
+              <option value="">Select level</option>
+              <option value="Entry-level">Entry-level</option>
+              <option value="Mid-level">Mid-level</option>
+              <option value="Senior">Senior</option>
+              <option value="Lead">Lead</option>
+              <option value="Executive">Executive</option>
+            </select>
+            <div class="error-message">Please select an experience level.</div>
+          </div>
+
+          <!-- Salary Range -->
+          <div class="form-group">
+            <label for="salaryRange">Salary Range <span class="required">*</span></label>
+            <input type="text" id="salaryRange" class="form-control" placeholder="e.g. $80k - $120k" required />
+            <div class="error-message">Please provide a salary range.</div>
+          </div>
+
           <!-- Location -->
           <div class="form-group full-width">
             <label for="location">Location <span class="required">*</span></label>
@@ -309,13 +327,20 @@
           <!-- Description -->
           <div class="form-group full-width">
             <label for="description">Job Description <span class="required">*</span></label>
-            <textarea id="description" class="form-control"
-              placeholder="Describe the role, responsibilities, and requirements..." required
-              maxlength="2000"></textarea>
+            <textarea id="description" class="form-control" placeholder="Describe the role and responsibilities..."
+              required maxlength="2000"></textarea>
             <div class="char-counter" id="charCounter">
               0 / 2000 characters
             </div>
             <div class="error-message">Please provide a job description.</div>
+          </div>
+
+          <!-- Requirements -->
+          <div class="form-group full-width">
+            <label for="requirements">Requirements <span class="required">*</span></label>
+            <textarea id="requirements" class="form-control"
+              placeholder="List the key requirements and qualifications..." required maxlength="2000"></textarea>
+            <div class="error-message">Please provide job requirements.</div>
           </div>
 
           <!-- Skills -->
@@ -504,52 +529,6 @@
       }
     }
 
-    // Form submission
-    document
-      .getElementById("postJobForm")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        // Validate required fields
-        let isValid = true;
-        const requiredFields = this.querySelectorAll("[required]");
-        requiredFields.forEach((field) => {
-          if (!field.value.trim()) {
-            field.classList.add("is-invalid");
-            field.nextElementSibling.classList.add("show");
-            isValid = false;
-          } else {
-            field.classList.remove("is-invalid");
-            field.nextElementSibling.classList.remove("show");
-          }
-        });
-
-        // Validate tags
-        if (!validateTags()) isValid = false;
-
-        if (isValid) {
-          const btn = document.getElementById("publishBtn");
-          btn.classList.add("is-loading");
-          btn.disabled = true;
-
-          setTimeout(() => {
-            btn.classList.remove("is-loading");
-            btn.disabled = false;
-            btn.querySelector(".btn-text").innerHTML =
-              '<i class="fas fa-check"></i> Published!';
-            btn.style.background = "var(--success)";
-
-            setTimeout(() => {
-              btn.querySelector(".btn-text").innerHTML =
-                '<i class="fas fa-paper-plane"></i> Publish Job';
-              btn.style.background = "";
-              alert("✅ Job published successfully!");
-              window.location.href = "manage-jobs.html";
-            }, 1500);
-          }, 1500);
-        }
-      });
-
     function saveDraft() {
       const btn = document.querySelector(".btn-secondary");
       btn.classList.add("is-loading");
@@ -581,32 +560,104 @@
         return;
       }
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const jobId = urlParams.get('id');
+
+      if (jobId) {
+        const titleEl = document.querySelector('h1');
+        if (titleEl) titleEl.textContent = 'Edit Job Posting';
+        
+        const subtitleEl = document.querySelector('.header-content p');
+        if (subtitleEl) subtitleEl.textContent = 'Update the details for this position';
+        
+        const publishBtnText = document.querySelector('#publishBtn .btn-text');
+        if (publishBtnText) publishBtnText.innerHTML = '<i class="fas fa-save"></i> Update Job';
+
+        try {
+          const job = await window.API.Job.getById(jobId);
+          if (job) {
+            document.getElementById("jobTitle").value = job.title || '';
+            document.getElementById("department").value = job.department || '';
+            document.getElementById("employmentType").value = job.employmentType || '';
+            document.getElementById("experienceLevel").value = job.experienceLevel || '';
+            document.getElementById("salaryRange").value = job.salaryRange || '';
+            document.getElementById("location").value = job.location || '';
+            document.getElementById("description").value = job.description || '';
+            document.getElementById("requirements").value = job.requirements || '';
+            
+            if (job.requiredSkills) {
+              tags = job.requiredSkills.split(',').filter(s => s.trim());
+              renderTags();
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load job details:", error);
+          showToast("Failed to load job details", "error");
+        }
+      }
+
       // Setup form submit
       document
         .getElementById("postJobForm")
         .addEventListener("submit", async function (e) {
           e.preventDefault();
-          // ... validate ...
+
+          // Validate required fields
+          let isValid = true;
+          const requiredFields = this.querySelectorAll("[required]");
+          requiredFields.forEach((field) => {
+            if (!field.value.trim()) {
+              field.classList.add("is-invalid");
+              field.nextElementSibling.classList.add("show");
+              isValid = false;
+            } else {
+              field.classList.remove("is-invalid");
+              field.nextElementSibling.classList.remove("show");
+            }
+          });
+
+          // Validate tags
+          if (!validateTags()) isValid = false;
+
+          if (!isValid) return;
 
           const jobData = {
             title: document.getElementById("jobTitle").value,
             department: document.getElementById("department").value,
             employmentType: document.getElementById("employmentType").value,
+            experienceLevel: document.getElementById("experienceLevel").value,
+            salaryRange: document.getElementById("salaryRange").value,
             location: document.getElementById("location").value,
             description: document.getElementById("description").value,
+            requirements: document.getElementById("requirements").value,
             requiredSkills: tags.join(","),
             status: "Published",
           };
 
+          const btn = document.getElementById("publishBtn");
+          btn.classList.add("is-loading");
+          btn.disabled = true;
+
           try {
-            const result = await window.API.Job.create(jobData);
-            showToast("✅ Job published successfully!", "success");
+            if (jobId) {
+              await window.API.Job.update(jobId, jobData);
+              btn.querySelector(".btn-text").innerHTML = '<i class="fas fa-check"></i> Updated!';
+              showToast("✅ Job updated successfully!", "success");
+            } else {
+              await window.API.Job.create(jobData);
+              btn.querySelector(".btn-text").innerHTML = '<i class="fas fa-check"></i> Published!';
+              showToast("✅ Job published successfully!", "success");
+            }
+            btn.style.background = "var(--success)";
+
             setTimeout(
               () => (window.location.href = "manage-jobs.html"),
               1500,
             );
           } catch (error) {
-            showToast(error.message || "Failed to publish job", "error");
+            btn.classList.remove("is-loading");
+            btn.disabled = false;
+            showToast(error.message || "Failed to save job", "error");
           }
         });
     });

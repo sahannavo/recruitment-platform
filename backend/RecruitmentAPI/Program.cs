@@ -34,6 +34,7 @@ namespace RecruitmentAPI
     {
         static async Task Main(string[] args)
         {
+            DotNetEnv.Env.Load();
             var builder = WebApplication.CreateBuilder(args);
 
             // ────────────────────────────────────────────────────────────────────────────-
@@ -134,13 +135,16 @@ namespace RecruitmentAPI
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+            builder.Services.AddScoped<ISettingsService, SettingsService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IAIService, AIService>();
-            builder.Services.AddScoped<IBlobStorageService, LocalBlobStorageService>();
+            builder.Services.AddScoped<IBlobStorageService, AzureBlobStorageService>();
             builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
             builder.Services.AddScoped<ISmsSender, TwilioSmsSender>();
+            builder.Services.AddHttpClient<IChatbotService, ChatbotService>();
             builder.Services.Configure<AIServiceOptions>(builder.Configuration.GetSection(AIServiceOptions.SectionName));
-
+            builder.Services.Configure<NotificationServiceOptions>(builder.Configuration.GetSection(NotificationServiceOptions.SectionName));
+        
             // ─────────────────────────────────────────────────────────────────────────────
             // AI Service with HttpClient
             // ─────────────────────────────────────────────────────────────────────────────
@@ -221,6 +225,9 @@ namespace RecruitmentAPI
 
             // Use CORS
             app.UseCors("AllowFrontend");
+
+            // Serve static files from wwwroot
+            app.UseStaticFiles();
 
             if (app.Environment.IsDevelopment())
             {

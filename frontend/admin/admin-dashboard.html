@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.1/feather.min.js"></script>
   <style>
     /* [Keep all existing styles - same as before] */
@@ -1009,27 +1011,40 @@
   </div>
 
   <div class="app-shell">
-    <header class="header">
-      <div class="header-left">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">
-            <img src="../assets/images/logo.png" alt="Recruiter Logo" style="height: 50px" width="50" />
-          </span>
-          <span class="brand-name">Admin</span>
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../admin/admin-dashboard.html" class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+          <span>RecruitAI</span>
+        </a>
+
+        <nav class="main-nav" aria-label="Primary navigation">
+          <a href="../admin/admin-dashboard.html" class="nav-link active" data-page="dashboard">Dashboard</a>
+          <a href="../admin/user-management.html" class="nav-link" data-page="users">Users</a>
+          <a href="../admin/settings.html" class="nav-link" data-page="settings">Settings</a>
+          <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;" id="logoutBtnHeader">
+            <i class="fas fa-sign-out-alt" id="logoutBtnDesktop"></i>
+          </button>
+          <div class="user-avatar" id="avatarBtn" title="Profile">AD</div>
+          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+          </button>
         </div>
       </div>
-      <div class="header-right">
-        <div class="header-search" role="search">
-          <i data-feather="search" aria-hidden="true"></i>
-          <input type="search" id="searchInput" placeholder="Search users, jobs, logs…" aria-label="Search dashboard" />
-        </div>
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i data-feather="bell" aria-hidden="true"></i>
-          <span class="dot" aria-hidden="true"></span>
-        </button>
-        <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
-          AM
-        </button>
+
+      <!-- Mobile Menu -->
+      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="../admin/admin-dashboard.html" class="mobile-link active" data-page="dashboard">Dashboard</a>
+        <a href="../admin/user-management.html" class="mobile-link" data-page="users">Users</a>
+        <a href="../admin/settings.html" class="mobile-link" data-page="settings">Settings</a>
+        <a href="../admin/analytics-reports.html" class="mobile-link" data-page="analytics">Analytics</a>
+        <a href="#" id="logoutBtnMobile" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
       </div>
     </header>
 
@@ -1178,7 +1193,7 @@
         const role = currentUser?.role || currentUser?.Role || "";
         if (!["Admin", "SuperAdmin"].includes(role)) {
           alert("Access denied. Admins only.");
-          window.location.href = "/index.html";
+          window.location.href = "../index.html";
           return false;
         }
         // Update avatar
@@ -1547,6 +1562,22 @@
         .addEventListener("click", function () {
           showToast("Account settings coming soon");
         });
+
+      const logoutHandler = function (e) {
+        if (e) e.preventDefault();
+        if (confirm("Are you sure you want to sign out?")) {
+          if (window.API && window.API.Auth) {
+            window.API.Auth.logout();
+          }
+          window.location.href = "../auth/login.html";
+        }
+      };
+
+      const logoutBtnHeader = document.getElementById("logoutBtnHeader");
+      if (logoutBtnHeader) logoutBtnHeader.addEventListener("click", logoutHandler);
+
+      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+      if (logoutBtnMobile) logoutBtnMobile.addEventListener("click", logoutHandler);
 
       document.querySelectorAll(".bottom-nav-link").forEach(function (link) {
         link.addEventListener("click", function (e) {

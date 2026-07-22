@@ -28,5 +28,8 @@ namespace RecruitmentAPI.Services.AI
         /// <summary>Generates a narrative feedback summary from raw interview notes/scores.</summary>
         Task<AIFeedbackDto> GenerateFeedbackAsync(string interviewNotes, int technicalScore,
             int behavioralScore, int communicationScore);
+
+        /// <summary>Generates a short professional summary of a candidate based on their skills and biography.</summary>
+        Task<string> GenerateCandidateProfileSummaryAsync(string skills, string biography);
     }
 }

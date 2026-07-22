@@ -57,29 +57,33 @@ public class ApplicationService : IApplicationService
 
                 // Check if candidate already applied
                 var existingApplication = await _unitOfWork.Applications
-                    .GetByCandidateAndJobAsync(submitDto.CandidateId, submitDto.JobId);
+                    .GetByCandidateAndJobAsync(candidate.CandidateId, submitDto.JobId);
                 if (existingApplication != null)
                     throw new InvalidOperationException("You have already applied for this position");
 
                 // Create the application
                 var application = new Application
                 {
-                    CandidateId = submitDto.CandidateId,
+                    CandidateId = candidate.CandidateId,
                     JobId = submitDto.JobId,
                     Status = ApplicationStatus.Submitted,
                     AppliedAt = DateTime.UtcNow,
-                    Notes = submitDto.Notes,
+                    Notes = submitDto.Notes ?? "",
                     Source = submitDto.Source ?? "Direct",
+                    RejectionReason = "",
                     ExpectedSalary = string.IsNullOrEmpty(submitDto.ExpectedSalary) ? null : decimal.Parse(submitDto.ExpectedSalary),
                     AvailableFrom = submitDto.AvailableFrom
                 };
 
-                // Calculate AI score - pass empty strings for skills/requirements as fallback
+                // Calculate AI score
+                var candidateSkillsText = candidate.SkillsSummary ?? "";
+                var jobRequirementsText = job.RequiredSkills ?? "";
+                
                 var aiScore = await _aiService.MatchCandidateToJobAsync(
-                    submitDto.CandidateId, 
-                    "",  // candidateSkillsText - placeholder
+                    candidate.CandidateId, 
+                    candidateSkillsText,
                     submitDto.JobId, 
-                    ""); // jobRequirementsText - placeholder
+                    jobRequirementsText);
                 application.AI_Score = aiScore.Score;
 
                 await _unitOfWork.Applications.AddAsync(application);
@@ -127,6 +131,7 @@ public class ApplicationService : IApplicationService
                     CandidateId = application.CandidateId,
                     CandidateName = $"{application.Candidate.User.FirstName} {application.Candidate.User.LastName}",
                     CandidateEmail = application.Candidate.User.Email,
+                    CandidateResumeUrl = application.Candidate.Documents?.Any(d => (d.DocumentType == "CV" || d.DocumentType == "Resume") && d.IsActive) == true ? $"/api/applications/{application.ApplicationId}/resume/download" : null,
                     Notes = application.Notes,
                     Source = application.Source,
                     ExpectedSalary = application.ExpectedSalary?.ToString(),
@@ -149,7 +154,10 @@ public class ApplicationService : IApplicationService
         {
             try
             {
-                var applications = await _unitOfWork.Applications.GetCandidateApplicationsWithJobDetailsAsync(candidateId);
+                var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(candidateId);
+                if (candidate == null) return new List<ApplicationResponseDto>();
+                
+                var applications = await _unitOfWork.Applications.GetCandidateApplicationsWithJobDetailsAsync(candidate.CandidateId);
                 return applications.Select(a => new ApplicationResponseDto
                 {
                     ApplicationId = a.ApplicationId,
@@ -177,6 +185,8 @@ public class ApplicationService : IApplicationService
                 throw;
             }
         }
+
+
 
         /// <summary>
         /// Get all applications for a specific job
@@ -427,11 +437,14 @@ public class ApplicationService : IApplicationService
         /// <summary>
         /// Get applications for a recruiter
         /// </summary>
-        public async Task<IEnumerable<ApplicationResponseDto>> GetByRecruiterAsync(int recruiterId)
+        public async Task<IEnumerable<ApplicationResponseDto>> GetByRecruiterAsync(int userId)
         {
             try
             {
-                var applications = await _unitOfWork.Applications.GetByRecruiterAsync(recruiterId);
+                var recruiter = await _unitOfWork.Recruiters.FirstOrDefaultAsync(r => r.UserId == userId);
+                if (recruiter == null) return new List<ApplicationResponseDto>();
+
+                var applications = await _unitOfWork.Applications.GetByRecruiterAsync(recruiter.RecruiterId);
                 return applications.Select(a => new ApplicationResponseDto
                 {
                     ApplicationId = a.ApplicationId,
@@ -449,7 +462,7 @@ public class ApplicationService : IApplicationService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting applications for recruiter {RecruiterId}", recruiterId);
+                _logger.LogError(ex, "Error getting applications for recruiter user ID {UserId}", userId);
                 throw;
             }
         }
@@ -510,6 +523,36 @@ public class ApplicationService : IApplicationService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting pending review applications");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get applications shortlisted and pending manager review
+        /// </summary>
+        public async Task<IEnumerable<ApplicationResponseDto>> GetManagerReviewApplicationsAsync()
+        {
+            try
+            {
+                var applications = await _unitOfWork.Applications.GetManagerReviewApplicationsAsync();
+                return applications.Select(a => new ApplicationResponseDto
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    Company = a.Job.Department,
+                    Status = a.Status.ToString(),
+                    AppliedAt = a.AppliedAt,
+                    AI_Score = a.AI_Score,
+                    CandidateName = $"{a.Candidate.User.FirstName} {a.Candidate.User.LastName}",
+                    CandidateEmail = a.Candidate.User.Email,
+                    Success = true,
+                    Message = "Manager review applications retrieved successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting manager review applications");
                 throw;
             }
         }
@@ -880,9 +923,10 @@ public class ApplicationService : IApplicationService
         {
             var validTransitions = new Dictionary<ApplicationStatus, List<ApplicationStatus>>
             {
-                { ApplicationStatus.Submitted, new List<ApplicationStatus> { ApplicationStatus.UnderReview, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.Submitted, new List<ApplicationStatus> { ApplicationStatus.UnderReview, ApplicationStatus.Shortlisted, ApplicationStatus.Withdrawn } },
                 { ApplicationStatus.UnderReview, new List<ApplicationStatus> { ApplicationStatus.Shortlisted, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
-                { ApplicationStatus.Shortlisted, new List<ApplicationStatus> { ApplicationStatus.InterviewScheduled, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.Shortlisted, new List<ApplicationStatus> { ApplicationStatus.ManagerApproved, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
+                { ApplicationStatus.ManagerApproved, new List<ApplicationStatus> { ApplicationStatus.InterviewScheduled, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
                 { ApplicationStatus.InterviewScheduled, new List<ApplicationStatus> { ApplicationStatus.Interviewed, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
                 { ApplicationStatus.Interviewed, new List<ApplicationStatus> { ApplicationStatus.Hired, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn } },
                 { ApplicationStatus.Hired, new List<ApplicationStatus>() },

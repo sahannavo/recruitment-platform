@@ -28,6 +28,7 @@ namespace RecruitmentAPI.Repository.Implementations
                 .Where(a => a.CandidateId == candidateId)
                 .Include(a => a.Job)
                 .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
                 .Include(a => a.Interviews)
                 .OrderByDescending(a => a.AppliedAt)
                 .ToListAsync();
@@ -41,6 +42,7 @@ namespace RecruitmentAPI.Repository.Implementations
             return await _context.Applications
                 .Where(a => a.JobId == jobId)
                 .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
                 .Include(a => a.Job)
                 .Include(a => a.Interviews)
                 .OrderByDescending(a => a.AI_Score)
@@ -55,6 +57,7 @@ namespace RecruitmentAPI.Repository.Implementations
             return await _context.Applications
                 .Where(a => a.Status == status)
                 .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
                 .Include(a => a.Job)
                 .Include(a => a.Interviews)
                 .OrderByDescending(a => a.AppliedAt)
@@ -92,6 +95,9 @@ namespace RecruitmentAPI.Repository.Implementations
             return await _context.Applications
                 .Where(a => a.ApplicationId == applicationId)
                 .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
+                .Include(a => a.Candidate)
+                    .ThenInclude(c => c.Documents)
                 .Include(a => a.Job)
                     .ThenInclude(j => j.Recruiter)
                 .Include(a => a.Interviews)
@@ -121,6 +127,7 @@ namespace RecruitmentAPI.Repository.Implementations
             return await _context.Applications
                 .Where(a => a.Job.RecruiterId == recruiterId)
                 .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
                 .Include(a => a.Job)
                 .Include(a => a.Interviews)
                 .OrderByDescending(a => a.AppliedAt)
@@ -205,6 +212,20 @@ namespace RecruitmentAPI.Repository.Implementations
         }
 
         /// <summary>
+        /// Get applications that are shortlisted and pending manager review
+        /// </summary>
+        public async Task<IEnumerable<Application>> GetManagerReviewApplicationsAsync()
+        {
+            return await _context.Applications
+                .Where(a => a.Status == ApplicationStatus.Shortlisted)
+                .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
+                .Include(a => a.Job)
+                .OrderBy(a => a.AppliedAt)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Get applications with interview scheduled
         /// </summary>
         public async Task<IEnumerable<Application>> GetApplicationsWithInterviewsAsync()
@@ -267,6 +288,7 @@ namespace RecruitmentAPI.Repository.Implementations
                 Submitted = applications.Count(a => a.Status == ApplicationStatus.Submitted),
                 UnderReview = applications.Count(a => a.Status == ApplicationStatus.UnderReview),
                 Shortlisted = applications.Count(a => a.Status == ApplicationStatus.Shortlisted),
+                ManagerApproved = applications.Count(a => a.Status == ApplicationStatus.ManagerApproved),
                 InterviewScheduled = applications.Count(a => a.Status == ApplicationStatus.InterviewScheduled),
                 Interviewed = applications.Count(a => a.Status == ApplicationStatus.Interviewed),
                 Hired = applications.Count(a => a.Status == ApplicationStatus.Hired),
@@ -377,6 +399,8 @@ namespace RecruitmentAPI.Repository.Implementations
         {
             return await _context.Applications
                 .Where(a => a.CandidateId == candidateId)
+                .Include(a => a.Candidate)
+                    .ThenInclude(c => c.User)
                 .Include(a => a.Job)
                     .ThenInclude(j => j.Recruiter)
                 .Include(a => a.Interviews)

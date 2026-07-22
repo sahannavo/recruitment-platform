@@ -443,10 +443,6 @@
         </nav>
 
         <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot"></span>
-          </button>
           <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
@@ -670,6 +666,8 @@
         let allJobs = [];
         let isLoading = false;
         let searchTimeout = null;
+        let candidateSkills = [];
+        let globalCompanyName = "Company";
 
         // ============================================
         // DOM REFS
@@ -746,27 +744,34 @@
           resultCount.textContent = `(${jobs.length})`;
 
           jobs.forEach((job, index) => {
-            const match =
-              job.matchScore ||
-              job.aiScore ||
-              Math.floor(Math.random() * 30 + 65);
+            let match = job.matchScore || job.aiScore;
 
-            let matchClass = "match-low";
-            let matchIcon = "fa-star";
-            if (match >= 85) {
-              matchClass = "match-high";
-              matchIcon = "fa-check-circle";
-            } else if (match >= 70) {
-              matchClass = "match-medium";
-              matchIcon = "fa-star";
+            if (!match && candidateSkills.length > 0 && job.requiredSkills && job.requiredSkills.length > 0) {
+              const reqSkills = job.requiredSkills.map(s => s.toLowerCase());
+              const matchCount = reqSkills.filter(s => candidateSkills.includes(s)).length;
+              match = Math.round((matchCount / reqSkills.length) * 100);
+            }
+            let matchBadgeHtml = "";
+            if (match) {
+              let matchClass = "match-low";
+              let matchIcon = "fa-star";
+              if (match >= 85) {
+                matchClass = "match-high";
+                matchIcon = "fa-check-circle";
+              } else if (match >= 70) {
+                matchClass = "match-medium";
+                matchIcon = "fa-star";
+              }
+              matchBadgeHtml = `<span class="match-badge ${matchClass}"><i class="fas ${matchIcon}"></i> ${match}% Match</span>`;
             }
 
             const card = document.createElement("div");
             card.className = "job-card";
             card.style.animationDelay = `${index * 50}ms`;
 
-            const companyInitial = job.department
-              ? job.department.charAt(0).toUpperCase()
+            const companyName = globalCompanyName;
+            const companyInitial = companyName !== "Company"
+              ? companyName.charAt(0).toUpperCase()
               : "🏢";
 
             card.innerHTML = `
@@ -775,11 +780,9 @@
               <div class="job-header">
                 <div>
                   <div class="job-title">${job.title || "Position"}</div>
-                  <div class="company-name">${job.department || "Company"}</div>
+                  <div class="company-name">${companyName}</div>
                 </div>
-                <span class="match-badge ${matchClass}">
-                  <i class="fas ${matchIcon}"></i> ${match}% Match
-                </span>
+                ${matchBadgeHtml}
               </div>
               <div class="job-meta">
                 <span><i class="fas fa-location-dot"></i> ${job.location || "Remote"}</span>
@@ -819,6 +822,20 @@
             if (searchTerm) filters.searchTerm = searchTerm;
             if (location) filters.location = location;
             if (category) filters.department = category;
+
+            // Load global settings for company name if not loaded yet
+            if (globalCompanyName === "Company") {
+              try {
+                if (window.API.Settings && window.API.Settings.getPublicSettings) {
+                  const settings = await window.API.Settings.getPublicSettings();
+                  if (settings && settings.companyName) {
+                    globalCompanyName = settings.companyName;
+                  }
+                }
+              } catch (e) {
+                console.error("Failed to load public settings", e);
+              }
+            }
 
             const response = await window.API.Job.getAll(filters);
 
@@ -926,6 +943,16 @@
           searchInput.addEventListener("input", debouncedLoadJobs);
           locationFilter.addEventListener("change", handleFilterChange);
           categoryFilter.addEventListener("change", handleFilterChange);
+
+          // Fetch Candidate Profile to get Skills Summary for accurate matching
+          try {
+            const profile = await window.API.Candidate.getProfile();
+            if (profile && profile.skillsSummary) {
+              candidateSkills = profile.skillsSummary.split(',').map(s => s.trim().toLowerCase());
+            }
+          } catch (err) {
+            console.error("Error loading candidate profile for match computation", err);
+          }
 
           // Load initial jobs
           await loadJobs();

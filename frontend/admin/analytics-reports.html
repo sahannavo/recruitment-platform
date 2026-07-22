@@ -7,6 +7,7 @@
   <title>Analytics Reports</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
   <style>
     /* ===== CSS VARIABLES ===== */
     :root {
@@ -624,29 +625,40 @@
 
 <body>
   <!-- ===== HEADER ===== -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a href="#" class="logo">
-        <i class="fa-solid fa-chart-pie"></i> Analytics
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="../admin/dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
       </a>
-      <nav class="nav-links">
-        <a href="admin-dashboard.html">Dashboard</a>
-        <a href="analytics-reports.html" class="active">Reports</a>
-        <a href="user-management.html">Users</a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="../admin/admin-dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="../admin/user-management.html" class="nav-link" data-page="users">Users</a>
+        <a href="../admin/settings.html" class="nav-link" data-page="settings">Settings</a>
+        <a href="../admin/analytics-reports.html" class="nav-link active" data-page="analytics">Analytics</a>
       </nav>
-      <div class="user-menu">
-        <div class="header-avatar" id="userAvatar">AD</div>
+
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;" id="logoutBtnHeader">
+          <i class="fas fa-sign-out-alt" id="logoutBtnDesktop"></i>
+        </button>
+        <div class="user-avatar" id="avatarBtn" title="Profile">AD</div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-          <i class="fa-solid fa-bars"></i>
+          <i class="fas fa-bars"></i>
         </button>
       </div>
     </div>
-    <nav class="mobile-menu" id="mobileMenu">
-      <a href="admin-dashboard.html">Dashboard</a>
-      <a href="analytics-reports.html" style="color: var(--primary); font-weight: 600">Reports</a>
-      <a href="user-management.html">Users</a>
-      <a href="#" id="mobileLogout" style="color: var(--danger)">Sign Out</a>
-    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="../admin/admin-dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="../admin/user-management.html" class="mobile-link" data-page="users">Users</a>
+      <a href="../admin/settings.html" class="mobile-link" data-page="settings">Settings</a>
+      <a href="../admin/analytics-reports.html" class="mobile-link active" data-page="analytics">Analytics</a>
+      <a href="#" id="logoutBtnMobile" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
   </header>
 
   <!-- ===== MAIN CONTENT ===== -->
@@ -757,7 +769,7 @@
         const role = currentUser?.role || currentUser?.Role || "";
         if (!["Admin", "SuperAdmin"].includes(role)) {
           alert("Access denied. Admins only.");
-          window.location.href = "/index.html";
+          window.location.href = "../index.html";
           return false;
         }
         const avatar = document.getElementById("userAvatar");
@@ -1131,12 +1143,21 @@
       // ============================================
       // LOGOUT
       // ============================================
-      document
-        .getElementById("mobileLogout")
-        ?.addEventListener("click", function (e) {
-          e.preventDefault();
-          window.API.Auth.logout();
-        });
+      function handleLogout(e) {
+        e.preventDefault();
+        if (confirm("Are you sure you want to sign out?")) {
+          if (window.API && window.API.Auth) {
+            window.API.Auth.logout();
+          }
+          window.location.href = "../auth/login.html";
+        }
+      }
+
+      const logoutBtnHeader = document.getElementById("logoutBtnHeader");
+      if (logoutBtnHeader) logoutBtnHeader.addEventListener("click", handleLogout);
+
+      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+      if (logoutBtnMobile) logoutBtnMobile.addEventListener("click", handleLogout);
 
       // ============================================
       // INIT

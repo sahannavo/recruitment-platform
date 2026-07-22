@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecruitmentAPI.Data;
 
@@ -11,9 +12,11 @@ using RecruitmentAPI.Data;
 namespace RecruitmentAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260722073151_AddPlatformSettings")]
+    partial class AddPlatformSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,10 +200,6 @@ namespace RecruitmentAPI.Migrations
 
                     b.Property<DateTime?>("AvailableFrom")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Biography")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<bool>("IsAvailable")
                         .ValueGeneratedOnAdd()
@@ -722,7 +721,7 @@ namespace RecruitmentAPI.Migrations
                             Penalty = 0.00m,
                             Precision = 0.90m,
                             SystemAlerts = true,
-                            UpdatedAt = new DateTime(2026, 7, 22, 12, 49, 30, 840, DateTimeKind.Utc).AddTicks(9825),
+                            UpdatedAt = new DateTime(2026, 7, 22, 7, 31, 50, 731, DateTimeKind.Utc).AddTicks(7708),
                             WebsiteUrl = "https://acme.inc",
                             WeeklyReport = true
                         });

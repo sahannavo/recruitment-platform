@@ -25,6 +25,9 @@ public class Candidate
     [StringLength(2000)]
     public string? SkillsSummary { get; set; }
 
+    [StringLength(2000)]
+    public string? Biography { get; set; }
+
     [StringLength(500)]
     public string? ProfilePictureUrl { get; set; }
 

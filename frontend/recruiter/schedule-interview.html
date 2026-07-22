@@ -472,14 +472,11 @@
         </nav>
 
         <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot" id="notifDot"></span>
-          </button>
-          <div class="user-avatar" id="userAvatar" title="Profile">U</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
-          </button>
+            <div class="user-avatar" id="userAvatar" title="Profile">SW</div>
+            <button class="btn btn-secondary" onclick="window.API.Auth.logout()" style="padding: 6px 12px; font-size: 13px; margin-left: 8px;">Sign Out</button>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
       </div>
 
@@ -584,8 +581,16 @@
                 </div>
               </div>
             </div>
-            <button class="add-btn" onclick="addInterviewer()">
-              <i class="fas fa-plus"></i> Add Interviewer
+            
+            <div id="interviewerSelectContainer" style="margin-top: 16px; display: none;">
+              <label for="hiringManagerSelect" style="font-weight: 700; font-size: 14px; display: block; margin-bottom: 6px;">Select Hiring Manager</label>
+              <select id="hiringManagerSelect" class="duration-select">
+                <option value="">Loading...</option>
+              </select>
+            </div>
+
+            <button class="add-btn" id="addInterviewerBtn" onclick="toggleInterviewerSelect()">
+              <i class="fas fa-user-edit"></i> Change Interviewer
             </button>
           </div>
         </div>
@@ -829,7 +834,7 @@
       // TOAST HELPER
       // ============================================
       function showToast(message, type = "info") {
-        if (typeof window.showToast === "function") {
+        if (typeof window.showToast === "function" && window.showToast !== showToast) {
           window.showToast(message, type);
         } else {
           console.log(`[${type}] ${message}`);
@@ -866,7 +871,7 @@
 
       function getSelectedDateTime() {
         if (!selectedDate || !selectedSlot) return null;
-        const dateStr = selectedDate.toISOString().split("T")[0];
+        const dateStr = dateKey(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const timeStr = to24Hour(selectedSlot);
         return `${dateStr}T${timeStr}:00`;
       }
@@ -894,7 +899,7 @@
         if (roleEl) roleEl.textContent = appDetails.jobTitle || "Position";
 
         if (matchEl) {
-          const score = Math.round(appDetails.aiScore || 85);
+          const score = Math.round(appDetails.aiScore || appDetails.AI_Score || 0);
           matchEl.innerHTML = `<i class="fas fa-star"></i> ${score}% Match`;
         }
 
@@ -912,7 +917,7 @@
       // ============================================
       async function loadAvailability(date) {
         try {
-          const dateStr = date.toISOString().split("T")[0];
+          const dateStr = dateKey(date.getFullYear(), date.getMonth(), date.getDate());
           const response = await window.API.Interview.getAvailability({
             date: dateStr,
             duration: getDurationMinutes(),
@@ -927,10 +932,12 @@
             );
             availableSlots[key] = response.map((s) => {
               const d = new Date(s);
-              return d.toLocaleTimeString("en-US", {
-                hour: "numeric",
-                minute: "2-digit",
-              });
+              let h = d.getHours();
+              const m = d.getMinutes();
+              const ampm = h >= 12 ? 'PM' : 'AM';
+              h = h % 12;
+              h = h ? h : 12;
+              return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + ampm;
             });
           }
 
@@ -1090,15 +1097,64 @@
       }
 
       // ============================================
-      // ADD INTERVIEWER
+      // CHANGE INTERVIEWER
       // ============================================
-      function addInterviewer() {
-        showToast("👤 Add interviewer feature coming soon!", "info");
+      let hiringManagers = [];
+      let selectedInterviewerId = null;
+
+      async function toggleInterviewerSelect() {
+        const container = document.getElementById("interviewerSelectContainer");
+        const select = document.getElementById("hiringManagerSelect");
+        
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          
+          if (hiringManagers.length === 0) {
+            try {
+              hiringManagers = await window.API.Interview.getHiringManagers();
+              let options = '<option value="">Select a manager...</option>';
+              hiringManagers.forEach(hm => {
+                options += `<option value="${hm.id}">${hm.name} (${hm.role})</option>`;
+              });
+              select.innerHTML = options;
+            } catch (error) {
+              console.error("Error fetching hiring managers", error);
+              select.innerHTML = '<option value="">Error loading managers</option>';
+            }
+          }
+        } else {
+          container.style.display = "none";
+        }
       }
 
-      // ============================================
-      // CANCEL SCHEDULE
-      // ============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("hiringManagerSelect");
+        if (select) {
+          select.addEventListener("change", function(e) {
+            selectedInterviewerId = e.target.value ? parseInt(e.target.value) : null;
+            
+            // Update panel display
+            if (selectedInterviewerId) {
+              const hm = hiringManagers.find(m => m.id === selectedInterviewerId);
+              if (hm) {
+                const initials = hm.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                document.getElementById("panelContainer").innerHTML = `
+                  <div class="interviewer-row">
+                    <div class="interviewer-avatar" style="font-size: 14px;">
+                      ${initials}
+                    </div>
+                    <div>
+                      <div class="interviewer-name">${hm.name}</div>
+                      <div class="interviewer-role">${hm.role}</div>
+                    </div>
+                  </div>
+                `;
+                toggleInterviewerSelect(); // Hide dropdown after selection
+              }
+            }
+          });
+        }
+      });
       function cancelSchedule() {
         if (confirm("Cancel scheduling? Your progress will be lost.")) {
           window.location.href = "candidates.html";
@@ -1136,11 +1192,31 @@
           return;
         }
 
-        // Update avatar
+        // Update avatar in header
         const avatar = document.getElementById("userAvatar");
         if (avatar) {
           const initials = window.API.getUserInitials();
           avatar.textContent = initials || "U";
+        }
+
+        // Update interviewer panel with current user
+        const panelContainer = document.getElementById("panelContainer");
+        if (panelContainer && user) {
+          const initials = window.API.getUserInitials() || "U";
+          const fullName = window.API.getUserFullName() || "Interviewer";
+          const role = user.role || user.Role || "Recruiter";
+          
+          panelContainer.innerHTML = `
+            <div class="interviewer-row">
+              <div class="interviewer-avatar" style="font-size: 14px;">
+                ${initials}
+              </div>
+              <div>
+                <div class="interviewer-name">${fullName}</div>
+                <div class="interviewer-role">${role}</div>
+              </div>
+            </div>
+          `;
         }
 
         // Get application ID from URL
@@ -1169,6 +1245,10 @@
         } catch (error) {
           console.error("Error loading application:", error);
           showToast("Failed to load application details", "error");
+          
+          // Update Candidate Card to show error instead of "Loading..."
+          document.getElementById("candidateName").textContent = "Error Loading Candidate";
+          document.getElementById("candidateRole").textContent = "Application not found";
         } finally {
           loadingState.style.display = "none";
           scheduleLayout.style.display = "grid";
@@ -1248,7 +1328,8 @@
             duration: getDurationMinutes(),
             type: selectedType,
             notes: document.getElementById("interviewNotes").value || "",
-            meetingLink: selectedType === "Online" ? "" : null,
+            meetingLink: selectedType === "Online" ? "https://meet.google.com/recruitai-room" : null,
+            interviewerId: selectedInterviewerId
           };
 
           try {
@@ -1264,7 +1345,7 @@
             showToast("✅ Interview scheduled successfully!", "success");
 
             setTimeout(() => {
-              window.location.href = `application-detail.html?id=${applicationId}`;
+              window.location.href = `candidates.html`;
             }, 1500);
           } catch (error) {
             console.error("Error scheduling interview:", error);

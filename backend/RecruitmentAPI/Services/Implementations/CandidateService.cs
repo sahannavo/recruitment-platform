@@ -26,17 +26,20 @@ namespace RecruitmentAPI.Services.Implementations
         private readonly IBlobStorageService _blobStorageService;
         private readonly IAIService _aiService;
         private readonly ILogger<CandidateService> _logger;
+        private readonly Microsoft.Extensions.DependencyInjection.IServiceScopeFactory _serviceScopeFactory;
 
         public CandidateService(
             IUnitOfWork unitOfWork,
             IBlobStorageService blobStorageService,
             IAIService aiService,
-            ILogger<CandidateService> logger)
+            ILogger<CandidateService> logger,
+            Microsoft.Extensions.DependencyInjection.IServiceScopeFactory serviceScopeFactory)
         {
             _unitOfWork = unitOfWork;
             _blobStorageService = blobStorageService;
             _aiService = aiService;
             _logger = logger;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         /// <summary>
@@ -48,7 +51,19 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
                 if (candidate == null)
-                    throw new KeyNotFoundException($"Candidate with ID {userId} not found");
+                {
+                    candidate = new Models.Candidate
+                    {
+                        UserId = userId,
+                        IsAvailable = true,
+                        IsOpenToOpportunities = true
+                    };
+                    await _unitOfWork.Candidates.AddAsync(candidate);
+                    await _unitOfWork.SaveChangesAsync();
+                    candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
+                    if (candidate == null)
+                        throw new KeyNotFoundException($"User with ID {userId} not found");
+                }
 
                 var applications = await _unitOfWork.Applications.GetByCandidateAsync(userId);
                 var applicationsList = applications.ToList();
@@ -63,6 +78,7 @@ namespace RecruitmentAPI.Services.Implementations
                     Location = candidate.Location,
                     LinkedIn = candidate.LinkedIn,
                     SkillsSummary = candidate.SkillsSummary,
+                    Biography = candidate.Biography,
                     IsActive = candidate.User.IsActive,
                     CreatedAt = candidate.User.CreatedAt,
                     UpdatedAt = candidate.UpdatedAt ?? DateTime.UtcNow,
@@ -87,7 +103,19 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
                 if (candidate == null)
-                    throw new KeyNotFoundException($"Candidate with ID {userId} not found");
+                {
+                    candidate = new Models.Candidate
+                    {
+                        UserId = userId,
+                        IsAvailable = true,
+                        IsOpenToOpportunities = true
+                    };
+                    await _unitOfWork.Candidates.AddAsync(candidate);
+                    await _unitOfWork.SaveChangesAsync();
+                    candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
+                    if (candidate == null)
+                        throw new KeyNotFoundException($"User with ID {userId} not found");
+                }
 
                 // Update only provided fields
                 if (!string.IsNullOrWhiteSpace(updateDto.FirstName))
@@ -107,6 +135,9 @@ namespace RecruitmentAPI.Services.Implementations
 
                 if (!string.IsNullOrWhiteSpace(updateDto.SkillsSummary))
                     candidate.SkillsSummary = updateDto.SkillsSummary;
+
+                if (!string.IsNullOrWhiteSpace(updateDto.Biography))
+                    candidate.Biography = updateDto.Biography;
 
                 candidate.UpdatedAt = DateTime.UtcNow;
 
@@ -131,7 +162,19 @@ namespace RecruitmentAPI.Services.Implementations
             {
                 var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
                 if (candidate == null)
-                    throw new KeyNotFoundException($"Candidate with ID {userId} not found");
+                {
+                    candidate = new Models.Candidate
+                    {
+                        UserId = userId,
+                        IsAvailable = true,
+                        IsOpenToOpportunities = true
+                    };
+                    await _unitOfWork.Candidates.AddAsync(candidate);
+                    await _unitOfWork.SaveChangesAsync();
+                    candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
+                    if (candidate == null)
+                        throw new KeyNotFoundException($"User with ID {userId} not found");
+                }
 
                 if (file == null || file.Length == 0)
                     throw new ArgumentException("File is required");
@@ -147,11 +190,14 @@ namespace RecruitmentAPI.Services.Implementations
                     throw new ArgumentException("File size exceeds 5MB limit");
 
                 // Upload to blob storage
-                var blobUrl = await _blobStorageService.UploadFileAsync(file.OpenReadStream(), $"candidates/{userId}/cv", file.ContentType);
+                var blobUrl = await _blobStorageService.UploadFileAsync(file.OpenReadStream(), $"candidates/{userId}/cv{extension}", file.ContentType);
+
+                // Extract text before background task so we don't have to download it from Blob storage
+                var extractedText = await RecruitmentAPI.Helpers.FileTextExtractor.ExtractTextAsync(file);
 
                 var document = new Document
                 {
-                    CandidateId = userId,
+                    CandidateId = candidate.CandidateId,
                     FileName = file.FileName,
                     BlobUrl = blobUrl,
                     FileType = file.ContentType,
@@ -161,22 +207,28 @@ namespace RecruitmentAPI.Services.Implementations
                     FileExtension = extension,
                     IsActive = true,
                     IsParsed = false,
-                    DocumentName = file.FileName
+                    DocumentName = file.FileName,
+                    Description = "CV Upload",
+                    ParseResult = "{}",
+                    UploadedBy = userId.ToString()
                 };
 
                 await _unitOfWork.Documents.AddAsync(document);
                 await _unitOfWork.SaveChangesAsync();
 
-                // Trigger AI parsing asynchronously
+                // Trigger AI parsing asynchronously using a new scope
                 _ = Task.Run(async () =>
                 {
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var scopedCandidateService = scope.ServiceProvider.GetRequiredService<ICandidateService>();
                     try
                     {
-                        await ParseResumeAsync(document.DocumentId);
+                        await scopedCandidateService.ParseResumeAsync(document.DocumentId, extractedText);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Error parsing resume for document {DocumentId}", document.DocumentId);
+                        var logger = scope.ServiceProvider.GetRequiredService<ILogger<CandidateService>>();
+                        logger.LogError(ex, "Error parsing resume for document {DocumentId}", document.DocumentId);
                     }
                 });
 
@@ -227,7 +279,7 @@ namespace RecruitmentAPI.Services.Implementations
         /// <summary>
         /// Parse CV and extract information
         /// </summary>
-        public async Task<ResumeParseResultDto> ParseResumeAsync(int documentId)
+        public async Task<ResumeParseResultDto> ParseResumeAsync(int documentId, string resumeText = null)
         {
             try
             {
@@ -235,7 +287,10 @@ namespace RecruitmentAPI.Services.Implementations
                 if (document == null)
                     throw new KeyNotFoundException($"Document with ID {documentId} not found");
 
-                var parseResult = await _aiService.ParseResumeAsync(document.BlobUrl);
+                // If resumeText is not provided, we would ideally download it from Blob storage.
+                // However, as a fallback, we pass the URL, though the AI won't be able to read it.
+                var textToParse = !string.IsNullOrWhiteSpace(resumeText) ? resumeText : document.BlobUrl;
+                var parseResult = await _aiService.ParseResumeAsync(textToParse);
 
                 // Update document
                 document.IsParsed = true;
@@ -279,7 +334,11 @@ namespace RecruitmentAPI.Services.Implementations
         {
             try
             {
-                var documents = await _unitOfWork.Documents.GetByCandidateAsync(userId);
+                var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
+                if (candidate == null)
+                    throw new KeyNotFoundException($"Candidate not found for user {userId}");
+
+                var documents = await _unitOfWork.Documents.FindAsync(d => d.CandidateId == candidate.CandidateId && d.IsActive);
                 return documents.Select(d => new DocumentResponseDto
                 {
                     DocumentId = d.DocumentId,
@@ -306,15 +365,18 @@ namespace RecruitmentAPI.Services.Implementations
         {
             try
             {
+                var candidate = await _unitOfWork.Candidates.GetByUserIdAsync(userId);
+                if (candidate == null) return false;
+
                 var document = await _unitOfWork.Documents.GetByIdAsync(documentId);
-                if (document == null || document.CandidateId != userId)
+                if (document == null || document.CandidateId != candidate.CandidateId)
                     return false;
 
                 // Delete from blob storage
                 await _blobStorageService.DeleteFileAsync(document.BlobUrl);
 
-                // Soft delete
-                document.IsActive = false;
+                // Hard delete from database
+                _unitOfWork.Documents.Remove(document);
                 await _unitOfWork.SaveChangesAsync();
 
                 _logger.LogInformation("Document {DocumentId} deleted for user {UserId}", documentId, userId);

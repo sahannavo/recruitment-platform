@@ -51,4 +51,9 @@ public class ScheduleInterviewDto
     /// </summary>
     [StringLength(1000)]
     public string? Notes { get; set; }
+
+    /// <summary>
+    /// Optional Interviewer ID to assign this interview to a specific Hiring Manager
+    /// </summary>
+    public int? InterviewerId { get; set; }
 }

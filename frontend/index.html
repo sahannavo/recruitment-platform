@@ -1613,32 +1613,36 @@
       if (window.API && window.API.isAuthenticated()) {
         const user = window.API.getCurrentUser();
         const roleMap = {
-          Candidate: "/candidate/dashboard.html",
-          Recruiter: "/recruiter/dashboard.html",
-          HiringManager: "/hiring-manager/dashboard.html",
-          Admin: "/admin/admin-dashboard.html",
-          SuperAdmin: "/admin/admin-dashboard.html",
+          Candidate: "./candidate/dashboard.html",
+          Recruiter: "./recruiter/dashboard.html",
+          HiringManager: "./hiring-manager/dashboard.html",
+          Admin: "./admin/admin-dashboard.html",
+          SuperAdmin: "./admin/admin-dashboard.html",
         };
 
         const role = user?.role || user?.Role || "Candidate";
         const redirectPath = roleMap[role] || "/candidate/dashboard.html";
 
         // Show a brief message before redirect
-        const hero = document.querySelector(".hero");
-        if (hero) {
-          const banner = document.createElement("div");
-          banner.style.cssText = `
-          background: var(--success, #28a745);
+        const banner = document.createElement("div");
+        banner.style.cssText = `
+          position: fixed;
+          top: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--primary, #4f46e5);
           color: white;
-          padding: 12px 20px;
-          text-align: center;
-          border-radius: var(--radius, 8px);
-          margin-bottom: 20px;
+          padding: 12px 24px;
+          border-radius: 8px;
           font-weight: 600;
+          z-index: 9999;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+          display: flex;
+          align-items: center;
+          gap: 10px;
         `;
-          banner.textContent = `👋 Welcome back, ${user?.firstName || "User"}! Redirecting to your dashboard...`;
-          hero.insertBefore(banner, hero.firstChild);
-        }
+        banner.innerHTML = `<span>👋</span> Welcome back, ${user?.firstName || "User"}! Redirecting to your dashboard...`;
+        document.body.appendChild(banner);
 
         // Redirect after showing the banner
         setTimeout(() => {

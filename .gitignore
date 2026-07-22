@@ -25,10 +25,26 @@ packages/
 *.sln.iml
 .DS_Store
 
-# Local environment
+# Local environment & Secrets
 appsettings.*.local.json
 .env
-.env.local
+.env.*
+!.env.example
+
+# SQLite Databases & Storage
+*.db
+*.db-journal
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Uploaded Files & User Data
+wwwroot/uploads/
+
+# Python test scripts
+*.py
 
 # Dependencies
 node_modules/

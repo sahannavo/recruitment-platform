@@ -226,6 +226,7 @@ namespace RecruitmentAPI.DTOs
         public bool IsRemote { get; set; }
         public string EmploymentType { get; set; }
         public string ExperienceLevel { get; set; }
+        public List<string> RequiredSkills { get; set; }
     }
 
     /// <summary>

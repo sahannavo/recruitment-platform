@@ -122,6 +122,49 @@
         color: var(--text-secondary);
       }
 
+      .candidate-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+      }
+      .candidate-card:hover {
+        box-shadow: var(--shadow);
+        transform: translateY(-2px);
+      }
+      .candidate-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .candidate-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .candidate-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 4px 0;
+      }
+      .candidate-role {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
       .score-badge {
         padding: 4px 12px;
         border-radius: var(--radius-full);
@@ -213,6 +256,39 @@
         margin-bottom: 16px;
       }
 
+      /* Candidate Modal Styles */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(4px);
+      }
+      .modal-content {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+
       @media (max-width: 1024px) {
         .stats-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -249,26 +325,15 @@
           <a href="dashboard.html" class="nav-link active" data-page="dashboard"
             >Dashboard</a
           >
-          <a
-            href="candidate-evaluation.html"
-            class="nav-link"
-            data-page="evaluate"
-            >Evaluate</a
-          >
-          <a
-            href="../recruiter/manage-jobs.html"
-            class="nav-link"
-            data-page="jobs"
-            >Jobs</a
-          >
+
         </nav>
 
         <div class="header-actions">
-          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-dot" id="notifDot"></span>
-          </button>
           <div class="user-avatar" id="userAvatar" title="Profile">HM</div>
+          <button class="icon-btn" id="logoutBtn" aria-label="Sign out" title="Sign out"
+            style="color: #ef4444; margin-left: 8px;">
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+          </button>
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
           </button>
@@ -283,22 +348,11 @@
           data-page="dashboard"
           >Dashboard</a
         >
-        <a
-          href="candidate-evaluation.html"
-          class="mobile-link"
-          data-page="evaluate"
-          >Evaluate</a
-        >
-        <a
-          href="../recruiter/manage-jobs.html"
-          class="mobile-link"
-          data-page="jobs"
-          >Jobs</a
-        >
+
         <a
           href="#"
           class="mobile-link"
-          id="logoutBtn"
+          id="logoutBtnMobile"
           style="color: var(--danger); border-bottom: none"
           >Sign Out</a
         >
@@ -313,8 +367,8 @@
           <h1 id="greetingText">Welcome! 👋</h1>
           <p id="greetingSubtext">Loading your hiring dashboard...</p>
         </div>
-        <a href="candidate-evaluation.html" class="btn btn-primary">
-          <i class="fas fa-clipboard-list"></i> Evaluate Candidates
+        <a href="#managerReviewSection" class="btn btn-primary" onclick="document.getElementById('managerReviewSection').scrollIntoView({behavior:'smooth'}); return false;">
+          <i class="fas fa-clipboard-list"></i> Review Candidates
         </a>
       </div>
 
@@ -338,15 +392,31 @@
         </div>
       </div>
 
-      <!-- Candidates to Review -->
+      <!-- Pending Resume Reviews -->
+      <div id="managerReviewSection" style="margin-bottom: 32px">
+        <div class="section-header">
+          <h2><i class="fas fa-file-alt"></i> Candidates Pending Resume Review</h2>
+        </div>
+        <div class="candidate-list" id="managerReviewList">
+          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+        </div>
+      </div>
+
+      <!-- Approved Candidates -->
+      <div style="margin-bottom: 32px">
+        <div class="section-header">
+          <h2><i class="fas fa-check-circle" style="color: var(--success);"></i> Approved Candidates</h2>
+        </div>
+        <div class="candidate-list" id="approvedCandidatesList">
+          <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+        </div>
+      </div>
+
+      <!-- Candidates to Review (Interviews) -->
       <div style="margin-bottom: 32px">
         <div class="section-header">
           <h2><i class="fas fa-users"></i> Candidates to Review</h2>
-          <a
-            href="candidate-evaluation.html"
-            style="color: var(--primary); font-weight: 500"
-            >View all →</a
-          >
+
         </div>
         <div class="candidate-list" id="candidatesList">
           <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
@@ -388,8 +458,7 @@
           <h4>For Hiring Managers</h4>
           <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="candidate-evaluation.html">Evaluate Candidates</a></li>
-            <li><a href="../recruiter/manage-jobs.html">Jobs</a></li>
+            <li><a href="dashboard.html">Review Candidates</a></li>
           </ul>
         </div>
         <div class="footer-links">
@@ -424,14 +493,29 @@
       </div>
     </footer>
 
-    <!-- ===== SCRIPTS ===== -->
-    <script src="../js/api.js"></script>
+  <!-- ===== CANDIDATE MODAL ===== -->
+  <div class="modal-overlay" id="candidateModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeCandidateModal()">&times;</button>
+      <h2 id="modalCandidateName" style="margin-bottom: 16px;">Candidate Details</h2>
+      <div class="candidate-details" id="modalCandidateDetails">
+        <p>Loading details...</p>
+      </div>
+      <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;" id="modalActionsContainer">
+        <button class="btn btn-secondary" onclick="closeCandidateModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../js/api.js"></script>
     <script src="../js/main.js"></script>
 
     <script>
-      let currentUser = null;
+    let currentUser = null;
+    let pendingCandidates = []; // to store candidates for the modal
 
-      // ============================================
+    // ============================================
       // AUTHENTICATION CHECK
       // ============================================
       function checkAuth() {
@@ -443,7 +527,7 @@
         const role = currentUser?.role || currentUser?.Role || "";
         if (!["HiringManager", "Admin"].includes(role)) {
           alert("Access denied. Hiring Managers only.");
-          window.location.href = "/index.html";
+          window.location.href = "../index.html";
           return false;
         }
         return true;
@@ -453,16 +537,20 @@
       // LOAD DASHBOARD
       // ============================================
       async function loadDashboard() {
+        if (!checkAuth()) return;
+        
         try {
           updateGreeting();
           await Promise.all([
             loadStats(),
+            loadManagerReviewCandidates(),
+            loadApprovedCandidates(),
             loadCandidatesToReview(),
             loadRecentFeedback(),
           ]);
         } catch (error) {
           console.error("Error loading dashboard:", error);
-          showToast("Error loading dashboard data", "error");
+          if (typeof window.showToast === "function") window.showToast("Error loading dashboard data", "error");
         }
       }
 
@@ -498,13 +586,13 @@
           const stats = await window.API.Application.getStatistics();
           if (stats) {
             document.getElementById("totalCandidates").textContent =
-              stats.pendingReview || 0;
+              stats.shortlisted || 0;
             document.getElementById("pendingFeedback").textContent =
               stats.interviewScheduled || 0;
             document.getElementById("completedReviews").textContent =
-              stats.shortlisted || 0;
+              (stats.managerApproved || 0) + (stats.rejected || 0);
             document.getElementById("avgScore").textContent =
-              `${Math.round(stats.averageAIScore || 0)}%`;
+              stats.averageAIScore ? `${Math.round(stats.averageAIScore)}%` : "0%";
           }
         } catch (error) {
           console.error("Error loading stats:", error);
@@ -512,19 +600,124 @@
       }
 
       // ============================================
-      // LOAD CANDIDATES TO REVIEW
+      // LOAD MANAGER REVIEW CANDIDATES (SHORTLISTED)
+      // ============================================
+      async function loadManagerReviewCandidates() {
+        const container = document.getElementById("managerReviewList");
+        try {
+          const response = await window.API.Application.getManagerReview();
+          const applications = Array.isArray(response) ? response : response.data || [];
+          
+          if (!applications || applications.length === 0) {
+            container.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-file-alt" style="color: var(--border);"></i>
+              <p>No candidates pending your review.</p>
+            </div>`;
+            return;
+          }
+
+          pendingCandidates = applications;
+
+          container.innerHTML = applications.map(app => `
+            <div class="candidate-card">
+              <div class="candidate-info">
+                <div class="candidate-avatar" style="background: var(--warning); color: white;">
+                  ${app.candidateName.charAt(0)}
+                </div>
+                <div>
+                  <h3 class="candidate-name">${app.candidateName}</h3>
+                  <div class="candidate-role">${app.jobTitle}</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn btn-secondary" onclick="viewCandidate(${app.applicationId})" style="border: 1px solid var(--border); background: #f8f9fa; color: var(--text-primary);"><i class="fas fa-eye"></i> View</button>
+                <button class="btn btn-primary" onclick="approveCandidate(${app.applicationId})" style="background: var(--success); border: none;"><i class="fas fa-check"></i> Approve</button>
+                <button class="btn btn-secondary" onclick="rejectCandidate(${app.applicationId})" style="color: var(--danger); border-color: var(--danger);"><i class="fas fa-times"></i> Reject</button>
+              </div>
+            </div>
+          `).join("");
+        } catch (error) {
+          console.error("Error loading manager review candidates:", error);
+          container.innerHTML = `<p style="color: var(--danger);">Failed to load candidates pending review.</p>`;
+        }
+      }
+
+      async function approveCandidate(applicationId) {
+        try {
+          await window.API.Application.updateStatus(applicationId, { status: "ManagerApproved", notes: "Approved by Hiring Manager" });
+          if (typeof window.showToast === "function") window.showToast("Candidate approved successfully!", "success");
+          loadManagerReviewCandidates();
+          loadApprovedCandidates(); // refresh the approved list
+        } catch (error) {
+          console.error("Error approving candidate:", error);
+          if (typeof window.showToast === "function") window.showToast("Failed to approve candidate", "error");
+        }
+      }
+
+      async function rejectCandidate(applicationId) {
+        try {
+          await window.API.Application.updateStatus(applicationId, { status: "Rejected", rejectionReason: "Rejected by Hiring Manager" });
+          if (typeof window.showToast === "function") window.showToast("Candidate rejected", "info");
+          loadManagerReviewCandidates();
+        } catch (error) {
+          console.error("Error rejecting candidate:", error);
+          if (typeof window.showToast === "function") window.showToast("Failed to reject candidate", "error");
+        }
+      }
+
+      // ============================================
+      // LOAD APPROVED CANDIDATES
+      // ============================================
+      async function loadApprovedCandidates() {
+        const container = document.getElementById("approvedCandidatesList");
+        try {
+          const response = await window.API.Application.getByStatus("ManagerApproved");
+          const applications = Array.isArray(response) ? response : response.data || [];
+          
+          if (!applications || applications.length === 0) {
+            container.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-check" style="color: var(--border);"></i>
+              <p>No candidates have been approved yet.</p>
+            </div>`;
+            return;
+          }
+
+          container.innerHTML = applications.map(app => `
+            <div class="candidate-card" style="opacity: 0.8;">
+              <div class="candidate-info">
+                <div class="candidate-avatar" style="background: var(--success); color: white;">
+                  ${app.candidateName.charAt(0)}
+                </div>
+                <div>
+                  <h3 class="candidate-name">${app.candidateName}</h3>
+                  <div class="candidate-role">${app.jobTitle}</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="status-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-check"></i> Approved for Interview</span>
+              </div>
+            </div>
+          `).join("");
+        } catch (error) {
+          console.error("Error loading approved candidates:", error);
+          container.innerHTML = `<p style="color: var(--danger);">Failed to load approved candidates.</p>`;
+        }
+      }
+
+      // ============================================
+      // LOAD CANDIDATES TO REVIEW (INTERVIEWS)
       // ============================================
       async function loadCandidatesToReview() {
         const container = document.getElementById("candidatesList");
         try {
-          const response = await window.API.Application.getMyApplications();
-          const apps = Array.isArray(response) ? response : response.data || [];
+          const response = await window.API.Interview.getMyInterviews();
+          const interviews = Array.isArray(response) ? response : response.data || [];
 
-          // Filter candidates needing review (pending or interview stage)
-          const pending = apps.filter((a) =>
-            ["Submitted", "UnderReview", "InterviewScheduled"].includes(
-              a.status,
-            ),
+          // Filter interviews needing review
+          const pending = interviews.filter((i) =>
+            ["Scheduled", "Completed"].includes(i.status || i.Status)
           );
 
           if (!pending || pending.length === 0) {
@@ -540,35 +733,30 @@
 
           container.innerHTML = pending
             .slice(0, 5)
-            .map((app) => {
-              const score =
-                app.aiScore ||
-                app.AI_Score ||
-                Math.floor(Math.random() * 30 + 65);
-              const scoreClass =
-                score >= 80
-                  ? "score-high"
-                  : score >= 60
-                    ? "score-mid"
-                    : "score-low";
-              const initials = (app.candidateName || "U")
+            .map((interview) => {
+              const cName = interview.candidateName || interview.CandidateName || "Unknown";
+              const jTitle = interview.jobTitle || interview.JobTitle || "Position";
+              const appId = interview.applicationId || interview.ApplicationId;
+              const status = interview.status || interview.Status || "Scheduled";
+
+              const initials = cName
                 .split(" ")
                 .map((n) => n[0])
                 .join("")
-                .toUpperCase();
+                .toUpperCase()
+                .substring(0, 2);
 
               return `
-            <div class="candidate-item" onclick="window.location.href='candidate-evaluation.html?appId=${app.applicationId}'">
+            <div class="candidate-item" onclick="viewCandidateFromInterview(${appId}, '${cName}', '${jTitle}')">
               <div class="candidate-info">
                 <div class="candidate-avatar">${initials}</div>
                 <div>
-                  <div class="candidate-name">${app.candidateName || "Unknown"}</div>
-                  <div class="candidate-job">${app.jobTitle || "Position"} • ${app.department || ""}</div>
+                  <div class="candidate-name">${cName}</div>
+                  <div class="candidate-job">${jTitle}</div>
                 </div>
               </div>
               <div style="display: flex; align-items: center; gap: 12px;">
-                <span class="score-badge ${scoreClass}">${score}%</span>
-                <span class="status-badge ${getStatusClass(app.status)}">${app.status || "Pending"}</span>
+                <span class="status-badge ${getStatusClass(status)}">${status}</span>
                 <i class="fas fa-chevron-right" style="color: var(--text-secondary);"></i>
               </div>
             </div>
@@ -631,7 +819,7 @@
               ${recent
                 .map(
                   (f) => `
-                <tr onclick="window.location.href='candidate-evaluation.html?feedbackId=${f.feedbackId}'" style="cursor: pointer;">
+                <tr style="cursor: default;">
                   <td><strong>${f.candidateName || "Unknown"}</strong></td>
                   <td>${f.jobTitle || "Position"}</td>
                   <td>${f.averageScore || 0}%</td>
@@ -666,14 +854,178 @@
       }
 
       // ============================================
-      // TOAST
+      // CANDIDATE MODAL LOGIC
       // ============================================
-      function showToast(message, type = "info") {
-        if (typeof window.showToast === "function") {
-          window.showToast(message, type);
-        } else {
-          alert(message);
+      async function viewCandidate(id) {
+        const candidate = pendingCandidates.find(c => c.applicationId === id);
+        if (!candidate) return;
+        
+        document.getElementById('modalCandidateName').textContent = candidate.candidateName;
+        
+        let detailsHtml = `
+          <p><strong>Email:</strong> ${candidate.candidateEmail}</p>
+          <p><strong>Position:</strong> ${candidate.jobTitle}</p>
+          <p><strong>Applied:</strong> ${new Date(candidate.appliedAt).toLocaleDateString()}</p>
+        `;
+
+        try {
+          const appDetailsResponse = await window.API.Application.getById(id);
+          const appDetails = appDetailsResponse.data || appDetailsResponse;
+          
+          if (appDetails.scoreBreakdown) {
+            const breakdown = appDetails.scoreBreakdown;
+            detailsHtml += `
+              <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color);" />
+              <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-robot" style="color: var(--primary);"></i> AI Resume Summary
+              </h4>
+              <p><strong>Overall Match:</strong> ${breakdown.overallScore || breakdown.OverallScore || candidate.aI_Score}%</p>
+              <p><strong>Recommendation:</strong> ${breakdown.recommendation || breakdown.Recommendation || 'No recommendation available.'}</p>
+              <p><strong>Rating:</strong> ${breakdown.rating || breakdown.Rating || 'N/A'}</p>
+              <p><strong>Interpretation:</strong> ${breakdown.interpretation || breakdown.Interpretation || 'N/A'}</p>
+              <div style="margin-top: 12px;">
+                <strong>Matching Skills:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+                  ${(breakdown.matchingSkills || breakdown.MatchingSkills || []).map(skill => `<span class="status-badge" style="background: #e6f4ea; color: #137333;">${skill}</span>`).join('') || '<span style="color: var(--text-secondary); font-size: 13px;">None identified</span>'}
+                </div>
+              </div>
+              <div style="margin-top: 12px;">
+                <strong>Missing Skills:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+                  ${(breakdown.missingSkills || breakdown.MissingSkills || []).map(skill => `<span class="status-badge" style="background: #fce8e6; color: #c5221f;">${skill}</span>`).join('') || '<span style="color: var(--text-secondary); font-size: 13px;">None missing</span>'}
+                </div>
+              </div>
+            `;
+          }
+          
+          detailsHtml += `
+            <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color);" />
+            <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-magic" style="color: var(--primary);"></i> AI Profile Summary
+            </h4>
+            <div id="aiProfileSummaryContainer">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+                <span style="color: var(--text-secondary); font-size: 13px;">Generating AI summary...</span>
+              </div>
+            </div>
+          `;
+
+          if (appDetails.candidateResumeUrl) {
+            let resumeUrl = appDetails.candidateResumeUrl;
+            if (!resumeUrl.startsWith('http')) {
+              const baseUrl = window.API.BASE_URL || 'http://localhost:5000';
+              resumeUrl = baseUrl + '/' + resumeUrl.replace(/^[\/\\]/, '');
+            }
+            
+            let objectUrl = '';
+            try {
+              const token = window.API.getToken();
+              const response = await fetch(resumeUrl, {
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (response.ok) {
+                const blob = await response.blob();
+                objectUrl = URL.createObjectURL(blob);
+              }
+            } catch(e) {
+              console.error('Error fetching resume:', e);
+            }
+
+            detailsHtml += `
+              <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color);" />
+              <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-file-pdf" style="color: var(--danger);"></i> Original Resume
+              </h4>
+              <div style="width: 100%; height: 400px; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;">
+                <iframe src="${objectUrl}" style="width: 100%; height: 100%; border: none;"></iframe>
+              </div>
+            `;
+          }
+        } catch (err) {
+          console.error("Failed to load application details:", err);
+          detailsHtml += `
+              <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color);" />
+              <p style="color: var(--danger);">Failed to load application details.</p>
+          `;
         }
+
+        document.getElementById('modalCandidateDetails').innerHTML = detailsHtml;
+        
+        // Async fetch the AI Profile Summary after modal is rendered
+        let fetchAppDetails = null;
+        try { fetchAppDetails = await window.API.Application.getById(id); } catch(e) {}
+        let fetchedCandidateId = fetchAppDetails?.data?.candidateId || fetchAppDetails?.candidateId;
+        
+        if (fetchedCandidateId) {
+          try {
+              const token = window.API.getToken();
+              const baseUrl = window.API.BASE_URL || 'http://localhost:5000';
+              fetch(`${baseUrl}/api/candidates/${fetchedCandidateId}/ai-summary`, {
+                  headers: { 'Authorization': `Bearer ${token}` }
+              })
+              .then(res => res.json())
+              .then(data => {
+                  const container = document.getElementById('aiProfileSummaryContainer');
+                  if (container && data.summary) {
+                      container.innerHTML = `
+                          <p style="font-size: 14px; line-height: 1.5; margin-bottom: 8px;">${data.summary}</p>
+                          <p style="font-size: 12px; color: var(--text-secondary); font-style: italic;">
+                            Note: This is an AI-generated description based on the candidate's profile.
+                          </p>
+                      `;
+                  }
+              })
+              .catch(err => {
+                  const container = document.getElementById('aiProfileSummaryContainer');
+                  if (container) container.innerHTML = `<p style="color: var(--danger); font-size: 13px;">Failed to generate AI summary.</p>`;
+              });
+          } catch(e) {}
+        }
+        
+        const modalActionsContainer = document.getElementById('modalActionsContainer');
+        modalActionsContainer.innerHTML = `
+          <button class="btn btn-secondary" onclick="closeCandidateModal()">Close</button>
+          <button class="btn btn-primary" onclick="approveCandidate(${id}); closeCandidateModal();" style="background: var(--success); border: none;"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn btn-secondary" onclick="rejectCandidate(${id}); closeCandidateModal();" style="color: var(--danger); border-color: var(--danger);"><i class="fas fa-times"></i> Reject</button>
+        `;
+
+        document.getElementById('candidateModal').style.display = 'flex';
+      }
+
+      function closeCandidateModal() {
+        document.getElementById('candidateModal').style.display = 'none';
+      }
+
+      // ============================================
+      // VIEW CANDIDATE FROM INTERVIEW LIST
+      // ============================================
+      async function viewCandidateFromInterview(appId, candidateName, jobTitle) {
+        // Re-use the existing modal by constructing a minimal candidate object
+        const candidate = {
+          applicationId: appId,
+          candidateName: candidateName,
+          candidateEmail: '',
+          jobTitle: jobTitle,
+          appliedAt: new Date().toISOString()
+        };
+        
+        // Try to get full details
+        try {
+          const appDetails = await window.API.Application.getById(appId);
+          const app = appDetails.data || appDetails;
+          candidate.candidateEmail = app.candidateEmail || app.CandidateEmail || '';
+          candidate.appliedAt = app.appliedAt || app.AppliedAt || candidate.appliedAt;
+        } catch(e) {
+          console.error('Could not fetch application details:', e);
+        }
+        
+        // Add to pendingCandidates so viewCandidate can find it
+        if (!pendingCandidates.find(c => c.applicationId === appId)) {
+          pendingCandidates.push(candidate);
+        }
+        
+        viewCandidate(appId);
       }
 
       // ============================================

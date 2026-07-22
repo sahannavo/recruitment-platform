@@ -16,7 +16,7 @@ namespace RecruitmentAPI.Services.Implementations
 
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
-            var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+            var uniqueFileName = $"{Guid.NewGuid()}_{fileName.Replace("/", "_").Replace("\\", "_")}";
             var filePath = Path.Combine(_uploadFolder, uniqueFileName);
 
             using (var fileStreamOutput = new FileStream(filePath, FileMode.Create))

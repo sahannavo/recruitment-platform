@@ -340,10 +340,6 @@
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-          <span class="notification-dot" id="notifDot"></span>
-        </button>
         <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
@@ -608,27 +604,45 @@
       }
     }
 
+    let candidateSkills = [];
+    async function loadCandidateProfile() {
+      try {
+        const profile = await window.API.Candidate.getProfile();
+        if (profile && profile.skillsSummary) {
+          candidateSkills = profile.skillsSummary.split(',').map(s => s.trim().toLowerCase());
+        }
+      } catch (e) { }
+    }
+
     function createJobCard(job) {
-      const matchScore =
-        job.matchScore || Math.floor(Math.random() * 30 + 65);
-      const matchClass =
-        matchScore >= 85
-          ? "match-high"
-          : matchScore >= 70
-            ? "match-medium"
-            : "match-low";
-      const matchIcon =
-        matchScore >= 85
-          ? "fa-check-circle"
-          : matchScore >= 70
-            ? "fa-star"
-            : "fa-circle";
+      let matchScore = job.matchScore || job.aiScore;
+
+      if (!matchScore && candidateSkills.length > 0 && job.requiredSkills && job.requiredSkills.length > 0) {
+        const reqSkills = job.requiredSkills.map(s => s.toLowerCase());
+        const matchCount = reqSkills.filter(s => candidateSkills.includes(s)).length;
+        matchScore = Math.round((matchCount / reqSkills.length) * 100);
+      }
+
+      let matchBadgeHtml = "";
+      if (matchScore) {
+        const matchClass =
+          matchScore >= 85
+            ? "match-high"
+            : matchScore >= 70
+              ? "match-medium"
+              : "match-low";
+        const matchIcon =
+          matchScore >= 85
+            ? "fa-check-circle"
+            : matchScore >= 70
+              ? "fa-star"
+              : "fa-circle";
+        matchBadgeHtml = `<div class="match-badge ${matchClass}"><i class="fas ${matchIcon}"></i> ${matchScore}% Match</div>`;
+      }
 
       return `
         <div class="job-card">
-          <div class="match-badge ${matchClass}">
-            <i class="fas ${matchIcon}"></i> ${matchScore}% Match
-          </div>
+          ${matchBadgeHtml}
           <div class="job-title">${job.title || "Position"}</div>
           <div class="company">${job.department || "Company"}</div>
           <div class="job-meta">
@@ -833,7 +847,8 @@
     // TOAST SYSTEM
     // ============================================
     function showToast(message, type = "info") {
-      if (typeof window.showToast === "function") {
+      // Check if main.js showToast is loaded and isn't THIS function
+      if (typeof window.showToast === "function" && window.showToast.name !== "showToast") {
         window.showToast(message, type);
         return;
       }
@@ -852,7 +867,7 @@
     }
 
     function syncCalendar() {
-      showToast("✅ Calendar synced successfully!", "success");
+      showToast("Calendar synced successfully!", "success");
     }
 
     // ============================================
@@ -865,9 +880,14 @@
     // ============================================
     // INITIALIZATION
     // ============================================
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", async function () {
+      // Check authentication
       if (!checkAuth()) return;
 
+      // Fetch candidate skills for matching percentage computation
+      await loadCandidateProfile();
+
+      // Load dashboard data
       loadDashboard();
 
       const logoutBtn = document.getElementById("logoutBtn");

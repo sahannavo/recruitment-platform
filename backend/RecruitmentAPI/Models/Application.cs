@@ -75,7 +75,8 @@ namespace RecruitmentAPI.Models
         Hired = 5,
         Rejected = 6,
         Withdrawn = 7,
-        OnHold = 8
+        OnHold = 8,
+        ManagerApproved = 9
     }
 
     public enum ApplicationDecision

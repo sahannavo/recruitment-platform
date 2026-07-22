@@ -179,6 +179,83 @@ namespace RecruitmentAPI.Services.AI
             return GenerateFeedbackDeterministic(interviewNotes, technicalScore, behavioralScore, communicationScore);
         }
 
+        /// <inheritdoc />
+        public async Task<string> GenerateCandidateProfileSummaryAsync(string skills, string biography)
+        {
+            if (string.IsNullOrWhiteSpace(skills) && string.IsNullOrWhiteSpace(biography))
+            {
+                return "This candidate has not provided any skills or biography information.";
+            }
+
+            if (IsProviderConfigured())
+            {
+                try
+                {
+                    // Construct the prompt
+                    var prompt = $@"
+You are a professional technical recruiter writing an objective summary of a candidate.
+Based on the following profile information provided by the candidate, write a comprehensive summary (3-4 paragraphs) summarizing their profile. 
+Focus on their key strengths and background.
+You MUST output your response in HTML format using tags like <b>, <ul>, <li>, and <br>.
+You MUST include bold headers (e.g., <b>Professional Background</b><br>, <b>Core Skills</b><br>, etc.) to structure the summary nicely.
+At the very end of your response, add this exact HTML snippet:
+<br><br><span style='font-size: 12px; font-style: italic; color: gray;'>Note: This is an AI-generated description based on the candidate's profile.</span>
+
+Candidate Profile Information:
+Skills: {skills ?? "None provided"}
+Biography/Summary: {biography ?? "None provided"}
+";
+
+                    using var request = new HttpRequestMessage(HttpMethod.Post, _options.Endpoint);
+                    request.Headers.Add("Authorization", $"Bearer {_options.ApiKey}");
+                    
+                    var payload = new
+                    {
+                        model = _options.Model,
+                        messages = new[]
+                        {
+                            new { role = "system", content = "You are an expert HR assistant." },
+                            new { role = "user", content = prompt }
+                        },
+                        temperature = 0.5,
+                        max_tokens = 1000
+                    };
+
+                    request.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
+
+                    var response = await _httpClient.SendAsync(request);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        using var document = System.Text.Json.JsonDocument.Parse(content);
+                        if (document.RootElement.TryGetProperty("choices", out var choices) && choices.GetArrayLength() > 0)
+                        {
+                            var message = choices[0].GetProperty("message").GetProperty("content").GetString();
+                            if (!string.IsNullOrWhiteSpace(message))
+                            {
+                                return message.Trim();
+                            }
+                        }
+                    }
+                    
+                    _logger.LogWarning("OpenAI API call for candidate profile summary failed or returned empty. Status: {StatusCode}", response.StatusCode);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to generate AI candidate profile summary.");
+                }
+            }
+
+            // Fallback when AI fails or is not configured
+            var summaryText = "Candidate Profile Summary:\n";
+            if (!string.IsNullOrWhiteSpace(biography))
+                summaryText += $"- Biography: {biography}\n";
+            if (!string.IsNullOrWhiteSpace(skills))
+                summaryText += $"- Key Skills: {skills}";
+            
+            return summaryText;
+        }
+
         // ---------- Internal helpers ----------
 
         /// <summary>
@@ -434,6 +511,14 @@ namespace RecruitmentAPI.Services.AI
 
             if (string.IsNullOrWhiteSpace(content)) return null;
 
+            // Robust JSON extraction
+            var startIndex = content.IndexOf('{');
+            var endIndex = content.LastIndexOf('}');
+            if (startIndex >= 0 && endIndex > startIndex)
+            {
+                content = content.Substring(startIndex, endIndex - startIndex + 1);
+            }
+            
             var cleaned = content.Replace("```json", "").Replace("```", "").Trim();
             var parsed = JsonSerializer.Deserialize<ResumeParseResult>(cleaned,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -472,6 +557,13 @@ namespace RecruitmentAPI.Services.AI
                 .GetString();
 
             if (string.IsNullOrWhiteSpace(content)) return null;
+
+            var startIndex = content.IndexOf('[');
+            var endIndex = content.LastIndexOf(']');
+            if (startIndex >= 0 && endIndex > startIndex)
+            {
+                content = content.Substring(startIndex, endIndex - startIndex + 1);
+            }
 
             var cleaned = content.Replace("```json", "").Replace("```", "").Trim();
             return JsonSerializer.Deserialize<List<string>>(cleaned);
@@ -519,6 +611,13 @@ Respond ONLY with JSON in this format:
                 .GetString();
 
             if (string.IsNullOrWhiteSpace(content)) return null;
+
+            var startIndex = content.IndexOf('{');
+            var endIndex = content.LastIndexOf('}');
+            if (startIndex >= 0 && endIndex > startIndex)
+            {
+                content = content.Substring(startIndex, endIndex - startIndex + 1);
+            }
 
             var cleaned = content.Replace("```json", "").Replace("```", "").Trim();
             var result = JsonSerializer.Deserialize<AIFeedbackDto>(cleaned,

@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using RecruitmentAPI.DTOs;
 using RecruitmentAPI.Services.Interfaces;
 using RecruitmentAPI.Extensions;
+using RecruitmentAPI.Services.AI;
+using RecruitmentAPI.Repository.Interfaces;
 
 namespace RecruitmentAPI.Controllers
 {
@@ -21,13 +23,19 @@ namespace RecruitmentAPI.Controllers
     {
         private readonly ICandidateService _candidateService;
         private readonly ILogger<CandidatesController> _logger;
+        private readonly IAIService _aiService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CandidatesController(
             ICandidateService candidateService,
-            ILogger<CandidatesController> logger)
+            ILogger<CandidatesController> logger,
+            IAIService aiService,
+            IUnitOfWork unitOfWork)
         {
             _candidateService = candidateService;
             _logger = logger;
+            _aiService = aiService;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -112,7 +120,7 @@ namespace RecruitmentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status413PayloadTooLarge)]
         public async Task<ActionResult<DocumentResponseDto>> UploadCV(
-            IFormFile file,
+            [FromForm] IFormFile file,
             [FromQuery] string documentType = "CV")
         {
             try
@@ -151,6 +159,38 @@ namespace RecruitmentAPI.Controllers
                 _logger.LogError(ex, "Error uploading CV");
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "An error occurred while uploading the CV" });
+            }
+        }
+
+        /// <summary>
+        /// Parse CV without saving to database, used for auto-fill.
+        /// </summary>
+        [HttpPost("parse-cv")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<RecruitmentAPI.DTOs.AI.ResumeParseResult>> ParseCV([FromForm] IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest(new { message = "File is required" });
+
+                var text = await RecruitmentAPI.Helpers.FileTextExtractor.ExtractTextAsync(file);
+                
+                if (string.IsNullOrWhiteSpace(text))
+                    return BadRequest(new { message = "Could not extract any text from the file. If this is a PDF, it might be an image-based scan. Please upload a text-based PDF or a .txt file." });
+
+                var parsedData = await _aiService.ParseResumeAsync(text);
+                return Ok(parsedData);
+            }
+            catch (NotSupportedException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error parsing CV");
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    new { message = "An error occurred while parsing the CV" });
             }
         }
 
@@ -205,6 +245,37 @@ namespace RecruitmentAPI.Controllers
                     new { message = "An error occurred while deleting the document" });
             }
         }
+        /// <summary>
+        /// Download a document
+        /// </summary>
+        /// <param name="documentId">Document ID</param>
+        /// <returns>File stream</returns>
+        [HttpGet("documents/{documentId}/download")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DownloadDocument(int documentId, [FromServices] RecruitmentAPI.Services.Interfaces.IBlobStorageService blobStorageService)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var documents = await _candidateService.GetDocumentsAsync(userId);
+                var doc = documents.FirstOrDefault(d => d.DocumentId == documentId);
+                
+                if (doc == null)
+                    return NotFound(new { message = "Document not found" });
+
+                var fileStream = await blobStorageService.DownloadFileAsync(doc.BlobUrl);
+                
+                return File(fileStream, doc.FileType ?? "application/pdf", doc.FileName ?? "resume");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error downloading document {DocumentId}", documentId);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while downloading the document" });
+            }
+        }
 
         /// <summary>
         /// Get parsed skills from candidate's CV
@@ -254,7 +325,43 @@ namespace RecruitmentAPI.Controllers
             {
                 _logger.LogError(ex, "Error getting candidate summary");
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occurred while retrieving the summary" });
+                    new { message = "An error occurred while retrieving candidate summary" });
+            }
+        }
+
+        /// <summary>
+        /// Get AI-generated summary of the candidate's profile based on their skills and biography
+        /// </summary>
+        /// <param name="candidateId">The candidate ID</param>
+        /// <returns>AI generated text summary</returns>
+        [HttpGet("{candidateId}/ai-summary")]
+        [Authorize(Roles = "Admin,Recruiter,HiringManager,Candidate")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<string>> GetCandidateAiSummary(int candidateId)
+        {
+            try
+            {
+                var candidate = await _unitOfWork.Candidates.GetByIdAsync(candidateId);
+                if (candidate == null)
+                {
+                    candidate = await _unitOfWork.Candidates.GetByUserIdAsync(candidateId);
+                }
+                if (candidate == null)
+                    return NotFound(new { message = "Candidate not found." });
+
+                // We don't have a distinct Biography field in the database, 
+                // but SkillsSummary stores the concatenated skills and profile text from the frontend.
+                var summary = await _aiService.GenerateCandidateProfileSummaryAsync(candidate.SkillsSummary, candidate.Biography);
+                
+                return Ok(new { summary });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating AI summary for candidate {CandidateId}", candidateId);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while generating the AI summary" });
             }
         }
 

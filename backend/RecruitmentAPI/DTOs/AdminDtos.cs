@@ -190,3 +190,25 @@ public class AdminDashboardDto
     public int TotalNotificationsSent { get; set; }
     public int PendingNotifications { get; set; }
 }
+
+public class PlatformSettingsDto
+{
+    public string CompanyName { get; set; } = string.Empty;
+    public string Industry { get; set; } = string.Empty;
+    public string WebsiteUrl { get; set; } = string.Empty;
+    public string? OpenAIKey { get; set; }
+    public string? AWSKey { get; set; }
+    public string? EmailTemplate { get; set; }
+    public decimal Creativity { get; set; }
+    public decimal Precision { get; set; }
+    public decimal Penalty { get; set; }
+    public bool SystemAlerts { get; set; }
+    public bool WeeklyReport { get; set; }
+    public bool ApiWarnings { get; set; }
+}
+
+public class PublicPlatformSettingsDto
+{
+    public string CompanyName { get; set; } = string.Empty;
+    public string WebsiteUrl { get; set; } = string.Empty;
+}

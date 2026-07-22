@@ -10,6 +10,7 @@ namespace RecruitmentAPI.DTOs
         public int PendingReview { get; set; }
         public int UnderReview { get; set; }
         public int Shortlisted { get; set; }
+        public int ManagerApproved { get; set; }
         public int InterviewScheduled { get; set; }
         public int Interviewed { get; set; }
         public int Hired { get; set; }
