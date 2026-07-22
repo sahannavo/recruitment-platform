@@ -24,6 +24,9 @@ public class PlatformSettings
     [MaxLength(255)]
     public string? AWSKey { get; set; }
 
+    [MaxLength(255)]
+    public string? SendGridApiKey { get; set; }
+
     public string? EmailTemplate { get; set; }
 
     [Column(TypeName = "decimal(3,2)")]

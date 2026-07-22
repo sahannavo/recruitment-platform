@@ -40,10 +40,9 @@ public class ScheduleInterviewDto
     public string TimeZone { get; set; } = "UTC";
 
     /// <summary>
-    /// Meeting link for online interviews
+    /// Meeting link or connection instructions for online interviews
     /// </summary>
     [StringLength(500)]
-    [Url(ErrorMessage = "Please provide a valid URL")]
     public string? MeetingLink { get; set; }
 
     /// <summary>

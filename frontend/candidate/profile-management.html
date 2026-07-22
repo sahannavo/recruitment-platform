@@ -906,28 +906,7 @@
         showToast(`✅ "${file.name}" uploaded successfully!`, 'success');
         await loadDocumentData();
 
-        // Auto-fill using AI
-        if (file.name.toLowerCase().endsWith('.txt') || file.name.toLowerCase().endsWith('.pdf')) {
-          showToast('🤖 Analyzing CV with AI to auto-fill your profile...', 'info');
-          try {
-            const parseResult = await window.API.Candidate.parseCV(file);
-
-            if (parseResult && parseResult.parsedSuccessfully) {
-              if (parseResult.skills && parseResult.skills.length > 0) {
-                document.getElementById('skillsSummary').value = parseResult.skills.join(', ');
-              }
-              if (parseResult.yearsOfExperience) {
-                const yrsEl = document.getElementById('yearsExperience');
-                if (yrsEl) yrsEl.value = parseResult.yearsOfExperience;
-              }
-
-              showToast('✨ Profile auto-filled from your CV using AI! Please review and click Save Changes.', 'success');
-            }
-          } catch (parseErr) {
-            console.warn('AI Parsing failed:', parseErr);
-            showToast('⚠️ CV uploaded successfully, but could not auto-fill profile details: ' + parseErr.message, 'warning');
-          }
-        }
+        // AI auto-fill was removed per user request
       } catch (err) {
         showToast('❌ Failed to upload resume: ' + err.message, 'error');
       }

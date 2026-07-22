@@ -743,6 +743,19 @@
               </div>
             </div>
 
+            <div class="form-group full-width">
+              <label for="sendGridApiKey">Email API Key (SendGrid)</label>
+              <p class="desc">
+                Required for sending transactional emails (invites, notifications).
+              </p>
+              <div class="api-key-wrapper">
+                <input type="password" id="sendGridApiKey" class="form-control" value="" />
+                <button type="button" class="toggle-password" data-target="sendGridApiKey" aria-label="Toggle visibility">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
             <div class="form-group full-width" style="margin-top: 8px">
               <button type="button" class="btn btn-secondary" onclick="testConnections()">
                 <i class="fas fa-plug"></i> Test Connections
@@ -1047,6 +1060,7 @@ The Team</textarea>
           website: document.getElementById("website").value,
           openaiKey: document.getElementById("openaiKey").value,
           awsKey: document.getElementById("awsKey").value,
+          sendGridApiKey: document.getElementById("sendGridApiKey").value,
           emailTemplate: document.getElementById("emailTemplate").value,
           creativity: document.getElementById("slider-creativity").value,
           precision: document.getElementById("slider-precision").value,
@@ -1142,6 +1156,7 @@ The Team</textarea>
             document.getElementById("website").value = settings.websiteUrl || "";
             document.getElementById("openaiKey").value = settings.openAIKey || "";
             document.getElementById("awsKey").value = settings.awsKey || "";
+            document.getElementById("sendGridApiKey").value = settings.sendGridApiKey || "";
             document.getElementById("emailTemplate").value = settings.emailTemplate || "";
             
             // Sliders

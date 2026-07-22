@@ -198,6 +198,7 @@ public class PlatformSettingsDto
     public string WebsiteUrl { get; set; } = string.Empty;
     public string? OpenAIKey { get; set; }
     public string? AWSKey { get; set; }
+    public string? SendGridApiKey { get; set; }
     public string? EmailTemplate { get; set; }
     public decimal Creativity { get; set; }
     public decimal Precision { get; set; }

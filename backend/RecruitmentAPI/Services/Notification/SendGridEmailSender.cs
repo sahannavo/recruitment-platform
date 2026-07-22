@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.Notification
 {
@@ -17,16 +18,19 @@ namespace RecruitmentAPI.Services.Notification
     {
         private readonly NotificationServiceOptions _options;
         private readonly ILogger<SendGridEmailSender> _logger;
+        private readonly ISettingsService _settingsService;
 
         /// <summary>
         /// Initialises a new instance of <see cref="SendGridEmailSender"/>.
         /// </summary>
         /// <param name="options">Notification configuration including SendGrid API key.</param>
         /// <param name="logger">Logger for diagnostics.</param>
-        public SendGridEmailSender(IOptions<NotificationServiceOptions> options, ILogger<SendGridEmailSender> logger)
+        /// <param name="settingsService">Service to retrieve dynamic platform settings.</param>
+        public SendGridEmailSender(IOptions<NotificationServiceOptions> options, ILogger<SendGridEmailSender> logger, ISettingsService settingsService)
         {
             _options = options.Value;
             _logger = logger;
+            _settingsService = settingsService;
         }
 
         /// <inheritdoc />
@@ -34,7 +38,12 @@ namespace RecruitmentAPI.Services.Notification
         {
             try
             {
-                var client = new SendGridClient(_options.SendGridApiKey);
+                var settings = await _settingsService.GetSettingsAsync();
+                var apiKey = !string.IsNullOrWhiteSpace(settings.SendGridApiKey) 
+                    ? settings.SendGridApiKey 
+                    : _options.SendGridApiKey;
+
+                var client = new SendGridClient(apiKey);
                 var from = new EmailAddress(_options.FromEmail, _options.FromName);
                 var to = new EmailAddress(toEmail);
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent: null, htmlContent: htmlBody);

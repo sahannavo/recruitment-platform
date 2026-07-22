@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RecruitmentAPI.DTOs.AI;
+using RecruitmentAPI.Services.Interfaces;
 
 namespace RecruitmentAPI.Services.AI
 {
@@ -24,6 +25,7 @@ namespace RecruitmentAPI.Services.AI
         private readonly HttpClient _httpClient;
         private readonly AIServiceOptions _options;
         private readonly ILogger<AIService> _logger;
+        private readonly ISettingsService _settingsService;
 
         // A small, extensible seed dictionary used by the keyword fallback.
         // In production this would be backed by a Skills reference table.
@@ -50,11 +52,13 @@ namespace RecruitmentAPI.Services.AI
         /// <param name="httpClient">HTTP client for communicating with the AI provider.</param>
         /// <param name="options">AI service configuration options.</param>
         /// <param name="logger">Logger for diagnostics and fallback tracing.</param>
-        public AIService(HttpClient httpClient, IOptions<AIServiceOptions> options, ILogger<AIService> logger)
+        /// <param name="settingsService">Service to retrieve dynamic platform settings.</param>
+        public AIService(HttpClient httpClient, IOptions<AIServiceOptions> options, ILogger<AIService> logger, ISettingsService settingsService)
         {
             _httpClient = httpClient;
             _options = options.Value;
             _logger = logger;
+            _settingsService = settingsService;
         }
 
         /// <inheritdoc />
@@ -66,7 +70,7 @@ namespace RecruitmentAPI.Services.AI
                 return new ResumeParseResult { ParsedSuccessfully = false, ParseEngine = "None" };
             }
 
-            if (IsProviderConfigured())
+            if (await IsProviderConfiguredAsync())
             {
                 try
                 {
@@ -96,7 +100,7 @@ namespace RecruitmentAPI.Services.AI
                 return new List<string>();
             }
 
-            if (IsProviderConfigured())
+            if (await IsProviderConfiguredAsync())
             {
                 try
                 {
@@ -161,7 +165,7 @@ namespace RecruitmentAPI.Services.AI
             int behavioralScore, int communicationScore)
         {
             // Try the LLM provider for richer narrative summaries when configured.
-            if (IsProviderConfigured())
+            if (await IsProviderConfiguredAsync())
             {
                 try
                 {
@@ -187,7 +191,7 @@ namespace RecruitmentAPI.Services.AI
                 return "This candidate has not provided any skills or biography information.";
             }
 
-            if (IsProviderConfigured())
+            if (await IsProviderConfiguredAsync())
             {
                 try
                 {
@@ -206,8 +210,9 @@ Skills: {skills ?? "None provided"}
 Biography/Summary: {biography ?? "None provided"}
 ";
 
+                    var apiKey = await GetActiveApiKeyAsync();
                     using var request = new HttpRequestMessage(HttpMethod.Post, _options.Endpoint);
-                    request.Headers.Add("Authorization", $"Bearer {_options.ApiKey}");
+                    request.Headers.Add("Authorization", $"Bearer {apiKey}");
                     
                     var payload = new
                     {
@@ -261,8 +266,28 @@ Biography/Summary: {biography ?? "None provided"}
         /// <summary>
         /// Checks whether an external AI provider is configured and available.
         /// </summary>
-        private bool IsProviderConfigured() =>
-            !string.IsNullOrWhiteSpace(_options.ApiKey) &&
+        private async Task<string?> GetActiveApiKeyAsync()
+        {
+            try
+            {
+                var settings = await _settingsService.GetSettingsAsync();
+                if (!string.IsNullOrWhiteSpace(settings.OpenAIKey))
+                {
+                    return settings.OpenAIKey;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to retrieve API key from database settings.");
+            }
+            return _options.ApiKey;
+        }
+
+        /// <summary>
+        /// Checks whether an external AI provider is configured and available.
+        /// </summary>
+        private async Task<bool> IsProviderConfiguredAsync() =>
+            !string.IsNullOrWhiteSpace(await GetActiveApiKeyAsync()) &&
             !string.Equals(_options.Provider, "None", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
@@ -636,9 +661,10 @@ Respond ONLY with JSON in this format:
             };
 
             // Set authentication header
-            if (!string.IsNullOrEmpty(_options.ApiKey))
+            var apiKey = await GetActiveApiKeyAsync();
+            if (!string.IsNullOrEmpty(apiKey))
             {
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _options.ApiKey);
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
             }
 
             // OpenRouter-specific headers

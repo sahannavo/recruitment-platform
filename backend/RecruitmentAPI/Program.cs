@@ -1,4 +1,5 @@
 using System.Text;
+using RecruitmentAPI.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -261,7 +262,7 @@ namespace RecruitmentAPI
             app.MapControllers();
 
             // ─────────────────────────────────────────────────────────────────────────────
-            // Auto-migrate Database
+            // Auto-migrate & Seed Database
             // ─────────────────────────────────────────────────────────────────────────────
             using (var scope = app.Services.CreateScope())
             {
@@ -270,11 +271,50 @@ namespace RecruitmentAPI
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     context.Database.Migrate();
+
+                    // Get credentials from config or use defaults
+                    var config = services.GetRequiredService<IConfiguration>();
+                    var adminEmail = config["Admin:DefaultEmail"] ?? "admin@recruitai.com";
+                    var adminPassword = config["Admin:DefaultPassword"] ?? "Admin@123";
+
+                    // Check if this specific Admin exists
+                    if (!context.Users.Any(u => u.Email == adminEmail))
+                    {
+                        var passwordHasher = services.GetRequiredService<IPasswordHasher>();
+
+                        // Create base User record
+                        var adminUser = new User
+                        {
+                            Email = adminEmail,
+                            FirstName = "System",
+                            LastName = "Administrator",
+                            PasswordHash = passwordHasher.HashPassword(adminPassword),
+                            Role = "Admin",
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        };
+
+                        context.Users.Add(adminUser);
+                        context.SaveChanges(); // Save to generate UserId
+
+                        // Create Admin profile record
+                        var adminProfile = new Admin
+                        {
+                            UserId = adminUser.UserId,
+                            Department = "IT/System"
+                        };
+
+                        context.Admins.Add(adminProfile);
+                        context.SaveChanges();
+                        
+                        var logger = services.GetRequiredService<ILogger<Program>>();
+                        logger.LogInformation($"Default Admin user created successfully with email: {adminEmail}");
+                    }
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while migrating the database.");
+                    logger.LogError(ex, "An error occurred while migrating or seeding the database.");
                 }
             }
 

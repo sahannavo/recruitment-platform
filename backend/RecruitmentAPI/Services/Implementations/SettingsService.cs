@@ -61,6 +61,7 @@ public class SettingsService : ISettingsService
         settings.WebsiteUrl = settingsDto.WebsiteUrl;
         settings.OpenAIKey = settingsDto.OpenAIKey;
         settings.AWSKey = settingsDto.AWSKey;
+        settings.SendGridApiKey = settingsDto.SendGridApiKey;
         settings.EmailTemplate = settingsDto.EmailTemplate;
         settings.Creativity = settingsDto.Creativity;
         settings.Precision = settingsDto.Precision;
@@ -84,6 +85,7 @@ public class SettingsService : ISettingsService
             WebsiteUrl = settings.WebsiteUrl,
             OpenAIKey = settings.OpenAIKey,
             AWSKey = settings.AWSKey,
+            SendGridApiKey = settings.SendGridApiKey,
             EmailTemplate = settings.EmailTemplate,
             Creativity = settings.Creativity,
             Precision = settings.Precision,

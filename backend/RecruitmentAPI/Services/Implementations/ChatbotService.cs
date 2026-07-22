@@ -30,10 +30,10 @@ public class ChatbotService : IChatbotService
     {
         var settings = await _settingsService.GetSettingsAsync();
         
-        string apiKey = _configuration["AIService:ApiKey"];
+        string apiKey = settings.OpenAIKey;
         if (string.IsNullOrWhiteSpace(apiKey))
         {
-            apiKey = settings.OpenAIKey;
+            apiKey = _configuration["AIService:ApiKey"];
         }
 
         // Ensure OpenAIKey is configured (can be OpenRouter key)
