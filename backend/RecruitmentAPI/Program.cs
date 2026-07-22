@@ -259,6 +259,42 @@ namespace RecruitmentAPI
                 }
             }
 
+            // ─────────────────────────────────────────────────────────────────────────────
+            // Auto-open browser to Frontend index.html
+            // ─────────────────────────────────────────────────────────────────────────────
+            app.Lifetime.ApplicationStarted.Register(() =>
+            {
+                try
+                {
+                    // Assuming the backend is run from backend/RecruitmentAPI and frontend is at ../../frontend
+                    var frontendPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../../frontend/index.html"));
+                    
+                    if (File.Exists(frontendPath))
+                    {
+                        if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("cmd", $"/c start \"\" \"{frontendPath}\"") { CreateNoWindow = true });
+                        }
+                        else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("xdg-open", $"\"{frontendPath}\""));
+                        }
+                        else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("open", $"\"{frontendPath}\""));
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[Startup] Could not find frontend index.html at {frontendPath}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[Startup] Note: Could not auto-open browser: " + ex.Message);
+                }
+            });
+
             await app.RunAsync();
         }
     }
