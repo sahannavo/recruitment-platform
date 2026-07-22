@@ -47,25 +47,18 @@ A comprehensive, AI-enhanced recruitment platform that connects candidates with 
    ```bash
    dotnet restore
    ```
-3. Apply database migrations:
-   ```bash
-   dotnet ef database update
-   ```
-   *(Note: This will automatically seed the database with default roles, an admin account, and default platform settings).*
-4. Run the application:
+3. Run the application:
    ```bash
    dotnet run
    ```
-   The API will be available at `https://localhost:5001` or `http://localhost:5000`.
+   *(Note: The application will **automatically apply database migrations** and seed the database with default roles, an admin account, and default platform settings upon startup. You do not need to run `dotnet ef database update` manually unless you are making schema changes).*
+   
+   The API and the static frontend will be available at `https://localhost:5001` or `http://localhost:5000`.
 
-### Frontend Setup
-1. The frontend consists of static HTML/CSS/JS files located in the `frontend` directory.
-2. You can serve them using any local web server (e.g., Live Server extension in VS Code, `npx serve`, or Python's `http.server`).
-   ```bash
-   cd frontend
-   npx serve .
-   ```
-3. Open your browser and navigate to `http://localhost:3000/auth/login.html` (or whatever port your static server uses).
+### Accessing the Platform
+Since the ASP.NET Core backend automatically serves the frontend static files, you don't need a separate web server.
+1. Simply run the backend (`dotnet run`).
+2. Open your browser and navigate to `https://localhost:5001/auth/login.html` (or `http://localhost:5000/auth/login.html`).
 
 ### Default Credentials
 Upon first run, the database is seeded with a default Administrator account:
