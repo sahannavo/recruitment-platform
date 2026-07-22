@@ -290,16 +290,16 @@ public class ApplicationService : IApplicationService
         /// <summary>
         /// Withdraw an application
         /// </summary>
-        public async Task<bool> WithdrawAsync(int applicationId, int candidateId)
+        public async Task<bool> WithdrawAsync(int applicationId, int userId)
         {
             try
             {
-                var application = await _unitOfWork.Applications.GetByIdAsync(applicationId);
+                var application = await _unitOfWork.Applications.GetApplicationWithDetailsAsync(applicationId);
                 if (application == null)
                     return false;
 
-                // Verify ownership
-                if (application.CandidateId != candidateId)
+                // Verify ownership (compare against UserId since the parameter is the user's ID)
+                if (application.Candidate == null || application.Candidate.UserId != userId)
                     throw new UnauthorizedAccessException("You can only withdraw your own applications");
 
                 if (application.Status == ApplicationStatus.Hired || application.Status == ApplicationStatus.Rejected)
@@ -315,15 +315,15 @@ public class ApplicationService : IApplicationService
                     application.Candidate.User.Email,
                     application.Job.Title);
 
-                _logger.LogInformation("Application {ApplicationId} withdrawn by candidate {CandidateId}",
-                    applicationId, candidateId);
+                _logger.LogInformation("Application {ApplicationId} withdrawn by user {UserId}",
+                    applicationId, userId);
 
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error withdrawing application {ApplicationId} by candidate {CandidateId}",
-                    applicationId, candidateId);
+                _logger.LogError(ex, "Error withdrawing application {ApplicationId} by user {UserId}",
+                    applicationId, userId);
                 throw;
             }
         }

@@ -22,13 +22,25 @@ namespace RecruitmentAPI.Services.Notification
         /// <param name="meetingLink">The URL for the virtual meeting.</param>
         /// <returns>The formatted HTML email body.</returns>
         public static string InterviewReminderHtml(string candidateName, string jobTitle,
-            DateTime scheduledAt, string meetingLink) => $@"
+            DateTime scheduledAt, string meetingLink, string notes) 
+        {
+            var meetingLinkHtml = !string.IsNullOrWhiteSpace(meetingLink) 
+                ? $"<p> <a href=\"{meetingLink}\">{meetingLink}</a></p>" 
+                : "";
+                
+            var notesHtml = !string.IsNullOrWhiteSpace(notes)
+                ? $"<p><strong>Message from the Recruiter:</strong><br/>{notes.Replace("\n", "<br/>")}</p>"
+                : "";
+
+            return $@"
             <p>Hi {candidateName},</p>
             <p>This is a reminder that your interview for the <strong>{jobTitle}</strong> position
             is scheduled for <strong>{scheduledAt:f}</strong>.</p>
-            <p>Meeting link: <a href=""{meetingLink}"">{meetingLink}</a></p>
+            {meetingLinkHtml}
+            {notesHtml}
             <p>Good luck!</p>
             <p>&mdash; Recruitment Team</p>";
+        }
 
         /// <summary>Generates the subject line for an application status update email.</summary>
         /// <param name="jobTitle">The title of the job position.</param>

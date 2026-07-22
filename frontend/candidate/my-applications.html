@@ -1,577 +1,563 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecruitAI - My Applications</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecruitAI - My Applications</title>
 
-    <style>
-      .applications-card {
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        overflow: hidden;
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <style>
+    .applications-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th {
+      text-align: left;
+      padding: 16px 24px;
+      background: var(--surface-alt);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover {
+      background: var(--surface-alt);
+    }
+
+    .job-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .location {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .location i {
+      width: 14px;
+    }
+
+    .status {
+      padding: 4px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-Submitted {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+    }
+
+    .status-UnderReview {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .status-Shortlisted {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-InterviewScheduled {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-Interviewed {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-Offer {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .status-Hired {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .status-Rejected {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .status-Withdrawn {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    .status-OnHold {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .actions {
+      text-align: right;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all var(--transition);
+    }
+
+    .action-btn:hover {
+      background: var(--surface-alt);
+      color: var(--primary);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .page-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .page-btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .loading-state .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
+    }
 
-      .table-container {
-        overflow-x: auto;
-      }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 700px;
-      }
+    .empty-state i {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 16px;
+    }
 
+    .empty-state h3 {
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .withdraw-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      transition: all var(--transition);
+    }
+
+    .withdraw-btn:hover {
+      background: #fee2e2;
+    }
+
+    .withdraw-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+
+      td,
       th {
-        text-align: left;
-        padding: 16px 24px;
-        background: var(--surface-alt);
-        font-weight: 600;
-        color: var(--text-secondary);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid var(--border);
+        padding: 12px 16px;
       }
 
-      td {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border);
-        vertical-align: middle;
-      }
-
-      tr:hover {
-        background: var(--surface-alt);
-      }
-
-      .job-title {
-        font-weight: 600;
-        font-size: 15px;
-      }
-      .location {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-      }
-      .location i {
-        width: 14px;
+      .page-header h1 {
+        font-size: 22px;
       }
 
       .status {
-        padding: 4px 16px;
-        border-radius: var(--radius-full);
-        font-size: 13px;
-        font-weight: 600;
-        display: inline-block;
+        font-size: 11px;
+        padding: 3px 12px;
       }
-      .status-Submitted {
-        background: var(--surface-alt);
-        color: var(--text-secondary);
-      }
-      .status-UnderReview {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-      .status-Shortlisted {
-        background: #dbeafe;
-        color: #1e40af;
-      }
-      .status-InterviewScheduled {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .status-Interviewed {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .status-Offer {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .status-Hired {
-        background: var(--success-light);
-        color: #065f46;
-      }
-      .status-Rejected {
-        background: #fee2e2;
-        color: var(--danger);
-      }
-      .status-Withdrawn {
-        background: #f3f4f6;
-        color: #6b7280;
-      }
-      .status-OnHold {
-        background: #fef3c7;
-        color: #92400e;
-      }
+    }
+  </style>
+</head>
 
-      .actions {
-        text-align: right;
-      }
-      .action-btn {
-        background: none;
-        border: none;
-        font-size: 18px;
-        color: var(--text-secondary);
-        cursor: pointer;
-        padding: 8px;
-        border-radius: 50%;
-        transition: all var(--transition);
-      }
-      .action-btn:hover {
-        background: var(--surface-alt);
-        color: var(--primary);
-      }
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
+        <span>RecruitAI</span>
+      </a>
 
-      .pagination {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 24px;
-        border-top: 1px solid var(--border);
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
+        <a href="job-search.html" class="nav-link" data-page="jobs">Jobs</a>
+        <a href="my-applications.html" class="nav-link active" data-page="applications">Applications</a>
+        <a href="profile-management.html" class="nav-link" data-page="profile">Profile</a>
+      </nav>
 
-      .page-btn {
-        width: 36px;
-        height: 36px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: all var(--transition);
-      }
-      .page-btn:hover {
-        background: var(--surface-alt);
-        border-color: var(--primary);
-      }
-      .page-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
+      <div class="header-actions">
+        <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
 
-      .page-header {
-        margin-bottom: 24px;
-      }
-      .page-header h1 {
-        font-size: 28px;
-        font-weight: 700;
-      }
-      .page-header p {
-        color: var(--text-secondary);
-        font-size: 15px;
-      }
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="dashboard.html" class="mobile-link" data-page="dashboard">Dashboard</a>
+      <a href="job-search.html" class="mobile-link" data-page="jobs">Jobs</a>
+      <a href="my-applications.html" class="mobile-link active" data-page="applications">Applications</a>
+      <a href="profile-management.html" class="mobile-link" data-page="profile">Profile</a>
+      <a href="#" id="logoutBtn" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+    </div>
+  </header>
 
-      .loading-state {
-        text-align: center;
-        padding: 40px;
-        color: var(--text-secondary);
-      }
-      .loading-state .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid var(--border);
-        border-top: 4px solid var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 12px;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px">
+    <div class="page-header">
+      <h1>My Applications</h1>
+      <p id="subtitle">Track the status of your recent job submissions.</p>
+    </div>
 
-      .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--text-secondary);
-      }
-      .empty-state i {
-        font-size: 48px;
-        opacity: 0.3;
-        margin-bottom: 16px;
-      }
-      .empty-state h3 {
-        color: var(--text-primary);
-        margin-bottom: 8px;
-      }
+    <div class="applications-card">
+      <div class="table-container">
+        <div id="applicationsContent">
+          <!-- Loading State -->
+          <div class="loading-state" id="loadingState">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>Loading your applications...</p>
+          </div>
 
-      .withdraw-btn {
-        background: none;
-        border: none;
-        color: var(--danger);
-        font-size: 13px;
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: var(--radius);
-        transition: all var(--transition);
-      }
-      .withdraw-btn:hover {
-        background: #fee2e2;
-      }
-      .withdraw-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
+          <!-- Table -->
+          <table id="applicationsTable" style="display: none">
+            <thead>
+              <tr>
+                <th>JOB TITLE</th>
+                <th>COMPANY</th>
+                <th>APPLIED DATE</th>
+                <th>STATUS</th>
+                <th style="text-align: right">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="applicationsBody"></tbody>
+          </table>
 
-      @media (max-width: 768px) {
-        td,
-        th {
-          padding: 12px 16px;
-        }
-        .page-header h1 {
-          font-size: 22px;
-        }
-        .status {
-          font-size: 11px;
-          padding: 3px 12px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <div class="header-inner">
-        <a href="dashboard.html" class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" />
-          <span>RecruitAI</span>
-        </a>
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState" style="display: none">
+            <i class="fas fa-file-alt"></i>
+            <h3>No applications yet</h3>
+            <p>
+              You haven't applied to any jobs yet. Start your job search
+              today!
+            </p>
+            <button class="btn btn-primary" onclick="window.location.href = 'job-search.html'" style="margin-top: 16px">
+              <i class="fas fa-search"></i> Browse Jobs
+            </button>
+          </div>
+        </div>
+      </div>
 
-        <nav class="main-nav" aria-label="Primary navigation">
-          <a href="dashboard.html" class="nav-link" data-page="dashboard"
-            >Dashboard</a
-          >
-          <a href="job-search.html" class="nav-link" data-page="jobs">Jobs</a>
-          <a
-            href="my-applications.html"
-            class="nav-link active"
-            data-page="applications"
-            >Applications</a
-          >
-          <a href="profile-management.html" class="nav-link" data-page="profile"
-            >Profile</a
-          >
-        </nav>
-
-        <div class="header-actions">
-          <div class="user-avatar" id="userAvatar" title="Profile">JD</div>
-          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <i class="fas fa-bars"></i>
+      <div class="pagination" id="pagination" style="display: none">
+        <div id="paginationInfo">Showing 0 to 0 of 0 entries</div>
+        <div class="pagination-controls" style="display: flex; gap: 8px">
+          <button id="prevPageBtn" class="page-btn" onclick="changePage(-1)">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button id="nextPageBtn" class="page-btn" onclick="changePage(1)">
+            <i class="fas fa-chevron-right"></i>
           </button>
         </div>
       </div>
+    </div>
+  </main>
 
-      <!-- Mobile Menu -->
-      <div class="mobile-menu-overlay" id="mobileOverlay"></div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="dashboard.html" class="mobile-link" data-page="dashboard"
-          >Dashboard</a
-        >
-        <a href="job-search.html" class="mobile-link" data-page="jobs">Jobs</a>
-        <a
-          href="my-applications.html"
-          class="mobile-link active"
-          data-page="applications"
-          >Applications</a
-        >
-        <a
-          href="profile-management.html"
-          class="mobile-link"
-          data-page="profile"
-          >Profile</a
-        >
-        <a
-          href="#"
-          id="logoutBtn"
-          class="mobile-link"
-          style="color: var(--danger); border-bottom: none"
-          >Sign Out</a
-        >
-      </div>
-    </header>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container" style="padding-top: 24px; padding-bottom: 40px">
-      <div class="page-header">
-        <h1>My Applications</h1>
-        <p id="subtitle">Track the status of your recent job submissions.</p>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 36px" />
+          <span>RecruitAI</span>
+        </div>
+        <p>
+          AI-powered recruitment platform connecting top talent with great
+          companies.
+        </p>
       </div>
 
-      <div class="applications-card">
-        <div class="table-container">
-          <div id="applicationsContent">
-            <!-- Loading State -->
-            <div class="loading-state" id="loadingState">
-              <div class="spinner" aria-hidden="true"></div>
-              <p>Loading your applications...</p>
-            </div>
-
-            <!-- Table -->
-            <table id="applicationsTable" style="display: none">
-              <thead>
-                <tr>
-                  <th>JOB TITLE</th>
-                  <th>COMPANY</th>
-                  <th>APPLIED DATE</th>
-                  <th>STATUS</th>
-                  <th style="text-align: right">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody id="applicationsBody"></tbody>
-            </table>
-
-            <!-- Empty State -->
-            <div class="empty-state" id="emptyState" style="display: none">
-              <i class="fas fa-file-alt"></i>
-              <h3>No applications yet</h3>
-              <p>
-                You haven't applied to any jobs yet. Start your job search
-                today!
-              </p>
-              <button
-                class="btn btn-primary"
-                onclick="window.location.href = 'job-search.html'"
-                style="margin-top: 16px"
-              >
-                <i class="fas fa-search"></i> Browse Jobs
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="pagination" id="pagination" style="display: none">
-          <div id="paginationInfo">Showing 0 to 0 of 0 entries</div>
-          <div class="pagination-controls" style="display: flex; gap: 8px">
-            <button id="prevPageBtn" class="page-btn" onclick="changePage(-1)">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button id="nextPageBtn" class="page-btn" onclick="changePage(1)">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <div class="logo">
-            <img
-              src="../assets/images/logo.png"
-              alt="RecruitAI Logo"
-              style="height: 36px"
-            />
-            <span>RecruitAI</span>
-          </div>
-          <p>
-            AI-powered recruitment platform connecting top talent with great
-            companies.
-          </p>
-        </div>
-
-        <div class="footer-links">
-          <h4>For Candidates</h4>
-          <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="job-search.html">Browse Jobs</a></li>
-            <li><a href="my-applications.html">My Applications</a></li>
-            <li><a href="profile-management.html">Profile</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
+      <div class="footer-links">
+        <h4>For Candidates</h4>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="job-search.html">Browse Jobs</a></li>
+          <li><a href="my-applications.html">My Applications</a></li>
+          <li><a href="profile-management.html">Profile</a></li>
+        </ul>
       </div>
 
-      <div class="footer-bottom">
-        <span>&copy; 2026 RecruitAI. All rights reserved.</span>
-        <div class="footer-social">
-          <a href="#" aria-label="LinkedIn"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
       </div>
-    </footer>
 
-    <!-- ===== SCRIPTS ===== -->
-    <script src="../js/api.js"></script>
-    <script src="../js/main.js"></script>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
 
-    <!-- Page-specific JavaScript -->
-    <script>
-      (function () {
-        "use strict";
+    <div class="footer-bottom">
+      <span>&copy; 2026 RecruitAI. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
 
-        let currentPage = 1;
-        let pageSize = 10;
-        let totalCount = 0;
-        let applications = [];
-        let isLoading = false;
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
 
-        // DOM refs
-        const table = document.getElementById("applicationsTable");
-        const tbody = document.getElementById("applicationsBody");
-        const loadingState = document.getElementById("loadingState");
-        const emptyState = document.getElementById("emptyState");
-        const pagination = document.getElementById("pagination");
-        const paginationInfo = document.getElementById("paginationInfo");
-        const prevBtn = document.getElementById("prevPageBtn");
-        const nextBtn = document.getElementById("nextPageBtn");
-        const subtitle = document.getElementById("subtitle");
+  <!-- Page-specific JavaScript -->
+  <script>
+    (function () {
+      "use strict";
 
-        // ============================================
-        // TOAST
-        // ============================================
-        function showToast(message, type = "info") {
-          if (typeof window.showToast === "function") {
-            window.showToast(message, type);
-          } else {
-            alert(message);
+      let currentPage = 1;
+      let pageSize = 10;
+      let totalCount = 0;
+      let applications = [];
+      let isLoading = false;
+
+      // DOM refs
+      const table = document.getElementById("applicationsTable");
+      const tbody = document.getElementById("applicationsBody");
+      const loadingState = document.getElementById("loadingState");
+      const emptyState = document.getElementById("emptyState");
+      const pagination = document.getElementById("pagination");
+      const paginationInfo = document.getElementById("paginationInfo");
+      const prevBtn = document.getElementById("prevPageBtn");
+      const nextBtn = document.getElementById("nextPageBtn");
+      const subtitle = document.getElementById("subtitle");
+
+      // ============================================
+      // TOAST
+      // ============================================
+      function showToast(message, type = "info") {
+        if (typeof window.showToast === "function") {
+          window.showToast(message, type);
+        } else {
+          alert(message);
+        }
+      }
+
+      // ============================================
+      // FORMAT DATE
+      // ============================================
+      function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+
+      // ============================================
+      // GET STATUS CLASS
+      // ============================================
+      function getStatusClass(status) {
+        const map = {
+          Submitted: "status-Submitted",
+          UnderReview: "status-UnderReview",
+          Shortlisted: "status-Shortlisted",
+          InterviewScheduled: "status-InterviewScheduled",
+          Interviewed: "status-Interviewed",
+          Offer: "status-Offer",
+          Hired: "status-Hired",
+          Rejected: "status-Rejected",
+          Withdrawn: "status-Withdrawn",
+          OnHold: "status-OnHold",
+        };
+        return map[status] || "status-Submitted";
+      }
+
+      // ============================================
+      // LOAD APPLICATIONS
+      // ============================================
+      async function loadApplications(page = 1) {
+        if (isLoading) return;
+        isLoading = true;
+
+        // Show loading
+        loadingState.style.display = "block";
+        table.style.display = "none";
+        emptyState.style.display = "none";
+        pagination.style.display = "none";
+
+        try {
+          const response = await window.API.Application.getMyApplications();
+
+          // Handle response (could be array or paginated object)
+          const apps = Array.isArray(response)
+            ? response
+            : response.data || response || [];
+          totalCount = apps.length;
+          applications = apps;
+
+          // Update subtitle
+          if (subtitle) {
+            subtitle.textContent = `You have ${totalCount} application${totalCount !== 1 ? "s" : ""} total.`;
           }
-        }
 
-        // ============================================
-        // FORMAT DATE
-        // ============================================
-        function formatDate(dateString) {
-          if (!dateString) return "N/A";
-          const date = new Date(dateString);
-          return date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          });
-        }
-
-        // ============================================
-        // GET STATUS CLASS
-        // ============================================
-        function getStatusClass(status) {
-          const map = {
-            Submitted: "status-Submitted",
-            UnderReview: "status-UnderReview",
-            Shortlisted: "status-Shortlisted",
-            InterviewScheduled: "status-InterviewScheduled",
-            Interviewed: "status-Interviewed",
-            Offer: "status-Offer",
-            Hired: "status-Hired",
-            Rejected: "status-Rejected",
-            Withdrawn: "status-Withdrawn",
-            OnHold: "status-OnHold",
-          };
-          return map[status] || "status-Submitted";
-        }
-
-        // ============================================
-        // LOAD APPLICATIONS
-        // ============================================
-        async function loadApplications(page = 1) {
-          if (isLoading) return;
-          isLoading = true;
-
-          // Show loading
-          loadingState.style.display = "block";
-          table.style.display = "none";
-          emptyState.style.display = "none";
-          pagination.style.display = "none";
-
-          try {
-            const response = await window.API.Application.getMyApplications();
-
-            // Handle response (could be array or paginated object)
-            const apps = Array.isArray(response)
-              ? response
-              : response.data || response || [];
-            totalCount = apps.length;
-            applications = apps;
-
-            // Update subtitle
-            if (subtitle) {
-              subtitle.textContent = `You have ${totalCount} application${totalCount !== 1 ? "s" : ""} total.`;
-            }
-
-            renderApplications(page);
-          } catch (error) {
-            console.error("Error loading applications:", error);
-            showToast(error.message || "Failed to load applications", "error");
-            loadingState.style.display = "none";
-            emptyState.style.display = "block";
-          } finally {
-            isLoading = false;
-          }
-        }
-
-        // ============================================
-        // RENDER APPLICATIONS
-        // ============================================
-        function renderApplications(page) {
-          const start = (page - 1) * pageSize;
-          const end = Math.min(start + pageSize, applications.length);
-          const pageItems = applications.slice(start, end);
-
-          // Hide loading
+          renderApplications(page);
+        } catch (error) {
+          console.error("Error loading applications:", error);
+          showToast(error.message || "Failed to load applications", "error");
           loadingState.style.display = "none";
+          emptyState.style.display = "block";
+        } finally {
+          isLoading = false;
+        }
+      }
 
-          if (applications.length === 0) {
-            emptyState.style.display = "block";
-            table.style.display = "none";
-            pagination.style.display = "none";
-            return;
-          }
+      // ============================================
+      // RENDER APPLICATIONS
+      // ============================================
+      function renderApplications(page) {
+        const start = (page - 1) * pageSize;
+        const end = Math.min(start + pageSize, applications.length);
+        const pageItems = applications.slice(start, end);
 
-          emptyState.style.display = "none";
-          table.style.display = "table";
-          pagination.style.display = "flex";
+        // Hide loading
+        loadingState.style.display = "none";
 
-          // Render rows
-          tbody.innerHTML = pageItems
-            .map((app) => {
-              const canWithdraw =
-                app.status === "Submitted" ||
-                app.status === "UnderReview" ||
-                app.status === "Shortlisted" ||
-                app.status === "InterviewScheduled" ||
-                app.status === "OnHold";
+        if (applications.length === 0) {
+          emptyState.style.display = "block";
+          table.style.display = "none";
+          pagination.style.display = "none";
+          return;
+        }
 
-              return `
+        emptyState.style.display = "none";
+        table.style.display = "table";
+        pagination.style.display = "flex";
+
+        // Render rows
+        tbody.innerHTML = pageItems
+          .map((app) => {
+            const canWithdraw =
+              app.status === "Submitted" ||
+              app.status === "UnderReview" ||
+              app.status === "Shortlisted" ||
+              app.status === "InterviewScheduled" ||
+              app.status === "OnHold";
+
+            return `
             <tr>
               <td>
                 <div class="job-title">${app.jobTitle || "Position"}</div>
@@ -582,107 +568,107 @@
               <td><span class="status ${getStatusClass(app.status)}">${app.status || "Submitted"}</span></td>
               <td class="actions">
                 <button onclick="viewApplication(${app.applicationId})" class="action-btn" title="View Details">
-                  <i class="fas fa-ellipsis-vertical"></i>
+                  
                 </button>
-                ${
-                  canWithdraw
-                    ? `
+                ${canWithdraw
+                ? `
                   <button onclick="withdrawApplication(${app.applicationId})" class="withdraw-btn" title="Withdraw Application">
                     <i class="fas fa-times"></i>
                   </button>
                 `
-                    : ""
-                }
+                : ""
+              }
               </td>
             </tr>
           `;
-            })
-            .join("");
+          })
+          .join("");
 
-          // Update pagination
-          const totalPages = Math.ceil(applications.length / pageSize);
-          paginationInfo.textContent = `Showing ${start + 1} to ${end} of ${applications.length} entries`;
-          prevBtn.disabled = page <= 1;
-          nextBtn.disabled = page >= totalPages;
-          currentPage = page;
+        // Update pagination
+        const totalPages = Math.ceil(applications.length / pageSize);
+        paginationInfo.textContent = `Showing ${start + 1} to ${end} of ${applications.length} entries`;
+        prevBtn.disabled = page <= 1;
+        nextBtn.disabled = page >= totalPages;
+        currentPage = page;
+      }
+
+      // ============================================
+      // CHANGE PAGE
+      // ============================================
+      window.changePage = function (delta) {
+        const totalPages = Math.ceil(applications.length / pageSize);
+        const newPage = currentPage + delta;
+        if (newPage < 1 || newPage > totalPages) return;
+        renderApplications(newPage);
+      };
+
+      // ============================================
+      // VIEW APPLICATION DETAILS
+      // ============================================
+      window.viewApplication = function (applicationId) {
+        window.location.href = `application-detail.html?id=${applicationId}`;
+      };
+
+      // ============================================
+      // WITHDRAW APPLICATION
+      // ============================================
+      window.withdrawApplication = async function (applicationId) {
+        if (!confirm("Are you sure you want to withdraw this application?"))
+          return;
+
+        try {
+          const result = await window.API.Application.withdraw(applicationId);
+          showToast("✅ Application withdrawn successfully", "success");
+          // Reload applications
+          await loadApplications(currentPage);
+        } catch (error) {
+          showToast(
+            error.message || "Failed to withdraw application",
+            "error",
+          );
+        }
+      };
+
+      // ============================================
+      // LOGOUT
+      // ============================================
+      function logout() {
+        window.API.Auth.logout();
+      }
+
+      // ============================================
+      // INIT
+      // ============================================
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Check authentication
+        if (!window.API.isAuthenticated()) {
+          window.location.href = "../auth/login.html";
+          return;
         }
 
-        // ============================================
-        // CHANGE PAGE
-        // ============================================
-        window.changePage = function (delta) {
-          const totalPages = Math.ceil(applications.length / pageSize);
-          const newPage = currentPage + delta;
-          if (newPage < 1 || newPage > totalPages) return;
-          renderApplications(newPage);
-        };
-
-        // ============================================
-        // VIEW APPLICATION DETAILS
-        // ============================================
-        window.viewApplication = function (applicationId) {
-          window.location.href = `application-detail.html?id=${applicationId}`;
-        };
-
-        // ============================================
-        // WITHDRAW APPLICATION
-        // ============================================
-        window.withdrawApplication = async function (applicationId) {
-          if (!confirm("Are you sure you want to withdraw this application?"))
-            return;
-
-          try {
-            const result = await window.API.Application.withdraw(applicationId);
-            showToast("✅ Application withdrawn successfully", "success");
-            // Reload applications
-            await loadApplications(currentPage);
-          } catch (error) {
-            showToast(
-              error.message || "Failed to withdraw application",
-              "error",
-            );
-          }
-        };
-
-        // ============================================
-        // LOGOUT
-        // ============================================
-        function logout() {
-          window.API.Auth.logout();
+        // Update user avatar
+        const avatar = document.getElementById("userAvatar");
+        if (avatar) {
+          const initials = window.API.getUserInitials();
+          avatar.textContent = initials || "U";
         }
 
-        // ============================================
-        // INIT
-        // ============================================
-        document.addEventListener("DOMContentLoaded", async function () {
-          // Check authentication
-          if (!window.API.isAuthenticated()) {
-            window.location.href = "../auth/login.html";
-            return;
-          }
+        // Setup logout
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            logout();
+          });
+        }
 
-          // Update user avatar
-          const avatar = document.getElementById("userAvatar");
-          if (avatar) {
-            const initials = window.API.getUserInitials();
-            avatar.textContent = initials || "U";
-          }
+        // Load applications
+        await loadApplications(1);
 
-          // Setup logout
-          const logoutBtn = document.getElementById("logoutBtn");
-          if (logoutBtn) {
-            logoutBtn.addEventListener("click", function (e) {
-              e.preventDefault();
-              logout();
-            });
-          }
+        console.log("📋 My Applications page initialized");
+      });
+    })();
+  </script>
+</body>
 
-          // Load applications
-          await loadApplications(1);
-
-          console.log("📋 My Applications page initialized");
-        });
-      })();
-    </script>
-  </body>
 </html>

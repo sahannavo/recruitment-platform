@@ -666,6 +666,27 @@
               </div>
             </div>
 
+            <div style="margin-bottom: 16px" id="meetingLinkContainer">
+              <label
+                for="meetingLink"
+                style="
+                  font-weight: 700;
+                  font-size: 14px;
+                  display: block;
+                  margin-bottom: 6px;
+                "
+              >
+                Meeting Link (Zoom, Google Meet, etc.)
+              </label>
+              <input
+                type="url"
+                class="form-control"
+                id="meetingLink"
+                placeholder="https://..."
+                style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px;"
+              />
+            </div>
+
             <div style="margin-bottom: 16px">
               <label
                 for="interviewNotes"
@@ -676,11 +697,11 @@
                   margin-bottom: 6px;
                 "
               >
-                Interview Notes (Internal)
+                Message to Candidate & Internal Notes
               </label>
               <textarea
                 id="interviewNotes"
-                placeholder="Add specific focus areas for the interviewers or logistics for the candidate…"
+                placeholder="Add contact details, Zoom links (if not provided above), or specific instructions for the candidate..."
               ></textarea>
             </div>
 
@@ -1301,6 +1322,15 @@
               .forEach((b) => b.classList.remove("selected"));
             btn.classList.add("selected");
             selectedType = btn.dataset.type;
+            
+            // Toggle meeting link input visibility
+            const linkContainer = document.getElementById("meetingLinkContainer");
+            if (selectedType === "Online") {
+              linkContainer.style.display = "block";
+            } else {
+              linkContainer.style.display = "none";
+              document.getElementById("meetingLink").value = "";
+            }
           });
 
         // Duration change - reload availability
@@ -1328,7 +1358,7 @@
             duration: getDurationMinutes(),
             type: selectedType,
             notes: document.getElementById("interviewNotes").value || "",
-            meetingLink: selectedType === "Online" ? "https://meet.google.com/recruitai-room" : null,
+            meetingLink: selectedType === "Online" ? (document.getElementById("meetingLink").value || "https://meet.google.com/recruitai-room") : null,
             interviewerId: selectedInterviewerId
           };
 

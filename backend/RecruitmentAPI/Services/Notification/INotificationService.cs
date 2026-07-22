@@ -14,9 +14,11 @@ namespace RecruitmentAPI.Services.Interfaces
 
         Task<NotificationResultDto> SendSmsAsync(int userId, string toPhoneNumber, string message);
 
-        /// <summary>Sends a reminder for an upcoming interview, using the "InterviewReminder" template.</summary>
-        Task<NotificationResultDto> SendInterviewReminderAsync(int userId, string toEmail, string candidateName,
-            string jobTitle, DateTime scheduledAt, string meetingLink);
+        /// <summary>
+        /// Send an interview reminder with meeting details
+        /// </summary>
+        Task<NotificationResultDto> SendInterviewReminderAsync(int candidateId, string toEmail, string candidateName, 
+            string jobTitle, DateTime scheduledAt, string meetingLink, string notes);
 
         /// <summary>Notifies a candidate that their application status has changed.</summary>
         Task<NotificationResultDto> SendStatusUpdateAsync(int userId, string toEmail, string candidateName,

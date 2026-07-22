@@ -97,7 +97,8 @@ public class InterviewService : IInterviewService
                     candidateName, 
                     jobTitle, 
                     dto.ScheduledAt, 
-                    meetingLink ?? string.Empty
+                    meetingLink ?? string.Empty,
+                    dto.Notes ?? string.Empty
                 );
             }
 

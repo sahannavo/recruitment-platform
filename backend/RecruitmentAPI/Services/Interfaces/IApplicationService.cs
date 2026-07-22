@@ -35,7 +35,7 @@ namespace RecruitmentAPI.Services.Interfaces
         /// <summary>
         /// Withdraw an application
         /// </summary>
-        Task<bool> WithdrawAsync(int applicationId, int candidateId);
+        Task<bool> WithdrawAsync(int applicationId, int userId);
 
         /// <summary>
         /// Get application by ID

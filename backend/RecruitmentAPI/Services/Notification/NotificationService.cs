@@ -69,12 +69,12 @@ namespace RecruitmentAPI.Services.Notification
             };
         }
 
-        public async Task<NotificationResultDto> SendInterviewReminderAsync(int userId, string toEmail, string candidateName,
-            string jobTitle, DateTime scheduledAt, string meetingLink)
+        public async Task<NotificationResultDto> SendInterviewReminderAsync(int candidateId, string toEmail, string candidateName, 
+            string jobTitle, DateTime scheduledAt, string meetingLink, string notes)
         {
             var subject = NotificationTemplates.InterviewReminderSubject(jobTitle);
-            var html = NotificationTemplates.InterviewReminderHtml(candidateName, jobTitle, scheduledAt, meetingLink);
-            return await SendEmailAsync(userId, toEmail, subject, html);
+            var htmlBody = NotificationTemplates.InterviewReminderHtml(candidateName, jobTitle, scheduledAt, meetingLink, notes);
+            return await SendEmailAsync(candidateId, toEmail, subject, htmlBody);
         }
 
         public async Task<NotificationResultDto> SendStatusUpdateAsync(int userId, string toEmail, string candidateName,
