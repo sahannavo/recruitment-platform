@@ -1518,9 +1518,9 @@
       // ============================================
       // EVENT LISTENERS
       // ============================================
-      document
-        .getElementById("refreshBtn")
-        .addEventListener("click", function (e) {
+      const refreshBtn = document.getElementById("refreshBtn");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", function (e) {
           const btn = e.currentTarget;
           const icon = btn.querySelector("svg");
           if (icon) {
@@ -1533,6 +1533,7 @@
           showToast("Dashboard data refreshed");
           loadDashboard();
         });
+      }
 
       document.querySelectorAll(".chip").forEach(function (chip) {
         chip.addEventListener("click", function () {
@@ -1545,23 +1546,26 @@
         });
       });
 
-      document
-        .getElementById("viewAllBtn")
-        .addEventListener("click", function () {
+      const viewAllBtn = document.getElementById("viewAllBtn");
+      if (viewAllBtn) {
+        viewAllBtn.addEventListener("click", function () {
           showToast("Opening full activity log…");
         });
+      }
 
-      document
-        .getElementById("notifBtn")
-        .addEventListener("click", function () {
+      const notifBtn = document.getElementById("notifBtn");
+      if (notifBtn) {
+        notifBtn.addEventListener("click", function () {
           showToast("No new notifications");
         });
+      }
 
-      document
-        .getElementById("avatarBtn")
-        .addEventListener("click", function () {
+      const avatarBtn = document.getElementById("avatarBtn");
+      if (avatarBtn) {
+        avatarBtn.addEventListener("click", function () {
           showToast("Account settings coming soon");
         });
+      }
 
       const logoutHandler = function (e) {
         if (e) e.preventDefault();

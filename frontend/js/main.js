@@ -157,16 +157,17 @@
         email = user?.email || user?.Email || 'No email';
       }
 
-      const choice = confirm(`👤 User Profile\n\nName: ${fullName}\nRole: ${role}\nEmail: ${email}\n\nClick OK to go to your settings/profile.`);
-      if (choice) {
-        const path = window.location.pathname;
-        if (role === 'Candidate') {
-          window.location.href = path.includes('/candidate/') ? 'profile-management.html' : '../candidate/profile-management.html';
-        } else if (role === 'Admin' || role === 'SuperAdmin') {
-          window.location.href = path.includes('/admin/') ? 'settings.html' : '../admin/settings.html';
-        } else {
-          alert('Profile configuration is not available for this role.');
-        }
+      const path = window.location.pathname;
+      if (role === 'Candidate') {
+        window.location.href = path.includes('/candidate/') ? 'profile-management.html' : '../candidate/profile-management.html';
+      } else if (role === 'Admin' || role === 'SuperAdmin') {
+        window.location.href = path.includes('/admin/') ? 'settings.html' : '../admin/settings.html';
+      } else if (role === 'Recruiter') {
+        window.location.href = path.includes('/recruiter/') ? 'settings.html' : '../recruiter/settings.html';
+      } else if (role === 'HiringManager') {
+        window.location.href = path.includes('/hiring-manager/') ? 'settings.html' : '../hiring-manager/settings.html';
+      } else if (typeof showToast === 'function') {
+        showToast('Profile configuration is not available for this role.', 'warning');
       }
     });
   }

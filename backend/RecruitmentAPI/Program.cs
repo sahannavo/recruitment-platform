@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RecruitmentAPI.Data;
@@ -226,8 +227,26 @@ namespace RecruitmentAPI
             // Use CORS
             app.UseCors("AllowFrontend");
 
-            // Serve static files from wwwroot
-            app.UseStaticFiles();
+            // Serve static files from frontend directory if it exists
+            var frontendPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "frontend"));
+            if (Directory.Exists(frontendPath))
+            {
+                app.UseDefaultFiles(new DefaultFilesOptions
+                {
+                    FileProvider = new PhysicalFileProvider(frontendPath),
+                    RequestPath = ""
+                });
+                
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(frontendPath),
+                    RequestPath = ""
+                });
+            }
+            else
+            {
+                app.UseStaticFiles(); // Fallback to wwwroot
+            }
 
             if (app.Environment.IsDevelopment())
             {
@@ -273,15 +292,18 @@ namespace RecruitmentAPI
                     {
                         if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
                         {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("cmd", $"/c start \"\" \"{frontendPath}\"") { CreateNoWindow = true });
+                            var appUrls = app.Urls.FirstOrDefault() ?? "http://localhost:5000";
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("cmd", $"/c start \"\" \"{appUrls}\"") { CreateNoWindow = true });
                         }
                         else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
                         {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("xdg-open", $"\"{frontendPath}\""));
+                            var appUrls = app.Urls.FirstOrDefault() ?? "http://localhost:5000";
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("xdg-open", $"\"{appUrls}\""));
                         }
                         else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
                         {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("open", $"\"{frontendPath}\""));
+                            var appUrls = app.Urls.FirstOrDefault() ?? "http://localhost:5000";
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("open", $"\"{appUrls}\""));
                         }
                     }
                     else

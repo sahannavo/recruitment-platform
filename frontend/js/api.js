@@ -571,6 +571,23 @@ const ChatbotAPI = {
 };
 
 // ============================================
+// USER API
+// ============================================
+const UserAPI = {
+  getProfile: async () => {
+    return await apiRequest("/api/users/me", "GET", null, true);
+  },
+  
+  updateProfile: async (profileData) => {
+    return await apiRequest("/api/users/me", "PUT", profileData, true);
+  },
+  
+  changePassword: async (passwordData) => {
+    return await apiRequest("/api/users/me/password", "PUT", passwordData, true);
+  }
+};
+
+// ============================================
 // EXPOSE TO GLOBAL SCOPE (SINGLE DEFINITION)
 // ============================================
 window.API = {
@@ -584,6 +601,7 @@ window.API = {
   Admin: AdminAPI,
   Settings: SettingsAPI,
   Chatbot: ChatbotAPI,
+  User: UserAPI,
   getToken,
   setToken,
   removeToken,
