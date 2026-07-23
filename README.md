@@ -74,4 +74,22 @@ Once logged in as an admin, navigate to the **Settings** tab to configure your A
 * Auto-seeding default Admin account on database initialization.
 
 
-  P D S Sandawaruni-https://github.com/Subodha2004
+  
+  ## 📞 Support
+
+For support and queries, please open an issue in the repository.
+
+---
+
+Made with ❤️ by the InkLink Team
+
+Team Members:
+
+M A S N Weerasinghe-35173(Leader)
+
+R M O Purwa-34657
+
+U G D S Munasinghe-34702
+
+P D S Sandawaruni-https://github.com/Subodha2004
+
