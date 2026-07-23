@@ -72,3 +72,5 @@ Once logged in as an admin, navigate to the **Settings** tab to configure your A
 * Fixed strict URL validation on the interview scheduling page to allow both meeting links and custom connection instructions.
 * Removed automatic AI CV parsing during upload per user request (fallback to manual entry with AI bio generation).
 * Auto-seeding default Admin account on database initialization.
+
+  P D S Sandawaruni-https://github.com/Subodha2004
