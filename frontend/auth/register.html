@@ -1,472 +1,519 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register - RecruitAI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="../css/main.css" />
-  <style>
-    /* Register specific styles */
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #eef2ff 0%, #f9fafb 100%);
-    }
-
-    .register-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-
-    .register-card {
-      background: var(--surface);
-      width: 100%;
-      max-width: 480px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      padding: 2.5rem;
-      border: 1px solid var(--border);
-    }
-
-    .register-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .register-header .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-size: 1.75rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .register-header .logo span {
-      color: var(--text-primary);
-    }
-
-    .register-header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .register-header p {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    .login-link a {
-      color: var(--primary);
-      font-weight: 600;
-    }
-
-    .login-link a:hover {
-      color: var(--primary-hover);
-    }
-
-    .btn-loading {
-      color: transparent !important;
-      position: relative;
-    }
-
-    .btn-loading .spinner {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      height: var(--header-height);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .header .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .header .logo span {
-      color: var(--text-primary);
-    }
-
-    .header .logo img {
-      height: 40px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .role-selector {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .role-option {
-      flex: 1;
-      min-width: 80px;
-      padding: 8px 12px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-
-    .role-option:hover {
-      border-color: var(--text-secondary);
-    }
-
-    .role-option.selected {
-      border-color: var(--primary);
-      background-color: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .role-option input[type="radio"] {
-      display: none;
-    }
-
-    @media (max-width: 768px) {
-      .register-card {
-        padding: 1.5rem;
-        box-shadow: none;
-        border: 1px solid var(--border);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - RecruitAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+    <style>
+      /* Register specific styles */
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #eef2ff 0%, #f9fafb 100%);
       }
 
       .register-container {
-        padding: 1rem;
-        align-items: flex-start;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      .register-card {
+        background: var(--surface);
+        width: 100%;
+        max-width: 480px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        padding: 2.5rem;
+        border: 1px solid var(--border);
+      }
+
+      .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .register-header .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .register-header .logo span {
+        color: var(--text-primary);
+      }
+
+      .register-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .register-header p {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+
+      .login-link a {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .login-link a:hover {
+        color: var(--primary-hover);
+      }
+
+      .btn-loading {
+        color: transparent !important;
+        position: relative;
+      }
+
+      .btn-loading .spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
 
       .header {
-        padding: 0 1rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0 2rem;
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .header .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .header .logo span {
+        color: var(--text-primary);
+      }
+
+      .header .logo img {
+        height: 40px;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
       }
 
       .role-selector {
-        flex-direction: column;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <!-- Header -->
-  <header class="header">
-    <a href="/index.html" class="logo">
-      <img src="../assets/images/Logo.png" alt="RecruitAI Logo" style="height: 40px"
-        onerror="this.style.display = 'none'" />
-      <span>Recruit</span>AI
-    </a>
-    <div class="header-actions">
-      <a href="login.html" class="btn btn-outline-primary btn-sm">Sign In</a>
-    </div>
-  </header>
+      .role-option {
+        flex: 1;
+        min-width: 80px;
+        padding: 8px 12px;
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
 
-  <!-- Registration Form -->
-  <main class="register-container">
-    <div class="register-card">
-      <div class="register-header">
-        <div class="logo">
-          <img src="../assets/images/logo.png" alt="RecruitAI Logo" style="height: 110px" />
-        </div>
-        <h1>Create Account</h1>
-        <p>Join thousands of professionals finding their dream jobs.</p>
+      .role-option:hover {
+        border-color: var(--text-secondary);
+      }
+
+      .role-option.selected {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .role-option input[type="radio"] {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .register-card {
+          padding: 1.5rem;
+          box-shadow: none;
+          border: 1px solid var(--border);
+        }
+
+        .register-container {
+          padding: 1rem;
+          align-items: flex-start;
+        }
+
+        .header {
+          padding: 0 1rem;
+        }
+
+        .role-selector {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <a href="/index.html" class="logo">
+        <img
+          src="../assets/images/Logo.png"
+          alt="RecruitAI Logo"
+          style="height: 40px"
+          onerror="this.style.display = 'none'"
+        />
+        <span>Recruit</span>AI
+      </a>
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-outline-primary btn-sm">Sign In</a>
       </div>
+    </header>
 
-      <form id="registerForm" novalidate>
-        <div class="form-group">
-          <label for="firstName">First Name <span class="required">*</span></label>
-          <input type="text" id="firstName" class="form-control" placeholder="Enter your first name" required />
-          <div class="error-message" id="firstNameError">
-            First name is required.
+    <!-- Registration Form -->
+    <main class="register-container">
+      <div class="register-card">
+        <div class="register-header">
+          <div class="logo">
+            <img
+              src="../assets/images/logo.png"
+              alt="RecruitAI Logo"
+              style="height: 110px"
+            />
           </div>
+          <h1>Create Account</h1>
+          <p>Join thousands of professionals finding their dream jobs.</p>
         </div>
 
-        <div class="form-group">
-          <label for="lastName">Last Name <span class="required">*</span></label>
-          <input type="text" id="lastName" class="form-control" placeholder="Enter your last name" required />
-          <div class="error-message" id="lastNameError">
-            Last name is required.
+        <form id="registerForm" novalidate>
+          <div class="form-group">
+            <label for="firstName"
+              >First Name <span class="required">*</span></label
+            >
+            <input
+              type="text"
+              id="firstName"
+              class="form-control"
+              placeholder="Enter your first name"
+              required
+            />
+            <div class="error-message" id="firstNameError">
+              First name is required.
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="regEmail">Email Address <span class="required">*</span></label>
-          <div class="input-wrapper">
-            <i class="fa-regular fa-envelope"></i>
-            <input type="email" id="regEmail" class="form-control" placeholder="Enter your email" required
-              autocomplete="email" />
+          <div class="form-group">
+            <label for="lastName"
+              >Last Name <span class="required">*</span></label
+            >
+            <input
+              type="text"
+              id="lastName"
+              class="form-control"
+              placeholder="Enter your last name"
+              required
+            />
+            <div class="error-message" id="lastNameError">
+              Last name is required.
+            </div>
           </div>
-          <div class="error-message" id="regEmailError">
-            Please enter a valid email address.
-          </div>
-        </div>
 
-        <div class="form-group">
-          <label for="regPassword">Password <span class="required">*</span></label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="regPassword" class="form-control" placeholder="At least 8 characters" required
-              minlength="8" autocomplete="new-password" />
+          <div class="form-group">
+            <label for="regEmail"
+              >Email Address <span class="required">*</span></label
+            >
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope"></i>
+              <input
+                type="email"
+                id="regEmail"
+                class="form-control"
+                placeholder="Enter your email"
+                required
+                autocomplete="email"
+              />
+            </div>
+            <div class="error-message" id="regEmailError">
+              Please enter a valid email address.
+            </div>
           </div>
-          <div class="helper-text">
-            Must be at least 8 characters with a number and special character.
+
+          <div class="form-group">
+            <label for="regPassword"
+              >Password <span class="required">*</span></label
+            >
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock"></i>
+              <input
+                type="password"
+                id="regPassword"
+                class="form-control"
+                placeholder="At least 8 characters"
+                required
+                minlength="8"
+                autocomplete="new-password"
+              />
+            </div>
+            <div class="helper-text">
+              Must be at least 8 characters with a number and special character.
+            </div>
+            <div class="error-message" id="regPasswordError">
+              Password must be at least 8 characters.
+            </div>
           </div>
-          <div class="error-message" id="regPasswordError">
-            Password must be at least 8 characters.
+
+          <div class="form-group">
+            <label for="confirmPassword"
+              >Confirm Password <span class="required">*</span></label
+            >
+            <div class="input-wrapper">
+              <i class="fa-solid fa-check-circle"></i>
+              <input
+                type="password"
+                id="confirmPassword"
+                class="form-control"
+                placeholder="Confirm your password"
+                required
+                autocomplete="new-password"
+              />
+            </div>
+            <div class="error-message" id="confirmPasswordError">
+              Passwords do not match.
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-check-circle"></i>
-            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password"
-              required autocomplete="new-password" />
+          <div class="form-group">
+            <label>I am a <span class="required">*</span></label>
+            <div class="role-selector" id="roleSelector">
+              <label class="role-option selected">
+                <input type="radio" name="role" value="Candidate" checked />
+                <i class="fas fa-user"></i> Candidate
+              </label>
+            </div>
           </div>
-          <div class="error-message" id="confirmPasswordError">
-            Passwords do not match.
-          </div>
-        </div>
 
-        <div class="form-group">
-          <label>I am a <span class="required">*</span></label>
-          <div class="role-selector" id="roleSelector">
-            <label class="role-option selected">
-              <input type="radio" name="role" value="Candidate" checked />
-              <i class="fas fa-user"></i> Candidate
-            </label>
-            <label class="role-option">
-              <input type="radio" name="role" value="Recruiter" />
-              <i class="fas fa-user-tie"></i> Recruiter
-            </label>
-            <label class="role-option">
-              <input type="radio" name="role" value="HiringManager" />
-              <i class="fas fa-user-cog"></i> Manager
-            </label>
-          </div>
-        </div>
+          <button
+            type="submit"
+            class="btn btn-primary btn-block btn-lg"
+            id="registerBtn"
+          >
+            <i class="fas fa-user-plus"></i>
+            <span>Create Account</span>
+          </button>
 
-        <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerBtn">
-          <i class="fas fa-user-plus"></i>
-          <span>Create Account</span>
-        </button>
+          <p class="login-link">
+            Already have an account? <a href="login.html">Sign In</a>
+          </p>
+        </form>
+      </div>
+    </main>
 
-        <p class="login-link">
-          Already have an account? <a href="login.html">Sign In</a>
-        </p>
-      </form>
-    </div>
-  </main>
+    <!-- Scripts -->
+    <script src="../js/api.js"></script>
+    <script src="../js/toast.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Role selector UI
+        const roleOptions = document.querySelectorAll(".role-option");
+        roleOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            roleOptions.forEach((opt) => opt.classList.remove("selected"));
+            this.classList.add("selected");
+            this.querySelector('input[type="radio"]').checked = true;
+          });
+        });
 
-  <!-- Scripts -->
-  <script src="../js/api.js"></script>
-  <script src="../js/toast.js"></script>
-  <script>
+        const form = document.getElementById("registerForm");
+        const firstName = document.getElementById("firstName");
+        const lastName = document.getElementById("lastName");
+        const email = document.getElementById("regEmail");
+        const password = document.getElementById("regPassword");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const registerBtn = document.getElementById("registerBtn");
 
-    document.addEventListener("DOMContentLoaded", function () {
-      // Role selector UI
-      const roleOptions = document.querySelectorAll(".role-option");
-      roleOptions.forEach((option) => {
-        option.addEventListener("click", function () {
-          roleOptions.forEach((opt) => opt.classList.remove("selected"));
-          this.classList.add("selected");
-          this.querySelector('input[type="radio"]').checked = true;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          let isValid = true;
+
+          // Reset errors
+          document
+            .querySelectorAll(".form-control")
+            .forEach((el) => el.classList.remove("is-invalid"));
+          document
+            .querySelectorAll(".error-message")
+            .forEach((el) => (el.style.display = "none"));
+
+          // Validate First Name
+          if (!firstName.value.trim()) {
+            firstName.classList.add("is-invalid");
+            document.getElementById("firstNameError").style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Last Name
+          if (!lastName.value.trim()) {
+            lastName.classList.add("is-invalid");
+            document.getElementById("lastNameError").style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Email
+          if (!emailRegex.test(email.value.trim())) {
+            email.classList.add("is-invalid");
+            document.getElementById("regEmailError").style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Password
+          if (password.value.length < 8) {
+            password.classList.add("is-invalid");
+            document.getElementById("regPasswordError").style.display = "block";
+            isValid = false;
+          }
+
+          // Validate Confirm Password
+          if (password.value !== confirmPassword.value) {
+            confirmPassword.classList.add("is-invalid");
+            document.getElementById("confirmPasswordError").style.display =
+              "block";
+            isValid = false;
+          }
+
+          if (!isValid) return;
+
+          // Get selected role
+          const selectedRole = document.querySelector(
+            'input[name="role"]:checked',
+          );
+          const role = selectedRole ? selectedRole.value : "Candidate";
+
+          // Show loading state
+          registerBtn.disabled = true;
+          registerBtn.classList.add("btn-loading");
+          registerBtn.innerHTML =
+            '<span class="spinner spinner-white"></span> Creating account...';
+
+          try {
+            const userData = {
+              firstName: firstName.value.trim(),
+              lastName: lastName.value.trim(),
+              email: email.value.trim(),
+              password: password.value,
+              role: role,
+            };
+
+            const response = await window.API.Auth.register(userData);
+
+            if (response) {
+              showToast(
+                "Account created successfully! Please sign in.",
+                "success",
+              );
+
+              // Reset form
+              form.reset();
+
+              // Redirect to login after 2 seconds
+              setTimeout(() => {
+                window.location.href = "login.html";
+              }, 2000);
+            }
+          } catch (error) {
+            registerBtn.disabled = false;
+            registerBtn.classList.remove("btn-loading");
+            registerBtn.innerHTML =
+              '<i class="fas fa-user-plus"></i> <span>Create Account</span>';
+
+            showToast(
+              error.message || "Registration failed. Please try again.",
+              "error",
+            );
+            console.error("Registration error:", error);
+          }
+        });
+
+        // Real-time validation
+        firstName.addEventListener("input", () => {
+          firstName.classList.remove("is-invalid");
+          document.getElementById("firstNameError").style.display = "none";
+        });
+
+        lastName.addEventListener("input", () => {
+          lastName.classList.remove("is-invalid");
+          document.getElementById("lastNameError").style.display = "none";
+        });
+
+        email.addEventListener("input", () => {
+          email.classList.remove("is-invalid");
+          document.getElementById("regEmailError").style.display = "none";
+        });
+
+        password.addEventListener("input", () => {
+          password.classList.remove("is-invalid");
+          document.getElementById("regPasswordError").style.display = "none";
+
+          // Live password strength check
+          if (password.value.length > 0 && password.value.length < 8) {
+            password.classList.add("is-invalid");
+            document.getElementById("regPasswordError").style.display = "block";
+          }
+        });
+
+        confirmPassword.addEventListener("input", () => {
+          confirmPassword.classList.remove("is-invalid");
+          document.getElementById("confirmPasswordError").style.display =
+            "none";
+
+          if (
+            password.value !== confirmPassword.value &&
+            confirmPassword.value.length > 0
+          ) {
+            confirmPassword.classList.add("is-invalid");
+            document.getElementById("confirmPasswordError").style.display =
+              "block";
+          }
         });
       });
-
-      const form = document.getElementById("registerForm");
-      const firstName = document.getElementById("firstName");
-      const lastName = document.getElementById("lastName");
-      const email = document.getElementById("regEmail");
-      const password = document.getElementById("regPassword");
-      const confirmPassword = document.getElementById("confirmPassword");
-      const registerBtn = document.getElementById("registerBtn");
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        let isValid = true;
-
-        // Reset errors
-        document
-          .querySelectorAll(".form-control")
-          .forEach((el) => el.classList.remove("is-invalid"));
-        document
-          .querySelectorAll(".error-message")
-          .forEach((el) => (el.style.display = "none"));
-
-        // Validate First Name
-        if (!firstName.value.trim()) {
-          firstName.classList.add("is-invalid");
-          document.getElementById("firstNameError").style.display = "block";
-          isValid = false;
-        }
-
-        // Validate Last Name
-        if (!lastName.value.trim()) {
-          lastName.classList.add("is-invalid");
-          document.getElementById("lastNameError").style.display = "block";
-          isValid = false;
-        }
-
-        // Validate Email
-        if (!emailRegex.test(email.value.trim())) {
-          email.classList.add("is-invalid");
-          document.getElementById("regEmailError").style.display = "block";
-          isValid = false;
-        }
-
-        // Validate Password
-        if (password.value.length < 8) {
-          password.classList.add("is-invalid");
-          document.getElementById("regPasswordError").style.display = "block";
-          isValid = false;
-        }
-
-        // Validate Confirm Password
-        if (password.value !== confirmPassword.value) {
-          confirmPassword.classList.add("is-invalid");
-          document.getElementById("confirmPasswordError").style.display =
-            "block";
-          isValid = false;
-        }
-
-        if (!isValid) return;
-
-        // Get selected role
-        const selectedRole = document.querySelector(
-          'input[name="role"]:checked',
-        );
-        const role = selectedRole ? selectedRole.value : "Candidate";
-
-        // Show loading state
-        registerBtn.disabled = true;
-        registerBtn.classList.add("btn-loading");
-        registerBtn.innerHTML =
-          '<span class="spinner spinner-white"></span> Creating account...';
-
-        try {
-          const userData = {
-            firstName: firstName.value.trim(),
-            lastName: lastName.value.trim(),
-            email: email.value.trim(),
-            password: password.value,
-            role: role,
-          };
-
-          const response = await window.API.Auth.register(userData);
-
-          if (response) {
-            showToast(
-              "Account created successfully! Please sign in.",
-              "success",
-            );
-
-            // Reset form
-            form.reset();
-
-            // Redirect to login after 2 seconds
-            setTimeout(() => {
-              window.location.href = "login.html";
-            }, 2000);
-          }
-        } catch (error) {
-          registerBtn.disabled = false;
-          registerBtn.classList.remove("btn-loading");
-          registerBtn.innerHTML =
-            '<i class="fas fa-user-plus"></i> <span>Create Account</span>';
-
-          showToast(
-            error.message || "Registration failed. Please try again.",
-            "error",
-          );
-          console.error("Registration error:", error);
-        }
-      });
-
-      // Real-time validation
-      firstName.addEventListener("input", () => {
-        firstName.classList.remove("is-invalid");
-        document.getElementById("firstNameError").style.display = "none";
-      });
-
-      lastName.addEventListener("input", () => {
-        lastName.classList.remove("is-invalid");
-        document.getElementById("lastNameError").style.display = "none";
-      });
-
-      email.addEventListener("input", () => {
-        email.classList.remove("is-invalid");
-        document.getElementById("regEmailError").style.display = "none";
-      });
-
-      password.addEventListener("input", () => {
-        password.classList.remove("is-invalid");
-        document.getElementById("regPasswordError").style.display = "none";
-
-        // Live password strength check
-        if (password.value.length > 0 && password.value.length < 8) {
-          password.classList.add("is-invalid");
-          document.getElementById("regPasswordError").style.display = "block";
-        }
-      });
-
-      confirmPassword.addEventListener("input", () => {
-        confirmPassword.classList.remove("is-invalid");
-        document.getElementById("confirmPasswordError").style.display =
-          "none";
-
-        if (
-          password.value !== confirmPassword.value &&
-          confirmPassword.value.length > 0
-        ) {
-          confirmPassword.classList.add("is-invalid");
-          document.getElementById("confirmPasswordError").style.display =
-            "block";
-        }
-      });
-    });
-  </script>
-
-</body>
-
+    </script>
+  </body>
 </html>

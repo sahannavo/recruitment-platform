@@ -545,11 +545,12 @@
         <a href="../admin/admin-dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
         <a href="../admin/user-management.html" class="nav-link" data-page="users">Users</a>
         <a href="../admin/settings.html" class="nav-link active" data-page="settings">Settings</a>
-        <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a>
+        <!-- <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a> -->
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;" id="logoutBtnHeader">
+        <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;"
+          id="logoutBtnHeader">
           <i class="fas fa-sign-out-alt" id="logoutBtnDesktop"></i>
         </button>
         <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
@@ -566,7 +567,8 @@
       <a href="../admin/user-management.html" class="mobile-link" data-page="users">Users</a>
       <a href="../admin/settings.html" class="mobile-link active" data-page="settings">Settings</a>
       <a href="../admin/analytics-reports.html" class="mobile-link" data-page="analytics">Analytics</a>
-      <a href="#" id="logoutBtnMobile" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign Out</a>
+      <a href="#" id="logoutBtnMobile" class="mobile-link" style="color: var(--danger); border-bottom: none">Sign
+        Out</a>
     </div>
   </header>
 
@@ -750,7 +752,8 @@
               </p>
               <div class="api-key-wrapper">
                 <input type="password" id="sendGridApiKey" class="form-control" value="" />
-                <button type="button" class="toggle-password" data-target="sendGridApiKey" aria-label="Toggle visibility">
+                <button type="button" class="toggle-password" data-target="sendGridApiKey"
+                  aria-label="Toggle visibility">
                   <i class="fas fa-eye"></i>
                 </button>
               </div>
@@ -911,7 +914,7 @@ The Team</textarea>
         window.location.href = '../auth/login.html';
         return;
       }
-      
+
       // Role check
       const currentUser = window.API.getCurrentUser();
       const role = currentUser?.role || currentUser?.Role || "";
@@ -929,7 +932,7 @@ The Team</textarea>
       }
 
       console.log('✅ Page initialized with API client');
-      
+
       // ============================================
       // LOGOUT FUNCTIONALITY
       // ============================================
@@ -1146,10 +1149,10 @@ The Team</textarea>
       // ============================================
       async function loadSettings() {
         if (!window.API || !window.API.Settings) return;
-        
+
         try {
           const settings = await window.API.Settings.getSettings();
-          
+
           if (settings) {
             document.getElementById("companyName").value = settings.companyName || "";
             document.getElementById("industry").value = settings.industry || "";
@@ -1158,7 +1161,7 @@ The Team</textarea>
             document.getElementById("awsKey").value = settings.awsKey || "";
             document.getElementById("sendGridApiKey").value = settings.sendGridApiKey || "";
             document.getElementById("emailTemplate").value = settings.emailTemplate || "";
-            
+
             // Sliders
             document.getElementById("slider-creativity").value = settings.creativity || "0";
             document.getElementById("val-creativity").textContent = settings.creativity || "0";
@@ -1166,7 +1169,7 @@ The Team</textarea>
             document.getElementById("val-precision").textContent = settings.precision || "0";
             document.getElementById("slider-penalty").value = settings.penalty || "0";
             document.getElementById("val-penalty").textContent = settings.penalty || "0";
-            
+
             // Toggles
             const toggleInputs = document.querySelectorAll("#tab-notifications .toggle-row input");
             if (toggleInputs.length >= 3) {

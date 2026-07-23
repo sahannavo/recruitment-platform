@@ -673,11 +673,12 @@
         <a href="../admin/admin-dashboard.html" class="nav-link" data-page="dashboard">Dashboard</a>
         <a href="../admin/user-management.html" class="nav-link active" data-page="users">Users</a>
         <a href="../admin/settings.html" class="nav-link" data-page="settings">Settings</a>
-        <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a>
+        <!-- <a href="../admin/analytics-reports.html" class="nav-link" data-page="analytics">Analytics</a> -->
       </nav>
 
       <div class="header-actions">
-        <button class="icon-btn" aria-label="Sign out" title="Sign out" style="color: var(--danger); margin-right: 8px;">
+        <button class="icon-btn" aria-label="Sign out" title="Sign out"
+          style="color: var(--danger); margin-right: 8px;">
           <i class="fas fa-sign-out-alt" id="logoutBtnDesktop"></i>
         </button>
         <div class="user-avatar" id="userAvatar" title="Profile">AD</div>
@@ -1071,7 +1072,7 @@
       searchInput.addEventListener("input", () => {
         const q = searchInput.value.trim().toLowerCase();
         const filtered = q
-          ? USERS.filter(
+          ? workingUsers.filter(
             (u) =>
               u.name.toLowerCase().includes(q) ||
               u.email.toLowerCase().includes(q),
@@ -1199,7 +1200,7 @@
             role: role,
             department: department
           };
-          
+
           await window.API.Admin.inviteUser(inviteData);
           showToast(`Invitation sent to ${email}`, "fa-paper-plane");
           closeModal(inviteOverlay);
@@ -1282,31 +1283,31 @@
       confirmProceed.addEventListener("click", async () => {
         const user = workingUsers.find((u) => u.id === activeUserId);
         if (!user) return;
-        
-        try {
-            confirmProceed.disabled = true;
 
-            if (confirmActionType === "delete") {
-                await window.API.Admin.deleteUser(activeUserId);
-                showToast(`User ${user.name} deleted successfully`);
-            } else if (confirmActionType === "toggle") {
-                const willDisable = user.status === "Active";
-                if (willDisable) {
-                    await window.API.Admin.disableUser(activeUserId);
-                } else {
-                    await window.API.Admin.enableUser(activeUserId);
-                }
-                showToast(
-                  `${user.name} has been ${willDisable ? "disabled" : "enabled"}`
-                );
+        try {
+          confirmProceed.disabled = true;
+
+          if (confirmActionType === "delete") {
+            await window.API.Admin.deleteUser(activeUserId);
+            showToast(`User ${user.name} deleted successfully`);
+          } else if (confirmActionType === "toggle") {
+            const willDisable = user.status === "Active";
+            if (willDisable) {
+              await window.API.Admin.disableUser(activeUserId);
+            } else {
+              await window.API.Admin.enableUser(activeUserId);
             }
-            
-            closeModal(confirmOverlay);
-            await loadUsers();
+            showToast(
+              `${user.name} has been ${willDisable ? "disabled" : "enabled"}`
+            );
+          }
+
+          closeModal(confirmOverlay);
+          await loadUsers();
         } catch (error) {
-            showToast(error.message || "Action failed", "fa-exclamation-circle", true);
+          showToast(error.message || "Action failed", "fa-exclamation-circle", true);
         } finally {
-            confirmProceed.disabled = false;
+          confirmProceed.disabled = false;
         }
       });
 
@@ -1326,32 +1327,32 @@
       // ============================================
       async function loadUsers() {
         try {
-            loadingState.style.display = "flex";
-            userList.style.display = "none";
-            emptyState.classList.remove("visible");
+          loadingState.style.display = "flex";
+          userList.style.display = "none";
+          emptyState.classList.remove("visible");
 
-            const users = await window.API.Admin.getUsers();
-            
-            workingUsers = users.map(u => ({
-                id: u.userId,
-                name: u.fullName || (u.firstName + " " + u.lastName),
-                email: u.email,
-                role: u.role,
-                status: u.isActive ? "Active" : "Disabled",
-                initials: ((u.firstName?.[0] || "") + (u.lastName?.[0] || "")).toUpperCase()
-            }));
+          const users = await window.API.Admin.getUsers();
 
-            TOTAL_USERS = workingUsers.length;
-            TOTAL_PAGES = Math.ceil(TOTAL_USERS / PAGE_SIZE) || 1;
+          workingUsers = users.map(u => ({
+            id: u.userId,
+            name: u.fullName || (u.firstName + " " + u.lastName),
+            email: u.email,
+            role: u.role,
+            status: u.isActive ? "Active" : "Disabled",
+            initials: ((u.firstName?.[0] || "") + (u.lastName?.[0] || "")).toUpperCase()
+          }));
 
-            loadingState.style.display = "none";
-            renderRows(workingUsers);
-            renderPagination();
-            
-            console.log("✅ Admin Users page loaded successfully!");
+          TOTAL_USERS = workingUsers.length;
+          TOTAL_PAGES = Math.ceil(TOTAL_USERS / PAGE_SIZE) || 1;
+
+          loadingState.style.display = "none";
+          renderRows(workingUsers);
+          renderPagination();
+
+          console.log("✅ Admin Users page loaded successfully!");
         } catch (err) {
-            console.error(err);
-            loadingState.innerHTML = `<div style="color:var(--danger)">Failed to load users</div>`;
+          console.error(err);
+          loadingState.innerHTML = `<div style="color:var(--danger)">Failed to load users</div>`;
         }
       }
 
