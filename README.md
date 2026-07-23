@@ -87,7 +87,7 @@ Team Members:
 
 M A S N Weerasinghe-35173(Leader)
 
-R M O Purwa-34657
+S D L Weerasinghe - https://github.com/sobaniw
 
 U G D S Munasinghe-34702
 
