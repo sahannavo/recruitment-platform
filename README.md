@@ -73,5 +73,5 @@ Once logged in as an admin, navigate to the **Settings** tab to configure your A
 * Removed automatic AI CV parsing during upload per user request (fallback to manual entry with AI bio generation).
 * Auto-seeding default Admin account on database initialization.
 
-  Contributors
+
   P D S Sandawaruni-https://github.com/Subodha2004
