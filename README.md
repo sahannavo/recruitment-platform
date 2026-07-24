@@ -87,7 +87,7 @@ Team Members:
 
 M A S N Weerasinghe-35173(Leader)
 
-S D L Weerasinghe - https://github.com/sobaniw
+S D L Weerasinghe -35560-Interview & Feedback Module (Backend), Recruiter Actions & Hiring Manager (Frontend) – https://github.com/sobaniw
 
 U G D S Munasinghe-34702
 
